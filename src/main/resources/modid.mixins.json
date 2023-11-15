@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "nicotine.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+  ],
+  "client": [
+    "BackgroundRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
