@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "nicotine.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"client": [
+		"WorldRendererMixin",
+		"BlockModelRendererMixin",
+		"BossBarHudMixin",
+		"BackgroundRendererMixin",
+		"InGameOverlayRendererMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

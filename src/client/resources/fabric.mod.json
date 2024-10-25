@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "nicotine",
+  "version": "1.0a",
+  "name": "nicotine",
+  "description": "Utility mod for anarchy servers",
+  "authors": [
+    "tranarchy"
+  ],
+  "contact": {
+    "homepage": "https://anarchy.lol/",
+    "sources": "https://github.com/tranarchy/nicotine"
+  },
+  "license": "GPL-3.0",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "nicotine.Main"
+    ]
+  },
+  "mixins": [
+    "modid.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.7",
+    "minecraft": "~1.21.3",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
