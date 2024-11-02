@@ -2,7 +2,9 @@ package nicotine.mods.render;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.entity.*;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -56,6 +58,25 @@ public class StorageESP {
                         break;
                     case 2:
                         drawFilledBox(view, boundingBox, blockColor);
+                        break;
+                }
+            }
+
+            for (Entity entity : minecraftClient.world.getEntities()) {
+                blockColor = getEntityColor(entity);
+
+                if (blockColor == null)
+                    continue;
+
+                switch (storageEsp.mode) {
+                    case 0:
+                        drawBox(view, entity.getBoundingBox(), blockColor);
+                        break;
+                    case 1:
+                        drawWireframeBox(view, entity.getBoundingBox(), blockColor);
+                        break;
+                    case 2:
+                        drawFilledBox(view, entity.getBoundingBox(), blockColor);
                         break;
                 }
             }

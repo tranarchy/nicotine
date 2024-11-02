@@ -31,7 +31,6 @@ public class NameTag {
             Camera camera = minecraftClient.gameRenderer.getCamera();
             TextRenderer textRenderer = minecraftClient.textRenderer;
 
-
             double d = camera.getPos().x;
             double e = camera.getPos().y;
             double f = camera.getPos().z;

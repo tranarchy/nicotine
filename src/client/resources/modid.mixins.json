@@ -4,10 +4,10 @@
 	"compatibilityLevel": "JAVA_21",
 	"client": [
 		"WorldRendererMixin",
-		"BlockModelRendererMixin",
 		"BossBarHudMixin",
-		"BackgroundRendererMixin",
-		"InGameOverlayRendererMixin"
+		"InGameOverlayRendererMixin",
+		"HandledScreenMixin",
+		"SimpleOptionMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

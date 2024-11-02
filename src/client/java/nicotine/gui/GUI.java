@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static nicotine.util.Common.minecraftClient;
+import static nicotine.util.Common.*;
 import static nicotine.util.Modules.*;
 
 public class GUI extends Screen {
@@ -18,9 +18,6 @@ public class GUI extends Screen {
         super(Text.literal("nicotine"));
     }
 
-    public static final int PRIMARY_FG = 0xFFFFFFFF;
-    public static final int SECONDARY_FG = 0xFFA796FB;
-    public static final int BACKGROUND = 0x80000000;
 
     private final List<CustomButton> buttons = new ArrayList<>();
 
@@ -31,7 +28,7 @@ public class GUI extends Screen {
         int guiX = 10;
 
         int height = minecraftClient.textRenderer.fontHeight + 10;
-        int width = 82;
+        int width = 84;
 
         for (HashMap.Entry<String, List<Mod>> modSet : modList.entrySet()) {
 
@@ -66,8 +63,8 @@ public class GUI extends Screen {
 
         for (CustomButton button : buttons)
         {
-            int textColor = PRIMARY_FG;
-            int backgroundColor = BACKGROUND;
+            int textColor = SEC_FOREGROUND_COLOR;
+            int backgroundColor = BACKGROUND_COLOR;
 
             StringBuilder text = new StringBuilder();
 
@@ -75,20 +72,21 @@ public class GUI extends Screen {
 
             if (modList.containsKey(button.mod.name)) // category
             {
-                backgroundColor = SECONDARY_FG;
+                backgroundColor = FOREGROUND_COLOR;
             }
             else if (button.mod.enabled) {
-                textColor = SECONDARY_FG;
+                textColor = FOREGROUND_COLOR;
 
                 if (button.mod.modes != null) {
-                    text.append(" [");
-                    text.append(button.mod.modes.get(button.mod.mode));
-                    text.append("]");
+                    text.append(String.format(" [%s] ", button.mod.modes.get(button.mod.mode)));
                 }
             }
 
             context.fill(button.x, button.y, button.x + button.width, button.y + button.height, backgroundColor);
-            context.drawBorder(button.x, button.y, button.width, button.height, SECONDARY_FG);
+            context.drawHorizontalLine(button.x, button.x + button.width - 1, button.y, FOREGROUND_COLOR);
+            context.drawVerticalLine(button.x, button.y, button.y + button.height, FOREGROUND_COLOR);
+            context.drawVerticalLine(button.x + button.width - 1, button.y, button.y + button.height, FOREGROUND_COLOR);
+            context.drawHorizontalLine(button.x, button.x + button.width - 1, button.y + button.height, FOREGROUND_COLOR);
             context.drawText(textRenderer, text.toString(),button.x + 6, button.y + 6, textColor, true);
 
             /*if (clickedOn(button, mouseX, mouseY)) {
@@ -112,25 +110,27 @@ public class GUI extends Screen {
             {
                 if (button.mod.modes == null) {
                     button.mod.enabled = !button.mod.enabled;
-                    Settings.save();
-                    break;
+                } else {
+                    button.mod.mode += 1;
+                    if (button.mod.mode >= button.mod.modes.size()) {
+                        button.mod.mode = -1;
+                        button.mod.enabled = false;
+                    } else {
+                        button.mod.enabled = true;
+                    }
                 }
 
-
-                button.mod.mode += 1;
-                if (button.mod.mode >= button.mod.modes.size()) {
-                    button.mod.mode = -1;
-                    button.mod.enabled = false;
-                } else
-                    button.mod.enabled = true;
-
                 Settings.save();
-
                 break;
             }
         }
 
         return true;
+    }
+
+    @Override
+    public boolean shouldPause() {
+        return false;
     }
 
     @Override

@@ -1,9 +1,11 @@
 package nicotine.mods.render;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.client.option.SimpleOption;
+import net.minecraft.world.chunk.light.LightingProvider;
+import org.lwjgl.glfw.GLFW;
 
+import static nicotine.util.Common.*;
 import static nicotine.util.Modules.*;
 
 public class FullBright {
@@ -16,14 +18,16 @@ public class FullBright {
             if (client.player == null)
                 return;
 
+            SimpleOption<Double> gammaOption = minecraftClient.options.getGamma();
+
             if (!fullBright.enabled) {
-                if (client.player.hasStatusEffect(StatusEffects.NIGHT_VISION))
-                    client.player.removeStatusEffect(StatusEffects.NIGHT_VISION);
+                if (gammaOption.getValue() > 1.0)
+                    gammaOption.setValue(1.0);
+
                 return;
             }
 
-            StatusEffectInstance nightVision = new StatusEffectInstance(StatusEffects.NIGHT_VISION, 240);
-            client.player.addStatusEffect(nightVision);
+            gammaOption.setValue(1000000.0);
         });
     }
 }

@@ -2,6 +2,7 @@ package nicotine.mods.render;
 
 import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -36,6 +37,15 @@ public class StorageTracer {
                 BlockPos pos = blockEntity.getPos();
                 Vec3d vec3dPos = new Vec3d(pos.getX(), pos.getY(), pos.getZ());
                 drawTracer(view, vec3dPos, blockColor);
+            }
+
+            for (Entity entity : minecraftClient.world.getEntities()) {
+                blockColor = getEntityColor(entity);
+
+                if (blockColor == null)
+                    continue;
+
+                drawTracer(view, entity.getPos(), blockColor);
             }
 
             toggleRender(false);

@@ -1,6 +1,7 @@
 package nicotine.util;
 
 import nicotine.mods.combat.AutoTotem;
+import nicotine.mods.misc.AutoMine;
 import nicotine.mods.misc.HUD;
 import nicotine.mods.movement.AutoWalk;
 import nicotine.mods.render.*;
@@ -32,18 +33,21 @@ public class Modules {
         StorageESP.init();
         Tracer.init();
         StorageTracer.init();
+        //Xray.init();
+        ShulkerPeek.init();
         NameTag.init();
         FullBright.init();
         NoRender.init();
         NoOverlay.init();
         NoWeather.init();
+        NoEntity.init();
         NoFog.init();
-        //PlayerXray.init();
 
         AutoWalk.init();
 
         AutoTotem.init();
 
+        AutoMine.init();
         HUD.init();
     }
 }

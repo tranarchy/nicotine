@@ -19,20 +19,6 @@ public class NoRender {
             if (!noRender.enabled)
                 return ActionResult.PASS;
 
-           /*switch (noRender.mode) {
-               case 0:
-
-                   break;
-               case 1:
-                   if (!entity.isPlayer())
-                       return ActionResult.FAIL;
-                   break;
-               case 2:
-                   if (entity.isPlayer())
-                       return ActionResult.FAIL;
-                   break;
-           }*/
-
             if (entity instanceof BatEntity)
                 return ActionResult.FAIL;
 

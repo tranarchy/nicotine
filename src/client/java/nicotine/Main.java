@@ -1,5 +1,6 @@
 package nicotine;
 
+import net.minecraft.client.MinecraftClient;
 import nicotine.gui.GUI;
 import nicotine.util.BlockCollector;
 import nicotine.util.Common;
@@ -12,10 +13,12 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import org.lwjgl.glfw.GLFW;
 
+import static nicotine.util.Common.minecraftClient;
+
 
 public class Main implements ClientModInitializer {
 
-	final public static String VERSION = "1.0a";
+	final public static String VERSION = "1.1a";
 
 	@Override
 	public void onInitializeClient() {
@@ -32,8 +35,9 @@ public class Main implements ClientModInitializer {
 		));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			minecraftClient.getWindow().setTitle(String.format("nicotine %s", VERSION));
 			while (guiKeyBind.wasPressed())
-				Common.minecraftClient.setScreen(new GUI());
+				minecraftClient.setScreen(new GUI());
 		});
 	}
 }

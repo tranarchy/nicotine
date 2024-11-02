@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.util.Formatting;
 
+import static nicotine.util.Common.FOREGROUND_COLOR;
 import static nicotine.util.Common.minecraftClient;
 import static nicotine.util.Modules.*;
 
@@ -46,13 +47,13 @@ public class HUD {
             //drawContext.fill(6, 6, 140, ((hudInfos.size() + 1) * textRenderer.fontHeight) + 4, 0x80000000);
 
             int y = 10;
-            drawContext.drawText(textRenderer, String.format("nicotine %sv%s", Formatting.WHITE, Main.VERSION), 10, y, 0xFFA796FB, true);
+            drawContext.drawText(textRenderer, String.format("nicotine %sv%s", Formatting.WHITE, Main.VERSION), 10, y, FOREGROUND_COLOR, true);
             y += textRenderer.fontHeight;
 
 
             for (String hudInfo : hudInfos)
             {
-                drawContext.drawText(textRenderer, hudInfo, 10, y, 0xFFA796FB, true);
+                drawContext.drawText(textRenderer, hudInfo, 10, y, FOREGROUND_COLOR, true);
                 y += textRenderer.fontHeight;
             }
 
