@@ -1,13 +1,14 @@
 package nicotine.mods.render;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import nicotine.events.RenderEvent;
+import nicotine.util.Colors;
+import nicotine.util.EventBus;
 
 import java.util.Arrays;
 
-import static nicotine.util.Common.minecraftClient;
+import static nicotine.util.Common.mc;
 import static nicotine.util.Render.*;
 import static nicotine.util.Modules.*;
 
@@ -16,36 +17,40 @@ public class ESP {
     public static void init() {
         Mod esp = new Mod();
         esp.name = "ESP";
-        modList.get("Render").add(esp);
-        esp.modes = Arrays.asList("B", "W", "F");
+        esp.modes = Arrays.asList("B", "W", "F", "V");
+        modules.get(Category.Render).add(esp);
 
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
+        EventBus.register(RenderEvent.class, event -> {
 
             if (!esp.enabled)
-                return;
+                return true;
 
             toggleRender(true);
 
-            Vec3d view = context.camera().getPos();
+            Vec3d view = event.camera.getPos();
 
-            for (Entity entity : minecraftClient.world.getEntities()) {
-                if (entity instanceof PlayerEntity && minecraftClient.player != entity) {
-                    Float[] red = {1.0F, 0.0F, 0.0F, 1.0F};
+            for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
+                if (mc.player != player) {
                     switch (esp.mode) {
                         case 0:
-                            drawBox(view, entity.getBoundingBox(), red);
+                            drawBox(view, player.getBoundingBox(), Colors.RED);
                             break;
                         case 1:
-                            drawWireframeBox(view, entity.getBoundingBox(), red);
+                            drawWireframeBox(view, player.getBoundingBox(), Colors.RED);
                             break;
                         case 2:
-                            drawFilledBox(view, entity.getBoundingBox(), red);
+                            drawFilledBox(view, player.getBoundingBox(), Colors.RED, false);
+                            break;
+                        case 3:
+                            drawFilledBox(view, player.getBoundingBox(), Colors.RED, true);
                             break;
                     }
                 }
             }
 
             toggleRender(false);
+
+            return true;
         });
     }
 }

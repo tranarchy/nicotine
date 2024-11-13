@@ -1,40 +1,34 @@
 package nicotine.mods.render;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.entity.*;
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import nicotine.events.RenderEvent;
+import nicotine.util.EventBus;
 
 import java.util.Arrays;
 
 import static nicotine.util.Common.*;
 import static nicotine.util.Render.*;
 import static nicotine.util.Modules.*;
+import static nicotine.util.Colors.*;
 
 public class StorageESP {
     public static void init() {
         Mod storageEsp = new Mod();
         storageEsp.name = "StorageESP";
-        modList.get("Render").add(storageEsp);
-        storageEsp.modes = Arrays.asList("B", "W", "F");
+        storageEsp.modes = Arrays.asList("B", "W", "F", "V");
+        modules.get(Category.Render).add(storageEsp);
 
-
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
+        EventBus.register(RenderEvent.class, event -> {
             if (!storageEsp.enabled)
-                return;
+                return true;
 
-            Vec3d view = context.camera().getPos();
+            Vec3d view = event.camera.getPos();
 
-            Float[] blockColor;
-
-            MatrixStack matrixStack = context.matrixStack();
-
-            if (matrixStack == null)
-                return;
+            int blockColor;
 
 
             toggleRender(true);
@@ -43,7 +37,7 @@ public class StorageESP {
 
                 blockColor = getBlockColor(blockEntity);
 
-               if (blockColor == null)
+               if (blockColor == -1)
                    continue;
 
 
@@ -57,15 +51,18 @@ public class StorageESP {
                         drawWireframeBox(view, boundingBox, blockColor);
                         break;
                     case 2:
-                        drawFilledBox(view, boundingBox, blockColor);
+                        drawFilledBox(view, boundingBox, blockColor, false);
+                        break;
+                    case 3:
+                        drawFilledBox(view, boundingBox, blockColor, true);
                         break;
                 }
             }
 
-            for (Entity entity : minecraftClient.world.getEntities()) {
-                blockColor = getEntityColor(entity);
+            for (Entity entity : mc.world.getEntities()) {
+                blockColor = getBlockColor(entity);
 
-                if (blockColor == null)
+                if (blockColor == -1)
                     continue;
 
                 switch (storageEsp.mode) {
@@ -76,13 +73,17 @@ public class StorageESP {
                         drawWireframeBox(view, entity.getBoundingBox(), blockColor);
                         break;
                     case 2:
-                        drawFilledBox(view, entity.getBoundingBox(), blockColor);
+                        drawFilledBox(view, entity.getBoundingBox(), blockColor, false);
+                        break;
+                    case 3:
+                        drawFilledBox(view, entity.getBoundingBox(), blockColor, true);
                         break;
                 }
             }
 
             toggleRender(false);
 
+            return true;
         });
     }
 }

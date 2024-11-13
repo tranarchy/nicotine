@@ -1,34 +1,62 @@
 package nicotine.mixin;
 
-import nicotine.events.RenderEntityCallback;
-import nicotine.events.RenderWeatherCallback;
-import net.minecraft.client.render.*;
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.ActionResult;
+import net.minecraft.client.world.ClientWorld;
+import nicotine.events.RenderEvent;
+import nicotine.events.RenderWeatherEvent;
+import net.minecraft.client.render.*;
 import net.minecraft.util.math.Vec3d;
+import nicotine.util.EventBus;
+import org.joml.Matrix4f;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(WorldRenderer.class)
-public class WorldRendererMixin {
+public abstract class WorldRendererMixin {
 
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/render/WorldRenderer;renderEntity(Lnet/minecraft/entity/Entity;DDDFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;)V", cancellable = true)
-    private void renderEntity(Entity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo info) {
-        ActionResult result = RenderEntityCallback.EVENT.invoker().interact(entity, cameraX, cameraY, cameraZ, tickDelta, matrices, vertexConsumers);
-        if(result == ActionResult.FAIL) {
+    @Unique
+    Camera camera;
+    MatrixStack matrixStack;
+    VertexConsumerProvider vertexConsumerProvider;
+
+    @Final
+    @Shadow
+    private BufferBuilderStorage bufferBuilders;
+
+    @Shadow
+    @Final
+    private DefaultFramebufferSet framebufferSet;
+
+    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Vec3d;FLnet/minecraft/client/render/Fog;)V", cancellable = true)
+    private void renderWeather(FrameGraphBuilder frameGraphBuilder, LightmapTextureManager lightmapTextureManager, Vec3d pos, float tickDelta, Fog fog, CallbackInfo info) {
+        boolean result = EventBus.post(new RenderWeatherEvent());
+
+        if (!result) {
             info.cancel();
         }
     }
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Vec3d;FLnet/minecraft/client/render/Fog;)V", cancellable = true)
-    private void renderWeather(FrameGraphBuilder frameGraphBuilder, LightmapTextureManager lightmapTextureManager, Vec3d pos, float tickDelta, Fog fog, CallbackInfo info) {
-        ActionResult result = RenderWeatherCallback.EVENT.invoker().interact(frameGraphBuilder, lightmapTextureManager, pos, tickDelta, fog);
 
-        if(result == ActionResult.FAIL) {
-            info.cancel();
-        }
+    @Inject(method = {"render"}, at = {@At("HEAD")})
+    private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo info) {
+        this.camera = camera;
+        this.matrixStack = new MatrixStack();
+        this.vertexConsumerProvider = this.bufferBuilders.getEntityVertexConsumers();
+    }
+
+    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;")})
+    private void beforeClouds(CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder) {
+        RenderPass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
+        this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
+        afterTranslucentPass.setRenderer(() -> {
+           EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
+        });
     }
 
 }

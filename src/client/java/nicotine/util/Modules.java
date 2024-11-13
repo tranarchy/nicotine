@@ -1,9 +1,12 @@
 package nicotine.util;
 
-import nicotine.mods.combat.AutoTotem;
-import nicotine.mods.misc.AutoMine;
-import nicotine.mods.misc.HUD;
-import nicotine.mods.movement.AutoWalk;
+import nicotine.mods.combat.*;
+import nicotine.mods.misc.SmartFocus;
+import nicotine.mods.player.*;
+import nicotine.mods.player.AutoMine;
+import nicotine.mods.hud.HUD;
+import nicotine.mods.misc.NoTelemetry;
+import nicotine.mods.render.Zoom;
 import nicotine.mods.render.*;
 
 import java.util.ArrayList;
@@ -11,15 +14,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 public class Modules {
-    public static LinkedHashMap<String, List<Mod>> modList = new LinkedHashMap<>()
-    {
-        {
-            put("Render", new ArrayList<Mod>());
-            put("Movement", new ArrayList<Mod>());
-            put("Combat", new ArrayList<Mod>());
-            put("Misc", new ArrayList<Mod>());
-        }
-    };
+    public enum Category { Render, Player, Combat, Misc, HUD }
+
+    public static LinkedHashMap<Category, List<Mod>> modules = new LinkedHashMap<>();
 
     public static class Mod {
         public String name;
@@ -29,25 +26,42 @@ public class Modules {
     }
 
     public static void init() {
+
+        for (Category category : Category.values()) {
+            modules.put(category, new ArrayList<>());
+        }
+
         ESP.init();
         StorageESP.init();
+        ItemESP.init();
         Tracer.init();
         StorageTracer.init();
-        //Xray.init();
-        ShulkerPeek.init();
+        ItemTracer.init();
         NameTag.init();
+        Xray.init();
+        ShulkerPeek.init();
+        BlockOutline.init();
         FullBright.init();
-        NoRender.init();
         NoOverlay.init();
         NoWeather.init();
-        NoEntity.init();
         NoFog.init();
+        Zoom.init();
 
+        AutoEject.init();
+        AutoMine.init();
         AutoWalk.init();
+        FreeMove.init();
+        NoSlow.init();
 
         AutoTotem.init();
+        AutoArmor.init();
+        CrystalAura.init();
+        KillAura.init();
+        NoKnockback.init();
 
-        AutoMine.init();
+        NoTelemetry.init();
+        SmartFocus.init();
+
         HUD.init();
     }
 }

@@ -1,7 +1,9 @@
 package nicotine.mods.render;
 
-import nicotine.events.RenderOverlaysCallback;
-import net.minecraft.util.ActionResult;
+import nicotine.events.RenderBossBarHudEvent;
+import nicotine.events.RenderOverlaysEvent;
+import nicotine.events.RenderStatusEffectsOverlayEvent;
+import nicotine.util.EventBus;
 
 import static nicotine.util.Modules.*;
 
@@ -9,13 +11,19 @@ public class NoOverlay {
     public static void init() {
         Mod noOverlay = new Mod();
         noOverlay.name = "NoOverlay";
-        modList.get("Render").add(noOverlay);
+        modules.get(Category.Render).add(noOverlay);
 
-        RenderOverlaysCallback.EVENT.register((client, matrices) -> {
-            if (!noOverlay.enabled)
-                return ActionResult.PASS;
-
-            return ActionResult.FAIL;
+        EventBus.register(RenderOverlaysEvent.class, event -> {
+           return !noOverlay.enabled;
         });
+
+        EventBus.register(RenderBossBarHudEvent.class, event -> {
+            return !noOverlay.enabled;
+        });
+
+        EventBus.register(RenderStatusEffectsOverlayEvent.class, event-> {
+            return !noOverlay.enabled;
+        });
+
     }
 }

@@ -2,12 +2,10 @@ package nicotine.mixin;
 
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.network.packet.c2s.play.TeleportConfirmC2SPacket;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.ActionResult;
-import nicotine.events.DrawMouseoverTooltipCallback;
+import nicotine.events.DrawMouseoverTooltipEvent;
+import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,17 +17,12 @@ public abstract class HandledScreenMixin {
 
     @Shadow
     protected Slot focusedSlot;
-    protected ScreenHandler handler;
 
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawMouseoverTooltip(Lnet/minecraft/client/util/math/MatrixStack;II)V", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/screen/ingame/HandledScreen;drawMouseoverTooltip(Lnet/minecraft/client/gui/DrawContext;II)V", cancellable = true)
     protected void drawMouseoverTooltip(DrawContext drawContext, int x, int y, CallbackInfo info) {
-        int slotsCount = handler.slots.size();
-        int slotWidth = handler.slots.get(slotsCount - 3).x - handler.slots.get(slotsCount - 4).x;
+        boolean result = EventBus.post(new DrawMouseoverTooltipEvent(drawContext, x, y, focusedSlot));
 
-        ActionResult result = DrawMouseoverTooltipCallback.EVENT.invoker().interact(drawContext, x, y, focusedSlot, slotWidth);
-
-        if(result == ActionResult.FAIL) {
+        if (!result)
             info.cancel();
-        }
     }
 }

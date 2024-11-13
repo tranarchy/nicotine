@@ -1,5 +1,7 @@
 package nicotine.gui;
 
+import net.minecraft.util.Formatting;
+import nicotine.Main;
 import nicotine.util.Settings;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -7,11 +9,13 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 import static nicotine.util.Common.*;
 import static nicotine.util.Modules.*;
+import static nicotine.util.Colors.*;
 
 public class GUI extends Screen {
     public GUI() {
@@ -27,13 +31,13 @@ public class GUI extends Screen {
         int guiY = 10;
         int guiX = 10;
 
-        int height = minecraftClient.textRenderer.fontHeight + 10;
-        int width = 84;
+        int height = mc.textRenderer.fontHeight + 10;
+        int width = 85;
 
-        for (HashMap.Entry<String, List<Mod>> modSet : modList.entrySet()) {
+        for (HashMap.Entry<Category, List<Mod>> modSet : modules.entrySet()) {
 
             Mod category = new Mod();
-            category.name = modSet.getKey();
+            category.name = modSet.getKey().toString();
             CustomButton customButton = new CustomButton(guiX, guiY, width, height, category);
             guiY += height;
 
@@ -59,8 +63,12 @@ public class GUI extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        getButtons();
+        final String watermarkText =  String.format("nicotine %sv%s", Formatting.WHITE, Main.VERSION);
+        final int watermarkPosX = mc.getWindow().getScaledWidth()  - textRenderer.getWidth(watermarkText) - 10;
+        final int watermarkPosY = mc.getWindow().getScaledHeight() - textRenderer.fontHeight - 10;
+        context.drawText(textRenderer, watermarkText,  watermarkPosX , watermarkPosY, rainbow, true);
 
+        getButtons();
         for (CustomButton button : buttons)
         {
             int textColor = SEC_FOREGROUND_COLOR;
@@ -68,17 +76,18 @@ public class GUI extends Screen {
 
             StringBuilder text = new StringBuilder();
 
-            text.append(button.mod.name);
+            Mod mod = button.mod;
+            text.append(mod.name);
 
-            if (modList.containsKey(button.mod.name)) // category
+            if (Arrays.toString(Category.values()).contains(mod.name)) // category
             {
                 backgroundColor = FOREGROUND_COLOR;
             }
-            else if (button.mod.enabled) {
+            else if (mod.enabled) {
                 textColor = FOREGROUND_COLOR;
 
-                if (button.mod.modes != null) {
-                    text.append(String.format(" [%s] ", button.mod.modes.get(button.mod.mode)));
+                if (mod.modes != null) {
+                    text.append(String.format(" [%s] ", mod.modes.get(mod.mode)));
                 }
             }
 
@@ -90,11 +99,15 @@ public class GUI extends Screen {
             context.drawText(textRenderer, text.toString(),button.x + 6, button.y + 6, textColor, true);
 
             /*if (clickedOn(button, mouseX, mouseY)) {
-                String description = "This is a description";
-                context.fill(mouseX + 3, mouseY - 2, mouseX + 7 + textRenderer.getWidth(description), mouseY + textRenderer.fontHeight + 2, 0xFF000000);
-                context.drawText(textRenderer, description, mouseX + 5, mouseY, PRIMARY_FG, true);
+                List<Text> description = Arrays.asList(
+                        Text.literal("This is a test description"),
+                        Text.literal("So cool!"),
+                        Text.literal("WoW!")
+                );
+                context.drawTooltip(textRenderer, description, mouseX, mouseY + 5);
             }*/
         }
+
 
         this.getFocused();
 

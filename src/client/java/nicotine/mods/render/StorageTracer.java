@@ -1,37 +1,39 @@
 package nicotine.mods.render;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import nicotine.events.RenderEvent;
+import nicotine.util.EventBus;
 
 import static nicotine.util.Common.*;
 import static nicotine.util.Render.*;
 import static nicotine.util.Modules.*;
+import static nicotine.util.Colors.*;
 
 public class StorageTracer {
 
     public static void init() {
         Mod storageTracer = new Mod();
         storageTracer.name = "StorageTracer";
-        modList.get("Render").add(storageTracer);
+        modules.get(Category.Render).add(storageTracer);
 
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
+        EventBus.register(RenderEvent.class, event -> {
             if (!storageTracer.enabled)
-                return;
+                return true;
 
             toggleRender(true);
 
-            Vec3d view = context.camera().getPos();
+            Vec3d view = event.camera.getPos();
 
-            Float[] blockColor;
+            int blockColor;
 
             for (BlockEntity blockEntity : blockEntities) {
 
                 blockColor = getBlockColor(blockEntity);
 
-                if (blockColor == null)
+                if (blockColor == -1)
                     continue;
 
                 BlockPos pos = blockEntity.getPos();
@@ -39,10 +41,10 @@ public class StorageTracer {
                 drawTracer(view, vec3dPos, blockColor);
             }
 
-            for (Entity entity : minecraftClient.world.getEntities()) {
-                blockColor = getEntityColor(entity);
+            for (Entity entity : mc.world.getEntities()) {
+                blockColor = getBlockColor(entity);
 
-                if (blockColor == null)
+                if (blockColor == -1)
                     continue;
 
                 drawTracer(view, entity.getPos(), blockColor);
@@ -50,6 +52,7 @@ public class StorageTracer {
 
             toggleRender(false);
 
+            return true;
         });
     }
 }

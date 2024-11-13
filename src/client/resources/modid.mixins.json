@@ -3,11 +3,23 @@
 	"package": "nicotine.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
+		"ClientWorldMixin",
 		"WorldRendererMixin",
 		"BossBarHudMixin",
 		"InGameOverlayRendererMixin",
 		"HandledScreenMixin",
-		"SimpleOptionMixin"
+		"DoubleSliderCallbacksMixin",
+		"ValidatingIntSliderCallbacksMixin",
+		"PlayerEntityRendererMixin",
+		"InGameHudMixin",
+		"AbstractBlockMixin",
+		"AbstractBlockStateMixin",
+		"EntityMixin",
+		"MinecraftClientMixin",
+		"ClientPlayerEntityMixin",
+		"BlockMixin",
+		"ClientConnectionMixin",
+		"WorldMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

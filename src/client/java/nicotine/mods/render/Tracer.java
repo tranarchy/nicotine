@@ -1,40 +1,40 @@
 package nicotine.mods.render;
 
-import static nicotine.util.Common.minecraftClient;
+import static nicotine.util.Common.mc;
 import static nicotine.util.Render.*;
 import static nicotine.util.Modules.*;
 
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import nicotine.events.RenderEvent;
+import nicotine.util.Colors;
+import nicotine.util.EventBus;
 
 public class Tracer {
 
     public static void init() {
         Mod tracer = new Mod();
         tracer.name = "Tracer";
-        modList.get("Render").add(tracer);
+        modules.get(Category.Render).add(tracer);
 
-        WorldRenderEvents.AFTER_TRANSLUCENT.register(context -> {
+        EventBus.register(RenderEvent.class, event -> {
             if (!tracer.enabled)
-                return;
+                 return true;
 
             toggleRender(true);
 
-            Vec3d view = context.camera().getPos();
+            Vec3d view = event.camera.getPos();
+            for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
+                if (mc.player != player) {
+                    Vec3d targetPos = player.getPos();
 
-            for (Entity entity : minecraftClient.world.getEntities()) {
-                if (entity instanceof PlayerEntity && minecraftClient.player != entity) {
-                    Vec3d targetPos = entity.getPos();
-                    Float[] color = {1.0F, 0.0F, 0.0F, 1.0F};
-                    drawTracer(view, targetPos, color);
+                    drawTracer(view, targetPos, Colors.RED);
                 }
             }
 
             toggleRender(false);
 
-
+            return true;
         });
     }
 }
