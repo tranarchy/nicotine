@@ -1,20 +1,24 @@
 # nicotine
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/24e3667d-e3eb-484a-82d7-263d6b21eb64">
+  <img src="https://github.com/user-attachments/assets/a15e0c5c-0047-4f63-8bd6-dcc7de78f171">
 </p>
 <p align="center">Minecraft utility mod for anarchy servers</p>
 
 ## About
 
-I made this for myself mainly for 2b2t and decided to make it open source.
+nicotine is a utility mod that doesn't rely on Fabric API or 3rd party dependencies
 
-Most of the features in the mod are exploration oriented since I don't PvP.
+It has its own click GUI, event system and plenty of mods to enhance your gameplay
 
 ## Usage
 
-Download the jar file from the [releases](https://github.com/tranarchy/nicotine/releases) section or build the project from source yourself.
+Download the jar file from the [releases](https://github.com/tranarchy/nicotine/releases) section or build the project from source yourself
 
-Since nicotine is a Fabric mod you will also need the [Fabric Loader](https://fabricmc.net/) and the [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files) as well.
+Since nicotine is a Fabric mod you will also need the [Fabric Loader](https://fabricmc.net/)
 
-The default menu keybind is Right Shift, but it can be changed in the settings.
+## Keybinds
+
+- **GUI ->** Right Shift
+- **Xray ->** X
+- **Zoom ->** C 
