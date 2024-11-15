@@ -42,6 +42,7 @@ public class Modules {
         ShulkerPeek.init();
         BlockOutline.init();
         FullBright.init();
+        NoParticles.init();
         NoOverlay.init();
         NoWeather.init();
         NoFog.init();

@@ -22,7 +22,7 @@ public class AutoTotem {
         DefaultedList<ItemStack> prevInventory = DefaultedList.of();
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!autoTotem.enabled || !mc.player.getOffHandStack().isEmpty() || mc.currentScreen != null || prevInventory.containsAll(mc.player.getInventory().main))
+            if (!autoTotem.enabled || !mc.player.getOffHandStack().isEmpty() || prevInventory.containsAll(mc.player.getInventory().main))
                 return true;
 
             int syncId = mc.player.currentScreenHandler.syncId;

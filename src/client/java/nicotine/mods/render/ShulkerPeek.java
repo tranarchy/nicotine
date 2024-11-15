@@ -3,11 +3,13 @@ package nicotine.mods.render;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
+import net.minecraft.component.type.DeathProtectionComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import nicotine.events.DrawMouseoverTooltipEvent;
 import nicotine.util.EventBus;
+import nicotine.util.RenderGUI;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,15 +42,20 @@ public class ShulkerPeek {
 
 
     public static void init() {
+
+
         Mod shulkerPeek = new Mod();
         shulkerPeek.name = "ShulkerPeek";
         modules.get(Category.Render).add(shulkerPeek);
+
+        final int SLOT_WIDTH = 18;
+        final int MAX_WIDTH = SLOT_WIDTH * 9;
 
         EventBus.register(DrawMouseoverTooltipEvent.class, event -> {
             if (!shulkerPeek.enabled)
                 return true;
 
-            final int slotWidth = 18;
+            mc.player.openRidingInventory();
 
             if (event.focusedSlot != null) {
                 ItemStack focusedStack = event.focusedSlot.getStack();
@@ -57,9 +64,8 @@ public class ShulkerPeek {
 
                     ContainerComponent shulkerContainer = focusedStack.getComponents().get(DataComponentTypes.CONTAINER);
 
-                    int posX = event.x + (slotWidth / 2);
+                    int posX = event.x + (SLOT_WIDTH / 2);
                     int posY = event.y;
-                    int totalWidth = posX + (slotWidth * 9);
 
                     int itemIndex = 0;
 
@@ -70,49 +76,32 @@ public class ShulkerPeek {
                     event.drawContext.getMatrices().push();
                     event.drawContext.getMatrices().translate(0.0F, 0.0F, 1000.0F);
 
-                    event.drawContext.fill(posX, posY, totalWidth, posY + textRenderer.fontHeight + 2 + (slotWidth * 3), 0xFF000000);
-                    event.drawContext.drawHorizontalLine(posX, totalWidth, posY, 0xFF5F44C4);
-                    event.drawContext.drawVerticalLine(posX, posY, posY + textRenderer.fontHeight + 2, FOREGROUND_COLOR);
-                    event.drawContext.drawVerticalLine(totalWidth, posY, posY + textRenderer.fontHeight + 2, FOREGROUND_COLOR);
+                    event.drawContext.fill(posX, posY, posX + MAX_WIDTH, posY + textRenderer.fontHeight + 4, BACKGROUND_COLOR);
+                    RenderGUI.drawBorder(event.drawContext, posX, posY, MAX_WIDTH, textRenderer.fontHeight + 4, FOREGROUND_COLOR);
+                    event.drawContext.drawText(textRenderer, focusedStack.getName(), posX + 3, posY + 3, FOREGROUND_COLOR, true);
 
-                    int offset = textRenderer.getWidth(focusedStack.getName());
-                    event.drawContext.drawText(textRenderer, focusedStack.getName(), totalWidth - offset, posY + 2, FOREGROUND_COLOR, true);
-
-                    posY += textRenderer.fontHeight + 2;
+                    posY += textRenderer.fontHeight + 4;
 
                     for (int i = 0; i < 3; i++) {
-
-                        event.drawContext.drawHorizontalLine(posX, totalWidth, posY, FOREGROUND_COLOR);
-
                         for (int j = 0; j < 9; j++) {
 
-                            if (shulkerItems.size() > itemIndex)
-                                shulkerItem = shulkerItems.get(itemIndex);
-                            else
-                                shulkerItem = ItemStack.EMPTY;
-
+                            shulkerItem = shulkerItems.size() > itemIndex ? shulkerItems.get(itemIndex) : ItemStack.EMPTY;
                             int stackCount = shulkerItem.getCount();
 
-                            if (i == 0)
-                                event.drawContext.drawVerticalLine(posX, posY, posY + (slotWidth * 3), FOREGROUND_COLOR);
+                            event.drawContext.fill(posX, posY, posX + SLOT_WIDTH, posY + SLOT_WIDTH, BACKGROUND_COLOR);
+                            RenderGUI.drawBorder(event.drawContext, posX, posY, SLOT_WIDTH, SLOT_WIDTH, FOREGROUND_COLOR);
 
                             event.drawContext.drawItem(shulkerItem, posX + 1, posY + 1);
-
                             if (stackCount > 1)
-                                event.drawContext.drawStackOverlay(textRenderer, shulkerItem, posX, posY, String.valueOf(stackCount));
+                                event.drawContext.drawStackOverlay(textRenderer, shulkerItem, posX + 1, posY + 1, String.valueOf(stackCount));
 
-                            posX += slotWidth;
+                            posX += SLOT_WIDTH;
                             itemIndex++;
                         }
 
-                        if (i == 0)
-                            event.drawContext.drawVerticalLine(posX, posY, posY + (slotWidth * 3), FOREGROUND_COLOR);
-
-                        posX = event.x + (slotWidth / 2);
-                        posY += slotWidth;
+                        posX = event.x + (SLOT_WIDTH / 2);
+                        posY += SLOT_WIDTH;
                     }
-
-                    event.drawContext.drawHorizontalLine(posX, totalWidth, posY, FOREGROUND_COLOR);
 
                     event.drawContext.getMatrices().pop();
 

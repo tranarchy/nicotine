@@ -4,11 +4,15 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.ZombieEntity;
 import nicotine.events.RenderEvent;
+import nicotine.events.RenderParticlesEvent;
 import nicotine.events.RenderWeatherEvent;
 import net.minecraft.client.render.*;
 import net.minecraft.util.math.Vec3d;
 import nicotine.util.EventBus;
+import nicotine.util.Render;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,6 +21,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.List;
 
 @Mixin(WorldRenderer.class)
 public abstract class WorldRendererMixin {
@@ -59,4 +65,12 @@ public abstract class WorldRendererMixin {
         });
     }
 
+    @Inject(at = @At("HEAD"), method = "renderParticles", cancellable = true)
+    private void renderParticles(FrameGraphBuilder frameGraphBuilder, Camera camera, LightmapTextureManager lightmapTextureManager, float tickDelta, Fog fog, CallbackInfo info) {
+        boolean result = EventBus.post(new RenderParticlesEvent());
+
+        if (!result) {
+            info.cancel();
+        }
+    }
 }

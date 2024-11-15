@@ -20,8 +20,7 @@ public class Colors {
 
     public static final int RED = 0xFFFF5555;
     public static final int GOLD = 0xFFFFAA00;
-    public static final int DARK_PURPLE = 0xFFAA00AA;
-    public static final int LIGHT_PURPLE = 0xFFFF55FF;
+    public static final int CYAN = 0xFF03fcf0;
     public static final int GRAY = 0xFFAAAAAA;
     public static final int WHITE = 0xFFFFFFFF;
 
@@ -30,9 +29,9 @@ public class Colors {
                 blockEntity instanceof BarrelBlockEntity || blockEntity instanceof DecoratedPotBlockEntity)
             return GOLD;
         else if (blockEntity instanceof EnderChestBlockEntity)
-            return DARK_PURPLE;
+            return FOREGROUND_COLOR;
         else if (blockEntity instanceof ShulkerBoxBlockEntity)
-            return LIGHT_PURPLE;
+            return CYAN;
         else if (blockEntity instanceof FurnaceBlockEntity || blockEntity instanceof BlastFurnaceBlockEntity || blockEntity instanceof HopperBlockEntity ||
                 blockEntity instanceof DropperBlockEntity || blockEntity instanceof DispenserBlockEntity || blockEntity instanceof SmokerBlockEntity)
             return GRAY;

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class HUD {
 
 
-    private static Vector2i UL, UR, BL, BR;
+    private static Vector2i UL, UR, UC, BL, BR;
     private static void resetHUDPos() {
         final int width = mc.getWindow().getScaledWidth();
         final int height = mc.getWindow().getScaledHeight();
@@ -33,6 +33,7 @@ public class HUD {
 
         UL = new Vector2i(padding, padding);
         UR = new Vector2i(width - padding, padding);
+        UC = new Vector2i(width / 2, padding);
         BL = new Vector2i(padding, height - padding);
         BR = new Vector2i(width - padding, height - padding);
     }
@@ -55,11 +56,16 @@ public class HUD {
                 UR.y += textRenderer.fontHeight;
                 break;
             case 2:
+                x = UC.x - (textRenderer.getWidth(text) / 2);
+                y = UC.y;
+                UC.y += textRenderer.fontHeight;
+                break;
+            case 3:
                 x = BL.x;
                 y = BL.y - textRenderer.fontHeight;
                 BL.y -= textRenderer.fontHeight;
                 break;
-            case 3:
+            case 4:
                 x = BR.x - textRenderer.getWidth(text);
                 y = BR.y - textRenderer.fontHeight;
                 BR.y -= textRenderer.fontHeight;
@@ -148,7 +154,7 @@ public class HUD {
         for (String hudModuleName : hudModuleNames) {
             Mod hudMod = new Mod();
             hudMod.name = hudModuleName;
-            hudMod.modes = Arrays.asList("UL", "UR", "BL", "BR");
+            hudMod.modes = Arrays.asList("UL", "UR", "UC", "BL", "BR");
             modules.get(Category.HUD).add(hudMod);
         }
 

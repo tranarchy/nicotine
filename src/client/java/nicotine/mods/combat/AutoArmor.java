@@ -60,7 +60,7 @@ public class AutoArmor {
         DefaultedList<ItemStack> prevInventory = DefaultedList.of();
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!autoArmor.enabled || mc.currentScreen != null)
+            if (!autoArmor.enabled)
                 return true;
 
             List<ItemStack> armorItems = new ArrayList<>();

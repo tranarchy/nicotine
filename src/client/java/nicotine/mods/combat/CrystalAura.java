@@ -11,31 +11,47 @@ import static nicotine.util.Common.*;
 
 public class CrystalAura {
 
-    private static final int DELAY = 3;
-    private static int delayLeft = 0;
+    private static float delayLeft = 0;
+
+    private static float bodyYaw;
+    private static float headYaw;
+    private static float yaw;
+    private static float pitch;
+
+    private static boolean changeView = false;
 
     public static void init() {
         Mod crystalAura = new Mod();
         crystalAura.name = "CrystalAura";
         modules.get(Category.Combat).add(crystalAura);
 
+
         EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!crystalAura.enabled)
                 return true;
 
+            if (changeView) {
+                mc.player.setBodyYaw(bodyYaw);
+                mc.player.setHeadYaw(headYaw);
+                mc.player.setYaw(yaw);
+                mc.player.setPitch(pitch);
+                changeView = false;
+            }
+
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof EndCrystalEntity) {
                    if (entity.distanceTo(mc.player) < 6.0f && delayLeft <= 0) {
-                       float pitch = mc.player.getYaw();
-                       float yaw = mc.player.getPitch();
+
+                       bodyYaw = mc.player.getBodyYaw();
+                       headYaw = mc.player.getHeadYaw();
+                       yaw = mc.player.getYaw();
+                       pitch = mc.player.getPitch();
+                       changeView = true;
 
                        mc.player.lookAt(EntityAnchorArgumentType.EntityAnchor.FEET, entity.getPos());
                        mc.interactionManager.attackEntity(mc.player, entity);
 
-                       mc.player.setYaw(pitch);
-                       mc.player.setPitch(yaw);
-
-                       delayLeft = DELAY;
+                       delayLeft = mc.player.getAttackCooldownProgressPerTick();
                    }
                 }
             }

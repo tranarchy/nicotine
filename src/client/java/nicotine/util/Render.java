@@ -3,12 +3,24 @@ package nicotine.util;
 import static nicotine.util.Common.*;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.mob.ZombieEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ModelTransformationMode;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 public class Render {
 
@@ -18,14 +30,26 @@ public class Render {
             RenderSystem.defaultBlendFunc();
             RenderSystem.disableCull();
             RenderSystem.disableDepthTest();
+
             RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+
+            GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
+            GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST);
+
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
             GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+
+            GL11.glEnable(GL13.GL_MULTISAMPLE);
+
         }
         else {
             RenderSystem.enableCull();
             RenderSystem.enableDepthTest();
             RenderSystem.disableBlend();
+
+            GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
+            GL11.glDisable(GL11.GL_LINE_SMOOTH);
+            GL11.glDisable(GL13.GL_MULTISAMPLE);
         }
     }
 
@@ -197,6 +221,38 @@ public class Render {
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
     }
 
+    public static void drawText(MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, Camera camera, Vec3d position, String text, int color) {
+        TextRenderer textRenderer = mc.textRenderer;
 
+        double d = camera.getPos().x;
+        double e = camera.getPos().y;
+        double f = camera.getPos().z;
 
+        matrix.push();
+        matrix.translate((float)(position.x - d), (float)(position.y - e) + 0.50F, (float)(position.z - f));
+        matrix.multiply(camera.getRotation());
+        float size = 0.025F + (float)mc.player.squaredDistanceTo(position) / 70000.0F;
+        matrix.scale(size, -size, size);
+        float x = (float) textRenderer.getWidth(text) / 2.0F;
+        textRenderer.draw(text, -x, 0.0F, color, true, matrix.peek().getPositionMatrix(), vertexConsumerProvider, TextRenderer.TextLayerType.SEE_THROUGH,  0x50000000, 0);
+        matrix.pop();
+    }
+
+    public static void drawItem(MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, Camera camera, Vec3d position, ItemStack itemStack) {;
+        ItemRenderer itemRenderer = mc.getItemRenderer();
+
+        double d = camera.getPos().x;
+        double e = camera.getPos().y;
+        double f = camera.getPos().z;
+
+        matrix.push();
+        matrix.translate((float)(position.x - d), (float)(position.y - e) + 0.50F, (float)(position.z - f));
+        matrix.multiply(camera.getRotation());
+        float size = 1.0F + ((float)mc.player.squaredDistanceTo(position) / 70000.0F);
+        matrix.scale(size, size, size);
+
+        BakedModel bakedModel = itemRenderer.getModel(itemStack.copy(), mc.player, ModelTransformationMode.NONE);
+        itemRenderer.renderItem(itemStack.copy(), ModelTransformationMode.NONE, false, matrix, vertexConsumerProvider, 0, 0, bakedModel);
+        matrix.pop();
+    }
 }

@@ -25,11 +25,10 @@ public class FreeMove {
                     mc.options.leftKey,
                     mc.options.rightKey,
                     mc.options.jumpKey,
-                    mc.options.sprintKey,
+                    mc.options.sprintKey
             };
 
             long handle = mc.getWindow().getHandle();
-            
 
             for (KeyBinding freeMoveKeybind : freeMoveKeybinds) {
                 if (InputUtil.isKeyPressed(handle, freeMoveKeybind.getDefaultKey().getCode()))

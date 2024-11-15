@@ -9,7 +9,6 @@ public class CustomButton {
     public int height;
     public Mod mod;
 
-
     public CustomButton(int x, int y, int width, int height, Mod mod) {
         this.x = x;
         this.y = y;

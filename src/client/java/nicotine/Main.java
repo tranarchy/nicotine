@@ -10,7 +10,7 @@ import static nicotine.util.Common.*;
 
 public class Main implements ClientModInitializer {
 
-	final public static String VERSION = "1.2a";
+	final public static String VERSION = "1.3a";
 
 	@Override
 	public void onInitializeClient() {

@@ -1,6 +1,7 @@
 package nicotine.mods.render;
 
 import nicotine.events.RenderBossBarHudEvent;
+import nicotine.events.RenderMiscOverlaysEvent;
 import nicotine.events.RenderOverlaysEvent;
 import nicotine.events.RenderStatusEffectsOverlayEvent;
 import nicotine.util.EventBus;
@@ -22,6 +23,10 @@ public class NoOverlay {
         });
 
         EventBus.register(RenderStatusEffectsOverlayEvent.class, event-> {
+            return !noOverlay.enabled;
+        });
+
+        EventBus.register(RenderMiscOverlaysEvent.class, event-> {
             return !noOverlay.enabled;
         });
 
