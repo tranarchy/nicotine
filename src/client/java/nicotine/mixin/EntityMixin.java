@@ -21,12 +21,14 @@ public class EntityMixin {
     @Shadow
     protected UUID uuid;
 
-    @Inject(at = @At("TAIL"), method = "Lnet/minecraft/entity/Entity;setVelocityClient(DDD)V")
+    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/entity/Entity;setVelocityClient(DDD)V", cancellable = true)
     public void setVelocityClient(double x, double y, double z, CallbackInfo info)  {
-        boolean result = EventBus.post(new SetVelocityClientEvent());
+        if (uuid == mc.player.getUuid()) {
+            boolean result = EventBus.post(new SetVelocityClientEvent(x, y, z));
 
-        if(!result && uuid == mc.player.getUuid()) {
-            mc.player.addVelocity(-x, -y, -z);
+            if (!result) {
+                info.cancel();
+            }
         }
     }
 }

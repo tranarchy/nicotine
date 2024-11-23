@@ -12,7 +12,7 @@ import java.util.Optional;
 public class DoubleSliderCallbacksMixin {
 
     @Inject(at = @At(value = "TAIL"), method = "Lnet/minecraft/client/option/SimpleOption$DoubleSliderCallbacks;validate(Ljava/lang/Double;)Ljava/util/Optional;")
-    public Optional<Double> validate(Double double_, CallbackInfoReturnable info) {
+    public Optional<Double> validate(Double double_, CallbackInfoReturnable<Double> info) {
         return Optional.of(double_);
     }
 }

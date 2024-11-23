@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
@@ -57,7 +58,7 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;")})
-    private void beforeClouds(CallbackInfo ci, @Local FrameGraphBuilder frameGraphBuilder) {
+    private void beforeClouds(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
         RenderPass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
         this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
         afterTranslucentPass.setRenderer(() -> {

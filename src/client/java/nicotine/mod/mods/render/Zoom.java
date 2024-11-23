@@ -1,0 +1,51 @@
+package nicotine.mod.mods.render;
+
+import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.util.InputUtil;
+import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.ModCategory;
+import nicotine.mod.ModManager;
+import nicotine.mod.option.KeybindOption;
+import nicotine.mod.option.SliderOption;
+import nicotine.util.EventBus;
+import nicotine.mod.Mod;
+
+import static nicotine.util.Common.*;
+
+public class Zoom {
+    private static int defaultFov = 0;
+
+    public static void init() {
+        Mod zoom = new Mod();
+        zoom.name = "Zoom";
+        SliderOption zoomFov = new SliderOption(
+                "FOV",
+                10,
+                5,
+                20
+        );
+        KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_C);
+        zoom.modOptions.add(keybind);
+        zoom.modOptions.add(zoomFov);
+        ModManager.modules.get(ModCategory.Render).add(zoom);
+
+        EventBus.register(ClientWorldTickEvent.class, event -> {
+            SimpleOption<Integer> fovOption = mc.options.getFov();
+
+            if (!zoom.enabled || !InputUtil.isKeyPressed(windowHandle, keybind.keyCode)) {
+                int fov =  fovOption.getValue();
+                if (fov == zoomFov.value)
+                    fovOption.setValue(defaultFov);
+                else
+                    defaultFov = fov;
+                return true;
+            }
+
+            fovOption.setValue((int)zoomFov.value);
+
+            return true;
+        });
+
+
+    }
+}

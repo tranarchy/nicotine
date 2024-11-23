@@ -4,10 +4,7 @@ package nicotine.mixin;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.network.packet.s2c.play.ChunkDataS2CPacket;
-import nicotine.events.InGameHudRenderEvent;
-import nicotine.events.RenderMiscOverlaysEvent;
-import nicotine.events.RenderStatusEffectsOverlayEvent;
+import nicotine.events.*;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,9 +22,23 @@ public class InGameHudMixin {
         }
     }
 
+    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/hud/InGameHud;renderCrosshair(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", cancellable = true)
+    private void renderCrosshair(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
+        boolean result = EventBus.post(new RenderCrosshairEvent(context));
+
+        if (!result) {
+            info.cancel();
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
+    public void renderBefore(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
+        EventBus.post(new InGameHudRenderBeforeEvent(context));
+    }
+
     @Inject(at = @At("TAIL"), method = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
-    public void render(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
-        EventBus.post(new InGameHudRenderEvent(context));
+    public void renderAfter(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
+        EventBus.post(new InGameHudRenderAfterEvent(context));
     }
 
     @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/hud/InGameHud;renderMiscOverlays(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V", cancellable = true)

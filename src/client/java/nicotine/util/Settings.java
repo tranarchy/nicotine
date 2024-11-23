@@ -3,15 +3,18 @@ package nicotine.util;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
+import nicotine.mod.Mod;
+import nicotine.mod.ModCategory;
+import nicotine.mod.ModManager;
+import nicotine.mod.option.*;
 
-import java.io.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
-
-import static nicotine.util.Modules.*;
 
 public class Settings {
     private static final String SETTINGS_PATH = "nicotine.json";
@@ -19,13 +22,23 @@ public class Settings {
     public static void save() {
         JSONObject settings = new JSONObject();
 
-        for (HashMap.Entry<Category, List<Mod>> modSet : modules.entrySet()) {
+        for (HashMap.Entry<ModCategory, List<Mod>> modSet : ModManager.modules.entrySet()) {
             JSONObject modInfo = new JSONObject();
             for (Mod mod : modSet.getValue()) {
                 JSONObject modDetails = new JSONObject();
-                modDetails.put("enabled", mod.enabled);
-                if (mod.mode != -1)
-                    modDetails.put("mode", mod.mode);
+                if (!mod.alwaysEnabled)
+                    modDetails.put("enabled", mod.enabled);
+                for (ModOption modOption : mod.modOptions) {
+                   if (modOption instanceof SliderOption sliderOption) {
+                       modDetails.put(sliderOption.name, sliderOption.value);
+                   } else if (modOption instanceof SwitchOption switchOption) {
+                       modDetails.put(switchOption.name, switchOption.value);
+                   } else if (modOption instanceof ToggleOption toggleOption) {
+                       modDetails.put(toggleOption.name, toggleOption.enabled);
+                   }  else if (modOption instanceof KeybindOption keybindOption) {
+                       modDetails.put(keybindOption.name, keybindOption.keyCode);
+                   }
+                }
                 modInfo.put(mod.name, modDetails);
                 settings.appendField(modSet.getKey().toString(), modInfo);
             }
@@ -36,7 +49,7 @@ public class Settings {
             settingsFile.write(settings.toJSONString());
             settingsFile.close();
         } catch (IOException e) {
-                throw new RuntimeException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -55,15 +68,28 @@ public class Settings {
             throw new RuntimeException(e);
         }
 
-        for (HashMap.Entry<Category, List<Mod>> modSet : modules.entrySet()) {
+        for (HashMap.Entry<ModCategory, List<Mod>> modSet : ModManager.modules.entrySet()) {
             for (Mod mod : modSet.getValue()) {
                 JSONObject category = (JSONObject) settings.get(modSet.getKey().toString());
                 if (category != null) {
                     JSONObject modInfo = (JSONObject) category.get(mod.name);
                     if (modInfo != null) {
-                        mod.enabled = (boolean) modInfo.get("enabled");
-                        if (modInfo.get("mode") != null)
-                             mod.mode = (int) modInfo.get("mode");
+                        if (!mod.alwaysEnabled)
+                            mod.enabled = (boolean) modInfo.get("enabled");
+                        for (ModOption modOption : mod.modOptions) {
+                            if (modInfo.get(modOption.name) == null)
+                                continue;
+
+                            if (modOption instanceof SliderOption sliderOption) {
+                                sliderOption.value = ((Double) modInfo.get(sliderOption.name)).floatValue();
+                            } else if (modOption instanceof SwitchOption switchOption) {
+                                switchOption.value =  (int) modInfo.get(switchOption.name);
+                            } else if (modOption instanceof ToggleOption toggleOption) {
+                                toggleOption.enabled = (boolean) modInfo.get(toggleOption.name);
+                            } else if (modOption instanceof KeybindOption keybindOption) {
+                                keybindOption.keyCode = (int) modInfo.get(keybindOption.name);
+                            }
+                        }
                     }
                 }
             }

@@ -8,28 +8,33 @@ import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.vehicle.ChestBoatEntity;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.entity.vehicle.HopperMinecartEntity;
-import nicotine.events.ClientWorldTickEvent;
+import nicotine.events.ClientTickEvent;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Colors {
-    public static final int FOREGROUND_COLOR = 0xFF5F44C4;
-    public static final int SEC_FOREGROUND_COLOR = 0xFFFFFFFF;
-    public static final int BACKGROUND_COLOR = 0xC8000000;
+    public static final int CATEGORY_FOREGROUND_COLOR = 0xFFFFFFFF;
+    public static final int FOREGROUND_COLOR = 0xFFBBBBBB;
+    public static final int BACKGROUND_COLOR = 0xC810101A;
+    public static final int BORDER_COLOR = 0xFF10101A;
 
     public static final int RED = 0xFFFF5555;
+    public static final int PURPLE = 0xFF5F44C4;
     public static final int GOLD = 0xFFFFAA00;
     public static final int CYAN = 0xFF03fcf0;
     public static final int GRAY = 0xFFAAAAAA;
     public static final int WHITE = 0xFFFFFFFF;
+
+    public static int CATEGORY_BACKGROUND_COLOR = PURPLE;
+    public static int ACTIVE_FOREGROUND_COLOR = PURPLE;
 
     public static int getBlockColor(BlockEntity blockEntity) {
         if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof TrappedChestBlockEntity || blockEntity instanceof CrafterBlockEntity ||
                 blockEntity instanceof BarrelBlockEntity || blockEntity instanceof DecoratedPotBlockEntity)
             return GOLD;
         else if (blockEntity instanceof EnderChestBlockEntity)
-            return FOREGROUND_COLOR;
+            return PURPLE;
         else if (blockEntity instanceof ShulkerBoxBlockEntity)
             return CYAN;
         else if (blockEntity instanceof FurnaceBlockEntity || blockEntity instanceof BlastFurnaceBlockEntity || blockEntity instanceof HopperBlockEntity ||
@@ -132,8 +137,8 @@ public class Colors {
     public static int rainbow = rainbowList.getFirst();
     private static int colorIndex = 0;
 
-    public static void initDynamicColors() {
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+    public static void init() {
+        EventBus.register(ClientTickEvent.class, event -> {
             rainbow = rainbowList.get(colorIndex);
             if (colorIndex == rainbowList.size() - 1)
                 colorIndex = 0;
@@ -143,7 +148,7 @@ public class Colors {
             return true;
         });
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientTickEvent.class, event -> {
             if (fadeVal == 0xCD)
                 fadeIncr = -5;
             else if (fadeVal == 0x1E)
