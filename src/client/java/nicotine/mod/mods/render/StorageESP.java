@@ -1,32 +1,33 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.block.entity.*;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import nicotine.events.RenderEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.SwitchOption;
 import nicotine.util.Colors;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 import nicotine.util.Render;
+import nicotine.util.math.BoxUtil;
+import nicotine.util.math.Boxf;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.blockEntities;
+import static nicotine.util.Common.mc;
 
 public class StorageESP {
     public static void init() {
-        Mod storageESP = new Mod();
-        storageESP.name = "StorageESP";
+        Mod storageESP = new Mod("StorageESP");
         SwitchOption render = new SwitchOption(
                 "Render",
-                new String[]{"Box", "Wire", "Filled", "Fade"},
-                0
+                new String[]{"Box", "Wire", "Filled", "Fade"}
         );
         storageESP.modOptions.add(render);
-
-        ModManager.modules.get(ModCategory.Render).add(storageESP);
+        ModManager.addMod(ModCategory.Render, storageESP);
 
         EventBus.register(RenderEvent.class, event -> {
             if (!storageESP.enabled)
@@ -36,8 +37,11 @@ public class StorageESP {
 
             int blockColor;
 
-
             Render.toggleRender(true);
+
+            event.matrixStack.push();
+            event.matrixStack.translate(-view.x, -view.y, -view.z);
+            MatrixStack.Entry entry = event.matrixStack.peek();
 
             for (BlockEntity blockEntity : blockEntities) {
 
@@ -46,20 +50,20 @@ public class StorageESP {
                if (blockColor == -1)
                    continue;
 
-               Box boundingBox = Render.getBlockBoundingBox(blockEntity);
+               Box boundingBox = BoxUtil.getBlockBoundingBox(blockEntity);
 
                switch (render.value) {
-                    case 0:
-                        Render.drawBox(view, boundingBox, blockColor);
+                    case "Box":
+                        Render.drawBox(entry, new Boxf(boundingBox), blockColor);
                         break;
-                    case 1:
-                        Render.drawWireframeBox(view, boundingBox, blockColor);
+                    case "Wire":
+                        Render.drawWireframeBox(entry, new Boxf(boundingBox), blockColor);
                         break;
-                    case 2:
-                        Render.drawFilledBox(view, boundingBox, blockColor, false);
+                    case "Filled":
+                        Render.drawFilledBox(entry, new Boxf(boundingBox), blockColor);
                         break;
-                    case 3:
-                        Render.drawFilledBox(view, boundingBox, blockColor, true);
+                    case "Fade":
+                        Render.drawFilledBox(entry, new Boxf(boundingBox), blockColor, true);
                         break;
                 }
             }
@@ -71,20 +75,22 @@ public class StorageESP {
                     continue;
 
                 switch (render.value) {
-                    case 0:
-                        Render.drawBox(view, entity.getBoundingBox(), blockColor);
+                    case "Box":
+                        Render.drawBox(entry, new Boxf(entity.getBoundingBox()), blockColor);
                         break;
-                    case 1:
-                        Render.drawWireframeBox(view, entity.getBoundingBox(), blockColor);
+                    case "Wire":
+                        Render.drawWireframeBox(entry, new Boxf(entity.getBoundingBox()), blockColor);
                         break;
-                    case 2:
-                        Render.drawFilledBox(view, entity.getBoundingBox(), blockColor, false);
+                    case "Filled":
+                        Render.drawFilledBox(entry, new Boxf(entity.getBoundingBox()), blockColor);
                         break;
-                    case 3:
-                        Render.drawFilledBox(view, entity.getBoundingBox(), blockColor, true);
+                    case "Fade":
+                        Render.drawFilledBox(entry, new Boxf(entity.getBoundingBox()), blockColor, true);
                         break;
                 }
             }
+
+            event.matrixStack.pop();
 
             Render.toggleRender(false);
 

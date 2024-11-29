@@ -16,10 +16,10 @@ import nicotine.mod.option.ToggleOption;
 import java.util.HashMap;
 import java.util.List;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class Commands {
-    private static void printCommand(String text) {
+    public static void printMessage(String text) {
         String formattedText = String.format("%s[%snicotine%s] ", Formatting.DARK_GRAY, Formatting.RESET, Formatting.DARK_GRAY);
 
         formattedText += text;
@@ -57,14 +57,14 @@ public class Commands {
                                 if (modOption instanceof SliderOption sliderOption) {
                                     float valueToSet = Float.parseFloat(value);
                                     if (valueToSet < sliderOption.minValue || valueToSet > sliderOption.maxValue) {
-                                        printCommand(String.format("%sValue is outside of valid range!", Formatting.RED));
+                                        printMessage(String.format("%sValue is outside of valid range!", Formatting.RED));
                                         break;
                                     }
                                     sliderOption.value = valueToSet;
                                 } else if (modOption instanceof SwitchOption switchOption) {
                                     for (int i = 0; i <= switchOption.modes.length - 1; i++) {
-                                        if (switchOption.modes[i].equalsIgnoreCase(value)) {
-                                            switchOption.value = i;
+                                        if (switchOption.modes[i].equals(value)) {
+                                            switchOption.value = value;
                                         }
                                     }
                                 } else if (modOption instanceof ToggleOption toggleOption) {
@@ -72,9 +72,9 @@ public class Commands {
                                 }
 
                                 Settings.save();
-                                printCommand(String.format("Set %s %s to %s", modName, optionName, value));
+                                printMessage(String.format("Set %s %s to %s", modName, optionName, value));
                             } catch (Exception e) {
-                                printCommand(String.format("%sWrong value!", Formatting.RED));
+                                printMessage(String.format("%sWrong value!", Formatting.RED));
                             }
 
                             break;
@@ -95,17 +95,17 @@ public class Commands {
 
                 switch (splitCommand[0]) {
                     case "mods":
-                        printCommand(getMods());
+                        printMessage(getMods());
                         break;
                     case "set":
                         if (splitCommand.length != 4) {
-                            printCommand(String.format("%sWrong argument count! (e.g.: .set handfov fov 65.5)", Formatting.RED));
+                            printMessage(String.format("%sWrong argument count! (e.g.: .set handfov fov 65.5)", Formatting.RED));
                             break;
                         }
                         setModValue(splitCommand);
                         break;
                     default:
-                        printCommand(String.format("%sBad command!", Formatting.RED));
+                        printMessage(String.format("%sBad command!", Formatting.RED));
                         break;
                 }
 

@@ -1,8 +1,9 @@
 package nicotine.mixin;
 
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import nicotine.events.GetRenderTypeEvent;
-import net.minecraft.util.ActionResult;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

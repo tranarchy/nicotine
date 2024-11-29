@@ -1,8 +1,6 @@
 package nicotine.mixin;
 
 import net.minecraft.entity.Entity;
-
-import net.minecraft.util.ActionResult;
 import nicotine.events.SetVelocityClientEvent;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.UUID;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 @Mixin(Entity.class)
 public class EntityMixin {

@@ -1,6 +1,9 @@
 package nicotine.clickgui;
 
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import nicotine.clickgui.custombutton.CategoryButton;
 import nicotine.clickgui.custombutton.CustomButton;
@@ -10,18 +13,16 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
-import nicotine.util.*;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
+import nicotine.util.Colors;
+import nicotine.util.RenderGUI;
+import nicotine.util.Settings;
 
-import net.minecraft.text.Text;
-
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
+import static nicotine.util.Common.nicotine;
 
 public class GUI extends Screen {
     public GUI() {
@@ -31,7 +32,6 @@ public class GUI extends Screen {
     private final List<CustomButton> buttons = new ArrayList<>();
 
     private int guiYInitPos = 10;
-    private int tickDelay = 0;
     private boolean saveSettings = false;
     private KeybindOption keybindOptionToSet = null;
 
@@ -74,11 +74,23 @@ public class GUI extends Screen {
 
     }
 
-    private float getSliderValue (SliderOption sliderOption, CustomButton button, double mouseX) {
-        float value = sliderOption.minValue + (((((float)mouseX - button.x) / button.width)) * (sliderOption.maxValue - sliderOption.minValue));
-        DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        return Float.parseFloat(decimalFormat.format(value));
+    private String formatKeybind(String keybind, KeybindOption keybindOption) {
+        String keyBindText = "";
+        String[] splitKeybind = keybind.split(" ");
+        if (splitKeybind.length >= 2) {
+            for (String kbText : splitKeybind) {
+                keyBindText += kbText.substring(0, 1);
+            }
+        } else {
+            keyBindText = keybind;
+        }
+
+        if (keybindOptionToSet == keybindOption)
+            keyBindText = "_";
+
+        return keyBindText;
     }
+
 
     private void drawWatermark(DrawContext context) {
         final String watermarkText =  String.format("nicotine %sv%s", Formatting.WHITE, nicotine.getVersion());
@@ -117,7 +129,7 @@ public class GUI extends Screen {
                }
 
                if (modOption instanceof SwitchOption switchOption) {
-                   text = String.format("%s [%s]", switchOption.name, switchOption.modes[switchOption.value]);
+                   text = String.format("%s [%s]", switchOption.name, switchOption.value);
                }  else if (modOption instanceof SliderOption sliderOption) {
                    text = String.format("%s [%.2f]", sliderOption.name, sliderOption.value);
                } else if (modOption instanceof ToggleOption toggleOption) {
@@ -129,19 +141,7 @@ public class GUI extends Screen {
                    text = toggleOption.name;
                } else if (modOption instanceof KeybindOption keybindOption) {
                    String keybind = InputUtil.fromKeyCode(keybindOption.keyCode, 0).getLocalizedText().getString();
-                   String keyBindText = "";
-                   String[] splitKeybind = keybind.split(" ");
-                   if (splitKeybind.length >= 2) {
-                       for (String kbText : splitKeybind) {
-                           keyBindText += kbText.substring(0, 1);
-                       }
-                   } else {
-                       keyBindText = keybind;
-                   }
-
-                   if (keybindOptionToSet == keybindOption)
-                       keyBindText = "_";
-
+                   String keyBindText = formatKeybind(keybind, keybindOption);
                    text = String.format("%s [%s]", keybindOption.name, keyBindText);
                }
 
@@ -155,6 +155,44 @@ public class GUI extends Screen {
         }
     }
 
+    private boolean clickedOn(CustomButton button, double mouseX, double mouseY) {
+        return (button.x <= mouseX && mouseX <= button.x + button.width && button.y <= mouseY && mouseY <= button.y + button.height);
+    }
+
+    private void setSliderOption(SliderOption sliderOption, CustomButton button, double mouseX) {
+        float value = sliderOption.minValue + ((((float) (Math.round(mouseX) - button.x) / button.width)) * (sliderOption.maxValue - sliderOption.minValue));
+        value =  Math.round(value * 100.0f) / 100.0f;
+
+        if ((int)sliderOption.minValue == sliderOption.minValue) {
+            sliderOption.value =  Math.round(value);
+        } else {
+            sliderOption.value = value;
+        }
+    }
+
+    private void setSwitchOption(SwitchOption switchOption) {
+        for (int i = 0; i<=switchOption.modes.length - 1; i++) {
+            if (switchOption.value.equals(switchOption.modes[i])) {
+                if (i+1 <= switchOption.modes.length - 1) {
+                    switchOption.value = switchOption.modes[i+1];
+                } else {
+                    switchOption.value = switchOption.modes[0];
+                }
+                break;
+            }
+        }
+    }
+
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (saveSettings) {
+            Settings.save();
+            saveSettings = false;
+        }
+
+        return true;
+    }
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
@@ -164,21 +202,6 @@ public class GUI extends Screen {
         super.render(context, mouseX, mouseY, delta);
     }
 
-    public void delayedSettingsSave() {
-        tickDelay = 20;
-        saveSettings = true;
-    }
-
-    @Override
-    public void tick() {
-        if (saveSettings) {
-            if (tickDelay <= 0) {
-                saveSettings = false;
-                Settings.save();
-            }
-            tickDelay--;
-        }
-    }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -208,25 +231,14 @@ public class GUI extends Screen {
     }
 
 
-    private boolean clickedOn(CustomButton button, double mouseX, double mouseY) {
-        return (button.x <= mouseX && mouseX <= button.x + button.width && button.y <= mouseY && mouseY <= button.y + button.height);
-    }
-
-
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         for (CustomButton customButton : buttons) {
             if (clickedOn(customButton, mouseX, mouseY))  {
                 if (customButton instanceof OptionButton optionButton) {
                     if (optionButton.modOption instanceof SliderOption sliderOption) {
-                        float sliderValue = getSliderValue(sliderOption, customButton, mouseX);
-                        if ((int)sliderOption.minValue == sliderOption.minValue) {
-                           sliderOption.value =  Math.round(sliderValue);
-                        } else {
-                            sliderOption.value = sliderValue;
-                        }
-
-                        delayedSettingsSave();
+                        setSliderOption(sliderOption, customButton, mouseX);
+                        saveSettings = true;
                         break;
                     }
                 }
@@ -244,26 +256,18 @@ public class GUI extends Screen {
                     if (clickedButton == 1) {
                         modButton.mod.optionsVisible = !modButton.mod.optionsVisible;
                     } else if (clickedButton == 0) {
-                        if (!modButton.mod.alwaysEnabled)
-                            modButton.mod.enabled = !modButton.mod.enabled;
+                        if (!modButton.mod.alwaysEnabled) {
+                            modButton.mod.toggle();
+                        }
                     }
                 } else if (button instanceof OptionButton optionButton) {
                     if (clickedButton != 0)
                         break;
 
                     if (optionButton.modOption instanceof SwitchOption switchOption) {
-                        if (switchOption.value >= switchOption.modes.length - 1) {
-                            switchOption.value = 0;
-                        } else {
-                            switchOption.value++;
-                        }
+                        setSwitchOption(switchOption);
                     } else if (optionButton.modOption instanceof SliderOption sliderOption) {
-                        float sliderValue = getSliderValue(sliderOption, button, mouseX);
-                        if ((int)sliderOption.minValue == sliderOption.minValue) {
-                            sliderOption.value = Math.round(sliderValue);
-                        } else {
-                            sliderOption.value = sliderValue;
-                        }
+                        setSliderOption(sliderOption, button, mouseX);
                     } else if (optionButton.modOption instanceof ToggleOption toggleOption) {
                         toggleOption.enabled = !toggleOption.enabled;
                     } else if (optionButton.modOption instanceof KeybindOption keybindOption) {
@@ -284,8 +288,6 @@ public class GUI extends Screen {
     }
 
     @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-       return;
-    }
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {}
 
 }

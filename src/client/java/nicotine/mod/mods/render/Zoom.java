@@ -3,31 +3,32 @@ package nicotine.mod.mods.render;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.util.InputUtil;
 import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 
-import static nicotine.util.Common.*;
+import java.util.Arrays;
+
+import static nicotine.util.Common.mc;
+import static nicotine.util.Common.windowHandle;
 
 public class Zoom {
     private static int defaultFov = 0;
 
     public static void init() {
-        Mod zoom = new Mod();
-        zoom.name = "Zoom";
+        Mod zoom = new Mod("Zoom");
         SliderOption zoomFov = new SliderOption(
                 "FOV",
                 10,
                 5,
-                20
+                30
         );
         KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_C);
-        zoom.modOptions.add(keybind);
-        zoom.modOptions.add(zoomFov);
-        ModManager.modules.get(ModCategory.Render).add(zoom);
+        zoom.modOptions.addAll(Arrays.asList(zoomFov, keybind));
+        ModManager.addMod(ModCategory.Render, zoom);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
             SimpleOption<Integer> fovOption = mc.options.getFov();

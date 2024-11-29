@@ -7,17 +7,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import nicotine.events.DrawMouseoverTooltipEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.Colors;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 import nicotine.util.RenderGUI;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class ShulkerPeek {
 
@@ -43,9 +43,8 @@ public class ShulkerPeek {
 
 
     public static void init() {
-        Mod shulkerPeek = new Mod();
-        shulkerPeek.name = "ShulkerPeek";
-        ModManager.modules.get(ModCategory.Render).add(shulkerPeek);
+        Mod shulkerPeek = new Mod("ShulkerPeek");
+        ModManager.addMod(ModCategory.Render, shulkerPeek);
 
         final int SLOT_WIDTH = 18;
         final int MAX_WIDTH = SLOT_WIDTH * 9;
@@ -53,8 +52,6 @@ public class ShulkerPeek {
         EventBus.register(DrawMouseoverTooltipEvent.class, event -> {
             if (!shulkerPeek.enabled)
                 return true;
-
-            mc.player.openRidingInventory();
 
             if (event.focusedSlot != null) {
                 ItemStack focusedStack = event.focusedSlot.getStack();

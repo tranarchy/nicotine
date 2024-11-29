@@ -1,5 +1,6 @@
 package nicotine.mod.mods.render;
 
+import net.minecraft.client.option.Perspective;
 import nicotine.events.RenderCrosshairEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -10,13 +11,13 @@ import nicotine.util.Colors;
 import nicotine.util.EventBus;
 
 import java.awt.*;
+import java.util.Arrays;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class Crosshair {
     public static void init() {
-        Mod crosshair = new Mod();
-        crosshair.name = "Crosshair";
+        Mod crosshair = new Mod("Crosshair");
         SliderOption width = new SliderOption(
                 "Width",
                 4,
@@ -43,19 +44,14 @@ public class Crosshair {
         );
         ToggleOption noCrosshair = new ToggleOption("NoCrosshair", false);
         ToggleOption rainbowColor = new ToggleOption("RainbowColor", false);
-        crosshair.modOptions.add(width);
-        crosshair.modOptions.add(red);
-        crosshair.modOptions.add(green);
-        crosshair.modOptions.add(blue);
-        crosshair.modOptions.add(rainbowColor);
-        crosshair.modOptions.add(noCrosshair);
-        ModManager.modules.get(ModCategory.Render).add(crosshair);
+        crosshair.modOptions.addAll(Arrays.asList(width, red, green, blue, rainbowColor, noCrosshair));
+        ModManager.addMod(ModCategory.Render, crosshair);
 
         EventBus.register(RenderCrosshairEvent.class, event -> {
             if (!crosshair.enabled)
                 return true;
 
-            if (noCrosshair.enabled)
+            if (noCrosshair.enabled || mc.options.getPerspective() != Perspective.FIRST_PERSON)
                 return false;
 
 

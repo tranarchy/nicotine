@@ -1,8 +1,8 @@
 package nicotine.mixin;
 
-import nicotine.events.RenderBossBarHudEvent;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.BossBarHud;
+import nicotine.events.RenderBossBarHudEvent;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

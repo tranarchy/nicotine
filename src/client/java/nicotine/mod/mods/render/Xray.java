@@ -6,27 +6,34 @@ import net.minecraft.client.util.InputUtil;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.events.GetCullingFaceEvent;
 import nicotine.events.GetRenderTypeEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
+import static nicotine.util.Common.windowHandle;
 
 public class Xray {
 
-    private static boolean reloaded = false;
+    private static boolean keyPressed = false;
 
     public static void init() {
-        Mod xray = new Mod();
-        xray.name = "Xray";
+        Mod xray = new Mod("Xray") {
+            @Override
+            public void toggle() {
+                this.enabled = !this.enabled;
+                mc.chunkCullingEnabled = !this.enabled;
+                mc.worldRenderer.reload();
+            }
+        };
         KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_X);
         xray.modOptions.add(keybind);
-        ModManager.modules.get(ModCategory.Render).add(xray);
+        ModManager.addMod(ModCategory.Render, xray);
 
         final List<Block> xrayBlocks = Arrays.asList(
                 Blocks.IRON_ORE,
@@ -51,7 +58,7 @@ public class Xray {
         );
 
         EventBus.register(GetRenderTypeEvent.class, event -> {
-            if (!xray.enabled || mc.player == null || !InputUtil.isKeyPressed(windowHandle, keybind.keyCode)) {
+            if (!xray.enabled || mc.player == null) {
                 return true;
             }
 
@@ -62,7 +69,7 @@ public class Xray {
         });
 
         EventBus.register(GetCullingFaceEvent.class, event -> {
-            if (!xray.enabled || mc.player == null || !InputUtil.isKeyPressed(windowHandle, keybind.keyCode))
+            if (!xray.enabled || mc.player == null)
                 return true;
 
             if (xrayBlocks.contains(event.block))
@@ -72,26 +79,17 @@ public class Xray {
         });
 
 
-
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!xray.enabled || !InputUtil.isKeyPressed(windowHandle,  keybind.keyCode)) {
-                if (reloaded) {
-                    mc.chunkCullingEnabled = true;
-                    mc.worldRenderer.reload();
-                    reloaded = false;
-                }
-                return true;
+            if (InputUtil.isKeyPressed(windowHandle,  keybind.keyCode)) {
+                keyPressed = true;
             }
 
-            if (InputUtil.isKeyPressed(windowHandle, keybind.keyCode) && !reloaded) {
-               mc.chunkCullingEnabled = false;
-               mc.worldRenderer.reload();
-               reloaded = true;
+            if (keyPressed && !InputUtil.isKeyPressed(windowHandle,  keybind.keyCode)) {
+                xray.toggle();
+                keyPressed = false;
             }
 
             return true;
         });
-
-
     }
 }

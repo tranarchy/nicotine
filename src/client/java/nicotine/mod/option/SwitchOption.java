@@ -2,12 +2,12 @@ package nicotine.mod.option;
 
 public class SwitchOption extends ModOption {
     public String[] modes;
-    public int value;
+    public String value;
 
-    public SwitchOption(String name, String[] modes, int value) {
+    public SwitchOption(String name, String[] modes) {
         super(name);
 
         this.modes = modes;
-        this.value = value;
+        this.value = modes[0];
     }
 }

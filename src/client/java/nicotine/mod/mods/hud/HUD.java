@@ -4,8 +4,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringHelper;
+import net.minecraft.util.*;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import nicotine.clickgui.GUI;
@@ -23,7 +22,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.joml.Vector2d;
 import org.joml.Vector2i;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static nicotine.util.Common.*;
@@ -49,13 +51,12 @@ public class HUD {
         drawHUDText(drawContext, mod, text, Colors.ACTIVE_FOREGROUND_COLOR);
     }
 
-
     private static void drawHUDText(DrawContext drawContext, Mod mod, String text, int color) {
         TextRenderer textRenderer = mc.textRenderer;
         int x, y;
         x = y = 0;
 
-        int posValue = 0;
+        String posValue = "";
         boolean rainbow = false;
 
         for (ModOption modOption : mod.modOptions) {
@@ -71,27 +72,27 @@ public class HUD {
         }
 
         switch (posValue) {
-            case 0:
+            case "UL":
                 x = UL.x;
                 y = UL.y;
                 UL.y += textRenderer.fontHeight;
                 break;
-            case 1:
+            case "UC":
                 x = UC.x - (textRenderer.getWidth(text) / 2);
                 y = UC.y;
                 UC.y += textRenderer.fontHeight;
                 break;
-            case 2:
+            case "UR":
                 x = UR.x - textRenderer.getWidth(text);
                 y = UR.y;
                 UR.y += textRenderer.fontHeight;
                 break;
-            case 3:
+            case "BL":
                 x = BL.x;
                 y = BL.y - textRenderer.fontHeight;
                 BL.y -= textRenderer.fontHeight;
                 break;
-            case 4:
+            case "BR":
                 x = BR.x - textRenderer.getWidth(text);
                 y = BR.y - textRenderer.fontHeight;
                 BR.y -= textRenderer.fontHeight;
@@ -206,8 +207,7 @@ public class HUD {
     }
 
     private static String getServerText() {
-        String address = currentServer.address;
-        String serverText = String.format("server %s-> %s", Formatting.WHITE, address);
+        String serverText = String.format("server %s-> %s", Formatting.WHITE, currentServer.address);
 
         return serverText;
     }
@@ -215,23 +215,20 @@ public class HUD {
     public static void init() {
         String[] hudModuleNames =  new String[]{"Watermark", "Modules", "Cords", "FPS", "Ping", "Speed", "Effects", "Player", "Server"};
         for (String hudModuleName : hudModuleNames) {
-            Mod hudMod = new Mod();
-            hudMod.name = hudModuleName;
+            Mod hudMod = new Mod(hudModuleName);
             SwitchOption position = new SwitchOption(
                     "Position",
-                    new String[]{"UL", "UC", "UR", "BL", "BR"},
-                    0
+                    new String[]{"UL", "UC", "UR", "BL", "BR"}
             );
             ToggleOption rainbowColor = new ToggleOption("RainbowColor", false);
-            hudMod.modOptions.add(position);
-            hudMod.modOptions.add(rainbowColor);
+            hudMod.modOptions.addAll(Arrays.asList(position, rainbowColor));
 
             if (hudModuleName.equals("Modules")) {
                 sorted = new ToggleOption("Sorted", false);
                 hudMod.modOptions.add(sorted);
             }
 
-            ModManager.modules.get(ModCategory.HUD).add(hudMod);
+            ModManager.addMod(ModCategory.HUD, hudMod);
         }
 
 

@@ -1,31 +1,25 @@
 package nicotine.mod.mods.render;
 
 import nicotine.events.*;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class NoOverlay {
     public static void init() {
-        Mod noOverlay = new Mod();
-        noOverlay.name = "NoOverlay";
+        Mod noOverlay = new Mod("NoOverlay");
         ToggleOption fire = new ToggleOption("Fire", false);
         ToggleOption bossBars = new ToggleOption("BossBars", false);
         ToggleOption potionEffects = new ToggleOption("PotionEffects", false);
         ToggleOption miscOverlays = new ToggleOption("MiscOverlays", false);
         ToggleOption toastNotifs = new ToggleOption("ToastNotifs", false);
-        ToggleOption menuBlur = new ToggleOption("MenuBlur", false);
         ToggleOption hurtCam = new ToggleOption("HurtCam", false);
-
-        List<ToggleOption> noOverLayOptions = Arrays.asList(fire, bossBars, potionEffects, miscOverlays, toastNotifs, menuBlur, hurtCam);
-        noOverlay.modOptions.addAll(noOverLayOptions);
-
-        ModManager.modules.get(ModCategory.Render).add(noOverlay);
+        noOverlay.modOptions.addAll(Arrays.asList(fire, bossBars, potionEffects, miscOverlays, toastNotifs, hurtCam));
+        ModManager.addMod(ModCategory.Render, noOverlay);
 
         EventBus.register(RenderOverlaysEvent.class, event -> {
            if (!noOverlay.enabled)
@@ -72,16 +66,6 @@ public class NoOverlay {
                 return true;
 
             if (toastNotifs.enabled)
-                return false;
-
-            return true;
-        });
-
-        EventBus.register(RenderBlurEvent.class, event -> {
-            if (!noOverlay.enabled)
-                return true;
-
-            if (menuBlur.enabled)
                 return false;
 
             return true;

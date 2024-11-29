@@ -1,27 +1,28 @@
 package nicotine.mod.mods.combat;
 
+import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.equipment.EquipmentType;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.collection.DefaultedList;
 import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class AutoArmor {
     public static void init() {
-        Mod autoArmor = new Mod();
-        autoArmor.name = "AutoArmor";
-        ModManager.modules.get(ModCategory.Combat).add(autoArmor);
+        Mod autoArmor = new Mod("AutoArmor");
+        ModManager.addMod(ModCategory.Combat, autoArmor);
 
         final List<List<Item>> allArmorItems = Arrays.asList(
                 Arrays.asList(

@@ -3,19 +3,20 @@ package nicotine.mod.mods.render;
 import com.mojang.blaze3d.systems.ProjectionType;
 import com.mojang.blaze3d.systems.RenderSystem;
 import nicotine.events.RenderHandEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 import nicotine.mod.option.SliderOption;
+import nicotine.util.EventBus;
 import org.joml.Matrix4f;
 
-import static nicotine.util.Common.*;
+import java.util.Arrays;
+
+import static nicotine.util.Common.mc;
 
 public class HandFOV {
     public static void init() {
-        Mod handFOV = new Mod();
-        handFOV.name = "HandFOV";
+        Mod handFOV = new Mod("HandFOV");
         SliderOption fov = new SliderOption(
                 "FOV",
                 50,
@@ -28,9 +29,8 @@ public class HandFOV {
                 0.1f,
                 1.0f
         );
-        handFOV.modOptions.add(fov);
-        handFOV.modOptions.add(aspect);
-        ModManager.modules.get(ModCategory.Render).add(handFOV);
+        handFOV.modOptions.addAll(Arrays.asList(fov, aspect));
+        ModManager.addMod(ModCategory.Render, handFOV);
 
         EventBus.register(RenderHandEvent.class, event -> {
             if (!handFOV.enabled)

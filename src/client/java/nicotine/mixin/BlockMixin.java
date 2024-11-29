@@ -1,7 +1,6 @@
 package nicotine.mixin;
 
 import net.minecraft.block.Block;
-import net.minecraft.util.ActionResult;
 import nicotine.events.GetVelocityMultiplierEvent;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;

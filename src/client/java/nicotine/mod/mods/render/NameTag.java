@@ -1,41 +1,39 @@
 package nicotine.mod.mods.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
-import nicotine.events.RenderEvent;
+import nicotine.events.BeforeDebugRenderEvent;
 import nicotine.events.RenderLabelIfPresentEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.Colors;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 import nicotine.util.Player;
 import nicotine.util.Render;
 
-import static nicotine.util.Common.*;
+import java.util.Arrays;
+
+import static nicotine.util.Common.mc;
 
 public class NameTag {
 
     public static void init() {
-        Mod nametag = new Mod();
-        nametag.name = "Nametag";
+        Mod nameTag = new Mod("NameTag");
         ToggleOption health = new ToggleOption("Health", false);
         ToggleOption armor = new ToggleOption("Armor", false);
         ToggleOption ping = new ToggleOption("Ping", false);
-        nametag.modOptions.add(health);
-        nametag.modOptions.add(armor);
-        nametag.modOptions.add(ping);
-        ModManager.modules.get(ModCategory.Render).add(nametag);
+        nameTag.modOptions.addAll(Arrays.asList(health, armor, ping));
+        ModManager.addMod(ModCategory.Render, nameTag);
 
         EventBus.register(RenderLabelIfPresentEvent.class, event -> {
-            return !nametag.enabled;
+            return !nameTag.enabled;
         });
 
-        EventBus.register(RenderEvent.class, event -> {
-            if (!nametag.enabled)
+        EventBus.register(BeforeDebugRenderEvent.class, event -> {
+            if (!nameTag.enabled)
                 return true;
 
             for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {

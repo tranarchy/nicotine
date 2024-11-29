@@ -1,10 +1,9 @@
 package nicotine.mixin;
 
-import nicotine.events.RenderOverlaysEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameOverlayRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.ActionResult;
+import nicotine.events.RenderOverlaysEvent;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

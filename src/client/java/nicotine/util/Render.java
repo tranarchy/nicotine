@@ -1,7 +1,5 @@
 package nicotine.util;
 
-import static nicotine.util.Common.*;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.font.TextRenderer;
@@ -16,8 +14,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
+import nicotine.util.math.Boxf;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
+
+import static nicotine.util.Common.mc;
 
 public class Render {
 
@@ -51,169 +52,208 @@ public class Render {
     }
 
 
-    public static void drawTracer(Vec3d view, Vec3d targetPos, int color) {
+    public static void drawTracer(MatrixStack.Entry entry, Vec3d targetPos, int color) {
         if (mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT)
             return;
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-
-
+        
         Vec3d crosshairPos = mc.crosshairTarget.getPos();
-        float startX = (float) crosshairPos.x - (float) view.x;
-        float startY = (float) crosshairPos.y - (float) view.y;
-        float startZ = (float) crosshairPos.z - (float) view.z;
-        float endX = (float) targetPos.x - (float) view.x;
-        float endY = (float) targetPos.y - (float) view.y;
-        float endZ = (float) targetPos.z - (float) view.z;
-
-        bufferBuilder.vertex(startX, startY, startZ).color(color);
-        bufferBuilder.vertex(endX, endY, endZ).color(color);
+        
+        bufferBuilder.vertex(entry, (float)crosshairPos.x, (float)crosshairPos.y, (float)crosshairPos.z).color(color);
+        bufferBuilder.vertex(entry, (float)targetPos.x, (float)targetPos.y, (float) targetPos.z).color(color);
 
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
     }
 
-    public static void drawBox(Vec3d view, Box targetPos, int color) {
+    public static void drawBox(MatrixStack.Entry entry, Boxf box, int color) {
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
 
-        float maxX = (float) targetPos.maxX - (float) view.x;
-        float maxY = (float) targetPos.maxY - (float) view.y;
-        float maxZ = (float) targetPos.maxZ - (float) view.z;
-        float minX = (float) targetPos.minX - (float) view.x;
-        float minY = (float) targetPos.minY - (float) view.y;
-        float minZ = (float) targetPos.minZ - (float) view.z;
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color);
 
-        bufferBuilder.vertex(maxX, maxY, minZ).color(color);
-        bufferBuilder.vertex(minX, maxY, minZ).color(color);
-        bufferBuilder.vertex(minX, maxY, maxZ).color(color);
-        bufferBuilder.vertex(maxX, maxY, maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
 
-        bufferBuilder.vertex(maxX, minY, maxZ).color(color);
-        bufferBuilder.vertex(minX, minY, maxZ).color(color);
-        bufferBuilder.vertex(minX, minY, minZ).color(color);
-        bufferBuilder.vertex(maxX, minY, minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color);
 
-        bufferBuilder.vertex(minX, maxY, minZ).color(color);
-        bufferBuilder.vertex(minX, maxY, maxZ).color(color);
-        bufferBuilder.vertex(maxX, maxY, minZ).color(color);
-        bufferBuilder.vertex(maxX, maxY, maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
 
-        bufferBuilder.vertex(minX, minY, minZ).color(color);
-        bufferBuilder.vertex(minX, minY, maxZ).color(color);
-        bufferBuilder.vertex(maxX, minY, minZ).color(color);
-        bufferBuilder.vertex(maxX, minY, maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
 
-        bufferBuilder.vertex(maxX, minY, maxZ).color(color);
-        bufferBuilder.vertex(maxX, maxY, maxZ).color(color);
-        bufferBuilder.vertex(maxX, minY, minZ).color(color);
-        bufferBuilder.vertex(maxX, maxY, minZ).color(color);
-
-        bufferBuilder.vertex(minX, minY, maxZ).color(color);
-        bufferBuilder.vertex(minX, maxY, maxZ).color(color);
-        bufferBuilder.vertex(minX, minY, minZ).color(color);
-        bufferBuilder.vertex(minX, maxY, minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);
 
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
     }
 
-    public static void drawFilledBox(Vec3d view, Box targetPos, int color, boolean fade) {
+    public static void drawFilledBox(MatrixStack.Entry entry, Boxf box, int color) {
+        drawFilledBox(entry, box, color, false);
+    }
 
+    public static void drawFilledBox(MatrixStack.Entry entry, Boxf box, int color, boolean fade) {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        
+        color = color &0x00FFFFFF;
+        int alphaValue = fade ? Colors.fadeVal : 0x64;
+        color = (alphaValue << 24) | color;
+        
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color);
+
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
+
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
+
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
+
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color);
+
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
+
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+
+        drawBox(entry, box, color);
+    }
+
+    public static void drawWireframeBox(MatrixStack.Entry entry, Boxf box, int color) {
+        drawBox(entry, box, color);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+
+        //a >
+        bufferBuilder.vertex(entry, box.minX,box.minY,box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX,box.minY,box.maxZ).color(color);//c
+        bufferBuilder.vertex(entry, box.minX,box.minY,box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.minZ).color(color);//f
+        bufferBuilder.vertex(entry, box.minX,box.minY,box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX,box.maxY,box.maxZ).color(color);//h
+        //b >
+        bufferBuilder.vertex(entry, box.maxX,box.minY,box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX,box.minY,box.maxZ).color(color);//d
+        bufferBuilder.vertex(entry, box.maxX,box.minY,box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX,box.maxY,box.minZ).color(color);//e
+        bufferBuilder.vertex(entry, box.maxX,box.minY,box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.maxZ).color(color);//g
+        //c >
+        bufferBuilder.vertex(entry, box.maxX,box.minY,box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.minZ).color(color);//f
+        bufferBuilder.vertex(entry, box.maxX,box.minY,box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX,box.maxY,box.maxZ).color(color);//h
+        //d >
+        bufferBuilder.vertex(entry, box.minX,box.minY,box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.maxZ).color(color);//g
+        bufferBuilder.vertex(entry, box.minX,box.minY,box.maxZ).color(color);
+        bufferBuilder.vertex(entry, box.minX,box.maxY,box.minZ).color(color);//e
+        //e > g
+        bufferBuilder.vertex(entry, box.minX,box.maxY,box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.maxZ).color(color);
+        //f > h
+        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.minZ).color(color);
+        bufferBuilder.vertex(entry, box.minX,box.maxY,box.maxZ).color(color);
+
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+    }
+
+    public static void draw2D(MatrixStack.Entry entry, Boxf box, int color) {
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+
+        float rotation = mc.player.getMovementDirection().asRotation();
+
+        if (rotation == 180.0 || rotation == 0.0) {
+            float centerZ = box.minZ + ((box.maxZ - box.minZ) / 2);
+
+            bufferBuilder.vertex(entry, box.minX, box.maxY, centerZ).color(color);
+            bufferBuilder.vertex(entry, box.maxX, box.maxY, centerZ).color(color);
+            bufferBuilder.vertex(entry, box.minX, box.minY, centerZ).color(color);
+            bufferBuilder.vertex(entry, box.maxX, box.minY, centerZ).color(color);
+
+            bufferBuilder.vertex(entry, box.minX, box.minY, centerZ).color(color);
+            bufferBuilder.vertex(entry, box.minX, box.maxY, centerZ).color(color);
+            bufferBuilder.vertex(entry, box.maxX, box.minY, centerZ).color(color);
+            bufferBuilder.vertex(entry, box.maxX, box.maxY, centerZ).color(color);
+        } else {
+            float centerX = box.minX + ((box.maxX - box.minX) / 2);
+
+            bufferBuilder.vertex(entry, centerX, box.maxY, box.minZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.maxY, box.maxZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.minY, box.minZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.minY, box.maxZ).color(color);
+
+            bufferBuilder.vertex(entry, centerX, box.minY, box.minZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.maxY, box.minZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.minY, box.maxZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.maxY, box.maxZ).color(color);
+        }
+
+
+        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+    }
+
+    public static void drawFilled2D(MatrixStack.Entry entry, Boxf box, int color) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         color = color &0x00FFFFFF;
+        color = (0x64 << 24) | color;
 
-        int alphaValue = 0x80;
-        if (fade)
-            alphaValue = Colors.fadeVal;
-        color = (alphaValue << 24) | color;
+        float rotation = mc.player.getMovementDirection().asRotation();
 
-        float maxX = (float) targetPos.maxX - (float) view.x;
-        float maxY = (float) targetPos.maxY - (float) view.y;
-        float maxZ = (float) targetPos.maxZ - (float) view.z;
-        float minX = (float) targetPos.minX - (float) view.x;
-        float minY = (float) targetPos.minY - (float) view.y;
-        float minZ = (float) targetPos.minZ - (float) view.z;
+        if (rotation == 180.0 || rotation == 0.0) {
+            float centerZ = box.minZ + ((box.maxZ - box.minZ) / 2);
 
-        bufferBuilder.vertex(maxX, maxY, minZ).color(color);
-        bufferBuilder.vertex(minX, maxY, minZ).color(color);
-        bufferBuilder.vertex(minX, maxY, maxZ).color(color);
-        bufferBuilder.vertex(maxX, maxY, maxZ).color(color);
+            bufferBuilder.vertex(entry, box.maxX, box.minY, centerZ).color(color);
+            bufferBuilder.vertex(entry, box.minX, box.minY, centerZ).color(color);
+            bufferBuilder.vertex(entry, box.minX, box.maxY, centerZ).color(color);
+            bufferBuilder.vertex(entry, box.maxX, box.maxY, centerZ).color(color);
+        } else {
+            float centerX = box.minX + ((box.maxX - box.minX) / 2);
 
-        bufferBuilder.vertex(maxX, minY, maxZ).color(color);
-        bufferBuilder.vertex(minX, minY, maxZ).color(color);
-        bufferBuilder.vertex(minX, minY, minZ).color(color);
-        bufferBuilder.vertex(maxX, minY, minZ).color(color);
-
-        bufferBuilder.vertex(maxX, maxY, maxZ).color(color);
-        bufferBuilder.vertex(minX, maxY, maxZ).color(color);
-        bufferBuilder.vertex(minX, minY, maxZ).color(color);
-        bufferBuilder.vertex(maxX, minY, maxZ).color(color);
-
-        bufferBuilder.vertex(maxX, minY, minZ).color(color);
-        bufferBuilder.vertex(minX, minY, minZ).color(color);
-        bufferBuilder.vertex(minX, maxY, minZ).color(color);
-        bufferBuilder.vertex(maxX, maxY, minZ).color(color);
-
-        bufferBuilder.vertex(minX, maxY, maxZ).color(color);
-        bufferBuilder.vertex(minX, maxY, minZ).color(color);
-        bufferBuilder.vertex(minX, minY, minZ).color(color);
-        bufferBuilder.vertex(minX, minY, maxZ).color(color);
-
-        bufferBuilder.vertex(maxX, maxY, minZ).color(color);
-        bufferBuilder.vertex(maxX, maxY, maxZ).color(color);
-        bufferBuilder.vertex(maxX, minY, maxZ).color(color);
-        bufferBuilder.vertex(maxX, minY, minZ).color(color);
-
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
-    }
-
-    public static void drawWireframeBox(Vec3d view, Box targetPos, int color) {
-        drawBox(view,targetPos,color);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
-
-        float maxX = (float) targetPos.maxX - (float) view.x;
-        float maxY = (float) targetPos.maxY - (float) view.y;
-        float maxZ = (float) targetPos.maxZ - (float) view.z;
-        float minX = (float) targetPos.minX - (float) view.x;
-        float minY = (float) targetPos.minY - (float) view.y;
-        float minZ = (float) targetPos.minZ - (float) view.z;
-
-        //a >
-        bufferBuilder.vertex(minX,minY,minZ).color(color);
-        bufferBuilder.vertex(maxX,minY,maxZ).color(color);//c
-        bufferBuilder.vertex(minX,minY,minZ).color(color);
-        bufferBuilder.vertex(maxX,maxY,minZ).color(color);//f
-        bufferBuilder.vertex(minX,minY,minZ).color(color);
-        bufferBuilder.vertex(minX,maxY,maxZ).color(color);//h
-        //b >
-        bufferBuilder.vertex(maxX,minY,minZ).color(color);
-        bufferBuilder.vertex(minX,minY,maxZ).color(color);//d
-        bufferBuilder.vertex(maxX,minY,minZ).color(color);
-        bufferBuilder.vertex(minX,maxY,minZ).color(color);//e
-        bufferBuilder.vertex(maxX,minY,minZ).color(color);
-        bufferBuilder.vertex(maxX,maxY,maxZ).color(color);//g
-        //c >
-        bufferBuilder.vertex(maxX,minY,maxZ).color(color);
-        bufferBuilder.vertex(maxX,maxY,minZ).color(color);//f
-        bufferBuilder.vertex(maxX,minY,maxZ).color(color);
-        bufferBuilder.vertex(minX,maxY,maxZ).color(color);//h
-        //d >
-        bufferBuilder.vertex(minX,minY,maxZ).color(color);
-        bufferBuilder.vertex(maxX,maxY,maxZ).color(color);//g
-        bufferBuilder.vertex(minX,minY,maxZ).color(color);
-        bufferBuilder.vertex(minX,maxY,minZ).color(color);//e
-        //e > g
-        bufferBuilder.vertex(minX,maxY,minZ).color(color);
-        bufferBuilder.vertex(maxX,maxY,maxZ).color(color);
-        //f > h
-        bufferBuilder.vertex(maxX,maxY,minZ).color(color);
-        bufferBuilder.vertex(minX,maxY,maxZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.maxY, box.maxZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.maxY, box.minZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.minY, box.minZ).color(color);
+            bufferBuilder.vertex(entry, centerX, box.minY, box.maxZ).color(color);
+        }
 
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
     }
@@ -236,38 +276,6 @@ public class Render {
         matrix.pop();
     }
 
-    public static Box getBlockBoundingBox(BlockEntity blockEntity) {
-        BlockPos pos = blockEntity.getPos();
-        Box offset = blockEntity.getCachedState().getOutlineShape(mc.world, pos).getBoundingBox();
-        Box boundingBox = new Box(
-                pos.getX() + offset.minX,
-                pos.getY() + offset.minY,
-                pos.getZ() + offset.minZ,
-                pos.getX() + offset.maxX,
-                pos.getY() + offset.maxY,
-                pos.getZ() + offset.maxZ
-        );
-
-        return boundingBox;
-    }
-
-    public static Box getBlockBoundingBox(BlockPos pos) {
-        VoxelShape voxelShape = mc.world.getBlockState(pos).getOutlineShape(mc.world, pos);
-        if (voxelShape.isEmpty())
-            return null;
-
-        Box offset = voxelShape.getBoundingBox();
-        Box boundingBox = new Box(
-                pos.getX() + offset.minX,
-                pos.getY() + offset.minY,
-                pos.getZ() + offset.minZ,
-                pos.getX() + offset.maxX,
-                pos.getY() + offset.maxY,
-                pos.getZ() + offset.maxZ
-        );
-
-        return boundingBox;
-    }
 
     public static void drawItem(MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, Camera camera, Vec3d position, ItemStack itemStack) {;
         ItemRenderer itemRenderer = mc.getItemRenderer();

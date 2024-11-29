@@ -1,20 +1,19 @@
 package nicotine.mod.mods.misc;
 
 import nicotine.events.DisconnectEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.screens.AutoReconnectScreen;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class AutoReconnect {
 
     public static void init() {
-        Mod autoReconnect = new Mod();
-        autoReconnect.name = "AutoReconnect";
+        Mod autoReconnect = new Mod("AutoReconnect");
         SliderOption delay = new SliderOption(
                 "Delay",
                 20,
@@ -22,7 +21,7 @@ public class AutoReconnect {
                 60
         );
         autoReconnect.modOptions.add(delay);
-        ModManager.modules.get(ModCategory.Misc).add(autoReconnect);
+        ModManager.addMod(ModCategory.Misc, autoReconnect);
 
         EventBus.register(DisconnectEvent.class, event -> {
             if (!autoReconnect.enabled)

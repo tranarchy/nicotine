@@ -19,14 +19,14 @@
 		"ClientPlayerEntityMixin",
 		"BlockMixin",
 		"ClientConnectionMixin",
-		"WorldMixin",
 		"ToastManagerMixin",
 		"GameRendererMixin",
-		"TitleScreenMixin",
 		"ConnectScreenMixin",
 		"DisconnectedScreenMixin",
 		"ClientPlayerNetworkHandlerMixin",
-		"PlayerListHudMixin"
+		"PlayerListHudMixin",
+		"ClientChunkManagerMixin",
+		"WorldChunkMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

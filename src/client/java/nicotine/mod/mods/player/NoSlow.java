@@ -2,16 +2,15 @@ package nicotine.mod.mods.player;
 
 import nicotine.events.GetVelocityMultiplierEvent;
 import nicotine.events.IsUsingItemEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 
 public class NoSlow {
     public static void init() {
-        Mod noSlow = new Mod();
-        noSlow.name = "NoSlow";
-        ModManager.modules.get(ModCategory.Player).add(noSlow);
+        Mod noSlow = new Mod("NoSlow");
+        ModManager.addMod(ModCategory.Player, noSlow);
 
         EventBus.register(IsUsingItemEvent.class, event -> {
             if (!noSlow.enabled)

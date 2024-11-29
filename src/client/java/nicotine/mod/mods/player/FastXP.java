@@ -2,20 +2,19 @@ package nicotine.mod.mods.player;
 
 import net.minecraft.item.Items;
 import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class FastXP {
     private static float delayLeft = 0;
 
     public static void init() {
-        Mod fastXP = new Mod();
-        fastXP.name = "FastXP";
+        Mod fastXP = new Mod("FastXP");
         SliderOption delay = new SliderOption(
                 "Delay",
                 0,
@@ -23,7 +22,7 @@ public class FastXP {
                 5
         );
         fastXP.modOptions.add(delay);
-        ModManager.modules.get(ModCategory.Player).add(fastXP);
+        ModManager.addMod(ModCategory.Player, fastXP);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!fastXP.enabled)

@@ -3,7 +3,6 @@ package nicotine.mixin;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.util.ActionResult;
 import nicotine.events.DrawMouseoverTooltipEvent;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;

@@ -8,7 +8,7 @@ import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 @Mixin(ClientPlayerEntity.class)
 public class ClientPlayerEntityMixin {

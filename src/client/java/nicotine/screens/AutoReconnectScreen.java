@@ -8,7 +8,8 @@ import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.text.Text;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.currentServer;
+import static nicotine.util.Common.mc;
 
 public class AutoReconnectScreen extends Screen {
     private int tick = 0;

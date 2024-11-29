@@ -74,8 +74,11 @@ public class Settings {
                 if (category != null) {
                     JSONObject modInfo = (JSONObject) category.get(mod.name);
                     if (modInfo != null) {
-                        if (!mod.alwaysEnabled)
-                            mod.enabled = (boolean) modInfo.get("enabled");
+                        if (!mod.alwaysEnabled) {
+                            if ((boolean) modInfo.get("enabled")) {
+                                mod.toggle();
+                            }
+                        }
                         for (ModOption modOption : mod.modOptions) {
                             if (modInfo.get(modOption.name) == null)
                                 continue;
@@ -83,7 +86,7 @@ public class Settings {
                             if (modOption instanceof SliderOption sliderOption) {
                                 sliderOption.value = ((Double) modInfo.get(sliderOption.name)).floatValue();
                             } else if (modOption instanceof SwitchOption switchOption) {
-                                switchOption.value =  (int) modInfo.get(switchOption.name);
+                                switchOption.value =  (String) modInfo.get(switchOption.name);
                             } else if (modOption instanceof ToggleOption toggleOption) {
                                 toggleOption.enabled = (boolean) modInfo.get(toggleOption.name);
                             } else if (modOption instanceof KeybindOption keybindOption) {

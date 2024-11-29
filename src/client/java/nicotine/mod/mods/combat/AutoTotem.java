@@ -3,18 +3,17 @@ package nicotine.mod.mods.combat;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.SlotActionType;
 import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
-import nicotine.mod.Mod;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class AutoTotem {
     public static void init() {
-        Mod autoTotem = new Mod();
-        autoTotem.name = "AutoTotem";
-        ModManager.modules.get(ModCategory.Combat).add(autoTotem);
+        Mod autoTotem = new Mod("AutoTotem");
+        ModManager.addMod(ModCategory.Combat, autoTotem);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!autoTotem.enabled || !mc.player.getOffHandStack().isEmpty())

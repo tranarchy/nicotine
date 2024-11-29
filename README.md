@@ -1,7 +1,7 @@
 # nicotine
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/a7703b58-ed2d-47c4-8175-1164b2870583">
+  <img src="https://github.com/user-attachments/assets/230aac2c-9418-47a7-bf4e-eb35ecdd4c61">
 </p>
 <p align="center">Minecraft utility mod for anarchy servers</p>
 
@@ -40,6 +40,8 @@ You will find the built jar in `build/libs`
 - **Xray ->** X
 - **Zoom ->** C 
 - **Surround ->** B
+- **AutoCrystal ->** R 
+- **KillAura ->** K
 
 You can change the keybinds from the click GUI any time
 

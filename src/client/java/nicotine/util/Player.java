@@ -1,14 +1,13 @@
 package nicotine.util;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class Player {
     public static void lookAt(EntityAnchorArgumentType.EntityAnchor anchorPoint, Vec3d target) {

@@ -8,9 +8,8 @@ import nicotine.util.EventBus;
 
 public class ExtraTab {
     public static void init() {
-        Mod extraTab = new Mod();
-        extraTab.name = "ExtraTab";
-        ModManager.modules.get(ModCategory.Misc).add(extraTab);
+        Mod extraTab = new Mod("ExtraTab");
+        ModManager.addMod(ModCategory.Misc, extraTab);
 
         EventBus.register(CollectPlayerEntriesEvent.class, event -> {
             if (!extraTab.enabled)

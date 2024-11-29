@@ -1,12 +1,14 @@
 package nicotine.mod;
 
 import nicotine.mod.mods.combat.*;
-import nicotine.mod.mods.gui.GUIColors;
 import nicotine.mod.mods.gui.Options;
 import nicotine.mod.mods.hud.ArmorHUD;
 import nicotine.mod.mods.hud.HUD;
+import nicotine.mod.mods.misc.AutoReconnect;
+import nicotine.mod.mods.misc.ExtraTab;
+import nicotine.mod.mods.misc.NoTelemetry;
+import nicotine.mod.mods.misc.SmartFocus;
 import nicotine.mod.mods.player.*;
-import nicotine.mod.mods.misc.*;
 import nicotine.mod.mods.render.*;
 
 import java.util.ArrayList;
@@ -15,6 +17,10 @@ import java.util.List;
 
 public class ModManager {
     public static LinkedHashMap<ModCategory, List<Mod>> modules = new LinkedHashMap<>();
+
+    public static void addMod(ModCategory modCategory, Mod mod) {
+        modules.get(modCategory).add(mod);
+    }
 
     public static void init() {
 
@@ -25,10 +31,12 @@ public class ModManager {
         ESP.init();
         StorageESP.init();
         ItemESP.init();
+        LogoutESP.init();
         Tracer.init();
         StorageTracer.init();
         ItemTracer.init();
         NameTag.init();
+        EntityOwner.init();
         FullBright.init();
         Xray.init();
         ShulkerPeek.init();
@@ -51,10 +59,10 @@ public class ModManager {
 
         AutoTotem.init();
         AutoArmor.init();
-        CrystalAura.init();
+        AutoCrystal.init();
         KillAura.init();
         NoKnockback.init();
-        //Surround.init();
+        Surround.init();
 
         NoTelemetry.init();
         SmartFocus.init();
@@ -65,6 +73,5 @@ public class ModManager {
         ArmorHUD.init();
 
         Options.init();
-        GUIColors.init();
     }
 }

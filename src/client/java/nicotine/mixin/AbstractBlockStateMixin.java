@@ -1,7 +1,7 @@
 package nicotine.mixin;
 
-import net.minecraft.block.*;
-import net.minecraft.util.ActionResult;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
