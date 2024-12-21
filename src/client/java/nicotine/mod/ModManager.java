@@ -1,25 +1,47 @@
 package nicotine.mod;
 
 import nicotine.mod.mods.combat.*;
-import nicotine.mod.mods.gui.Options;
-import nicotine.mod.mods.hud.ArmorHUD;
-import nicotine.mod.mods.hud.HUD;
+import nicotine.mod.mods.gui.GUI;
+import nicotine.mod.mods.gui.Tooltip;
+import nicotine.mod.mods.hud.*;
 import nicotine.mod.mods.misc.AutoReconnect;
 import nicotine.mod.mods.misc.ExtraTab;
 import nicotine.mod.mods.misc.NoTelemetry;
 import nicotine.mod.mods.misc.SmartFocus;
+import nicotine.mod.mods.movement.*;
 import nicotine.mod.mods.player.*;
 import nicotine.mod.mods.render.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 public class ModManager {
     public static LinkedHashMap<ModCategory, List<Mod>> modules = new LinkedHashMap<>();
 
     public static void addMod(ModCategory modCategory, Mod mod) {
         modules.get(modCategory).add(mod);
+    }
+
+    public static Mod getMod(String name) {
+        for (HashMap.Entry<ModCategory, List<Mod>> modSet : ModManager.modules.entrySet()) {
+            for (Mod mod : modSet.getValue())
+            {
+                if (mod.name.equals(name)) {
+                    return mod;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static Mod getMod(ModCategory modCategory, String name) {
+        for (Mod mod : ModManager.modules.get(modCategory)) {
+            if (mod.name.equals(name)) {
+                return mod;
+            }
+        }
+
+        return null;
     }
 
     public static void init() {
@@ -29,40 +51,52 @@ public class ModManager {
         }
 
         ESP.init();
+        GlowESP.init();
         StorageESP.init();
         ItemESP.init();
         LogoutESP.init();
+        HoleESP.init();
+        ActiveSpawner.init();
         Tracer.init();
         StorageTracer.init();
         ItemTracer.init();
         NameTag.init();
+        Zoom.init();
+        NoRender.init();
+        NoFog.init();
+        BlockBreaking.init();
+        BlockOutline.init();
         EntityOwner.init();
+        Waypoints.init();
         FullBright.init();
         Xray.init();
-        ShulkerPeek.init();
-        BlockOutline.init();
+        Peek.init();
         HandFOV.init();
         Crosshair.init();
-        NoParticles.init();
-        NoOverlay.init();
-        NoWeather.init();
-        NoFog.init();
-        Zoom.init();
 
+        PortalScreen.init();
+        ExtraRange.init();
         AutoRespawn.init();
         AutoEject.init();
+        AutoRefill.init();
         AutoMine.init();
-        AutoWalk.init();
+        Scaffold.init();
+        NoPush.init();
         FastXP.init();
+
+        AutoWalk.init();
+        AutoSprint.init();
+        ElytraBounce.init();
         FreeMove.init();
-        NoSlow.init();
 
         AutoTotem.init();
         AutoArmor.init();
         AutoCrystal.init();
         KillAura.init();
+        SurroundBreak.init();
         NoKnockback.init();
         Surround.init();
+        CombatMSG.init();
 
         NoTelemetry.init();
         SmartFocus.init();
@@ -70,8 +104,21 @@ public class ModManager {
         ExtraTab.init();
 
         HUD.init();
-        ArmorHUD.init();
+        Watermark.init();
+        Modules.init();
+        Cords.init();
+        FPS.init();
+        Ping.init();
+        Memory.init();
+        Speed.init();
+        Effects.init();
+        Player.init();
+        Server.init();
+        Armor.init();
+        Totem.init();
+        Combat.init();
 
-        Options.init();
+        GUI.init();
+        Tooltip.init();
     }
 }

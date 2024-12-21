@@ -16,9 +16,6 @@
 		"AbstractBlockStateMixin",
 		"EntityMixin",
 		"MinecraftClientMixin",
-		"ClientPlayerEntityMixin",
-		"BlockMixin",
-		"ClientConnectionMixin",
 		"ToastManagerMixin",
 		"GameRendererMixin",
 		"ConnectScreenMixin",
@@ -26,9 +23,16 @@
 		"ClientPlayerNetworkHandlerMixin",
 		"PlayerListHudMixin",
 		"ClientChunkManagerMixin",
-		"WorldChunkMixin"
+		"WorldChunkMixin",
+		"ExplosionS2CPacketMixin",
+		"LivingEntityMixin",
+		"ClientConnectionMixin",
+		"ClientPlayerEntityMixin",
+		"PlayerMoveC2SPacketMixin",
+		"MobSpawnerLogicMixin"
 	],
 	"injectors": {
-		"defaultRequire": 1
+		"defaultRequire": 1,
+		"maxShiftBy": 3
 	}
 }

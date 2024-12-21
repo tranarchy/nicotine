@@ -4,7 +4,6 @@ import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import nicotine.events.RenderHandEvent;
-import nicotine.events.TiltViewWhenHurtEvent;
 import nicotine.util.EventBus;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,14 +17,4 @@ public class GameRendererMixin {
     private void renderHand(Camera camera, float tickDelta, Matrix4f matrix4f, CallbackInfo info) {
         EventBus.post(new RenderHandEvent());
     }
-
-    @Inject(at = @At(value = "HEAD"), method = "Lnet/minecraft/client/render/GameRenderer;tiltViewWhenHurt(Lnet/minecraft/client/util/math/MatrixStack;F)V", cancellable = true)
-    private void tiltViewWhenHurt(MatrixStack matrices, float tickDelta, CallbackInfo info) {
-        boolean result = EventBus.post(new TiltViewWhenHurtEvent());
-
-        if (!result) {
-            info.cancel();
-        }
-    }
-
 }

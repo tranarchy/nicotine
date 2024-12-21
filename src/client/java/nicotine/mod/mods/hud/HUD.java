@@ -1,292 +1,170 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.Text;
-import net.minecraft.util.*;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.world.World;
-import nicotine.clickgui.GUI;
+import net.minecraft.util.Formatting;
 import nicotine.events.InGameHudRenderAfterEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.ModOption;
 import nicotine.mod.option.SwitchOption;
 import nicotine.mod.option.ToggleOption;
-import nicotine.util.Colors;
+import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.Player;
-import org.apache.commons.lang3.StringUtils;
-import org.joml.Vector2d;
-import org.joml.Vector2i;
+import nicotine.util.RenderGUI;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class HUD {
+    public static String separatorText;
 
-    private static ToggleOption sorted;
-
-    private static Vector2i UL, UR, UC, BL, BR;
-    private static void resetHUDPos() {
-        final int width = mc.getWindow().getScaledWidth();
-        final int height = mc.getWindow().getScaledHeight();
-        final int padding = 10;
-
-        UL = new Vector2i(padding, padding);
-        UR = new Vector2i(width - padding, padding);
-        UC = new Vector2i(width / 2, padding);
-        BL = new Vector2i(padding, height - padding);
-        BR = new Vector2i(width - padding, height - padding);
+    public enum HudPosition {
+        TopLeft, TopCenter, TopRight, BottomLeft, BottomRight
     }
 
-    private static void drawHUDText(DrawContext drawContext, Mod mod, String text) {
-        drawHUDText(drawContext, mod, text, Colors.ACTIVE_FOREGROUND_COLOR);
-    }
+    public static HashMap<HudPosition, List<Text>> hudElements = new LinkedHashMap<>();
 
-    private static void drawHUDText(DrawContext drawContext, Mod mod, String text, int color) {
-        TextRenderer textRenderer = mc.textRenderer;
-        int x, y;
-        x = y = 0;
-
-        String posValue = "";
-        boolean rainbow = false;
-
-        for (ModOption modOption : mod.modOptions) {
-            if (modOption instanceof SwitchOption switchOption) {
-                if (switchOption.name.equals("Position")) {
-                    posValue = switchOption.value;
-                }
-            } else if (modOption instanceof ToggleOption toggleOption) {
-                if (toggleOption.name.equals("RainbowColor")) {
-                    rainbow = toggleOption.enabled;
-                }
-            }
-        }
-
-        switch (posValue) {
-            case "UL":
-                x = UL.x;
-                y = UL.y;
-                UL.y += textRenderer.fontHeight;
-                break;
-            case "UC":
-                x = UC.x - (textRenderer.getWidth(text) / 2);
-                y = UC.y;
-                UC.y += textRenderer.fontHeight;
-                break;
-            case "UR":
-                x = UR.x - textRenderer.getWidth(text);
-                y = UR.y;
-                UR.y += textRenderer.fontHeight;
-                break;
-            case "BL":
-                x = BL.x;
-                y = BL.y - textRenderer.fontHeight;
-                BL.y -= textRenderer.fontHeight;
-                break;
-            case "BR":
-                x = BR.x - textRenderer.getWidth(text);
-                y = BR.y - textRenderer.fontHeight;
-                BR.y -= textRenderer.fontHeight;
-                break;
-        }
-
-        drawContext.drawText(textRenderer, text, x, y, rainbow ? Colors.rainbow : color, true);
-    }
-
-    private static List<Mod> getMods() {
-        Comparator<Mod> byNameLength = Comparator.comparingInt(mod -> mc.textRenderer.getWidth(mod.name));
-        List<Mod> sortedMods = ModManager.modules.values().stream().flatMap(List::stream).collect(Collectors.toList());
-        sortedMods.removeAll(ModManager.modules.get(ModCategory.HUD));
-        sortedMods.removeAll(ModManager.modules.get(ModCategory.GUI));
-        if (sorted.enabled)
-            sortedMods.sort(byNameLength.reversed());
-
-        return sortedMods;
-    }
-
-    private static List<StatusEffectInstance> getStatusEffects() {
-        Comparator<StatusEffectInstance> byDuration = Comparator.comparingInt(statusEffectInstance -> statusEffectInstance.getAmplifier());
-        List<StatusEffectInstance> statusEffects = new ArrayList<>(mc.player.getStatusEffects().stream().toList());
-
-        if (!statusEffects.isEmpty())
-            statusEffects.sort(byDuration);
-
-        return statusEffects;
-    }
-
-    private static String getWatermarkText() {
-        String watermarkText = String.format("nicotine %sv%s", Formatting.WHITE, nicotine.getVersion());
-
-        return watermarkText;
-    }
-
-    private static String getDirectionText() {
-        String direction =  StringUtils.capitalize(mc.player.getMovementDirection().asString());
-        String cordDirection = switch (direction) {
-            case "South" -> "+Z";
-            case "North" -> "-Z";
-            case "East" -> "+X";
-            case "West" -> "-X";
-            default -> "";
+    public static HudPosition getHudPos(String pos) {
+        return switch (pos) {
+            case "TL" -> HudPosition.TopLeft;
+            case "TC" -> HudPosition.TopCenter;
+            case "TR" -> HudPosition.TopRight;
+            case "BL" -> HudPosition.BottomLeft;
+            case "BR" -> HudPosition.BottomRight;
+            default -> HudPosition.TopLeft;
         };
-
-        String directionText = String.format("%s [%s%s%s]",direction, Formatting.WHITE, cordDirection, Formatting.RESET);
-
-        return directionText;
     }
 
-    private static String getCordsText() {
-        double x = mc.player.getX();
-        double y = mc.player.getY();
-        double z = mc.player.getZ();
-
-        String cordsText = String.format("xyz %s-> %.1f %.1f %.1f", Formatting.WHITE, x, y, z);
-
-        Vector2d otherWorld = new Vector2d(x, z);
-        if (!mc.world.getRegistryKey().equals(World.END)) {
-
-            if (mc.world.getRegistryKey().equals(World.NETHER))
-                otherWorld.mul(8);
-            else
-                otherWorld.div(8);
-
-            cordsText = cordsText.concat(String.format(" %s[%s%.1f %.1f%s]", Formatting.RESET, Formatting.WHITE, otherWorld.x, otherWorld.y, Formatting.RESET));
+    private static void clearHud() {
+        hudElements.clear();
+        for (HudPosition hudPosition : HudPosition.values()) {
+            hudElements.put(hudPosition, new ArrayList<>());
         }
-
-        return cordsText;
-    }
-
-    private static String getFPSText() {
-        String fpsText = String.format("fps %s-> %d", Formatting.WHITE, mc.getCurrentFps());
-
-        return fpsText;
-    }
-
-    private static String getPingText() {
-        int ping = Player.getPing(mc.player);
-        String pingText = String.format("ping %s-> %dms", Formatting.WHITE, ping);
-
-        return pingText;
-    }
-
-    private static String getSpeedText() {
-        double deltaX = mc.player.getX() - mc.player.prevX;
-        double deltaZ = mc.player.getZ() - mc.player.prevZ;
-        double speed = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaZ, 2)) * 20d * 3.6d;
-
-        String speedText = String.format("speed %s-> %.2fkm/h", Formatting.WHITE, speed);
-
-        return speedText;
-    }
-
-    private static String getStatusEffectText(StatusEffectInstance statusEffectInstance) {
-        String effect = Text.translatable(statusEffectInstance.getTranslationKey()).getString();
-        String strength = Text.translatable("enchantment.level." + (statusEffectInstance.getAmplifier() + 1)).getString();
-
-        int durationTicks = MathHelper.floor((float)statusEffectInstance.getDuration());
-        String duration = Text.literal(StringHelper.formatTicks(durationTicks, 20)).getString();
-
-        String statusEffectText = String.format("%s%s %s [%s]", effect, Formatting.WHITE, strength, duration);
-
-        return statusEffectText;
-    }
-
-    private static String getPlayerText() {
-        String playerText = String.format("player %s-> %s", Formatting.WHITE, mc.player.getName().getString());
-
-        return playerText;
-    }
-
-    private static String getServerText() {
-        String serverText = String.format("server %s-> %s", Formatting.WHITE, currentServer.address);
-
-        return serverText;
     }
 
     public static void init() {
-        String[] hudModuleNames =  new String[]{"Watermark", "Modules", "Cords", "FPS", "Ping", "Speed", "Effects", "Player", "Server"};
-        for (String hudModuleName : hudModuleNames) {
-            Mod hudMod = new Mod(hudModuleName);
-            SwitchOption position = new SwitchOption(
-                    "Position",
-                    new String[]{"UL", "UC", "UR", "BL", "BR"}
-            );
-            ToggleOption rainbowColor = new ToggleOption("RainbowColor", false);
-            hudMod.modOptions.addAll(Arrays.asList(position, rainbowColor));
+        Mod options = new Mod("Options");
+        options.alwaysEnabled = true;
+        ToggleOption borders = new ToggleOption("Borders", true);
+        ToggleOption lowercase = new ToggleOption("Lowercase");
+        ToggleOption bold = new ToggleOption("Bold");
+        ToggleOption italic = new ToggleOption("Italic");
+        SwitchOption separator = new SwitchOption(
+                "Separator",
+                new String[]{"->", ">", "<", "=", ":", ""}
+        );
+        options.modOptions.addAll(Arrays.asList(borders, lowercase, bold, italic, separator));
+        ModManager.addMod(ModCategory.HUD, options);
 
-            if (hudModuleName.equals("Modules")) {
-                sorted = new ToggleOption("Sorted", false);
-                hudMod.modOptions.add(sorted);
-            }
-
-            ModManager.addMod(ModCategory.HUD, hudMod);
-        }
-
+        separatorText = separator.value;
+        clearHud();
 
         EventBus.register(InGameHudRenderAfterEvent.class, event -> {
-            if (mc.currentScreen instanceof GUI)
-                return true;
+            separatorText = separator.value;
 
-            List<Mod> hudModules = ModManager.modules.get(ModCategory.HUD);
+            final int width = mc.getWindow().getScaledWidth();
+            final int height = mc.getWindow().getScaledHeight();
+            final int padding = 8;
 
-            resetHUDPos();
+            for (HashMap.Entry<HudPosition, List<Text>> hudElement : hudElements.entrySet()) {
+                int initPosX = -1;
+                int initPosY = -1;
 
-            for (Mod hudMod : hudModules) {
-                if (!hudMod.enabled)
-                    continue;
+                int posX = -1;
+                int posY = -1;
 
-                switch (hudMod.name) {
-                    case "Watermark":
-                        drawHUDText(event.drawContext, hudMod, getWatermarkText());
-                        drawHUDText(event.drawContext, hudMod, "");
-                        break;
-                    case "Modules":
-                        for (Mod mod : getMods()) {
-                            if (mod.enabled)
-                                drawHUDText(event.drawContext, hudMod, mod.name);
-                        }
-                        drawHUDText(event.drawContext, hudMod, "");
-                        break;
-                    case "Cords":
-                        drawHUDText(event.drawContext, hudMod, getCordsText());
-                        drawHUDText(event.drawContext, hudMod, getDirectionText());
-                        break;
-                    case "FPS":
-                        drawHUDText(event.drawContext, hudMod, getFPSText());
-                        break;
-                    case "Ping":
-                        if (!mc.isInSingleplayer()) {
-                            drawHUDText(event.drawContext, hudMod, getPingText());
-                        }
-                        break;
-                    case "Speed":
-                        drawHUDText(event.drawContext, hudMod, getSpeedText());
-                        break;
-                    case "Effects":
-                        for (StatusEffectInstance statusEffectInstance : getStatusEffects()) {
-                            int statusColor = statusEffectInstance.getEffectType().value().getColor();
-                            drawHUDText(event.drawContext, hudMod, getStatusEffectText(statusEffectInstance), statusColor);
-                        }
-                        break;
-                    case "Player":
-                        drawHUDText(event.drawContext, hudMod, getPlayerText());
-                        break;
-                    case "Server":
-                        if (!mc.isInSingleplayer()) {
-                            drawHUDText(event.drawContext, hudMod, getServerText());
-                        }
-                        break;
+                int yOffset = mc.textRenderer.fontHeight + (borders.enabled ? 4 : 0);
+
+                for (Text hudText : hudElement.getValue()) {
+                    String formattedText = hudText.getString();
+
+                    if (lowercase.enabled) {
+                        formattedText = formattedText.toLowerCase();
+                    }
+
+                    if (bold.enabled && !formattedText.isBlank()) {
+                        formattedText = Formatting.BOLD + formattedText;
+                    }
+
+                    if (italic.enabled && !formattedText.isBlank()) {
+                        formattedText = Formatting.ITALIC + formattedText;
+                    }
+
+                    switch (hudElement.getKey()) {
+                        case TopLeft:
+                            if (initPosX == -1) {
+                                initPosX = padding;
+                                initPosY = padding;
+                            }
+
+                            posX = initPosX;
+                            posY = initPosY;
+                            initPosY += yOffset;
+
+                            break;
+                        case TopCenter:
+                            if (initPosX == -1) {
+                                initPosX = width / 2;
+                                initPosY = padding;
+                            }
+
+                            posX = initPosX - (mc.textRenderer.getWidth(formattedText) / 2);
+                            posY = initPosY;
+                            initPosY += yOffset;
+
+                            break;
+                        case TopRight:
+                            if (initPosX == -1) {
+                                initPosX = width - padding;
+                                initPosY = padding;
+                            }
+
+                            posX = initPosX - mc.textRenderer.getWidth(formattedText);
+                            posY = initPosY;
+                            initPosY += yOffset;
+
+                            break;
+                        case BottomLeft:
+                            if (initPosX == -1) {
+                                initPosX = padding;
+                                initPosY = height - padding;
+                            }
+
+                            posX = initPosX;
+                            posY = initPosY - yOffset;
+                            initPosY -= yOffset;
+
+                            break;
+                        case BottomRight:
+                            if (initPosX == -1) {
+                                initPosX = width - padding;
+                                initPosY = height - padding;
+                            }
+
+                            posX = initPosX - mc.textRenderer.getWidth(formattedText);
+                            posY = initPosY - yOffset;
+                            initPosY -= yOffset;
+
+                            break;
+                    }
+
+                    if (borders.enabled && !formattedText.isBlank()) {
+                        int borderPadding = 2;
+                        int borderX = posX - borderPadding - (borderPadding / 2);
+                        int borderY = posY - borderPadding - (borderPadding / 2);
+                        int borderWidth = mc.textRenderer.getWidth(formattedText) + 2 * borderPadding;
+                        int borderHeight = mc.textRenderer.fontHeight + 2 * borderPadding;
+
+                        event.drawContext.fill(borderX, borderY, borderX + borderWidth, borderY + borderHeight, ColorUtil.BACKGROUND_COLOR);
+                        RenderGUI.drawBorder(event.drawContext, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
+                    }
+
+                    event.drawContext.drawText(mc.textRenderer, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
                 }
             }
+
+            clearHud();
 
             return true;
         });

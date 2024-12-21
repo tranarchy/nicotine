@@ -11,16 +11,14 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.util.EventBus;
+import nicotine.util.Keybind;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static nicotine.util.Common.mc;
-import static nicotine.util.Common.windowHandle;
 
 public class Xray {
-
-    private static boolean keyPressed = false;
 
     public static void init() {
         Mod xray = new Mod("Xray") {
@@ -80,13 +78,8 @@ public class Xray {
 
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (InputUtil.isKeyPressed(windowHandle,  keybind.keyCode)) {
-                keyPressed = true;
-            }
-
-            if (keyPressed && !InputUtil.isKeyPressed(windowHandle,  keybind.keyCode)) {
+            if (Keybind.keyReleased(xray, keybind.keyCode)) {
                 xray.toggle();
-                keyPressed = false;
             }
 
             return true;

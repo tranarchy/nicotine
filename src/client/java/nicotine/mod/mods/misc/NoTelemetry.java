@@ -8,7 +8,7 @@ import nicotine.util.EventBus;
 
 public class NoTelemetry { ;
     public static void init() {
-        Mod noTelemetry = new Mod("NoTelemetry");
+        Mod noTelemetry = new Mod("NoTelemetry", "Disables Microsoft telemetry");
         ModManager.addMod(ModCategory.Misc, noTelemetry);
 
         EventBus.register(IsTelemetryEnabledByApiEvent.class, event -> {

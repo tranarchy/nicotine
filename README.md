@@ -34,19 +34,14 @@ cd nicotine
 
 You will find the built jar in `build/libs`
 
-## Default keybinds
+## GUI
 
-- **GUI ->** Right Shift
-- **Xray ->** X
-- **Zoom ->** C 
-- **Surround ->** B
-- **AutoCrystal ->** R 
-- **KillAura ->** K
+The default keybind for the click GUI is **Right Shift**, you can change this any time
 
-You can change the keybinds from the click GUI any time
+To search for a specific module in the GUI press **/**
 
-## Older versions
+## Other versions
 
-nicotine is made for the newest version of Minecraft
+nicotine is currently made for version **1.21.3**
 
-If you want to use nicotine on an older Minecraft version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod
+If you want to use nicotine on another Minecraft version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod

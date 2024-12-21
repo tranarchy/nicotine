@@ -13,7 +13,7 @@ import static nicotine.util.Common.mc;
 public class SmartFocus {
 
     public static void init() {
-        Mod smartFocus = new Mod("SmartFocus");
+        Mod smartFocus = new Mod("SmartFocus", "When the game is not in focus limits your FPS");
         SliderOption fps = new SliderOption(
                 "FPS",
                 5,
@@ -23,12 +23,13 @@ public class SmartFocus {
         smartFocus.modOptions.add(fps);
         ModManager.addMod(ModCategory.Misc, smartFocus);
 
+        SimpleOption<Integer> maxFps = mc.options.getMaxFps();
+
         EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!smartFocus.enabled)
                 return true;
 
             if (mc.isWindowFocused()) {
-                SimpleOption<Integer> maxFps = mc.options.getMaxFps();
                 mc.getInactivityFpsLimiter().setMaxFps(maxFps.getValue());
             } else {
                 mc.getInactivityFpsLimiter().setMaxFps((int)fps.value);

@@ -30,7 +30,7 @@ public class AutoReconnectScreen extends Screen {
         this.grid.add(new MultilineTextWidget(text, this.textRenderer).setMaxWidth(this.width - 50).setCentered(true));
         this.grid.getMainPositioner().margin(2);
         ButtonWidget buttonWidget;
-        buttonWidget = ButtonWidget.builder(Text.literal("Close"), button -> this.client.setScreen(new MultiplayerScreen(new TitleScreen()))).width(200).build();
+        buttonWidget = ButtonWidget.builder(Text.literal("Cancel"), button -> this.client.setScreen(new MultiplayerScreen(new TitleScreen()))).width(200).build();
         this.grid.add(buttonWidget);
         this.grid.refreshPositions();
         this.grid.forEachChild(this::addDrawableChild);

@@ -1,14 +1,15 @@
 package nicotine.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.BlockBreakingInfo;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import nicotine.events.BeforeDebugRenderEvent;
-import nicotine.events.RenderEvent;
-import nicotine.events.RenderParticlesEvent;
-import nicotine.events.RenderWeatherEvent;
+import nicotine.events.*;
+import nicotine.mod.mods.render.BlockBreaking;
 import nicotine.util.EventBus;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -29,13 +30,37 @@ public abstract class WorldRendererMixin {
 
     @Final
     @Shadow
+    private Int2ObjectMap<BlockBreakingInfo> blockBreakingInfos;
+
+    @Final
+    @Shadow
     private BufferBuilderStorage bufferBuilders;
 
     @Shadow
     @Final
     private DefaultFramebufferSet framebufferSet;
 
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/render/WorldRenderer;renderWeather(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/client/render/LightmapTextureManager;Lnet/minecraft/util/math/Vec3d;FLnet/minecraft/client/render/Fog;)V", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "setBlockBreakingInfo")
+    public void setBlockBreakingInfo(int entityId, BlockPos pos, int stage, CallbackInfo info) {
+        BlockBreakingInfo blockBreakingInfo = this.blockBreakingInfos.get(entityId);
+
+        if (stage >= 0 && stage < 10 && blockBreakingInfo != null) {
+            BlockBreaking.blockBreakingInfos.put(blockBreakingInfo.getPos(), blockBreakingInfo.getStage());
+        } else if (blockBreakingInfo != null) {
+            BlockBreaking.blockBreakingInfos.remove(blockBreakingInfo.getPos());
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "renderBlockDamage", cancellable = true)
+    private void renderBlockDamage(MatrixStack matrices, Camera camera, VertexConsumerProvider.Immediate vertexConsumers, CallbackInfo info) {
+        boolean result = EventBus.post(new RenderBlockDamageEvent());
+
+        if (!result) {
+            info.cancel();
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
     private void renderWeather(FrameGraphBuilder frameGraphBuilder, LightmapTextureManager lightmapTextureManager, Vec3d pos, float tickDelta, Fog fog, CallbackInfo info) {
         boolean result = EventBus.post(new RenderWeatherEvent());
 
@@ -51,14 +76,14 @@ public abstract class WorldRendererMixin {
         this.vertexConsumerProvider = this.bufferBuilders.getEntityVertexConsumers();
     }
 
-    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;")})
+    /*@Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;")})
     private void beforeClouds(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
         RenderPass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
         this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
         afterTranslucentPass.setRenderer(() -> {
-           EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
+           EventBus.post(new BeforeCloudsRenderEvent(camera, matrixStack, vertexConsumerProvider));
         });
-    }
+    }*/
 
     @Inject(
             method = "method_62214",
@@ -69,7 +94,12 @@ public abstract class WorldRendererMixin {
             )
     )
     private void beforeDebugRender(CallbackInfo ci) {
-        EventBus.post(new BeforeDebugRenderEvent(camera, matrixStack, vertexConsumerProvider));
+        EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
+    }
+
+    @Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0))
+    private void afterEntities(CallbackInfo ci) {
+        EventBus.post(new AfterEntitiesRenderEvent(camera, matrixStack, vertexConsumerProvider));
     }
 
     @Inject(at = @At("HEAD"), method = "renderParticles", cancellable = true)
@@ -78,6 +108,13 @@ public abstract class WorldRendererMixin {
 
         if (!result) {
             info.cancel();
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "renderEntity")
+    private void renderEntity(Entity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo info) {
+        if (vertexConsumers instanceof OutlineVertexConsumerProvider outlineVertexConsumerProvider) {
+            EventBus.post(new RenderEntityOutlineEvent(outlineVertexConsumerProvider));
         }
     }
 }

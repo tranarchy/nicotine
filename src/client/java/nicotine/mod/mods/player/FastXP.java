@@ -14,7 +14,7 @@ public class FastXP {
     private static float delayLeft = 0;
 
     public static void init() {
-        Mod fastXP = new Mod("FastXP");
+        Mod fastXP = new Mod("FastXP", "Speeds up how fast you can throw XP bottles");
         SliderOption delay = new SliderOption(
                 "Delay",
                 0,

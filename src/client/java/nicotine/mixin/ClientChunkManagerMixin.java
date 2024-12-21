@@ -18,8 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.function.Consumer;
 
-import static nicotine.util.Common.blockEntities;
-import static nicotine.util.Common.loadedChunks;
+import static nicotine.util.Common.*;
 
 @Mixin(ClientChunkManager.class)
 public class ClientChunkManagerMixin {

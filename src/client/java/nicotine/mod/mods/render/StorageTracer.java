@@ -9,7 +9,8 @@ import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.util.Colors;
+import nicotine.mod.option.SliderOption;
+import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.Render;
 import nicotine.util.math.BoxUtil;
@@ -21,25 +22,21 @@ public class StorageTracer {
 
     public static void init() {
         Mod storageTracer = new Mod("StorageTracer");
+        SliderOption alpha = new SliderOption("Alpha", 255, 10, 255);
+        storageTracer.modOptions.add(alpha);
         ModManager.addMod(ModCategory.Render, storageTracer);
 
         EventBus.register(RenderEvent.class, event -> {
             if (!storageTracer.enabled)
                 return true;
 
-            Render.toggleRender(true);
-
-            Vec3d view = event.camera.getPos();
-
-            event.matrixStack.push();
-            event.matrixStack.translate(-view.x, -view.y, -view.z);
-            MatrixStack.Entry entry = event.matrixStack.peek();
+            Render.toggleRender(event.matrixStack, event.camera,true);
 
             int blockColor;
 
             for (BlockEntity blockEntity : blockEntities) {
 
-                blockColor = Colors.getBlockColor(blockEntity);
+                blockColor = ColorUtil.getBlockColor(blockEntity);
 
                 if (blockColor == -1)
                     continue;
@@ -50,21 +47,19 @@ public class StorageTracer {
                         boundingBox.minY,
                         boundingBox.minZ
                 );
-                Render.drawTracer(entry, vec3dPos, blockColor);
+                Render.drawTracer(event.matrixStack, vec3dPos, ColorUtil.changeAlpha(blockColor, (int)alpha.value));
             }
 
             for (Entity entity : mc.world.getEntities()) {
-                blockColor = Colors.getBlockColor(entity);
+                blockColor = ColorUtil.getBlockColor(entity);
 
                 if (blockColor == -1)
                     continue;
 
-                Render.drawTracer(entry, entity.getPos(), blockColor);
+                Render.drawTracer(event.matrixStack, entity.getPos(), ColorUtil.changeAlpha(blockColor, (int)alpha.value));
             }
 
-            event.matrixStack.pop();
-
-            Render.toggleRender(false);
+            Render.toggleRender(event.matrixStack, event.camera,false);
 
             return true;
         });

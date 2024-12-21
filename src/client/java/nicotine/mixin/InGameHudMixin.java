@@ -3,12 +3,15 @@ package nicotine.mixin;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.RenderTickCounter;
+import nicotine.clickgui.GUI;
 import nicotine.events.*;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import static nicotine.util.Common.*;
 
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
@@ -32,7 +35,8 @@ public class InGameHudMixin {
 
     @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")
     public void renderBefore(DrawContext context, RenderTickCounter tickCounter, CallbackInfo info) {
-        EventBus.post(new InGameHudRenderBeforeEvent(context));
+        if (!(mc.currentScreen instanceof GUI))
+            EventBus.post(new InGameHudRenderBeforeEvent(context));
     }
 
     @Inject(at = @At("TAIL"), method = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V")

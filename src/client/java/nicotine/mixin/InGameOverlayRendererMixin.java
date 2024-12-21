@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameOverlayRenderer.class)
 public class InGameOverlayRendererMixin {
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/gui/hud/InGameOverlayRenderer;renderOverlays(Lnet/minecraft/client/MinecraftClient;Lnet/minecraft/client/util/math/MatrixStack;)V", cancellable = true)
+    @Inject(at = @At("HEAD"), method = "renderOverlays", cancellable = true)
     private static void renderOverlays(MinecraftClient client, MatrixStack matrices, CallbackInfo info) {
        boolean result = EventBus.post(new RenderOverlaysEvent());
 

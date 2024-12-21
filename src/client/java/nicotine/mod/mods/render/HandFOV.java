@@ -27,7 +27,8 @@ public class HandFOV {
                 "Aspect",
                 1.0f,
                 0.1f,
-                1.0f
+                1.5f,
+                true
         );
         handFOV.modOptions.addAll(Arrays.asList(fov, aspect));
         ModManager.addMod(ModCategory.Render, handFOV);

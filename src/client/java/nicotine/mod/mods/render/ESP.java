@@ -1,21 +1,15 @@
 package nicotine.mod.mods.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3d;
 import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.SliderOption;
-import nicotine.mod.option.SwitchOption;
-import nicotine.mod.option.ToggleOption;
-import nicotine.util.Colors;
+import nicotine.mod.option.*;
 import nicotine.util.EventBus;
 import nicotine.util.Render;
 import nicotine.util.math.Boxf;
 
-import java.awt.*;
 import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
@@ -23,31 +17,20 @@ import static nicotine.util.Common.mc;
 public class ESP {
 
      public static void init() {
-        Mod esp = new Mod("ESP");
-        SwitchOption render = new SwitchOption(
+         Mod esp = new Mod("ESP");
+         SwitchOption render = new SwitchOption(
                  "Render",
-                 new String[]{"Box", "Wire", "Filled", "Fade", "2D", "2DFill"}
-        );
-         SliderOption red = new SliderOption(
-                 "Red",
-                 255,
-                 0,
-                 255
+                 new String[]{"Box", "Wire", "Filled", "Fade"}
          );
-         SliderOption green = new SliderOption(
-                 "Green",
-                 0,
-                 0,
-                 255
+         SliderOption scale = new SliderOption(
+                 "Scale",
+                 1.0f,
+                 0.9f,
+                 1.3f,
+                 true
          );
-         SliderOption blue = new SliderOption(
-                 "Blue",
-                 0,
-                 0,
-                 255
-         );
-         ToggleOption rainbowColor = new ToggleOption("RainbowColor", false);
-         esp.modOptions.addAll(Arrays.asList(render, red, green, blue, rainbowColor));
+         RGBOption rgb = new RGBOption();
+         esp.modOptions.addAll(Arrays.asList(render, scale, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
          ModManager.addMod(ModCategory.Render, esp);
 
          EventBus.register(RenderEvent.class, event -> {
@@ -55,48 +38,30 @@ public class ESP {
             if (!esp.enabled)
                 return true;
 
-
-             int colorVal = new Color(red.value / 255, green.value / 255, blue.value / 255).getRGB();
-
-             if (rainbowColor.enabled)
-                 colorVal = Colors.rainbow;
-
-            Render.toggleRender(true);
-
-            Vec3d view = event.camera.getPos();
-
-             event.matrixStack.push();
-             event.matrixStack.translate(-view.x, -view.y, -view.z);
-             MatrixStack.Entry entry = event.matrixStack.peek();
+            Render.toggleRender(event.matrixStack, event.camera,true);
 
             for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
                 if (mc.player != player) {
+                    Boxf boundingBox = new Boxf(player.getBoundingBox().expand(scale.value - 1));
+
                     switch (render.value) {
                         case "Box":
-                            Render.drawBox(entry, new Boxf(player.getBoundingBox()), colorVal);
+                            Render.drawBox(event.matrixStack, boundingBox, rgb.getColor());
                             break;
                         case "Wire":
-                            Render.drawWireframeBox(entry, new Boxf(player.getBoundingBox()), colorVal);
+                            Render.drawWireframeBox(event.matrixStack, boundingBox, rgb.getColor());
                             break;
                         case "Filled":
-                            Render.drawFilledBox(entry, new Boxf(player.getBoundingBox()), colorVal);
+                            Render.drawFilledBox(event.matrixStack, boundingBox, rgb.getColor());
                             break;
                         case "Fade":
-                            Render.drawFilledBox(entry, new Boxf(player.getBoundingBox()), colorVal, true);
-                            break;
-                        case "2D":
-                            Render.draw2D(entry, new Boxf(player.getBoundingBox()), colorVal);
-                            break;
-                        case "2DFill":
-                            Render.drawFilled2D(entry, new Boxf(player.getBoundingBox()), colorVal);
+                            Render.drawFilledBox(event.matrixStack, boundingBox, rgb.getColor(), true);
                             break;
                     }
                 }
             }
 
-            event.matrixStack.pop();
-
-            Render.toggleRender(false);
+            Render.toggleRender(event.matrixStack, event.camera,false);
 
             return true;
         });

@@ -13,9 +13,10 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
-import nicotine.util.Colors;
+import nicotine.util.ColorUtil;
 import nicotine.util.RenderGUI;
 import nicotine.util.Settings;
+import org.joml.Vector2d;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,15 +32,22 @@ public class GUI extends Screen {
 
     private final List<CustomButton> buttons = new ArrayList<>();
 
-    private int guiYInitPos = 10;
+    public static HashMap<ModCategory, Vector2d> guiPos = new HashMap<>();
+
+    private int guiYInitPos = 8;
     private boolean saveSettings = false;
     private KeybindOption keybindOptionToSet = null;
+
+    private String searchString = "";
+    private boolean searchMode = false;
+
+    public static boolean showDescription = false;
 
     private void getButtons() {
         buttons.clear();
 
         int guiY = guiYInitPos;
-        int guiX = 10;
+        int guiX = 8;
 
         int height = mc.textRenderer.fontHeight + 10;
         int width = 85;
@@ -54,6 +62,9 @@ public class GUI extends Screen {
 
             for (Mod mod : modSet.getValue())
             {
+                if (!mod.name.toLowerCase().contains(searchString))
+                    continue;
+
                 ModButton modButton = new ModButton(guiX, guiY, width, height, mod);
                 guiY += height;
                 buttons.add(modButton);
@@ -61,8 +72,9 @@ public class GUI extends Screen {
                 if (mod.optionsVisible) {
                     for (ModOption modOption : mod.modOptions) {
                         OptionButton optionButton = new OptionButton(guiX, guiY, width, height, mod, modOption);
-                        guiY += height;
                         buttons.add(optionButton);
+
+                        guiY += height;
                     }
                 }
             }
@@ -94,38 +106,51 @@ public class GUI extends Screen {
 
     private void drawWatermark(DrawContext context) {
         final String watermarkText =  String.format("nicotine %sv%s", Formatting.WHITE, nicotine.getVersion());
-        final int watermarkPosX = mc.getWindow().getScaledWidth()  - textRenderer.getWidth(watermarkText) - 10;
-        final int watermarkPosY = mc.getWindow().getScaledHeight() - textRenderer.fontHeight - 10;
-        context.drawText(textRenderer, watermarkText,  watermarkPosX , watermarkPosY, Colors.rainbow, true);
+        final int watermarkPosX = mc.getWindow().getScaledWidth() - textRenderer.getWidth(watermarkText) - 8;
+        final int watermarkPosY = mc.getWindow().getScaledHeight() - textRenderer.fontHeight - 8;
+        context.drawText(textRenderer, watermarkText,  watermarkPosX , watermarkPosY, ColorUtil.rainbow, true);
     }
 
-    private void drawButtons(DrawContext context) {
-        getButtons();
-
+    private void drawButtons(DrawContext context, double mouseX, double mouseY) {
         for (CustomButton button : buttons) {
-            int textColor = Colors.FOREGROUND_COLOR;
-            int backgroundColor = Colors.BACKGROUND_COLOR;
+            int textColor = ColorUtil.FOREGROUND_COLOR;
+            int backgroundColor = ColorUtil.BACKGROUND_COLOR;
             int xOffSet, yOffset;
             xOffSet = yOffset = 6;
 
             String text = "";
 
            if (button instanceof CategoryButton categoryButton) {
-               backgroundColor = Colors.CATEGORY_BACKGROUND_COLOR;
-               textColor = Colors.CATEGORY_FOREGROUND_COLOR;
+               backgroundColor = ColorUtil.CATEGORY_BACKGROUND_COLOR;
+               textColor = ColorUtil.CATEGORY_FOREGROUND_COLOR;
                text = categoryButton.text;
 
            } else if (button instanceof ModButton modButton) {
                if (modButton.mod.enabled || modButton.mod.alwaysEnabled) {
-                   textColor = Colors.ACTIVE_FOREGROUND_COLOR;
+                   textColor = ColorUtil.ACTIVE_FOREGROUND_COLOR;
                 }
                text = modButton.mod.name;
+
+               if (showDescription) {
+                   List<Text> description = new ArrayList<>();
+                   String[] splitDescription = modButton.mod.description.split("\n");
+                   for (int i = 0; i < splitDescription.length; i++) {
+                       description.add(Text.of(splitDescription[i]));
+                       if (i + 1 < splitDescription.length) {
+                           description.add(Text.of(""));
+                       }
+                   }
+
+                   if (mouseOver(button, mouseX, mouseY) && !modButton.mod.description.isBlank()) {
+                       context.drawTooltip(mc.textRenderer, description, (int) mouseX + 3, (int) mouseY + splitDescription.length * 3);
+                   }
+               }
 
            } else if (button instanceof OptionButton optionButton) {
                ModOption modOption = optionButton.modOption;
 
                if (optionButton.mod.enabled || optionButton.mod.alwaysEnabled) {
-                   textColor = Colors.ACTIVE_FOREGROUND_COLOR;
+                   textColor = ColorUtil.ACTIVE_FOREGROUND_COLOR;
                }
 
                if (modOption instanceof SwitchOption switchOption) {
@@ -134,9 +159,9 @@ public class GUI extends Screen {
                    text = String.format("%s [%.2f]", sliderOption.name, sliderOption.value);
                } else if (modOption instanceof ToggleOption toggleOption) {
                    if (toggleOption.enabled) {
-                       textColor = Colors.ACTIVE_FOREGROUND_COLOR;
+                       textColor = ColorUtil.ACTIVE_FOREGROUND_COLOR;
                    } else {
-                       textColor = Colors.FOREGROUND_COLOR;
+                       textColor = ColorUtil.FOREGROUND_COLOR;
                    }
                    text = toggleOption.name;
                } else if (modOption instanceof KeybindOption keybindOption) {
@@ -150,28 +175,38 @@ public class GUI extends Screen {
 
 
             context.fill(button.x, button.y, button.x + button.width, button.y + button.height, backgroundColor);
-            RenderGUI.drawBorder(context, button.x, button.y, button.width, button.height, Colors.BORDER_COLOR);
+            RenderGUI.drawBorder(context, button.x, button.y, button.width, button.height, ColorUtil.BORDER_COLOR);
             context.drawText(textRenderer, text, button.x + xOffSet, button.y + yOffset, textColor, true);
         }
     }
 
-    private boolean clickedOn(CustomButton button, double mouseX, double mouseY) {
+    private void drawSearchString(DrawContext context) {
+        if (searchMode) {
+            getButtons();
+            String formattedSearchString = String.format("Searching for %s%s", Formatting.WHITE, searchString);
+            final int x = (mc.getWindow().getScaledWidth() / 2) - (mc.textRenderer.getWidth(formattedSearchString) / 2);
+            final int y = mc.getWindow().getScaledHeight() - 80;
+            context.drawText(mc.textRenderer, formattedSearchString, x, y, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
+        }
+    }
+
+    private boolean mouseOver(CustomButton button, double mouseX, double mouseY) {
         return (button.x <= mouseX && mouseX <= button.x + button.width && button.y <= mouseY && mouseY <= button.y + button.height);
     }
 
     private void setSliderOption(SliderOption sliderOption, CustomButton button, double mouseX) {
         float value = sliderOption.minValue + ((((float) (Math.round(mouseX) - button.x) / button.width)) * (sliderOption.maxValue - sliderOption.minValue));
-        value =  Math.round(value * 100.0f) / 100.0f;
+        value = Math.round(value * 100.0f) / 100.0f;
 
-        if ((int)sliderOption.minValue == sliderOption.minValue) {
-            sliderOption.value =  Math.round(value);
-        } else {
+        if (sliderOption.decimal) {
             sliderOption.value = value;
+        } else {
+            sliderOption.value =  Math.round(value);
         }
     }
 
     private void setSwitchOption(SwitchOption switchOption) {
-        for (int i = 0; i<=switchOption.modes.length - 1; i++) {
+        for (int i = 0; i < switchOption.modes.length; i++) {
             if (switchOption.value.equals(switchOption.modes[i])) {
                 if (i+1 <= switchOption.modes.length - 1) {
                     switchOption.value = switchOption.modes[i+1];
@@ -183,6 +218,10 @@ public class GUI extends Screen {
         }
     }
 
+    @Override
+    public void init() {
+        getButtons();
+    }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
@@ -196,17 +235,40 @@ public class GUI extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        drawWatermark(context);
-        drawButtons(context);
-
         super.render(context, mouseX, mouseY, delta);
+
+        drawSearchString(context);
+        drawWatermark(context);
+        drawButtons(context, mouseX, mouseY);
     }
 
+    public static boolean isLetter(int keyCode) {
+        return (keyCode >= InputUtil.GLFW_KEY_A && keyCode <= InputUtil.GLFW_KEY_Z);
+    }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == InputUtil.GLFW_KEY_ESCAPE) {
-            this.close();
+            if (searchMode) {
+                searchMode = false;
+                searchString = "";
+            } else {
+                this.close();
+            }
+            return true;
+        }
+
+        if (searchMode) {
+            if (keyCode == InputUtil.GLFW_KEY_BACKSPACE && !searchString.isBlank()) {
+                searchString = searchString.substring(0, searchString.length() - 1);
+            } else if (isLetter(keyCode)) {
+                searchString += InputUtil.fromKeyCode(keyCode, scanCode).getLocalizedText().getString().toLowerCase();
+            }
+            return true;
+        }
+
+        if (keyCode == InputUtil.GLFW_KEY_SLASH) {
+            searchMode = true;
             return true;
         }
 
@@ -227,6 +289,8 @@ public class GUI extends Screen {
             guiYInitPos += 5;
         }
 
+        getButtons();
+
         return false;
     }
 
@@ -234,7 +298,7 @@ public class GUI extends Screen {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         for (CustomButton customButton : buttons) {
-            if (clickedOn(customButton, mouseX, mouseY))  {
+            if (mouseOver(customButton, mouseX, mouseY))  {
                 if (customButton instanceof OptionButton optionButton) {
                     if (optionButton.modOption instanceof SliderOption sliderOption) {
                         setSliderOption(sliderOption, customButton, mouseX);
@@ -251,10 +315,11 @@ public class GUI extends Screen {
     @Override
     public boolean mouseClicked (double mouseX, double mouseY, int clickedButton) {
         for (CustomButton button : buttons) {
-            if (clickedOn(button, mouseX, mouseY))  {
+            if (mouseOver(button, mouseX, mouseY))  {
                 if (button instanceof ModButton modButton) {
                     if (clickedButton == 1) {
                         modButton.mod.optionsVisible = !modButton.mod.optionsVisible;
+                        getButtons();
                     } else if (clickedButton == 0) {
                         if (!modButton.mod.alwaysEnabled) {
                             modButton.mod.toggle();

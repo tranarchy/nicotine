@@ -8,7 +8,7 @@ import nicotine.util.EventBus;
 
 public class ExtraTab {
     public static void init() {
-        Mod extraTab = new Mod("ExtraTab");
+        Mod extraTab = new Mod("ExtraTab", "Tab now lists all players");
         ModManager.addMod(ModCategory.Misc, extraTab);
 
         EventBus.register(CollectPlayerEntriesEvent.class, event -> {

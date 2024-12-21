@@ -8,6 +8,7 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
+import nicotine.util.Inventory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -16,7 +17,7 @@ import static nicotine.util.Common.mc;
 
 public class AutoEject {
     public static void init() {
-        Mod autoEject = new Mod("AutoEject");
+        Mod autoEject = new Mod("AutoEject", "Throws away junk items from your inventory");
         ModManager.addMod(ModCategory.Player, autoEject);
 
         final List<Item> junkItems = Arrays.asList(
@@ -34,11 +35,9 @@ public class AutoEject {
             if (!autoEject.enabled)
                 return true;
 
-           int syncId = mc.player.currentScreenHandler.syncId;
-
-            for (int i = 9; i <= 35; i++) {
+            for (int i = 0; i <= 35; i++) {
                 if (junkItems.contains(mc.player.getInventory().getStack(i).getItem())) {
-                    mc.interactionManager.clickSlot(syncId, i, 1, SlotActionType.THROW, mc.player);
+                    Inventory.throwAway(i < 9 ? 36 + i : i);
                 }
             }
 
