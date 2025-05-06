@@ -1,13 +1,14 @@
 package nicotine.mod.mods.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.OtherClientPlayerEntity;
 import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
 import nicotine.util.EventBus;
-import nicotine.util.Render;
+import nicotine.util.render.Render;
 import nicotine.util.math.Boxf;
 
 import java.util.Arrays;
@@ -38,30 +39,27 @@ public class ESP {
             if (!esp.enabled)
                 return true;
 
-            Render.toggleRender(event.matrixStack, event.camera,true);
 
             for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-                if (mc.player != player) {
+                if (player instanceof OtherClientPlayerEntity) {
                     Boxf boundingBox = new Boxf(player.getBoundingBox().expand(scale.value - 1));
 
                     switch (render.value) {
                         case "Box":
-                            Render.drawBox(event.matrixStack, boundingBox, rgb.getColor());
+                            Render.drawBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
                             break;
                         case "Wire":
-                            Render.drawWireframeBox(event.matrixStack, boundingBox, rgb.getColor());
+                            Render.drawWireframeBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
                             break;
                         case "Filled":
-                            Render.drawFilledBox(event.matrixStack, boundingBox, rgb.getColor());
+                            Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
                             break;
                         case "Fade":
-                            Render.drawFilledBox(event.matrixStack, boundingBox, rgb.getColor(), true);
+                            Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, rgb.getColor(), true);
                             break;
                     }
                 }
             }
-
-            Render.toggleRender(event.matrixStack, event.camera,false);
 
             return true;
         });

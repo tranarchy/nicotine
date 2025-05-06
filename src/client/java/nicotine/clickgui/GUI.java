@@ -14,7 +14,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
 import nicotine.util.ColorUtil;
-import nicotine.util.RenderGUI;
+import nicotine.util.render.RenderGUI;
 import nicotine.util.Settings;
 import org.joml.Vector2d;
 
@@ -42,6 +42,7 @@ public class GUI extends Screen {
     private boolean searchMode = false;
 
     public static boolean showDescription = false;
+    public static boolean blur = false;
 
     private void getButtons() {
         buttons.clear();
@@ -112,13 +113,15 @@ public class GUI extends Screen {
     }
 
     private void drawButtons(DrawContext context, double mouseX, double mouseY) {
-        for (CustomButton button : buttons) {
+        for (int i = 0; i < buttons.size(); i++) {
             int textColor = ColorUtil.FOREGROUND_COLOR;
             int backgroundColor = ColorUtil.BACKGROUND_COLOR;
             int xOffSet, yOffset;
             xOffSet = yOffset = 6;
 
-            String text = "";
+           String text = "";
+
+           CustomButton button = buttons.get(i);
 
            if (button instanceof CategoryButton categoryButton) {
                backgroundColor = ColorUtil.CATEGORY_BACKGROUND_COLOR;
@@ -134,9 +137,9 @@ public class GUI extends Screen {
                if (showDescription) {
                    List<Text> description = new ArrayList<>();
                    String[] splitDescription = modButton.mod.description.split("\n");
-                   for (int i = 0; i < splitDescription.length; i++) {
-                       description.add(Text.of(splitDescription[i]));
-                       if (i + 1 < splitDescription.length) {
+                   for (int j = 0; j < splitDescription.length; j++) {
+                       description.add(Text.of(splitDescription[j]));
+                       if (j + 1 < splitDescription.length) {
                            description.add(Text.of(""));
                        }
                    }
@@ -175,8 +178,23 @@ public class GUI extends Screen {
 
 
             context.fill(button.x, button.y, button.x + button.width, button.y + button.height, backgroundColor);
-            RenderGUI.drawBorder(context, button.x, button.y, button.width, button.height, ColorUtil.BORDER_COLOR);
-            context.drawText(textRenderer, text, button.x + xOffSet, button.y + yOffset, textColor, true);
+
+           if (button instanceof CategoryButton) {
+               RenderGUI.drawBorder(context, button.x, button.y, button.width, button.height, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+           } else if (i + 1 < buttons.size()) {
+               if (buttons.get(i + 1) instanceof CategoryButton) {
+                   context.drawHorizontalLine(button.x, button.x + button.width, button.y + button.height, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
+                   RenderGUI.drawBorderVertical(context, button.x, button.y - 1, button.width, button.height + 1, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
+               } else {
+                   RenderGUI.drawBorderHorizontal(context, button.x, button.y, button.width, button.height, ColorUtil.BORDER_COLOR);
+                   RenderGUI.drawBorderVertical(context, button.x, button.y - 1, button.width, button.height + 1, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
+               }
+           } else {
+               context.drawHorizontalLine(button.x, button.x + button.width, button.y + button.height, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
+               RenderGUI.drawBorderVertical(context, button.x, button.y - 1, button.width, button.height + 1, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
+           }
+
+           context.drawText(textRenderer, text, button.x + xOffSet, button.y + yOffset, textColor, true);
         }
     }
 
@@ -237,6 +255,11 @@ public class GUI extends Screen {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
+        if (blur) {
+            this.applyBlur();
+            this.renderDarkening(context);
+        }
+
         drawSearchString(context);
         drawWatermark(context);
         drawButtons(context, mouseX, mouseY);
@@ -252,6 +275,7 @@ public class GUI extends Screen {
             if (searchMode) {
                 searchMode = false;
                 searchString = "";
+                getButtons();
             } else {
                 this.close();
             }

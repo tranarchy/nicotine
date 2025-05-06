@@ -6,6 +6,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.ChunkData;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.chunk.ChunkType;
+import net.minecraft.world.chunk.ProtoChunk;
 import net.minecraft.world.chunk.WorldChunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static nicotine.util.Common.*;
@@ -27,15 +31,15 @@ public class ClientChunkManagerMixin {
     private ClientWorld world;
 
     @Inject(method = "loadChunkFromPacket", at = @At("TAIL"))
-    private void onChunkLoad(int x, int z, PacketByteBuf packetByteBuf, NbtCompound nbtCompound, Consumer<ChunkData.BlockEntityVisitor> consumer, CallbackInfoReturnable<WorldChunk> info) {
+    private void onChunkLoad(int x, int z, PacketByteBuf buf, Map<Heightmap.Type,long[]> heightmaps, Consumer<ChunkData.BlockEntityVisitor> consumer, CallbackInfoReturnable<WorldChunk> info) {
         loadedChunks.add(info.getReturnValue());
     }
 
     @Inject(method = "loadChunkFromPacket", at = @At(value = "NEW", target = "net/minecraft/world/chunk/WorldChunk", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onChunkUnload(int x, int z, PacketByteBuf buf, NbtCompound tag, Consumer<ChunkData.BlockEntityVisitor> consumer, CallbackInfoReturnable<WorldChunk> info, int index, WorldChunk worldChunk, ChunkPos chunkPos) {
-        if (worldChunk != null) {
-            blockEntities.removeAll(worldChunk.getBlockEntities().values());
-            loadedChunks.remove(worldChunk);
+    private void onChunkUnload(int x, int z, PacketByteBuf buf, Map<Heightmap.Type,long[]> heightmaps, Consumer<ChunkData.BlockEntityVisitor> consumer, CallbackInfoReturnable<WorldChunk> info) {
+        if (info.getReturnValue() != null) {
+            blockEntities.removeAll(info.getReturnValue().getBlockEntities().values());
+            loadedChunks.remove(info.getReturnValue());
         }
     }
 

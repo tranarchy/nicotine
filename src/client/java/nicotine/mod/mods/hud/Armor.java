@@ -6,6 +6,7 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
+import nicotine.util.Player;
 
 import static nicotine.util.Common.mc;
 
@@ -20,11 +21,11 @@ public class Armor {
 
             int x = (mc.getWindow().getScaledWidth() / 2) + 95;
             final int y = mc.getWindow().getScaledHeight() - 59;
-            for (ItemStack armorItem : mc.player.getAllArmorItems()) {
+            for (ItemStack armorItem : Player.getArmorItems()) {
                 x -= 19;
                 event.drawContext.drawItem(armorItem, x, y);
                 event.drawContext.drawStackOverlay(mc.textRenderer, armorItem, x, y);
-            }
+           }
 
             return true;
         });

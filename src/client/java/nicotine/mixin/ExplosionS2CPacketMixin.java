@@ -3,6 +3,7 @@ package nicotine.mixin;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.util.math.Vec3d;
+import nicotine.events.ExplosionKnockbackEvent;
 import nicotine.events.KnockbackEvent;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,9 +26,9 @@ public class ExplosionS2CPacketMixin {
 
         if (playerKnockback.isPresent()) {
             Vec3d kb = playerKnockback.get();
-            result =  EventBus.post(new KnockbackEvent(kb.x, kb.y, kb.z));
+            result = EventBus.post(new ExplosionKnockbackEvent(kb.x, kb.y, kb.z));
         } else {
-            result =  EventBus.post(new KnockbackEvent(0, 0, 0));
+            result =  EventBus.post(new ExplosionKnockbackEvent(0, 0, 0));
         }
 
         if (!result) {

@@ -8,9 +8,12 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.SwitchOption;
+import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import org.apache.commons.lang3.StringUtils;
 import org.joml.Vector2d;
+
+import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
@@ -21,7 +24,9 @@ public class Cords {
                 "Position",
                 new String[]{"TL", "TC", "TR", "BL", "BR"}
         );
-        cords.modOptions.add(position);
+        ToggleOption showDirection = new ToggleOption("ShowDirection", true);
+
+        cords.modOptions.addAll(Arrays.asList(position, showDirection));
         ModManager.addMod(ModCategory.HUD, cords);
 
         EventBus.register(InGameHudRenderBeforeEvent.class, event -> {
@@ -56,10 +61,10 @@ public class Cords {
                 cordsText = cordsText.concat(String.format(" %s[%s%.1f %.1f%s]", Formatting.RESET, Formatting.WHITE, otherWorld.x, otherWorld.y, Formatting.RESET));
             }
 
-
-
             HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(cordsText));
-            HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(directionText));
+
+            if (showDirection.enabled)
+                HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(directionText));
 
             return true;
         });

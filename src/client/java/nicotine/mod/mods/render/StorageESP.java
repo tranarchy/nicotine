@@ -1,27 +1,17 @@
 package nicotine.mod.mods.render;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.block.entity.Spawner;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.math.Vec3d;
 import nicotine.events.RenderEvent;
-import nicotine.mixininterfaces.IMobSpawnerLogic;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.SwitchOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.Message;
-import nicotine.util.Render;
+import nicotine.util.render.Render;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
-import org.lwjgl.glfw.GLFW;
 
 import static nicotine.util.Common.blockEntities;
 import static nicotine.util.Common.mc;
@@ -42,8 +32,6 @@ public class StorageESP {
 
             int blockColor;
 
-            Render.toggleRender(event.matrixStack, event.camera,true);
-
             for (BlockEntity blockEntity : blockEntities) {
 
                 blockColor = ColorUtil.getBlockColor(blockEntity);
@@ -55,16 +43,16 @@ public class StorageESP {
 
                switch (render.value) {
                     case "Box":
-                        Render.drawBox(event.matrixStack, boundingBox, blockColor);
+                        Render.drawBox(event.camera, event.matrixStack, boundingBox, blockColor);
                         break;
                     case "Wire":
-                        Render.drawWireframeBox(event.matrixStack, boundingBox, blockColor);
+                        Render.drawWireframeBox(event.camera, event.matrixStack, boundingBox, blockColor);
                         break;
                     case "Filled":
-                        Render.drawFilledBox(event.matrixStack, boundingBox, blockColor);
+                        Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor);
                         break;
                     case "Fade":
-                        Render.drawFilledBox(event.matrixStack, boundingBox, blockColor, true);
+                        Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor, true);
                         break;
                 }
             }
@@ -79,21 +67,19 @@ public class StorageESP {
 
                 switch (render.value) {
                     case "Box":
-                        Render.drawBox(event.matrixStack, boundingBox, blockColor);
+                        Render.drawBox(event.camera, event.matrixStack, boundingBox, blockColor);
                         break;
                     case "Wire":
-                        Render.drawWireframeBox(event.matrixStack, boundingBox, blockColor);
+                        Render.drawWireframeBox(event.camera, event.matrixStack, boundingBox, blockColor);
                         break;
                     case "Filled":
-                        Render.drawFilledBox(event.matrixStack, boundingBox, blockColor);
+                        Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor);
                         break;
                     case "Fade":
-                        Render.drawFilledBox(event.matrixStack, boundingBox, blockColor, true);
+                        Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor, true);
                         break;
                 }
             }
-
-            Render.toggleRender(event.matrixStack, event.camera, false);
 
             return true;
         });

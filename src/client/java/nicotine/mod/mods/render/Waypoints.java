@@ -3,13 +3,14 @@ package nicotine.mod.mods.render;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import nicotine.events.AfterEntitiesRenderEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.*;
+import nicotine.util.render.Render;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -35,8 +36,8 @@ public class Waypoints {
         waypoints.modOptions.addAll(Arrays.asList(scale, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
         ModManager.addMod(ModCategory.Render, waypoints);
 
-        EventBus.register(AfterEntitiesRenderEvent.class, event -> {
-            if (!waypoints.enabled)
+        EventBus.register(RenderEvent.class, event -> {
+            if (!waypoints.enabled || mc.isInSingleplayer())
                 return true;
 
             for (WaypointInstance waypointInstance : allWaypoints) {

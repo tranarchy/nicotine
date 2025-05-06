@@ -1,8 +1,6 @@
 package nicotine.mod.mods.player;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.screen.slot.SlotActionType;
-import net.minecraft.util.math.BlockPos;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -28,7 +26,7 @@ public class AutoRefill {
             for (int i = 9; i <= 35; i++) {
                 if (mc.player.getMainHandStack().getName().getString().equals(mc.player.getInventory().getStack(i).getName().getString())) {
                     playerBusy = true;
-                    Inventory.swap(i, 36 + mc.player.getInventory().selectedSlot);
+                    Inventory.swap(i, 36 + mc.player.getInventory().getSelectedSlot());
                     playerBusy = false;
                 }
             }

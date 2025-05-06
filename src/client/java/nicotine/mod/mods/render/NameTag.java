@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
-import nicotine.events.AfterEntitiesRenderEvent;
+import nicotine.events.RenderEvent;
 import nicotine.events.RenderLabelIfPresentEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -13,7 +13,7 @@ import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
-import nicotine.util.Render;
+import nicotine.util.render.Render;
 
 import java.util.Arrays;
 
@@ -37,7 +37,7 @@ public class NameTag {
             return !nameTag.enabled;
         });
 
-        EventBus.register(AfterEntitiesRenderEvent.class, event -> {
+        EventBus.register(RenderEvent.class, event -> {
             if (!nameTag.enabled)
                 return true;
 

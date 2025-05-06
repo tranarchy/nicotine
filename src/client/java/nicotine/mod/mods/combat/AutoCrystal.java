@@ -6,7 +6,6 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.decoration.EndCrystalEntity;
 import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -24,6 +23,7 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.util.*;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
+import nicotine.util.render.Render;
 
 import java.util.*;
 
@@ -37,15 +37,23 @@ public class AutoCrystal {
     private static BlockPos placementPositionToRender = null;
 
     private static float calculateExplosionDamage(Vec3d explosionPos, Entity entity) {
-        if (explosionPos.distanceTo(entity.getPos()) <= 12.0) {
-            double distance = Math.sqrt(entity.squaredDistanceTo(explosionPos));
-            float f = 6.0F * 2.0F;
-            double d = distance / (double) f;
-            double e = (1.0 - d) * (double) ExplosionImpl.calculateReceivedDamage(explosionPos, entity);
-            return (float) ((e * e + e) / 2.0 * 7.0 * (double) f + 1.0);
-        } else {
-            return 0;
+        float power = 12.0F;
+
+        double distance = Math.sqrt(entity.squaredDistanceTo(explosionPos));
+        double d = distance / power;
+
+        if (d <= 1.0) {
+            double e = entity.getX() - explosionPos.x;
+            double g = entity.getEyeY() - explosionPos.y;
+            double h = entity.getZ() - explosionPos.z;
+            double o = Math.sqrt(e * e + g * g + h * h);
+            if (o != 0.0) {
+                double e2 = (1.0 - d) * (double) ExplosionImpl.calculateReceivedDamage(explosionPos, entity);
+                return (float) ((e2 * e2 + e2) / 2.0 * 7.0 * (double) power + 1.0);
+            }
         }
+
+        return 0;
     }
 
     private static List<BlockPos> getPlacementPositions() {
@@ -57,7 +65,7 @@ public class AutoCrystal {
             for (int y = -5; y <= 5; y++) {
                 for (int z = -5; z <= 5; z++) {
                     BlockPos pos = initPos.add(x, y, z);
-                    if (mc.player.canInteractWithBlockAt(pos.add(0, 1, 0), -1.0)) {
+                    if (mc.player.canInteractWithBlockAt(pos.add(0, 1, 0), 0)) {
                         if (hardBlocks.contains(mc.world.getBlockState(pos).getBlock())) {
                             if (mc.world.getBlockState(pos.add(0, 1, 0)).getBlock() == Blocks.AIR) {
                                 placementPositions.add(pos);
@@ -76,13 +84,13 @@ public class AutoCrystal {
         SliderOption delay = new SliderOption(
                 "Delay",
                 8,
-                1,
+                0,
                 20
         );
         SliderOption placeDelay = new SliderOption(
                 "PDelay",
                 10,
-                1,
+                0,
                 20
         );
         SliderOption minDamage = new SliderOption(
@@ -123,11 +131,10 @@ public class AutoCrystal {
                                 dmg >= minDamage.value && selfDmg <= selfDamage.value &&
                                 mc.player.canInteractWithEntity(endCrystalEntity, 0)
                                 && delayLeft <= 0
-                                && !Player.placing && !Player.attacking
+                                && !Player.placing && !Player.attacking && !player.isInvulnerable()
                         ) {
                             Player.lookAndAttack(endCrystalEntity);
                             delayLeft = delay.value;
-                            return true;
                         }
                     }
                 }
@@ -198,7 +205,6 @@ public class AutoCrystal {
                             Player.lookAndPlace(blockHitResult, false);
 
                             placeDelayLeft = placeDelay.value;
-                            return true;
                         }
                     }
                     else {
@@ -218,12 +224,9 @@ public class AutoCrystal {
             if (!autoCrystal.enabled || !renderPosition.enabled || placementPositionToRender == null)
                 return true;
 
-            Render.toggleRender(event.matrixStack, event.camera,true);
-
             Boxf boundingBox = BoxUtil.getBlockBoundingBoxf(placementPositionToRender);
-            Render.drawFilledBox(event.matrixStack, boundingBox, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+            Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, ColorUtil.ACTIVE_FOREGROUND_COLOR);
 
-            Render.toggleRender(event.matrixStack, event.camera,false);
             return true;
         });
     }

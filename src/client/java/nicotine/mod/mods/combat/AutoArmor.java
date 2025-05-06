@@ -3,7 +3,6 @@ package nicotine.mod.mods.combat;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -16,8 +15,8 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Inventory;
 import nicotine.util.Keybind;
+import nicotine.util.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,8 +39,7 @@ public class AutoArmor {
             if (Keybind.keyReleased(elytraSwap.name, elytraSwap.enabled, elytraSwapKeybind.keyCode))
                 elytraSwap.enabled = true;
 
-            List<ItemStack> armorItems = new ArrayList<>();
-            mc.player.getAllArmorItems().forEach(armorItems::add);
+            List<ItemStack> armorItems = Player.getArmorItems();
 
             if (!armorItems.contains(ItemStack.EMPTY) && !elytraSwap.enabled)
                 return true;
@@ -50,8 +48,8 @@ public class AutoArmor {
 
             for (int i = 0; i <= 35; i++) {
                 Item curItem = mc.player.getInventory().getStack(i).getItem();
-                if (curItem instanceof ArmorItem armorItem) {
-                    EquipmentSlot equipment = armorItem.getComponents().get(DataComponentTypes.EQUIPPABLE).slot();
+                if (curItem.getComponents().contains(DataComponentTypes.EQUIPPABLE)) {
+                    EquipmentSlot equipment = curItem.getComponents().get(DataComponentTypes.EQUIPPABLE).slot();
                     int equipmentSlot = equipment.getIndex();
                     int armorSlot = 35 + equipmentSlot;
 
@@ -64,7 +62,7 @@ public class AutoArmor {
                             elytraSwap.enabled = false;
 
                         playerBusy = false;
-                    }
+                   }
                 }
 
                if (curItem == Items.ELYTRA && chestplate.getItem() != Items.ELYTRA && elytraSwap.enabled) {

@@ -1,7 +1,6 @@
 package nicotine.mod.mods.render;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -12,7 +11,7 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.Render;
+import nicotine.util.render.Render;
 import nicotine.util.math.BoxUtil;
 
 import static nicotine.util.Common.blockEntities;
@@ -30,8 +29,6 @@ public class StorageTracer {
             if (!storageTracer.enabled)
                 return true;
 
-            Render.toggleRender(event.matrixStack, event.camera,true);
-
             int blockColor;
 
             for (BlockEntity blockEntity : blockEntities) {
@@ -47,7 +44,7 @@ public class StorageTracer {
                         boundingBox.minY,
                         boundingBox.minZ
                 );
-                Render.drawTracer(event.matrixStack, vec3dPos, ColorUtil.changeAlpha(blockColor, (int)alpha.value));
+                Render.drawTracer(event.camera, event.matrixStack, vec3dPos, ColorUtil.changeAlpha(blockColor, (int)alpha.value));
             }
 
             for (Entity entity : mc.world.getEntities()) {
@@ -56,10 +53,8 @@ public class StorageTracer {
                 if (blockColor == -1)
                     continue;
 
-                Render.drawTracer(event.matrixStack, entity.getPos(), ColorUtil.changeAlpha(blockColor, (int)alpha.value));
+                Render.drawTracer(event.camera, event.matrixStack, entity.getPos(), ColorUtil.changeAlpha(blockColor, (int)alpha.value));
             }
-
-            Render.toggleRender(event.matrixStack, event.camera,false);
 
             return true;
         });

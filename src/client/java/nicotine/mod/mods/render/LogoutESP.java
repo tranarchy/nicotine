@@ -4,7 +4,6 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.Vec3d;
-import nicotine.events.AfterEntitiesRenderEvent;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.events.ConnectEvent;
 import nicotine.events.RenderEvent;
@@ -13,6 +12,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.*;
 import nicotine.util.math.Boxf;
+import nicotine.util.render.Render;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,26 +63,15 @@ public class LogoutESP {
         });
 
         EventBus.register(RenderEvent.class, event -> {
+            if (!logoutESP.enabled)
+                return true;
 
             for (AbstractClientPlayerEntity player : loggedPlayers.keySet()) {
                 if (!Player.isPositionInRenderDistance(player.getPos()))
                     continue;
-
-                Render.toggleRender(event.matrixStack, event.camera,true);
 
                 Boxf boundingBox = new Boxf(player.getBoundingBox());
-                Render.drawBox(event.matrixStack, boundingBox, Colors.WHITE);
-
-                Render.toggleRender(event.matrixStack, event.camera,false);
-            }
-
-            return true;
-        });
-
-        EventBus.register(AfterEntitiesRenderEvent.class, event -> {
-            for (AbstractClientPlayerEntity player : loggedPlayers.keySet()) {
-                if (!Player.isPositionInRenderDistance(player.getPos()))
-                    continue;
+                Render.drawBox(event.camera, event.matrixStack, boundingBox, Colors.WHITE);
 
                 String text = player.getName().getString();
                 text += String.format(" (%ss ago)", getTimeInSeconds() - loggedPlayers.get(player));

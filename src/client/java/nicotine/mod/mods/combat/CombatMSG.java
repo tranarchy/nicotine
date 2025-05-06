@@ -54,7 +54,7 @@ public class CombatMSG {
 
                     if (!prevPlayers.contains(player)) {
                         Message.sendInfo(String.format("%s entered your render distance", player.getName().getString()));
-                        mc.world.playSoundAtBlockCenter(mc.player.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, false);
+                        mc.world.playSoundAtBlockCenterClient(mc.player.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, false);
                     }
                 }
 

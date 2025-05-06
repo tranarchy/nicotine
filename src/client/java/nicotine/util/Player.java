@@ -4,6 +4,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -12,6 +13,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import nicotine.events.SendMovementPacketAfterEvent;
 import nicotine.events.SendMovementPacketBeforeEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static nicotine.util.Common.mc;
 
@@ -23,6 +28,7 @@ public class Player {
 
     public static boolean attacking = false;
     public static boolean placing = false;
+
 
     private static boolean sneakWhilePlacing = false;
 
@@ -71,8 +77,8 @@ public class Player {
         EventBus.register(SendMovementPacketAfterEvent.class, event -> {
             if (changeLook) {
                 if (revertRotation) {
-                    mc.player.setYaw(mc.player.prevYaw);
-                    mc.player.setPitch(mc.player.prevPitch);
+                    mc.player.setYaw(mc.player.lastYaw);
+                    mc.player.setPitch(mc.player.lastPitch);
                 }
 
                 changeLook = false;
@@ -80,6 +86,21 @@ public class Player {
 
             return true;
         });
+    }
+
+    public static void lookAtYawOnly(Vec3d target, boolean client, float desiredPitch) {
+        Vec3d vec3d = EntityAnchorArgumentType.EntityAnchor.EYES.positionAt(mc.player);
+
+        double d = target.x - vec3d.x;
+        double e = target.y - vec3d.y;
+        double f = target.z - vec3d.z;
+        double g = Math.sqrt(d * d + f * f);
+
+        yaw = MathHelper.wrapDegrees((float)(MathHelper.atan2(f, d) * 180.0F / (float)Math.PI) - 90.0F);
+        pitch = desiredPitch;
+
+        revertRotation = !client;
+        changeLook = true;
     }
 
     public static void lookAt(Vec3d target, boolean client) {
@@ -110,6 +131,13 @@ public class Player {
         placing = true;
         sneakWhilePlacing = sneak;
         lookAt(blockHitResult.getBlockPos(), false);
+    }
+
+    public static void lookAndPlaceSetPitch(BlockHitResult blockHitResult, BlockPos lookAtPos, float desiredPitch, boolean sneak) {
+        targetPlacementPos = blockHitResult;
+        placing = true;
+        sneakWhilePlacing = sneak;
+        lookAtYawOnly(lookAtPos.toCenterPos(), false, desiredPitch);
     }
 
     public static void lookAndAttack(Entity entity, boolean client) {
@@ -157,6 +185,16 @@ public class Player {
 
         return ping;
     }
+
+    public static List<ItemStack> getArmorItems() {
+        List<ItemStack> armorItems = new ArrayList<>();
+
+        for (int i = 36; i < 40; i++)
+            armorItems.add(mc.player.getInventory().getStack(i));
+
+        return armorItems;
+    }
+
 
     public static AbstractClientPlayerEntity findNearestPlayer() {
         AbstractClientPlayerEntity nearestPlayer = null;

@@ -1,6 +1,5 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.util.Colors;
@@ -12,7 +11,7 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.Render;
+import nicotine.util.render.Render;
 
 import static nicotine.util.Common.mc;
 
@@ -27,17 +26,14 @@ public class ItemTracer {
             if (!itemTracer.enabled)
                 return true;
 
-            Render.toggleRender(event.matrixStack, event.camera,true);
-
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof ItemEntity) {
                     Vec3d targetPos = entity.getPos();
 
-                    Render.drawTracer(event.matrixStack, targetPos, ColorUtil.changeAlpha(Colors.WHITE, (int)alpha.value));
+                    Render.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(Colors.WHITE, (int)alpha.value));
                 }
             }
 
-            Render.toggleRender(event.matrixStack, event.camera,false);
 
             return true;
         });

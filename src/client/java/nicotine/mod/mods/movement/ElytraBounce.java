@@ -54,8 +54,7 @@ public class ElytraBounce {
             if (!elytraBounce.enabled)
                 return true;
 
-            List<ItemStack> armorItems = new ArrayList<>();
-            mc.player.getAllArmorItems().forEach(armorItems::add);
+            List<ItemStack> armorItems = Player.getArmorItems();
 
             if (armorItems.get(2).getItem() != Items.ELYTRA || !mc.options.forwardKey.isPressed())
                 return true;

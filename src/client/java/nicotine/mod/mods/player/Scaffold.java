@@ -3,7 +3,6 @@ package nicotine.mod.mods.player;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Items;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -16,7 +15,6 @@ import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Keybind;
-import nicotine.util.Message;
 import nicotine.util.Player;
 
 import java.util.Arrays;
@@ -24,8 +22,9 @@ import java.util.Arrays;
 import static nicotine.util.Common.*;
 
 public class Scaffold {
-    private static BlockPos scaffoldPos = null;
-    private static Direction scaffoldDirection = null;
+
+    private static BlockPos prevPlacementPos = BlockPos.ORIGIN;
+    private static BlockPos prevPlayerPos = BlockPos.ORIGIN;
 
     public static void init() {
 
@@ -43,20 +42,37 @@ public class Scaffold {
             if (!scaffold.enabled || (!(mc.player.getMainHandStack().getItem() instanceof BlockItem) && !selectBlock.enabled) || Player.placing || Player.attacking)
                 return true;
 
+            BlockPos initPos = mc.player.getBlockPos();
+            BlockPos scaffoldPos = BlockPos.ORIGIN;
+            BlockPos placementPos = BlockPos.ORIGIN;
 
-            BlockPos initPos = mc.player.getBlockPos().add(0, -1, 0);
-            if (mc.world.getBlockState(initPos).getBlock() != Blocks.AIR) {
+            Direction scaffoldDirection;
 
-                if (mc.player.isOnGround()) {
-                    scaffoldDirection = mc.player.getMovementDirection();
-                    scaffoldPos = initPos;
-                }
-            } else if (scaffoldPos != null) {
-                if (!mc.player.isOnGround()) {
-                   scaffoldDirection = Direction.UP;
-                   scaffoldPos = initPos.add(0, -1, 0);
-                }
+            switch (mc.player.getMovementDirection()) {
+                case SOUTH:
+                    placementPos = initPos.add(0, -1, 1);
+                    break;
+                case NORTH:
+                    placementPos = initPos.add(0, -1, -1);
+                    break;
+                case EAST:
+                    placementPos = initPos.add(1, -1, 0);
+                    break;
+                case WEST:
+                    placementPos = initPos.add(-1, -1, 0);
+                    break;
+            }
 
+            if (!mc.player.isOnGround()) {
+                scaffoldDirection = Direction.UP;
+                scaffoldPos = prevPlayerPos.add(0, -2, 0);
+                placementPos = initPos.add(0, -1, 0);
+            } else {
+                scaffoldDirection = mc.player.getMovementDirection();
+                scaffoldPos = prevPlayerPos.add(0, -1, 0);
+            }
+
+            if (mc.world.getBlockState(prevPlacementPos).getBlock() == Blocks.AIR && initPos.add(0, -1, 0).equals(prevPlacementPos)) {
                 if (selectBlock.enabled && !(mc.player.getMainHandStack().getItem() instanceof BlockItem)) {
                     for (int i = 0; i < 9; i++) {
                         if (mc.player.getInventory().getStack(i).getItem() instanceof BlockItem) {
@@ -70,9 +86,13 @@ public class Scaffold {
                     }
                 }
 
-                BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(scaffoldPos.getX(), scaffoldPos.getY(), scaffoldPos.getZ()), scaffoldDirection, scaffoldPos, false);
-                Player.lookAndPlace(blockHitResult, true);
+                BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(scaffoldPos.getX(), scaffoldPos.getY(), scaffoldPos.getZ()), scaffoldDirection, scaffoldPos.mutableCopy(), false);
+                Player.lookAndPlaceSetPitch(blockHitResult, prevPlacementPos.offset(scaffoldDirection.getOpposite()), mc.player.isOnGround() ? 85 : 90, true);
             }
+
+
+            prevPlacementPos = placementPos;
+            prevPlayerPos = initPos;
 
             return true;
         });

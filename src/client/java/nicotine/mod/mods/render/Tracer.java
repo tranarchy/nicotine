@@ -1,6 +1,7 @@
 package nicotine.mod.mods.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
 import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
@@ -10,7 +11,7 @@ import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.Render;
+import nicotine.util.render.Render;
 
 import java.util.Arrays;
 
@@ -29,17 +30,13 @@ public class Tracer {
             if (!tracer.enabled)
                  return true;
 
-            Render.toggleRender(event.matrixStack, event.camera,true);
-
             for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-                if (mc.player != player) {
+                if (player instanceof OtherClientPlayerEntity) {
                     Vec3d targetPos = player.getPos();
 
-                    Render.drawTracer(event.matrixStack, targetPos, ColorUtil.changeAlpha(rgb.getColor(), (int)alpha.value));
+                    Render.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(rgb.getColor(), (int)alpha.value));
                 }
             }
-
-            Render.toggleRender(event.matrixStack, event.camera,false);
 
             return true;
         });

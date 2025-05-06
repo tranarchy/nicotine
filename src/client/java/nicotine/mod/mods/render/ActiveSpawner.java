@@ -16,7 +16,7 @@ import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
 import nicotine.util.Player;
-import nicotine.util.Render;
+import nicotine.util.render.Render;
 import nicotine.util.math.BoxUtil;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class ActiveSpawner {
                             Message.sendInfo(String.format("Found an active spawner at %d %d %d!",
                                     mobSpawnerBlockEntity.getPos().getX(), mobSpawnerBlockEntity.getPos().getY(), mobSpawnerBlockEntity.getPos().getZ())
                             );
-                            mc.world.playSoundAtBlockCenter(mc.player.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, false);
+                            mc.world.playSoundAtBlockCenterClient(mc.player.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, false);
                             activeSpawners.add(mobSpawnerBlockEntity.getPos());
                         }
                     }
@@ -59,9 +59,7 @@ public class ActiveSpawner {
             
             for (BlockPos blockPos : activeSpawners) {
                 if (Player.isPositionInRenderDistance(blockPos.toCenterPos())) {
-                    Render.toggleRender(event.matrixStack, event.camera, true);
-                    Render.drawFilledBox(event.matrixStack, BoxUtil.getBlockBoundingBoxf(blockPos), Colors.GREEN);
-                    Render.toggleRender(event.matrixStack, event.camera, false);
+                    Render.drawFilledBox(event.camera, event.matrixStack, BoxUtil.getBlockBoundingBoxf(blockPos), Colors.GREEN);
                 }
             }
             

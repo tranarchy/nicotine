@@ -1,4 +1,4 @@
-package nicotine.util;
+package nicotine.util.render;
 
 import net.minecraft.client.gui.DrawContext;
 

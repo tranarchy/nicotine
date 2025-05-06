@@ -26,9 +26,9 @@ public class ClientWorldMixin {
     }
 
 
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/world/ClientWorld;playSound(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZ)V")
-    private void playSound(double x, double y, double z, SoundEvent event, SoundCategory category, float volume, float pitch, boolean useDistance, CallbackInfo info) {
-        if (SoundEvents.ITEM_TOTEM_USE.id() == event.id()) {
+    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/world/ClientWorld;playSoundClient(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZ)V")
+    public void playSound(double x, double y, double z, SoundEvent sound, SoundCategory category, float volume, float pitch, boolean useDistance, CallbackInfo info) {
+        if (SoundEvents.ITEM_TOTEM_USE == sound) {
             for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
                 if (player.getPos().squaredDistanceTo(x, y, z) <= 0) {
                    EventBus.post(new TotemPopEvent(player));

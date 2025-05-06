@@ -1,11 +1,17 @@
 package nicotine.screens;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.network.ServerAddress;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.sound.ElytraSoundInstance;
+import net.minecraft.client.sound.PassiveBeeSoundInstance;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 
 import static nicotine.util.Common.currentServer;
@@ -24,6 +30,9 @@ public class AutoReconnectScreen extends Screen {
 
     @Override
     protected void init() {
+        if (mc.world != null) {
+            mc.world.playSoundClient(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f);
+        }
         this.grid.getMainPositioner().alignHorizontalCenter().margin(10);
         this.grid.add(new TextWidget(this.title, this.textRenderer));
         Text text = Text.literal(String.format("Reconnecting to %s (%ds)", currentServer.address, delay / 20));
@@ -40,6 +49,11 @@ public class AutoReconnectScreen extends Screen {
     @Override
     protected void refreshWidgetPositions() {
         SimplePositioningWidget.setPos(this.grid, this.getNavigationFocus());
+    }
+
+    @Override
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+        context.fillWithLayer(RenderLayer.getEndPortal(), 0, 0, this.width, this.height, 0);
     }
 
     @Override

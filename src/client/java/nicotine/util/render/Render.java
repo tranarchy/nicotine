@@ -1,32 +1,30 @@
-package nicotine.util;
+package nicotine.util.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.ShaderProgramKeys;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShapes;
+import nicotine.util.ColorUtil;
 import nicotine.util.math.Boxf;
+import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
 import static nicotine.util.Common.mc;
 
 public class Render {
+
+    private static boolean rendering = false;
     
-    public static void toggleRender(MatrixStack matrixStack, Camera camera, boolean rendering) {
+    private static void toggleRender() {
+        rendering = !rendering;
+
         if (rendering) {
-            Vec3d view = camera.getPos();
-            matrixStack.push();
-            matrixStack.translate(-view.x, -view.y, -view.z);
-
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.disableCull();
-            RenderSystem.disableDepthTest();
-
-            RenderSystem.setShader(ShaderProgramKeys.POSITION_COLOR);
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+            GL11.glDisable(GL11.GL_CULL_FACE);
 
             GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
             GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST);
@@ -35,14 +33,10 @@ public class Render {
             GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
             GL11.glEnable(GL13.GL_MULTISAMPLE);
-
         }
         else {
-            matrixStack.pop();
-
-            RenderSystem.enableCull();
-            RenderSystem.enableDepthTest();
-            RenderSystem.disableBlend();
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+            GL11.glEnable(GL11.GL_CULL_FACE);
 
             GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
             GL11.glDisable(GL11.GL_LINE_SMOOTH);
@@ -51,73 +45,81 @@ public class Render {
     }
 
 
-    public static void drawTracer(MatrixStack matrixStack, Vec3d targetPos, int color) {
+    public static void drawTracer(Camera camera, MatrixStack matrixStack, Vec3d targetPos, int color) {
         if (mc.options.getPerspective() == Perspective.THIRD_PERSON_FRONT)
             return;
 
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        toggleRender();
+
+        Vec3d view = camera.getPos();
+        matrixStack.push();
+        matrixStack.translate(-view.x, -view.y, -view.z);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL);
         MatrixStack.Entry entry = matrixStack.peek();
         
         Vec3d crosshairPos = mc.crosshairTarget.getPos();
-        
-        bufferBuilder.vertex(entry, (float)crosshairPos.x, (float)crosshairPos.y, (float)crosshairPos.z).color(color);
-        bufferBuilder.vertex(entry, (float)targetPos.x, (float)targetPos.y, (float) targetPos.z).color(color);
 
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        float dirX = (float) targetPos.x - (float) crosshairPos.x;
+        float dirY = (float) targetPos.y - (float) crosshairPos.y;
+        float dirZ = (float) targetPos.z - (float) crosshairPos.z;
+
+        float length = (float) Math.sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
+        float normX = dirX / length;
+        float normY = dirY / length;
+        float normZ = dirZ / length;
+
+        bufferBuilder.vertex(entry, (float) crosshairPos.x, (float) crosshairPos.y, (float) crosshairPos.z).color(color).normal(entry, normX, normY, normZ);
+        bufferBuilder.vertex(entry, (float) targetPos.x, (float) targetPos.y, (float) targetPos.z).color(color).normal(entry, normX, normY, normZ);
+
+        RenderLayer.getLines().draw(bufferBuilder.end());
+
+        matrixStack.pop();
+
+        toggleRender();
     }
 
-    public static void drawBox(MatrixStack matrixStack, Boxf box, int color) {
+    public static void drawBox(Camera camera, MatrixStack matrixStack, Boxf box, int color) {
+        toggleRender();
 
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        Vec3d view = camera.getPos();
+        matrixStack.push();
+        matrixStack.translate(-view.x, -view.y, -view.z);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL);
         MatrixStack.Entry entry = matrixStack.peek();
 
-        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color);
+        VoxelShapes.cuboid(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ).forEachEdge((x1, y1, z1, x2, y2, z2) -> {
+            Vector3f vector3f = (new Vector3f((float)(x2 - x1), (float)(y2 - y1), (float)(z2 - z1))).normalize();
+            bufferBuilder.vertex(entry, (float)(x1), (float)(y1), (float)(z1)).color(color).normal(entry, vector3f);
+            bufferBuilder.vertex(entry, (float)(x2), (float)(y2), (float)(z2)).color(color).normal(entry, vector3f);
+        });
 
-        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
+        RenderLayer.getLines().draw(bufferBuilder.end());
 
-        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color);
+        matrixStack.pop();
 
-        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
-
-        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
-
-        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);
-
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
-
+        toggleRender();
     }
 
-    public static void drawFilledBox(MatrixStack matrixStack, Boxf box, int color) {
-        drawFilledBox(matrixStack, box, color, false);
+    public static void drawFilledBox(Camera camera, MatrixStack matrixStack, Boxf box, int color) {
+        drawFilledBox(camera, matrixStack, box, color, false);
     }
 
-    public static void drawFilledBox(MatrixStack matrixStack, Boxf box, int color, boolean fade) {
-        drawBox(matrixStack, box, color);
+    public static void drawFilledBox(Camera camera, MatrixStack matrixStack, Boxf box, int color, boolean fade) {
+        drawBox(camera, matrixStack, box, color);
 
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
+        toggleRender();
+
+        Vec3d view = camera.getPos();
+        matrixStack.push();
+        matrixStack.translate(-view.x, -view.y, -view.z);
+
+        Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         MatrixStack.Entry entry = matrixStack.peek();
-
 
         color = ColorUtil.changeAlpha(color, fade ? ColorUtil.dynamicFadeVal : 0x32);
 
@@ -151,14 +153,24 @@ public class Render {
         bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color);
         bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
 
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        RenderLayer.getDebugQuads().draw(bufferBuilder.end());
+
+        matrixStack.pop();
+
+        toggleRender();
     }
 
-    public static void drawWireframeBox(MatrixStack matrixStack, Boxf box, int color) {
-        drawBox(matrixStack, box, color);
+    public static void drawWireframeBox(Camera camera, MatrixStack matrixStack, Boxf box, int color) {
+        drawBox(camera, matrixStack, box, color);
 
-        Tessellator tessellator = RenderSystem.renderThreadTesselator();
-        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
+        toggleRender();
+
+        Vec3d view = camera.getPos();
+        matrixStack.push();
+        matrixStack.translate(-view.x, -view.y, -view.z);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
         MatrixStack.Entry entry = matrixStack.peek();
 
         //a >
@@ -192,7 +204,11 @@ public class Render {
         bufferBuilder.vertex(entry, box.maxX,box.maxY,box.minZ).color(color);
         bufferBuilder.vertex(entry, box.minX,box.maxY,box.maxZ).color(color);
 
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        RenderLayer.getDebugLineStrip(1d).draw(bufferBuilder.end());
+
+        matrixStack.pop();
+
+        toggleRender();
     }
 
     public static void drawText(MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, Camera camera, Vec3d position, String text, int color, float scale) {

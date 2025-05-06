@@ -75,81 +75,40 @@ public class ColorUtil {
         return color;
     }
 
+    private static int interpolateColor(int startColor, int endColor, float ratio) {
+        int alpha = (int) ((1 - ratio) * ((startColor >> 24) & 0xff) + ratio * ((endColor >> 24) & 0xff));
+        int red = (int) ((1 - ratio) * ((startColor >> 16) & 0xff) + ratio * ((endColor >> 16) & 0xff));
+        int green = (int) ((1 - ratio) * ((startColor >> 8) & 0xff) + ratio * ((endColor >> 8) & 0xff));
+        int blue = (int) ((1 - ratio) * (startColor & 0xff) + ratio * (endColor & 0xff));
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    }
+
     private static final int[] rainbowList = {
-            0xFFFF0000,  // Red
-            0xFFFF1500,
-            0xFFFF2A00,
-            0xFFFF3F00,
-            0xFFFF5400,
-            0xFFFF6900,
-            0xFFFF7F00,
-            0xFFFF9400,
-            0xFFFFAA00,
-            0xFFFFBF00,
-            0xFFFFD500,
-            0xFFFFEA00,
-            0xFFFFFF00,  // Yellow
-            0xFFEAFF00,
-            0xFFD5FF00,
-            0xFFBFFF00,
-            0xFFAAFF00,
-            0xFF94FF00,
-            0xFF7FFF00,
-            0xFF69FF00,
-            0xFF54FF00,
-            0xFF3FFF00,
-            0xFF2AFF00,
-            0xFF15FF00,
-            0xFF00FF00,  // Green
-            0xFF00FF15,
-            0xFF00FF2A,
-            0xFF00FF3F,
-            0xFF00FF54,
-            0xFF00FF69,
-            0xFF00FF7F,
-            0xFF00FF94,
-            0xFF00FFAA,
-            0xFF00FFBF,
-            0xFF00FFD5,
-            0xFF00FFEA,
-            0xFF00FFFF,  // Cyan
-            0xFF00EAFF,
-            0xFF00D5FF,
-            0xFF00BFFF,
-            0xFF00AAFF,
-            0xFF0094FF,
-            0xFF007FFF,
-            0xFF0069FF,
-            0xFF0054FF,
-            0xFF003FFF,
-            0xFF002AFF,
-            0xFF0015FF,
-            0xFF0000FF,  // Blue
-            0xFF1500FF,
-            0xFF2A00FF,
-            0xFF3F00FF,
-            0xFF5400FF,
-            0xFF6900FF,
-            0xFF7F00FF,
-            0xFF9400FF,
-            0xFFAA00FF,
-            0xFFBF00FF,
-            0xFFD500FF,
-            0xFFEA00FF,
-            0xFFFF00FF,  // Magenta
-            0xFFFF00EA,
-            0xFFFF00D5,
-            0xFFFF00BF,
-            0xFFFF00AA,
-            0xFFFF0094,
-            0xFFFF007F,
-            0xFFFF0069,
-            0xFFFF0054,
-            0xFFFF003F,
-            0xFFFF002A,
-            0xFFFF0015,
-            0xFFFF0000   // Red
+            0xFFFF6663,
+            0xFFFEB144,
+            0xFFFDFD97,
+            0xFF9EE09E,
+            0xFF6DC1E3,
+            0xFFCC99C9,
+            0xFFCF7ECA
     };
+
+    public static int getNextRainbowColor() {
+        final int steps = 6;
+
+        int startColor = rainbowList[rainbowIndex];
+        int endColor = rainbowList[(rainbowIndex + 1) % rainbowList.length];
+
+        float ratio = (float) rainbowStepCount / (float) steps;
+        int interpolatedColor = interpolateColor(startColor, endColor, ratio);
+
+        rainbowStepCount++;
+        if (rainbowStepCount >= steps) {
+            rainbowStepCount = 0;
+            rainbowIndex = (rainbowIndex + 1) % rainbowList.length;
+        }
+        return interpolatedColor;
+    }
 
     public static int dynamicBrightnessVal = 100;
     private static int brightnessIncr = 3;
@@ -158,11 +117,12 @@ public class ColorUtil {
     private static int fadeIncr;
 
     public static int rainbow = rainbowList[0];
-    private static int colorIndex = 0;
+    private static int rainbowIndex = 0;
+    private static int rainbowStepCount = 0;
 
     public static void init() {
         EventBus.register(ClientTickEvent.class, event -> {
-            if (dynamicBrightnessVal >= 130)
+            if (dynamicBrightnessVal >= 100)
                 brightnessIncr = -3;
             else if (dynamicBrightnessVal <= 35)
                 brightnessIncr = 3;
@@ -176,11 +136,7 @@ public class ColorUtil {
 
             dynamicFadeVal += fadeIncr;
 
-            rainbow = rainbowList[colorIndex];
-            if (colorIndex == rainbowList.length - 1)
-                colorIndex = 0;
-            else
-                colorIndex++;
+            rainbow = getNextRainbowColor();
 
             return true;
         });

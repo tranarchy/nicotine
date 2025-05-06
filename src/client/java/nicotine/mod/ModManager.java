@@ -1,6 +1,7 @@
 package nicotine.mod;
 
 import nicotine.mod.mods.combat.*;
+import nicotine.mod.mods.gui.Blur;
 import nicotine.mod.mods.gui.GUI;
 import nicotine.mod.mods.gui.Tooltip;
 import nicotine.mod.mods.hud.*;
@@ -93,7 +94,6 @@ public class ModManager {
         AutoArmor.init();
         AutoCrystal.init();
         KillAura.init();
-        SurroundBreak.init();
         NoKnockback.init();
         Surround.init();
         CombatMSG.init();
@@ -120,5 +120,6 @@ public class ModManager {
 
         GUI.init();
         Tooltip.init();
+        Blur.init();
     }
 }

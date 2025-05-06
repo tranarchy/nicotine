@@ -10,7 +10,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
-import nicotine.util.Render;
+import nicotine.util.render.Render;
 import nicotine.util.math.BoxUtil;
 
 import java.util.ArrayList;
@@ -82,13 +82,9 @@ public class HoleESP {
             if (!holeESP.enabled)
                 return true;
 
-            Render.toggleRender(event.matrixStack, event.camera,true);
-
             for (BlockPos holeSpot : holeSpots) {
-                Render.drawFilledBox(event.matrixStack, BoxUtil.getBlockBoundingBoxf(holeSpot.add(0, 1, 0)), Colors.LIGHT_RED);
+                Render.drawFilledBox(event.camera, event.matrixStack, BoxUtil.getBlockBoundingBoxf(holeSpot.add(0, 1, 0)), Colors.LIGHT_RED);
             }
-
-            Render.toggleRender(event.matrixStack, event.camera,false);
 
             return true;
         });

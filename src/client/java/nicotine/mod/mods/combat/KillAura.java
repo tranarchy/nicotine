@@ -56,7 +56,7 @@ public class KillAura {
                         (entity instanceof PassiveEntity && passive.enabled) ||
                         (entity instanceof Angerable && angerable.enabled)
                 ) {
-                    if (mc.player.canInteractWithEntity(entity, 0) && entity.isAlive() && delayLeft <= 0 && !Player.attacking && !Player.placing) {
+                    if (mc.player.canInteractWithEntity(entity, 0) && entity.isAlive() && delayLeft <= 0 && !Player.attacking && !Player.placing && !entity.isInvulnerable()) {
 
                         switch (rotation.value) {
                             case "Revert":

@@ -10,8 +10,7 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.SwitchOption;
 import nicotine.util.EventBus;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
@@ -24,13 +23,17 @@ public class Speed {
                 "Position",
                 new String[]{"TL", "TC", "TR", "BL", "BR"}
         );
-        speed.modOptions.add(position);
+        SwitchOption unit = new SwitchOption(
+                "Unit",
+                new String[]{"km/h", "m/s"}
+        );
+        speed.modOptions.addAll(Arrays.asList(position, unit));
         ModManager.addMod(ModCategory.HUD, speed);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            double deltaX = mc.player.getX() - mc.player.prevX;
-            double deltaZ = mc.player.getZ() - mc.player.prevZ;
-            speedVal = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaZ, 2)) * 20d * 3.6d;
+            double deltaX = mc.player.getX() - mc.player.lastX;
+            double deltaZ = mc.player.getZ() - mc.player.lastZ;
+            speedVal = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaZ, 2)) * 20d * (unit.value.equals(unit.modes[0]) ? 3.6d : 1d);
 
             return true;
         });
@@ -39,7 +42,7 @@ public class Speed {
             if (!speed.enabled)
                 return true;
 
-            String speedText = String.format("speed %s%s %.1fkm/h", Formatting.WHITE, HUD.separatorText, speedVal);
+            String speedText = String.format("speed %s%s %.1f%s", Formatting.WHITE, HUD.separatorText, speedVal, unit.value);
             HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(speedText));
 
             return true;

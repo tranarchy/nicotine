@@ -10,7 +10,7 @@ import nicotine.mod.option.SwitchOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.RenderGUI;
+import nicotine.util.render.RenderGUI;
 
 import java.util.*;
 

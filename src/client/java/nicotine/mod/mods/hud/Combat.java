@@ -3,16 +3,14 @@ package nicotine.mod.mods.hud;
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.Formatting;
-import nicotine.clickgui.GUI;
 import nicotine.events.InGameHudRenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
-import nicotine.util.RenderGUI;
+import nicotine.util.render.RenderGUI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +42,7 @@ public class Combat {
             int windowPosX = centerWidth - (WINDOW_WIDTH / 2);
 
             event.drawContext.fill(windowPosX, WINDOW_POS_Y, windowPosX + WINDOW_WIDTH, WINDOW_POS_Y + WINDOW_HEIGHT, ColorUtil.BACKGROUND_COLOR);
-            RenderGUI.drawBorder(event.drawContext, windowPosX, WINDOW_POS_Y, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.BORDER_COLOR);
-
+            RenderGUI.drawBorder(event.drawContext, windowPosX, WINDOW_POS_Y, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
 
             int modelX1 = windowPosX;
             int modelY1 = WINDOW_POS_Y;

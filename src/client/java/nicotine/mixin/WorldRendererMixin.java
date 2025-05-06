@@ -1,6 +1,8 @@
 package nicotine.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
@@ -61,7 +63,7 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
-    private void renderWeather(FrameGraphBuilder frameGraphBuilder, LightmapTextureManager lightmapTextureManager, Vec3d pos, float tickDelta, Fog fog, CallbackInfo info) {
+    private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d cameraPos, float tickProgress, Fog fog, CallbackInfo info) {
         boolean result = EventBus.post(new RenderWeatherEvent());
 
         if (!result) {
@@ -70,40 +72,23 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(method = {"render"}, at = {@At("HEAD")})
-    private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo info) {
+    private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo info) {
         this.camera = camera;
         this.matrixStack = new MatrixStack();
         this.vertexConsumerProvider = this.bufferBuilders.getEntityVertexConsumers();
     }
 
-    /*@Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;")})
+    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;")})
     private void beforeClouds(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
-        RenderPass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
+        FramePass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
         this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
         afterTranslucentPass.setRenderer(() -> {
-           EventBus.post(new BeforeCloudsRenderEvent(camera, matrixStack, vertexConsumerProvider));
+            EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
         });
-    }*/
-
-    @Inject(
-            method = "method_62214",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDD)V",
-                    ordinal = 0
-            )
-    )
-    private void beforeDebugRender(CallbackInfo ci) {
-        EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
-    }
-
-    @Inject(method = "method_62214", at = @At(value = "CONSTANT", args = "stringValue=blockentities", ordinal = 0))
-    private void afterEntities(CallbackInfo ci) {
-        EventBus.post(new AfterEntitiesRenderEvent(camera, matrixStack, vertexConsumerProvider));
     }
 
     @Inject(at = @At("HEAD"), method = "renderParticles", cancellable = true)
-    private void renderParticles(FrameGraphBuilder frameGraphBuilder, Camera camera, LightmapTextureManager lightmapTextureManager, float tickDelta, Fog fog, CallbackInfo info) {
+    private void renderParticles(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickProgress, Fog fog, CallbackInfo info) {
         boolean result = EventBus.post(new RenderParticlesEvent());
 
         if (!result) {
@@ -111,8 +96,8 @@ public abstract class WorldRendererMixin {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "renderEntity")
-    private void renderEntity(Entity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo info) {
+    @Inject(at = @At("HEAD"), method = "renderEntity", cancellable = true)
+    private void renderEntityBefore(Entity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo info) {
         if (vertexConsumers instanceof OutlineVertexConsumerProvider outlineVertexConsumerProvider) {
             EventBus.post(new RenderEntityOutlineEvent(outlineVertexConsumerProvider));
         }
