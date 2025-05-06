@@ -1,7 +1,7 @@
 # nicotine
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/230aac2c-9418-47a7-bf4e-eb35ecdd4c61">
+  <img src="https://github.com/user-attachments/assets/8ec64a1b-fe02-4042-9d2f-35a91d9c066f">
 </p>
 <p align="center">Minecraft utility mod for anarchy servers</p>
 
