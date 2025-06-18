@@ -1,7 +1,7 @@
 # nicotine
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/8ec64a1b-fe02-4042-9d2f-35a91d9c066f">
+  <img src="https://github.com/user-attachments/assets/52d5d097-6e4c-4120-a7c5-8a8edc601a47">
 </p>
 <p align="center">Minecraft utility mod for anarchy servers</p>
 
@@ -44,4 +44,4 @@ To search for a specific module in the GUI press **/**
 
 nicotine is currently made for version **1.21.6**
 
-If you want to use nicotine on another Minecraft version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod
+If you want to use nicotine with another Minecraft version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod
