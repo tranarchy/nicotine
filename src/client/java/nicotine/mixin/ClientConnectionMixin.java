@@ -25,8 +25,8 @@ public class ClientConnectionMixin {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/packet/Packet;Lnet/minecraft/network/PacketCallbacks;Z)V", cancellable = true)
-    public void send(Packet<?> packet, @Nullable PacketCallbacks callbacks, boolean flush, CallbackInfo info) {
+    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/packet/Packet;)V", cancellable = true)
+    public void send(Packet<?> packet, CallbackInfo info) {
         boolean result = EventBus.post(new PacketOutEvent(packet));
 
         if (!result) {

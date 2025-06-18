@@ -13,19 +13,19 @@ public class RGBOption  {
     public RGBOption() {
         this.red = new SliderOption(
                 "Red",
-                95,
+                152,
                 0,
                 255
         );
         this.green = new SliderOption(
                 "Green",
-                68,
+                137,
                 0,
                 255
         );
         this.blue = new SliderOption(
                 "Blue",
-                196,
+                250,
                 0,
                 255
         );

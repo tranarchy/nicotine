@@ -12,21 +12,21 @@ import java.util.Arrays;
 public class NoRender {
     public static void init() {
         Mod noRender = new Mod("NoRender");
-        ToggleOption fireOverlay = new ToggleOption("FireOverlay", true);
+        ToggleOption overlays = new ToggleOption("Overlays", true);
         ToggleOption bossBars = new ToggleOption("BossBars");
         ToggleOption potionEffects = new ToggleOption("PotionEffects", true);
         ToggleOption miscOverlays = new ToggleOption("MiscOverlays");
         ToggleOption toastNotifs = new ToggleOption("ToastNotifs");
         ToggleOption weather = new ToggleOption("Weather");
         ToggleOption particles = new ToggleOption("Particles");
-        noRender.modOptions.addAll(Arrays.asList(fireOverlay, bossBars, potionEffects, miscOverlays, toastNotifs, weather, particles));
+        noRender.modOptions.addAll(Arrays.asList(overlays, bossBars, potionEffects, miscOverlays, toastNotifs, weather, particles));
         ModManager.addMod(ModCategory.Render, noRender);
 
         EventBus.register(RenderOverlaysEvent.class, event -> {
            if (!noRender.enabled)
                 return true;
 
-           if (fireOverlay.enabled)
+           if (overlays.enabled)
                return false;
 
           return true;

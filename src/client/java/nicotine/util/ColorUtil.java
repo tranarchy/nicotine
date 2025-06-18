@@ -12,7 +12,7 @@ import net.minecraft.util.Colors;
 import nicotine.events.ClientTickEvent;
 
 public class ColorUtil {
-    public static final int CATEGORY_FOREGROUND_COLOR = 0xFFFFFFFF;
+    public static final int CATEGORY_FOREGROUND_COLOR = 0xFFF8F8F2;
     public static final int FOREGROUND_COLOR = 0xFFBBBBBB;
     public static final int BACKGROUND_COLOR = 0xC810101A;
     public static final int BORDER_COLOR = 0xFF10101A;
@@ -20,8 +20,8 @@ public class ColorUtil {
     public static final int PURPLE = 0xFF5F44C4;
     public static final int GOLD = 0xFFFFAA00;
 
-    public static int CATEGORY_BACKGROUND_COLOR = PURPLE;
-    public static int ACTIVE_FOREGROUND_COLOR = PURPLE;
+    public static int CATEGORY_BACKGROUND_COLOR = 0xFF9889FA;
+    public static int ACTIVE_FOREGROUND_COLOR = CATEGORY_BACKGROUND_COLOR;
 
     public static int getBlockColor(BlockEntity blockEntity) {
         if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof TrappedChestBlockEntity || blockEntity instanceof CrafterBlockEntity ||

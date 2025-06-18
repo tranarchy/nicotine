@@ -1,5 +1,7 @@
 package nicotine.screens;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -7,9 +9,9 @@ import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.network.ServerAddress;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.sound.ElytraSoundInstance;
-import net.minecraft.client.sound.PassiveBeeSoundInstance;
+import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -53,7 +55,9 @@ public class AutoReconnectScreen extends Screen {
 
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.fillWithLayer(RenderLayer.getEndPortal(), 0, 0, this.width, this.height, 0);
+        TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
+        TextureSetup textureSetup = TextureSetup.of(textureManager.getTexture(EndPortalBlockEntityRenderer.SKY_TEXTURE).getGlTextureView(), textureManager.getTexture(EndPortalBlockEntityRenderer.PORTAL_TEXTURE).getGlTextureView());
+        context.fill(RenderPipelines.END_PORTAL, textureSetup, 0, 0, this.width, this.height);
     }
 
     @Override

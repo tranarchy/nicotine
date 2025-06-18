@@ -13,6 +13,7 @@ import nicotine.util.EventBus;
 import nicotine.util.render.Render;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static nicotine.util.Common.mc;
 
@@ -26,13 +27,15 @@ public class EntityOwner {
                 return true;
 
             for (Entity entity : mc.world.getEntities()) {
-                if (entity instanceof TameableEntity) {
-                    NbtCompound nbt = entity.writeNbt(new NbtCompound());
-                    Optional<int[]> owner = nbt.getIntArray("Owner");
-                    if (owner.isPresent()) {
-                        String text = String.format("Owned by %s", Uuids.toUuid(owner.get()));
-                        Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, entity.getPos().add(0, 1, 0), text, Colors.WHITE, 1.0f);
+                if (entity instanceof TameableEntity tameableEntity) {
+                    if (tameableEntity.getOwnerReference() == null) {
+                        continue;
                     }
+
+                    UUID ownerUUID = tameableEntity.getOwnerReference().getUuid();
+
+                    String text = String.format("Owned by %s", ownerUUID);
+                    Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, entity.getPos().add(0, 1, 0), text, Colors.WHITE, 1.0f);
                 }
             }
 

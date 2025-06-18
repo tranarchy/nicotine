@@ -42,6 +42,6 @@ To search for a specific module in the GUI press **/**
 
 ## Other versions
 
-nicotine is currently made for version **1.21.5**
+nicotine is currently made for version **1.21.6**
 
 If you want to use nicotine on another Minecraft version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod

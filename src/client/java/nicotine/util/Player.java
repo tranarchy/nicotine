@@ -166,7 +166,7 @@ public class Player {
     }
 
     public static void toggleSneak() {
-        mc.getNetworkHandler().sendPacket(new ClientCommandC2SPacket(mc.player, packetSneak ? ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY : ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+        //mc.getNetworkHandler().sendPacket(new ClientCommandC2SPacket(mc.player, packetSneak ? ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY : ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
         packetSneak = !packetSneak;
     }
 

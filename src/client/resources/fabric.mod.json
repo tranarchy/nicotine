@@ -1,14 +1,14 @@
 {
 	"schemaVersion": 1,
 	"id": "nicotine",
-	"version": "0.3.1",
+	"version": "0.3.2",
 	"name": "nicotine",
 	"description": "Utility mod for anarchy servers",
 	"authors": [
 		"tranarchy"
 	],
 	"contact": {
-		"homepage": "https://github.com/tranarchy/nicotine",
+		"homepage": "https://anarchy.lol",
 		"sources": "https://github.com/tranarchy/nicotine"
 	},
 	"license": "GPL-3.0",
@@ -24,7 +24,7 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.16.13",
-		"minecraft": "~1.21.5",
+		"minecraft": "~1.21.6",
 		"java": ">=21"
 	}
 }

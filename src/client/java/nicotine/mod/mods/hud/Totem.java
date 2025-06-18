@@ -19,7 +19,7 @@ public class Totem {
                 return true;
 
             final int x = (mc.getWindow().getScaledWidth() / 2) - 9;
-            final int y = mc.getWindow().getScaledHeight() - 52;
+            final int y = mc.getWindow().getScaledHeight() - 59;
 
             int totemCount = 0;
 

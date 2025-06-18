@@ -37,14 +37,15 @@ public class HandFOV {
             if (!handFOV.enabled)
                 return true;
 
-            Matrix4f projectionMatrix = new Matrix4f();
-            projectionMatrix.perspective(
+             Matrix4f matrix4f = new Matrix4f();
+             matrix4f.perspective(
                     fov.value * (float) (Math.PI / 180.0),
                     ((float)mc.getWindow().getFramebufferWidth() / (float)mc.getWindow().getFramebufferHeight() * aspect.value),
                     0.05F,
-                    mc.gameRenderer.getFarPlaneDistance());
-            Matrix4f matrix4f2 = projectionMatrix;
-            RenderSystem.setProjectionMatrix(matrix4f2, ProjectionType.PERSPECTIVE);
+                    mc.gameRenderer.getFarPlaneDistance()
+            );
+
+            RenderSystem.setProjectionMatrix(event.worldProjectionMatrix.set(matrix4f), ProjectionType.PERSPECTIVE);
 
             return true;
         });

@@ -1,13 +1,14 @@
 package nicotine.util;
 
-import net.minecraft.util.math.BlockPos;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
+import nicotine.clickgui.custombutton.CategoryButton;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
+import nicotine.clickgui.GUI;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,6 +27,21 @@ public class Settings {
     public static void save() {
 
         JSONObject settings = new JSONObject();
+
+        JSONObject categoryBtns = new JSONObject();
+        for (CategoryButton button : GUI.categoryButtons) {
+            JSONObject category = new JSONObject();
+            category.put("x", button.x);
+            category.put("y", button.y);
+            category.put("width", button.width);
+            category.put("height", button.height);
+
+            categoryBtns.appendField(button.text, category);
+        }
+
+        if (!GUI.categoryButtons.isEmpty()) {
+            settings.appendField("gui_categories", categoryBtns);
+        }
 
         JSONObject waypoints = new JSONObject();
         for (WaypointInstance waypointInstance : allWaypoints) {
@@ -100,6 +116,14 @@ public class Settings {
                 allWaypoints.add(new WaypointInstance(waypoint, (String)waypointInfo.get("dimension"), (String)waypointInfo.get("server"), (int)waypointInfo.get("x"), (int)waypointInfo.get("y"), (int) waypointInfo.get("z")));
             }
         }
+
+        if (settings.containsKey("gui_categories")) {
+            JSONObject categories = (JSONObject)  settings.get("gui_categories");
+            for (String category : categories.keySet()) {
+                JSONObject categoryInfo = (JSONObject) categories.get(category);
+                GUI.categoryButtons.add(new CategoryButton((int)categoryInfo.get("x"), (int)categoryInfo.get("y"), (int)categoryInfo.get("width"), (int)categoryInfo.get("height"), category));
+            }
+         }
 
         JSONObject categories = (JSONObject) settings.get("settings");
         for (HashMap.Entry<ModCategory, List<Mod>> modSet : ModManager.modules.entrySet()) {

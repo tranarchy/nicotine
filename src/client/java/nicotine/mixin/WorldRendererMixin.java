@@ -1,6 +1,7 @@
 package nicotine.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import net.minecraft.client.render.*;
@@ -14,6 +15,7 @@ import nicotine.events.*;
 import nicotine.mod.mods.render.BlockBreaking;
 import nicotine.util.EventBus;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -63,7 +65,7 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
-    private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d cameraPos, float tickProgress, Fog fog, CallbackInfo info) {
+    private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d cameraPos, float tickProgress, GpuBufferSlice fog, CallbackInfo info) {
         boolean result = EventBus.post(new RenderWeatherEvent());
 
         if (!result) {
@@ -72,7 +74,7 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(method = {"render"}, at = {@At("HEAD")})
-    private void beforeRender(ObjectAllocator objectAllocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, Matrix4f positionMatrix, Matrix4f projectionMatrix, CallbackInfo info) {
+    private void beforeRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f projectionMatrix, GpuBufferSlice fog, Vector4f fogColor, boolean shouldRenderSky, CallbackInfo info) {
         this.camera = camera;
         this.matrixStack = new MatrixStack();
         this.vertexConsumerProvider = this.bufferBuilders.getEntityVertexConsumers();
@@ -88,7 +90,7 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(at = @At("HEAD"), method = "renderParticles", cancellable = true)
-    private void renderParticles(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickProgress, Fog fog, CallbackInfo info) {
+    private void renderParticles(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickProgress, GpuBufferSlice fog, CallbackInfo info) {
         boolean result = EventBus.post(new RenderParticlesEvent());
 
         if (!result) {

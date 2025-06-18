@@ -57,7 +57,6 @@ public class HUD {
         options.modOptions.addAll(Arrays.asList(borders, lowercase, bold, italic, separator));
         ModManager.addMod(ModCategory.HUD, options);
 
-        separatorText = separator.value;
         clearHud();
 
         EventBus.register(InGameHudRenderAfterEvent.class, event -> {

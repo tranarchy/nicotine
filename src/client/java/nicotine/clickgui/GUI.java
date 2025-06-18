@@ -16,7 +16,9 @@ import nicotine.mod.option.*;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.RenderGUI;
 import nicotine.util.Settings;
+import org.joml.Matrix3x2fStack;
 import org.joml.Vector2d;
+import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,59 +34,79 @@ public class GUI extends Screen {
 
     private final List<CustomButton> buttons = new ArrayList<>();
 
-    public static HashMap<ModCategory, Vector2d> guiPos = new HashMap<>();
-
-    private int guiYInitPos = 8;
-    private boolean saveSettings = false;
     private KeybindOption keybindOptionToSet = null;
 
     private String searchString = "";
     private boolean searchMode = false;
 
+    private CategoryButton draggingCategoryButton = null;
+    private int draggingCategoryButtonOffsetX = 0;
+    private int draggingCategoryButtonOffsetY = 0;
+
     public static boolean showDescription = false;
     public static boolean blur = false;
 
+    public static List<CategoryButton> categoryButtons = new ArrayList<>();
+
+    private void initButtons() {
+        if (categoryButtons.isEmpty()) {
+            int guiY = 8;
+            int guiX = 8;
+
+            int height = mc.textRenderer.fontHeight + 10;
+            int width = 85;
+
+            for (ModCategory modCategory : ModCategory.values()) {
+                String categoryText = modCategory.name();
+                CategoryButton categoryButton = new CategoryButton(guiX, guiY, width, height, categoryText);
+                categoryButtons.add(categoryButton);
+                guiX += width + 15;
+            }
+        }
+    }
+
     private void getButtons() {
-        buttons.clear();
-
-        int guiY = guiYInitPos;
-        int guiX = 8;
-
         int height = mc.textRenderer.fontHeight + 10;
         int width = 85;
 
-        for (HashMap.Entry<ModCategory, List<Mod>> modSet : ModManager.modules.entrySet()) {
+        buttons.clear();
 
-            String categoryText = modSet.getKey().toString();
-            CategoryButton categoryButton = new CategoryButton(guiX, guiY, width, height, categoryText);
-            guiY += height;
+        for (int i = 0; i < ModManager.modules.entrySet().size(); i++) {
+
+            HashMap.Entry<ModCategory, List<Mod>> modSet = ModManager.modules.entrySet().stream().toList().get(i);
+
+            CategoryButton categoryButton = categoryButtons.getFirst();
+
+            for (CategoryButton button : categoryButtons) {
+                if (button.text.equals(modSet.getKey().name())) {
+                    categoryButton = button;
+                    break;
+                }
+            }
 
             buttons.add(categoryButton);
+
+            int guiX = categoryButton.x;
+            int guiY = categoryButton.y;
 
             for (Mod mod : modSet.getValue())
             {
                 if (!mod.name.toLowerCase().contains(searchString))
                     continue;
 
-                ModButton modButton = new ModButton(guiX, guiY, width, height, mod);
                 guiY += height;
+                ModButton modButton = new ModButton(guiX, guiY, width, height, mod);
                 buttons.add(modButton);
 
                 if (mod.optionsVisible) {
                     for (ModOption modOption : mod.modOptions) {
+                        guiY += height;
                         OptionButton optionButton = new OptionButton(guiX, guiY, width, height, mod, modOption);
                         buttons.add(optionButton);
-
-                        guiY += height;
                     }
                 }
             }
-
-            guiX += width + 15;
-            guiY = guiYInitPos;
-
         }
-
     }
 
     private String formatKeybind(String keybind, KeybindOption keybindOption) {
@@ -181,17 +203,8 @@ public class GUI extends Screen {
 
            if (button instanceof CategoryButton) {
                RenderGUI.drawBorder(context, button.x, button.y, button.width, button.height, ColorUtil.ACTIVE_FOREGROUND_COLOR);
-           } else if (i + 1 < buttons.size()) {
-               if (buttons.get(i + 1) instanceof CategoryButton) {
-                   context.drawHorizontalLine(button.x, button.x + button.width, button.y + button.height, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
-                   RenderGUI.drawBorderVertical(context, button.x, button.y - 1, button.width, button.height + 1, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
-               } else {
-                   RenderGUI.drawBorderHorizontal(context, button.x, button.y, button.width, button.height, ColorUtil.BORDER_COLOR);
-                   RenderGUI.drawBorderVertical(context, button.x, button.y - 1, button.width, button.height + 1, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
-               }
            } else {
-               context.drawHorizontalLine(button.x, button.x + button.width, button.y + button.height, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
-               RenderGUI.drawBorderVertical(context, button.x, button.y - 1, button.width, button.height + 1, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
+               RenderGUI.drawBorder(context, button.x, button.y, button.width, button.height, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
            }
 
            context.drawText(textRenderer, text, button.x + xOffSet, button.y + yOffset, textColor, true);
@@ -238,14 +251,17 @@ public class GUI extends Screen {
 
     @Override
     public void init() {
+        if (categoryButtons.isEmpty()) {
+            initButtons();
+        }
+
         getButtons();
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (saveSettings) {
-            Settings.save();
-            saveSettings = false;
+        if (draggingCategoryButton != null) {
+           draggingCategoryButton = null;
         }
 
         return true;
@@ -254,12 +270,6 @@ public class GUI extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
-
-        if (blur) {
-            this.applyBlur();
-            this.renderDarkening(context);
-        }
-
         drawSearchString(context);
         drawWatermark(context);
         drawButtons(context, mouseX, mouseY);
@@ -277,6 +287,7 @@ public class GUI extends Screen {
                 searchString = "";
                 getButtons();
             } else {
+                Settings.save();
                 this.close();
             }
             return true;
@@ -299,37 +310,37 @@ public class GUI extends Screen {
         if (keybindOptionToSet != null) {
             keybindOptionToSet.keyCode = keyCode;
             keybindOptionToSet = null;
-            Settings.save();
         }
 
         return true;
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double horizontalAmount, double verticalAmount) {
-        if (verticalAmount < 0) {
-            guiYInitPos -= 5;
-        } else {
-            guiYInitPos += 5;
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+        if (draggingCategoryButton != null) {
+            draggingCategoryButton.x = (int) mouseX + draggingCategoryButtonOffsetX;
+            draggingCategoryButton.y = (int) mouseY + draggingCategoryButtonOffsetY;
+            getButtons();
+            return true;
         }
 
-        getButtons();
-
-        return false;
-    }
-
-
-    @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
         for (CustomButton customButton : buttons) {
             if (mouseOver(customButton, mouseX, mouseY))  {
                 if (customButton instanceof OptionButton optionButton) {
                     if (optionButton.modOption instanceof SliderOption sliderOption) {
                         setSliderOption(sliderOption, customButton, mouseX);
-                        saveSettings = true;
                         break;
                     }
                 }
+            }
+        }
+
+        for (CategoryButton categoryButton : categoryButtons) {
+            if (mouseOver(categoryButton, mouseX, mouseY) && button == 0)  {
+                draggingCategoryButton = categoryButton;
+                draggingCategoryButtonOffsetX = categoryButton.x - (int) mouseX;
+                draggingCategoryButtonOffsetY = categoryButton.y - (int) mouseY;
+                break;
             }
         }
 
@@ -349,9 +360,9 @@ public class GUI extends Screen {
                             modButton.mod.toggle();
                         }
                     }
-                } else if (button instanceof OptionButton optionButton) {
+                } else if (button instanceof OptionButton optionButton && optionButton.mod.optionsVisible) {
                     if (clickedButton != 0)
-                        break;
+                       break;
 
                     if (optionButton.modOption instanceof SwitchOption switchOption) {
                         setSwitchOption(switchOption);
@@ -363,7 +374,6 @@ public class GUI extends Screen {
                         keybindOptionToSet = keybindOption;
                     }
                 }
-                Settings.save();
                 break;
             }
         }
@@ -377,6 +387,12 @@ public class GUI extends Screen {
     }
 
     @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {}
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+
+        if (blur) {
+            this.applyBlur(context);
+            this.renderDarkening(context);
+        }
+    }
 
 }

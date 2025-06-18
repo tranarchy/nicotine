@@ -16,6 +16,8 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.render.RenderGUI;
+import org.joml.Matrix3fStack;
+import org.joml.Matrix3x2fStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,8 +87,9 @@ public class Peek {
 
                     ItemStack shulkerItem;
 
-                    event.drawContext.getMatrices().push();
-                    event.drawContext.getMatrices().translate(0.0F, 0.0F, 1000.0F);
+                    Matrix3x2fStack matrix3fStack = event.drawContext.getMatrices().pushMatrix();
+
+                    event.drawContext.getMatrices().translate(0.0F, 0.0F, matrix3fStack.identity());
 
                     event.drawContext.fill(posX, posY, posX + MAX_WIDTH, posY + textRenderer.fontHeight + 4, ColorUtil.BACKGROUND_COLOR);
                     RenderGUI.drawBorder(event.drawContext, posX, posY, MAX_WIDTH, textRenderer.fontHeight + 4, ColorUtil.BORDER_COLOR);
@@ -114,7 +117,7 @@ public class Peek {
                         posY += SLOT_WIDTH;
                     }
 
-                    event.drawContext.getMatrices().pop();
+                    matrix3fStack.popMatrix();
 
                     return false;
                 }

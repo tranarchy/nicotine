@@ -1,6 +1,6 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.render.BackgroundRenderer;
+import net.minecraft.client.render.fog.FogRenderer;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -11,7 +11,7 @@ public class NoFog {
             @Override
             public void toggle() {
                 this.enabled = !this.enabled;
-                BackgroundRenderer.toggleFog();
+                FogRenderer.toggleFog();
             }
         };
 
