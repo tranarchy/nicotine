@@ -9,7 +9,7 @@
 
 nicotine is a utility mod with its own click GUI, event system and plenty of mods to enhance your gameplay
 
-nicotine doesn't rely on the Fabric API or 3rd party dependencies
+nicotine doesn't depend on the Fabric API or 3rd party dependencies
 
 ## Usage
 
@@ -25,7 +25,7 @@ Since nicotine is a Fabric mod you will also need the [Fabric Loader](https://fa
 git clone https://github.com/tranarchy/nicotine
 cd nicotine
 
-# GNU/Linux, macOS and BSD
+# GNU/Linux, macOS and *BSD
 ./gradlew build
 
 # Windows
