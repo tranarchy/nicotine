@@ -5,8 +5,10 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.common.ClientOptionsC2SPacket;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.util.Hand;
+import net.minecraft.util.PlayerInput;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -21,7 +23,7 @@ import java.util.Random;
 import static nicotine.util.Common.mc;
 
 public class Player {
-    private static boolean packetSneak = false;
+    private static boolean packetSneak = true;
 
     private static boolean changeLook = false;
     private static boolean changedLook = false;
@@ -166,7 +168,10 @@ public class Player {
     }
 
     public static void toggleSneak() {
-        //mc.getNetworkHandler().sendPacket(new ClientCommandC2SPacket(mc.player, packetSneak ? ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY : ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+        PlayerInput playerInput = mc.player.input.playerInput;
+        PlayerInput newPlayerInput = new PlayerInput(playerInput.forward(), playerInput.backward(), playerInput.left(), playerInput.right(), playerInput.jump(), packetSneak, playerInput.sprint());
+        PlayerInputC2SPacket playerInputC2SPacket = new PlayerInputC2SPacket(newPlayerInput);
+        mc.getNetworkHandler().sendPacket(playerInputC2SPacket);
         packetSneak = !packetSneak;
     }
 

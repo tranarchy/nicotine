@@ -11,6 +11,7 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
+import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Keybind;
@@ -23,7 +24,7 @@ import java.util.List;
 import static nicotine.util.Common.mc;
 
 public class ElytraBounce {
-    private static int antiCheatDelay = 8;
+    private static int antiCheatDelay = 7;
     private static boolean antiCheatTrigger = false;
     private static float prevYaw = -1;
 
@@ -69,7 +70,9 @@ public class ElytraBounce {
                 }
 
                 mc.options.jumpKey.setPressed(true);
-                mc.player.setPitch(75.0f);
+                mc.player.setPitch(85.0f);
+
+                System.out.println(mc.player.getYaw());
 
                 if (yawLock.enabled) {
                     if (prevYaw == -1) {
@@ -84,7 +87,7 @@ public class ElytraBounce {
                 if (antiCheatDelay <= 0) {
                     Player.startFlying();
                     antiCheatTrigger = false;
-                    antiCheatDelay = 8;
+                    antiCheatDelay = 7;
                 } else {
                     mc.options.jumpKey.setPressed(false);
                     antiCheatDelay--;

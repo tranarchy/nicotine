@@ -10,11 +10,14 @@ import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.network.ServerAddress;
 import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
+import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.BlockPos;
 
 import static nicotine.util.Common.currentServer;
 import static nicotine.util.Common.mc;
@@ -32,9 +35,9 @@ public class AutoReconnectScreen extends Screen {
 
     @Override
     protected void init() {
-        if (mc.world != null) {
-            mc.world.playSoundClient(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f);
-        }
+        PositionedSoundInstance positionedSoundInstance = new PositionedSoundInstance(SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, SoundInstance.createRandom(), mc.player == null ? BlockPos.ORIGIN : mc.player.getBlockPos());
+        mc.getSoundManager().play(positionedSoundInstance);
+
         this.grid.getMainPositioner().alignHorizontalCenter().margin(10);
         this.grid.add(new TextWidget(this.title, this.textRenderer));
         Text text = Text.literal(String.format("Reconnecting to %s (%ds)", currentServer.address, delay / 20));

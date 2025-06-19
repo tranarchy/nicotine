@@ -49,19 +49,19 @@ public class GUI extends Screen {
     public static List<CategoryButton> categoryButtons = new ArrayList<>();
 
     private void initButtons() {
-        if (categoryButtons.isEmpty()) {
-            int guiY = 8;
-            int guiX = 8;
+        categoryButtons.clear();
 
-            int height = mc.textRenderer.fontHeight + 10;
-            int width = 85;
+        int guiY = 8;
+        int guiX = 8;
 
-            for (ModCategory modCategory : ModCategory.values()) {
-                String categoryText = modCategory.name();
-                CategoryButton categoryButton = new CategoryButton(guiX, guiY, width, height, categoryText);
-                categoryButtons.add(categoryButton);
-                guiX += width + 15;
-            }
+        int height = mc.textRenderer.fontHeight + 10;
+        int width = 85;
+
+        for (ModCategory modCategory : ModCategory.values()) {
+            String categoryText = modCategory.name();
+            CategoryButton categoryButton = new CategoryButton(guiX, guiY, width, height, categoryText);
+            categoryButtons.add(categoryButton);
+            guiX += width + 15;
         }
     }
 
@@ -287,6 +287,12 @@ public class GUI extends Screen {
                 searchString = "";
                 getButtons();
             } else {
+                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT_CONTROL)) { // reset gui pos
+                    initButtons();
+                    getButtons();
+                    return true;
+                }
+
                 Settings.save();
                 this.close();
             }

@@ -3,12 +3,12 @@ package nicotine.util.math;
 import net.minecraft.util.math.Box;
 
 public class Boxf {
-    public final float minX;
-    public final float minY;
-    public final float minZ;
-    public final float maxX;
-    public final float maxY;
-    public final float maxZ;
+    public float minX;
+    public float minY;
+    public float minZ;
+    public float maxX;
+    public float maxY;
+    public float maxZ;
 
     public Boxf(Box box) {
         this.minX = (float)box.minX;
