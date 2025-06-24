@@ -14,6 +14,7 @@ import nicotine.util.render.RenderGUI;
 
 import java.util.*;
 
+import static nicotine.util.Common.getTimeInSeconds;
 import static nicotine.util.Common.mc;
 
 public class HUD {
@@ -60,6 +61,12 @@ public class HUD {
         clearHud();
 
         EventBus.register(InGameHudRenderAfterEvent.class, event -> {
+
+            if (mc.getDebugHud().shouldShowDebugHud()) {
+                clearHud();
+                return true;
+            }
+
             separatorText = separator.value;
 
             final int width = mc.getWindow().getScaledWidth();

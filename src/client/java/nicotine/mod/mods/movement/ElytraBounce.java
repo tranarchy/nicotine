@@ -72,8 +72,6 @@ public class ElytraBounce {
                 mc.options.jumpKey.setPressed(true);
                 mc.player.setPitch(85.0f);
 
-                System.out.println(mc.player.getYaw());
-
                 if (yawLock.enabled) {
                     if (prevYaw == -1) {
                         prevYaw = mc.player.getYaw();

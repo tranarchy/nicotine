@@ -6,10 +6,8 @@ import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShapes;
 import nicotine.util.ColorUtil;
 import nicotine.util.math.Boxf;
-import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
@@ -91,11 +89,30 @@ public class Render {
         BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL);
         MatrixStack.Entry entry = matrixStack.peek();
 
-        VoxelShapes.cuboid(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ).forEachEdge((x1, y1, z1, x2, y2, z2) -> {
-            Vector3f vector3f = (new Vector3f((float)(x2 - x1), (float)(y2 - y1), (float)(z2 - z1))).normalize();
-            bufferBuilder.vertex(entry, (float)(x1), (float)(y1), (float)(z1)).color(color).normal(entry, vector3f);
-            bufferBuilder.vertex(entry, (float)(x2), (float)(y2), (float)(z2)).color(color).normal(entry, vector3f);
-        });
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color).normal(entry, -1.0F, 0.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color).normal(entry, -1.0F, 0.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color).normal(entry, 0.0F, -1.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color).normal(entry, 0.0F, -1.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color).normal(entry, 0.0F, 0.0F, -1.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color).normal(entry, 0.0F, 0.0F, -1.0F);
+        bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
+        bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
 
         RenderLayer.getLines().draw(bufferBuilder.end());
 

@@ -13,6 +13,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import nicotine.events.ClientWorldTickEvent;
 import nicotine.events.SendMovementPacketAfterEvent;
 import nicotine.events.SendMovementPacketBeforeEvent;
 
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static nicotine.util.Common.mc;
+import static nicotine.util.Common.*;
 
 public class Player {
     private static boolean packetSneak = true;
@@ -84,6 +85,15 @@ public class Player {
                 }
 
                 changeLook = false;
+            }
+
+            return true;
+        });
+
+        EventBus.register(ClientWorldTickEvent.class, event -> {
+            if (mc.player.isDead()) {
+                loadedChunks.clear();
+                blockEntities.clear();
             }
 
             return true;
