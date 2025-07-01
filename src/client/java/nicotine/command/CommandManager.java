@@ -20,6 +20,7 @@ public class CommandManager {
         Help.init();
         Mods.init();
         Set.init();
+        Connect.init();
         PeekHand.init();
         Waypoint.init();
 

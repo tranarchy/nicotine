@@ -17,7 +17,7 @@ public class Render {
 
     private static boolean rendering = false;
     
-    private static void toggleRender() {
+    public static void toggleRender() {
         rendering = !rendering;
 
         if (rendering) {

@@ -10,11 +10,13 @@ import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.entity.vehicle.HopperMinecartEntity;
 import net.minecraft.util.Colors;
 import nicotine.events.ClientTickEvent;
+import nicotine.events.ClientWorldTickEvent;
 
 public class ColorUtil {
     public static final int CATEGORY_FOREGROUND_COLOR = 0xFFF8F8F2;
-    public static final int FOREGROUND_COLOR = 0xFFBBBBBB;
+    public static final int FOREGROUND_COLOR = 0xFF626282;
     public static final int BACKGROUND_COLOR = 0xC810101A;
+    public static final int SELECTED_BACKGROUND_COLOR = 0x7810101A;
     public static final int BORDER_COLOR = 0xFF10101A;
 
     public static final int PURPLE = 0xFF5F44C4;
@@ -121,10 +123,10 @@ public class ColorUtil {
     private static int rainbowStepCount = 0;
 
     public static void init() {
-        EventBus.register(ClientTickEvent.class, event -> {
+        EventBus.register(ClientWorldTickEvent.class, event -> {
             if (dynamicBrightnessVal >= 100)
                 brightnessIncr = -3;
-            else if (dynamicBrightnessVal <= 35)
+            else if (dynamicBrightnessVal <= 40)
                 brightnessIncr = 3;
 
             dynamicBrightnessVal += brightnessIncr;

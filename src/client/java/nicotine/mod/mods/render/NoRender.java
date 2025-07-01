@@ -18,8 +18,9 @@ public class NoRender {
         ToggleOption miscOverlays = new ToggleOption("MiscOverlays");
         ToggleOption toastNotifs = new ToggleOption("ToastNotifs");
         ToggleOption weather = new ToggleOption("Weather");
+        ToggleOption sky = new ToggleOption("Sky");
         ToggleOption particles = new ToggleOption("Particles");
-        noRender.modOptions.addAll(Arrays.asList(overlays, bossBars, potionEffects, miscOverlays, toastNotifs, weather, particles));
+        noRender.modOptions.addAll(Arrays.asList(overlays, bossBars, potionEffects, miscOverlays, toastNotifs, weather, sky, particles));
         ModManager.addMod(ModCategory.Render, noRender);
 
         EventBus.register(RenderOverlaysEvent.class, event -> {
@@ -77,6 +78,16 @@ public class NoRender {
                 return true;
 
             if (weather.enabled)
+                return false;
+
+            return true;
+        });
+
+        EventBus.register(RenderSkyEvent.class, event -> {
+            if (!noRender.enabled)
+                return true;
+
+            if (sky.enabled)
                 return false;
 
             return true;

@@ -98,6 +98,15 @@ public abstract class WorldRendererMixin {
         }
     }
 
+    @Inject(at = @At("HEAD"), method = "renderSky", cancellable = true)
+    private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickProgress, GpuBufferSlice fog, CallbackInfo info) {
+        boolean result = EventBus.post(new RenderSkyEvent());
+
+        if (!result) {
+            info.cancel();
+        }
+    }
+
     @Inject(at = @At("HEAD"), method = "renderEntity", cancellable = true)
     private void renderEntityBefore(Entity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo info) {
         if (vertexConsumers instanceof OutlineVertexConsumerProvider outlineVertexConsumerProvider) {

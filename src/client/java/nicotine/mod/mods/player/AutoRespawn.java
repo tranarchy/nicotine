@@ -7,6 +7,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 
+import static nicotine.util.Common.loadedChunks;
 import static nicotine.util.Common.mc;
 
 public class AutoRespawn {
@@ -19,6 +20,7 @@ public class AutoRespawn {
                 return true;
 
             if (mc.player.isDead()) {
+                loadedChunks.clear();
                 mc.getNetworkHandler().sendPacket(new ClientStatusC2SPacket(ClientStatusC2SPacket.Mode.PERFORM_RESPAWN));
             }
 

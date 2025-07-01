@@ -22,14 +22,14 @@
 		"DisconnectedScreenMixin",
 		"ClientPlayerNetworkHandlerMixin",
 		"PlayerListHudMixin",
-		"ClientChunkManagerMixin",
-		"WorldChunkMixin",
 		"ExplosionS2CPacketMixin",
 		"LivingEntityMixin",
 		"ClientConnectionMixin",
 		"ClientPlayerEntityMixin",
 		"PlayerMoveC2SPacketMixin",
-		"MobSpawnerLogicMixin"
+		"MobSpawnerLogicMixin",
+		"ClientPlayerInteractionManagerMixin",
+		"ClientChunkManagerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,

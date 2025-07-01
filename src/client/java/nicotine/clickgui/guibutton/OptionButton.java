@@ -1,9 +1,9 @@
-package nicotine.clickgui.custombutton;
+package nicotine.clickgui.guibutton;
 
 import nicotine.mod.Mod;
 import nicotine.mod.option.ModOption;
 
-public class OptionButton extends CustomButton {
+public class OptionButton extends GUIButton {
     public Mod mod;
     public ModOption modOption;
 

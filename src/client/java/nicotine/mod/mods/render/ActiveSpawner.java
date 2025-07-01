@@ -35,7 +35,7 @@ public class ActiveSpawner {
             if (!activeSpawner.enabled)
                 return true;
 
-            for (BlockEntity blockEntity : blockEntities) {
+            for (BlockEntity blockEntity : getBlockEntities()) {
                 if (blockEntity instanceof MobSpawnerBlockEntity mobSpawnerBlockEntity) {
                     MobSpawnerLogic mobSpawnerLogic = mobSpawnerBlockEntity.getLogic();
                     if (((IMobSpawnerLogic)mobSpawnerLogic).getSpawnDelay() != 20) {

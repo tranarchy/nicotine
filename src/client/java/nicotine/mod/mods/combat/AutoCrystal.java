@@ -115,7 +115,7 @@ public class AutoCrystal {
             if (Keybind.keyReleased(autoCrystal, keybind.keyCode))
                 autoCrystal.toggle();
 
-            if (!autoCrystal.enabled || playerBusy || mc.player.isUsingItem() || mc.interactionManager.isBreakingBlock())
+            if (!autoCrystal.enabled || Player.isBusy())
                 return true;
 
             for (Entity entity : mc.world.getEntities()) {
@@ -131,7 +131,7 @@ public class AutoCrystal {
                                 dmg >= minDamage.value && selfDmg <= selfDamage.value &&
                                 mc.player.canInteractWithEntity(endCrystalEntity, 0)
                                 && delayLeft <= 0
-                                && !Player.placing && !Player.attacking && !player.isInvulnerable()
+                                && !Player.isBusy() && !player.isInvulnerable()
                         ) {
                             Player.lookAndAttack(endCrystalEntity);
                             delayLeft = delay.value;
@@ -188,21 +188,23 @@ public class AutoCrystal {
                 }
 
 
-                if (placeDelayLeft <= 0 && !Player.placing && !Player.attacking) {
+                if (placeDelayLeft <= 0 && !Player.isBusy()) {
                     if (bestDamage >= minDamage.value) {
+
+                        int targetSlot = -1;
 
                         for (int i = 0; i < 9; i++) {
                             if (mc.player.getInventory().getStack(i).getItem() == Items.END_CRYSTAL) {
-                                mc.player.getInventory().setSelectedSlot(i);
+                                targetSlot = i;
                                 break;
                             }
                         }
 
-                        if (mc.player.getMainHandStack().getItem() == Items.END_CRYSTAL) {
+                        if (targetSlot != -1) {
                             placementPositionToRender = bestPlacementPos;
 
                             BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(bestPlacementPos.getX(), bestPlacementPos.getY(), bestPlacementPos.getZ()), Direction.DOWN, bestPlacementPos, false);
-                            Player.lookAndPlace(blockHitResult, false);
+                            Player.lookAndPlace(blockHitResult, targetSlot, false, false);
 
                             placeDelayLeft = placeDelay.value;
                         }

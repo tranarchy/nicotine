@@ -5,13 +5,11 @@ import nicotine.mod.mods.gui.Blur;
 import nicotine.mod.mods.gui.GUI;
 import nicotine.mod.mods.gui.Tooltip;
 import nicotine.mod.mods.hud.*;
-import nicotine.mod.mods.misc.AutoReconnect;
-import nicotine.mod.mods.misc.ExtraTab;
-import nicotine.mod.mods.misc.NoTelemetry;
-import nicotine.mod.mods.misc.SmartFocus;
+import nicotine.mod.mods.misc.*;
 import nicotine.mod.mods.movement.*;
 import nicotine.mod.mods.player.*;
 import nicotine.mod.mods.render.*;
+import nicotine.mod.mods.render.Players;
 
 import java.util.*;
 
@@ -23,22 +21,12 @@ public class ModManager {
     }
 
     public static Mod getMod(String name) {
-        for (HashMap.Entry<ModCategory, List<Mod>> modSet : ModManager.modules.entrySet()) {
-            for (Mod mod : modSet.getValue())
+        for (ModCategory modCategory : ModManager.modules.keySet()) {
+            for (Mod mod : ModManager.modules.get(modCategory))
             {
                 if (mod.name.equals(name)) {
                     return mod;
                 }
-            }
-        }
-
-        return null;
-    }
-
-    public static Mod getMod(ModCategory modCategory, String name) {
-        for (Mod mod : ModManager.modules.get(modCategory)) {
-            if (mod.name.equals(name)) {
-                return mod;
             }
         }
 
@@ -51,27 +39,24 @@ public class ModManager {
             modules.put(category, new ArrayList<>());
         }
 
-        ESP.init();
+        Players.init();
+        Storage.init();
+        Item.init();
         GlowESP.init();
-        StorageESP.init();
-        ItemESP.init();
         LogoutESP.init();
         HoleESP.init();
-        ActiveSpawner.init();
-        Tracer.init();
-        StorageTracer.init();
-        ItemTracer.init();
         NameTag.init();
-        Zoom.init();
+        FullBright.init();
         NoRender.init();
         NoFog.init();
+        ActiveSpawner.init();
         BlockBreaking.init();
         BlockOutline.init();
         EntityOwner.init();
         Waypoints.init();
-        FullBright.init();
         Xray.init();
         Peek.init();
+        Zoom.init();
         HandFOV.init();
         Crosshair.init();
 
@@ -81,17 +66,21 @@ public class ModManager {
         AutoEject.init();
         AutoRefill.init();
         AutoMine.init();
+        AutoFish.init();
+        AutoEat.init();
         Scaffold.init();
         NoPush.init();
         FastXP.init();
 
         AutoWalk.init();
         AutoSprint.init();
+        AntiAFK.init();
         ElytraBounce.init();
         FreeMove.init();
 
         AutoTotem.init();
         AutoArmor.init();
+        AutoTrap.init();
         AutoCrystal.init();
         KillAura.init();
         NoKnockback.init();

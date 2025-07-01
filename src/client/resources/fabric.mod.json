@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "nicotine",
-	"version": "0.3.4",
+	"version": "0.4.0",
 	"name": "nicotine",
 	"description": "Utility mod for anarchy servers",
 	"authors": [
@@ -23,8 +23,8 @@
 		"nicotine.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.13",
-		"minecraft": "~1.21.6",
+		"fabricloader": ">=0.16.14",
+		"minecraft": "~1.21.7",
 		"java": ">=21"
 	}
 }

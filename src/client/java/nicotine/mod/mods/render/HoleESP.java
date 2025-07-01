@@ -21,9 +21,9 @@ import static nicotine.util.Common.*;
 
 public class HoleESP {
 
-    private static List<BlockPos> getHoleSpots(int horizontal, int vertical) {
-        List<BlockPos> holeSpots = new ArrayList<>();
+    public static List<BlockPos> holeSpots = new ArrayList<>();
 
+    private static List<BlockPos> getHoleSpots(int horizontal, int vertical) {
         BlockPos initPos = mc.player.getBlockPos();
 
         for (int x = -horizontal; x <= horizontal; x++) {
@@ -90,6 +90,7 @@ public class HoleESP {
         });
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
+            holeSpots.clear();
             holeSpots = getHoleSpots((int)width.value, (int)height.value);
 
             return true;

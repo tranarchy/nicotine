@@ -9,7 +9,7 @@
 
 nicotine is a utility mod with its own click GUI, event system and plenty of mods to enhance your gameplay
 
-nicotine doesn't depend on the Fabric API or 3rd party dependencies
+nicotine doesn't depend on [Fabric API](https://github.com/FabricMC/fabric)
 
 ## Usage
 
@@ -38,10 +38,8 @@ You will find the built jar in `build/libs`
 
 The default keybind for the click GUI is **Right Shift**, you can change this any time
 
-To search for a specific module in the GUI press **/**
-
 ## Other versions
 
-nicotine is currently made for version **1.21.6**
+nicotine is currently made for version **1.21.7**
 
 If you want to use nicotine with another Minecraft version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod

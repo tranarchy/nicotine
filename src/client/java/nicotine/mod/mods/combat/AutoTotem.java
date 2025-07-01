@@ -9,7 +9,6 @@ import nicotine.util.EventBus;
 import nicotine.util.Inventory;
 
 import static nicotine.util.Common.mc;
-import static nicotine.util.Common.playerBusy;
 
 public class AutoTotem {
     public static void init() {
@@ -20,16 +19,12 @@ public class AutoTotem {
             if (!autoTotem.enabled || !mc.player.getOffHandStack().isEmpty() || Inventory.isContainerOpen())
                 return true;
 
-            playerBusy = true;
-
             for (int i = 0; i <= 35; i++) {
                 if (mc.player.getInventory().getStack(i).getItem() == Items.TOTEM_OF_UNDYING) {
                     Inventory.move(i < 9 ? 36 + i : i, 45);
                     break;
                 }
             }
-
-            playerBusy = false;
 
             return true;
         });

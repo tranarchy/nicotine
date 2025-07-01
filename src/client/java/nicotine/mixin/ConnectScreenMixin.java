@@ -30,12 +30,9 @@ public class ConnectScreenMixin {
         Peek.echestWasOpened = false;
         Peek.enderChestItems.clear();
 
-        ActiveSpawner.activeSpawners.clear();
-
-        BlockBreaking.blockBreakingInfos.clear();
-
-        blockEntities.clear();
         loadedChunks.clear();
+        ActiveSpawner.activeSpawners.clear();
+        BlockBreaking.blockBreakingInfos.clear();
 
         currentServer = info;
     }

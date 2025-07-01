@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static nicotine.util.Common.mc;
-import static nicotine.util.Common.playerBusy;
 
 public class AutoArmor {
 
@@ -54,22 +53,16 @@ public class AutoArmor {
                     int armorSlot = 35 + equipmentSlot;
 
                     if (mc.player.getInventory().getStack(armorSlot) == ItemStack.EMPTY || (mc.player.getInventory().getStack(armorSlot).getItem() == Items.ELYTRA && elytraSwap.enabled)) {
-                        playerBusy = true;
-
                         Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
 
                         if (mc.player.getInventory().getStack(armorSlot).getItem() == Items.ELYTRA && elytraSwap.enabled)
                             elytraSwap.enabled = false;
-
-                        playerBusy = false;
                    }
                 }
 
                if (curItem == Items.ELYTRA && chestplate.getItem() != Items.ELYTRA && elytraSwap.enabled) {
-                   playerBusy = true;
                    Inventory.swap(i < 9 ? 36 + i : i, 6);
                    elytraSwap.enabled = false;
-                   playerBusy = false;
                }
             }
 

@@ -10,6 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static nicotine.util.Common.*;
+
 @Mixin(ClientPlayerEntity.class)
 public class ClientPlayerEntityMixin {
     @Inject(at = @At("HEAD"), method = "sendMovementPackets")
@@ -31,5 +33,10 @@ public class ClientPlayerEntityMixin {
                 info.cancel();
             }
         }
+    }
+
+    @Inject(at = @At("HEAD"), method = "requestRespawn")
+    public void requestRespawn(CallbackInfo info) {
+        loadedChunks.clear();
     }
 }

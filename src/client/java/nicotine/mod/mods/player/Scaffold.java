@@ -14,6 +14,7 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
+import nicotine.util.Inventory;
 import nicotine.util.Keybind;
 import nicotine.util.Player;
 
@@ -39,9 +40,13 @@ public class Scaffold {
                 scaffold.toggle();
             }
 
-            if (!scaffold.enabled || (!(mc.player.getMainHandStack().getItem() instanceof BlockItem) && !selectBlock.enabled) || Player.placing || Player.attacking)
+            if (!scaffold.enabled || (!(mc.player.getMainHandStack().getItem() instanceof BlockItem) && !selectBlock.enabled) || Player.isBusy())
                 return true;
 
+            if (!mc.player.isOnGround() && mc.world.getBlockState(mc.player.getBlockPos().add(0, -2, 0)).getBlock() == Blocks.AIR) {
+                return true;
+
+            }
             BlockPos initPos = mc.player.getBlockPos();
             BlockPos scaffoldPos = BlockPos.ORIGIN;
             BlockPos placementPos = BlockPos.ORIGIN;
@@ -72,22 +77,27 @@ public class Scaffold {
                 scaffoldPos = prevPlayerPos.add(0, -1, 0);
             }
 
-            if (mc.world.getBlockState(prevPlacementPos).getBlock() == Blocks.AIR && initPos.add(0, -1, 0).equals(prevPlacementPos)) {
+
+            if (mc.world.getBlockState(prevPlacementPos).getBlock().getDefaultState().isReplaceable() && initPos.add(0, -1, 0).equals(prevPlacementPos)) {
+                int targetSlot = -1;
+
                 if (selectBlock.enabled && !(mc.player.getMainHandStack().getItem() instanceof BlockItem)) {
                     for (int i = 0; i < 9; i++) {
                         if (mc.player.getInventory().getStack(i).getItem() instanceof BlockItem) {
-                            mc.player.getInventory().setSelectedSlot(i);
+                            targetSlot = i;
                             break;
                         }
                     }
 
-                    if (!(mc.player.getMainHandStack().getItem() instanceof BlockItem)) {
+                    if (targetSlot == -1) {
                         return true;
                     }
+                } else {
+                    targetSlot = mc.player.getInventory().getSelectedSlot();
                 }
 
                 BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(scaffoldPos.getX(), scaffoldPos.getY(), scaffoldPos.getZ()), scaffoldDirection, scaffoldPos.mutableCopy(), false);
-                Player.lookAndPlaceSetPitch(blockHitResult, prevPlacementPos.offset(scaffoldDirection.getOpposite()), mc.player.isOnGround() ? 85 : 90, true);
+                Player.lookAndPlace(blockHitResult, targetSlot, true, false);
             }
 
 

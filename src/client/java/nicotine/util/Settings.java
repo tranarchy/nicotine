@@ -3,12 +3,11 @@ package nicotine.util;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
-import nicotine.clickgui.custombutton.CategoryButton;
+import nicotine.clickgui.GUI;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
-import nicotine.clickgui.GUI;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -28,20 +27,11 @@ public class Settings {
 
         JSONObject settings = new JSONObject();
 
-        JSONObject categoryBtns = new JSONObject();
-        for (CategoryButton button : GUI.categoryButtons) {
-            JSONObject category = new JSONObject();
-            category.put("x", button.x);
-            category.put("y", button.y);
-            category.put("width", button.width);
-            category.put("height", button.height);
+        JSONObject gui = new JSONObject();
+        gui.appendField("x", GUI.guiPos.x);
+        gui.appendField("y", GUI.guiPos.y);
 
-            categoryBtns.appendField(button.text, category);
-        }
-
-        if (!GUI.categoryButtons.isEmpty()) {
-            settings.appendField("gui_categories", categoryBtns);
-        }
+        settings.appendField("gui", gui);
 
         JSONObject waypoints = new JSONObject();
         for (WaypointInstance waypointInstance : allWaypoints) {
@@ -109,6 +99,7 @@ public class Settings {
         } catch (IOException | ParseException e) {
             throw new RuntimeException(e);
         }
+
         if (settings.containsKey("waypoints")) {
             JSONObject waypoints = (JSONObject) settings.get("waypoints");
             for (String waypoint : waypoints.keySet()) {
@@ -117,12 +108,10 @@ public class Settings {
             }
         }
 
-        if (settings.containsKey("gui_categories")) {
-            JSONObject categories = (JSONObject)  settings.get("gui_categories");
-            for (String category : categories.keySet()) {
-                JSONObject categoryInfo = (JSONObject) categories.get(category);
-                GUI.categoryButtons.add(new CategoryButton((int)categoryInfo.get("x"), (int)categoryInfo.get("y"), (int)categoryInfo.get("width"), (int)categoryInfo.get("height"), category));
-            }
+        if (settings.containsKey("gui")) {
+            JSONObject guiPos = (JSONObject) settings.get("gui");
+            GUI.guiPos.x = (int) guiPos.get("x");
+            GUI.guiPos.y = (int) guiPos.get("y");
          }
 
         JSONObject categories = (JSONObject) settings.get("settings");

@@ -9,7 +9,6 @@ import nicotine.util.EventBus;
 import nicotine.util.Inventory;
 
 import static nicotine.util.Common.mc;
-import static nicotine.util.Common.playerBusy;
 
 public class AutoRefill {
     public static void init() {
@@ -25,9 +24,7 @@ public class AutoRefill {
 
             for (int i = 9; i <= 35; i++) {
                 if (mc.player.getMainHandStack().getName().getString().equals(mc.player.getInventory().getStack(i).getName().getString())) {
-                    playerBusy = true;
                     Inventory.swap(i, 36 + mc.player.getInventory().getSelectedSlot());
-                    playerBusy = false;
                 }
             }
 

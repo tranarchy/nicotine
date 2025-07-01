@@ -1,6 +1,6 @@
-package nicotine.clickgui.custombutton;
+package nicotine.clickgui.guibutton;
 
-public class CategoryButton extends CustomButton {
+public class CategoryButton extends GUIButton {
     public String text;
 
     public CategoryButton(int x, int y, int width, int height, String text) {
