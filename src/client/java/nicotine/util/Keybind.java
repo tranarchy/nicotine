@@ -4,7 +4,6 @@ import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Formatting;
 import nicotine.clickgui.GUI;
-import nicotine.clickgui.OldGUI;
 import nicotine.mod.Mod;
 
 import java.util.HashMap;

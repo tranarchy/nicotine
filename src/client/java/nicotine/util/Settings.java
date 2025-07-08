@@ -1,9 +1,12 @@
 package nicotine.util;
 
+import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 import nicotine.clickgui.GUI;
+import nicotine.command.CommandManager;
+import nicotine.command.commands.TouchBarCustom;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -14,9 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static nicotine.util.Common.*;
 
@@ -26,6 +27,8 @@ public class Settings {
     public static void save() {
 
         JSONObject settings = new JSONObject();
+
+        settings.appendField("commandPrefix", CommandManager.prefix);
 
         JSONObject gui = new JSONObject();
         gui.appendField("x", GUI.guiPos.x);
@@ -48,6 +51,17 @@ public class Settings {
 
         if (!allWaypoints.isEmpty()) {
             settings.appendField("waypoints", waypoints);
+        }
+
+        JSONObject touchBarItems = new JSONObject();
+        for (String btnName : TouchBarCustom.customTouchBarItems.keySet()) {
+            JSONObject btnInfo = new JSONObject();
+            btnInfo.put("executeString", TouchBarCustom.customTouchBarItems.get(btnName));
+            touchBarItems.appendField(btnName, btnInfo);
+        }
+
+        if (!TouchBarCustom.customTouchBarItems.isEmpty()) {
+            settings.appendField("touchBar", touchBarItems);
         }
 
         JSONObject categories = new JSONObject();
@@ -100,11 +114,24 @@ public class Settings {
             throw new RuntimeException(e);
         }
 
+        if (settings.containsKey("commandPrefix")) {
+            CommandManager.prefix = (String)settings.get("commandPrefix");
+        }
+
         if (settings.containsKey("waypoints")) {
             JSONObject waypoints = (JSONObject) settings.get("waypoints");
             for (String waypoint : waypoints.keySet()) {
                 JSONObject waypointInfo = (JSONObject) waypoints.get(waypoint);
                 allWaypoints.add(new WaypointInstance(waypoint, (String)waypointInfo.get("dimension"), (String)waypointInfo.get("server"), (int)waypointInfo.get("x"), (int)waypointInfo.get("y"), (int) waypointInfo.get("z")));
+            }
+        }
+
+        if (settings.containsKey("touchBar")) {
+            JSONObject touchBarItems = (JSONObject) settings.get("touchBar");
+            for (String btn : touchBarItems.keySet()) {
+                JSONObject btnInfo = (JSONObject) touchBarItems.get(btn);
+
+                TouchBarCustom.customTouchBarItems.put(btn, (String)btnInfo.get("executeString"));
             }
         }
 

@@ -21,9 +21,12 @@ public class PeekHand {
     private static boolean openScreen = false;
 
     public static void init() {
-        Command mods = new Command("peek", "Peeks the shulker box / echest in your hand") {
+        Command mods = new Command("peekhand", "Peeks the shulker box / echest in your hand") {
             @Override
             public void trigger(String[] splitCommand) {
+              if (mc.player == null)
+                  return;
+
               if (Peek.shulkerBoxItems.contains(mc.player.getMainHandStack().getItem()) || mc.player.getMainHandStack().getItem() == Items.ENDER_CHEST) {
                   openScreen = true;
               } else {

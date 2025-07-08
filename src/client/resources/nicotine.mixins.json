@@ -29,7 +29,8 @@
 		"PlayerMoveC2SPacketMixin",
 		"MobSpawnerLogicMixin",
 		"ClientPlayerInteractionManagerMixin",
-		"ClientChunkManagerMixin"
+		"ClientChunkManagerMixin",
+		"RenderLayerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,

@@ -24,7 +24,7 @@ public class ModManager {
         for (ModCategory modCategory : ModManager.modules.keySet()) {
             for (Mod mod : ModManager.modules.get(modCategory))
             {
-                if (mod.name.equals(name)) {
+                if (mod.name.equalsIgnoreCase(name)) {
                     return mod;
                 }
             }
@@ -91,6 +91,9 @@ public class ModManager {
         SmartFocus.init();
         AutoReconnect.init();
         ExtraTab.init();
+
+        if (System.getProperty("os.name").startsWith("Mac"))
+            TouchBar.init();
 
         HUD.init();
         Watermark.init();

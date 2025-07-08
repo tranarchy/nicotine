@@ -5,9 +5,9 @@
 
 ## About
 
-nicotine is a utility mod with its own click GUI, event system and plenty of mods to enhance your gameplay
+nicotine is a utility mod with its own click GUI, event system, command system and plenty of mods to enhance your gameplay
 
-nicotine doesn't depend on [Fabric API](https://github.com/FabricMC/fabric)
+nicotine doesn't depend on the [Fabric API](https://github.com/FabricMC/fabric)
 
 ## Usage
 

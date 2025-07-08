@@ -11,6 +11,7 @@ import java.util.Optional;
 
 public class CommandManager {
     public static final List<Command> commands = new ArrayList<>();
+    public static String prefix = ".";
 
     public static void addCommand(Command command) {
         commands.add(command);
@@ -18,14 +19,18 @@ public class CommandManager {
 
     public static void init() {
         Help.init();
+        Prefix.init();
         Mods.init();
         Set.init();
         Connect.init();
         PeekHand.init();
         Waypoint.init();
 
+        if (System.getProperty("os.name").startsWith("Mac"))
+            TouchBarCustom.init();
+
         EventBus.register(SendMessageEvent.class, event -> {
-            if (!event.content.startsWith("."))
+            if (!event.content.startsWith(prefix))
                 return true;
 
             String commandString = event.content.substring(1).toLowerCase();
