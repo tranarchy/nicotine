@@ -2,6 +2,7 @@ package nicotine.mod.mods.combat;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.mob.*;
 import net.minecraft.entity.passive.PassiveEntity;
@@ -66,7 +67,9 @@ public class KillAura {
                                 Player.lookAndAttack(entity);
                                 break;
                             case "Stay":
-                                Player.lookAndAttack(entity, false);
+                                mc.player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, entity.getEyePos());
+                                Player.attack(entity);
+                                Player.swingHand();
                                 break;
                             case "None":
                                 Player.attack(entity);
