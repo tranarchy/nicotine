@@ -1,5 +1,6 @@
 package nicotine.mod.mods.combat;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.util.InputUtil;
@@ -36,6 +37,8 @@ public class AutoCrystal {
 
     private static BlockPos placementPositionToRender = null;
 
+    private static final List<Block> validBlocks =  Arrays.asList(Blocks.OBSIDIAN, Blocks.BEDROCK);
+
     private static float calculateExplosionDamage(Vec3d explosionPos, Entity entity) {
         float power = 12.0F;
 
@@ -65,13 +68,16 @@ public class AutoCrystal {
             for (int y = -5; y <= 5; y++) {
                 for (int z = -5; z <= 5; z++) {
                     BlockPos pos = initPos.add(x, y, z);
-                    if (mc.player.canInteractWithBlockAt(pos.add(0, 1, 0), 0)) {
-                        if (hardBlocks.contains(mc.world.getBlockState(pos).getBlock())) {
-                            if (mc.world.getBlockState(pos.add(0, 1, 0)).getBlock() == Blocks.AIR) {
-                                placementPositions.add(pos);
-                            }
-                        }
-                    }
+                    if (!mc.player.canInteractWithBlockAt(pos.add(0, 1, 0), 0))
+                        continue;
+
+                    if (!validBlocks.contains(mc.world.getBlockState(pos).getBlock()))
+                        continue;
+
+                    if (mc.world.getBlockState(pos.add(0, 1, 0)).getBlock() != Blocks.AIR)
+                        continue;
+
+                    placementPositions.add(pos);
                 }
             }
         }
@@ -121,7 +127,7 @@ public class AutoCrystal {
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof EndCrystalEntity endCrystalEntity) {
                     for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-                        if (player == mc.player || player.isDead())
+                        if (player == mc.player || player.isDead() || friendList.contains(player.getUuid()))
                             continue;
 
                         float dmg = calculateExplosionDamage(endCrystalEntity.getPos(), player);
@@ -154,7 +160,7 @@ public class AutoCrystal {
 
                 float bestDamage = -1;
                 for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-                    if (mc.player == player || player.isDead())
+                    if (mc.player == player || player.isDead() || friendList.contains(player.getUuid()))
                         continue;
 
                     for (BlockPos placementPosition : placementPositions) {

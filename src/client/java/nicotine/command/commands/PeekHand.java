@@ -9,7 +9,7 @@ import nicotine.command.Command;
 import nicotine.command.CommandManager;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.mod.mods.render.Peek;
-import nicotine.screens.ShulkerPeekScreen;
+import nicotine.screens.PeekScreen;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
 
@@ -21,7 +21,7 @@ public class PeekHand {
     private static boolean openScreen = false;
 
     public static void init() {
-        Command mods = new Command("peekhand", "Peeks the shulker box / echest in your hand") {
+        Command peekhand = new Command("peekhand", "Peeks the shulker box / echest in your hand") {
             @Override
             public void trigger(String[] splitCommand) {
               if (mc.player == null)
@@ -34,7 +34,7 @@ public class PeekHand {
               }
             }
         };
-        CommandManager.addCommand(mods);
+        CommandManager.addCommand(peekhand);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
             if (mc.currentScreen == null && openScreen) {
@@ -60,7 +60,7 @@ public class PeekHand {
                 for (int i = 0; i < peekItems.size(); i++) {
                     peekInventory.setStack(i, peekItems.get(i));
                 }
-                mc.setScreen(new ShulkerPeekScreen(mainHandStack.getName(), peekInventory));
+                mc.setScreen(new PeekScreen(mainHandStack.getName(), peekInventory));
             }
 
             return true;

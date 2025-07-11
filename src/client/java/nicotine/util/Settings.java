@@ -4,7 +4,7 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
-import nicotine.clickgui.GUI;
+import nicotine.clickgui.ClickGUI;
 import nicotine.command.CommandManager;
 import nicotine.command.commands.TouchBarCustom;
 import nicotine.mod.Mod;
@@ -31,8 +31,8 @@ public class Settings {
         settings.appendField("commandPrefix", CommandManager.prefix);
 
         JSONObject gui = new JSONObject();
-        gui.appendField("x", GUI.guiPos.x);
-        gui.appendField("y", GUI.guiPos.y);
+        gui.appendField("x", ClickGUI.guiPos.x);
+        gui.appendField("y", ClickGUI.guiPos.y);
 
         settings.appendField("gui", gui);
 
@@ -53,6 +53,15 @@ public class Settings {
             settings.appendField("waypoints", waypoints);
         }
 
+        if (!friendList.isEmpty()) {
+            JSONArray friends = new JSONArray();
+            for (UUID uuid : friendList) {
+                friends.add(uuid.toString());
+            }
+
+            settings.appendField("friends", friends);
+        }
+
         JSONObject touchBarItems = new JSONObject();
         for (String btnName : TouchBarCustom.customTouchBarItems.keySet()) {
             JSONObject btnInfo = new JSONObject();
@@ -65,12 +74,16 @@ public class Settings {
         }
 
         JSONObject categories = new JSONObject();
-        for (HashMap.Entry<ModCategory, List<Mod>> modSet : ModManager.modules.entrySet()) {
+
+        for (ModCategory modCategory: ModManager.modules.keySet()) {
             JSONObject modInfo = new JSONObject();
-            for (Mod mod : modSet.getValue()) {
+
+            for (Mod mod : ModManager.modules.get(modCategory)) {
                 JSONObject modDetails = new JSONObject();
+
                 if (!mod.alwaysEnabled)
                     modDetails.put("enabled", mod.enabled);
+
                 for (ModOption modOption : mod.modOptions) {
                    if (modOption instanceof SliderOption sliderOption) {
                        modDetails.put(sliderOption.name, sliderOption.value);
@@ -84,7 +97,7 @@ public class Settings {
                 }
 
                 modInfo.put(mod.name, modDetails);
-                categories.appendField(modSet.getKey().toString(), modInfo);
+                categories.appendField(modCategory.toString(), modInfo);
             }
         }
 
@@ -115,14 +128,21 @@ public class Settings {
         }
 
         if (settings.containsKey("commandPrefix")) {
-            CommandManager.prefix = (String)settings.get("commandPrefix");
+            CommandManager.prefix = settings.getAsString("commandPrefix");
         }
 
         if (settings.containsKey("waypoints")) {
             JSONObject waypoints = (JSONObject) settings.get("waypoints");
             for (String waypoint : waypoints.keySet()) {
                 JSONObject waypointInfo = (JSONObject) waypoints.get(waypoint);
-                allWaypoints.add(new WaypointInstance(waypoint, (String)waypointInfo.get("dimension"), (String)waypointInfo.get("server"), (int)waypointInfo.get("x"), (int)waypointInfo.get("y"), (int) waypointInfo.get("z")));
+                allWaypoints.add(new WaypointInstance(waypoint, waypointInfo.getAsString("dimension"), waypointInfo.getAsString("server"), (int)waypointInfo.get("x"), (int)waypointInfo.get("y"), (int) waypointInfo.get("z")));
+            }
+        }
+
+        if (settings.containsKey("friends")) {
+            JSONArray friends = (JSONArray) settings.get("friends");
+            for (Object friend : friends) {
+                friendList.add(UUID.fromString(friend.toString()));
             }
         }
 
@@ -131,45 +151,48 @@ public class Settings {
             for (String btn : touchBarItems.keySet()) {
                 JSONObject btnInfo = (JSONObject) touchBarItems.get(btn);
 
-                TouchBarCustom.customTouchBarItems.put(btn, (String)btnInfo.get("executeString"));
+                TouchBarCustom.customTouchBarItems.put(btn, btnInfo.getAsString("executeString"));
             }
         }
 
         if (settings.containsKey("gui")) {
             JSONObject guiPos = (JSONObject) settings.get("gui");
-            GUI.guiPos.x = (int) guiPos.get("x");
-            GUI.guiPos.y = (int) guiPos.get("y");
+            ClickGUI.guiPos.x = (int) guiPos.get("x");
+            ClickGUI.guiPos.y = (int) guiPos.get("y");
          }
 
         JSONObject categories = (JSONObject) settings.get("settings");
-        for (HashMap.Entry<ModCategory, List<Mod>> modSet : ModManager.modules.entrySet()) {
-            for (Mod mod : modSet.getValue()) {
-                JSONObject category = (JSONObject) categories.get(modSet.getKey().toString());
-                if (category != null) {
-                    JSONObject modInfo = (JSONObject) category.get(mod.name);
-                    if (modInfo != null) {
-                        if (!mod.alwaysEnabled) {
-                            if ((boolean) modInfo.get("enabled")) {
-                                mod.toggle();
-                            }
-                        }
-                        for (ModOption modOption : mod.modOptions) {
-                            if (modInfo.get(modOption.name) == null)
-                                continue;
+        for (ModCategory modCategory : ModManager.modules.keySet()) {
+            for (Mod mod :  ModManager.modules.get(modCategory)) {
 
-                            if (modOption instanceof SliderOption sliderOption) {
-                                sliderOption.value = ((Double) modInfo.get(sliderOption.name)).floatValue();
-                            } else if (modOption instanceof SwitchOption switchOption) {
-                                String switchVal = (String) modInfo.get(switchOption.name);
-                                if (Arrays.stream(switchOption.modes).toList().contains(switchVal)) {
-                                    switchOption.value = (String) modInfo.get(switchOption.name);
-                                }
-                            } else if (modOption instanceof ToggleOption toggleOption) {
-                                toggleOption.enabled = (boolean) modInfo.get(toggleOption.name);
-                            } else if (modOption instanceof KeybindOption keybindOption) {
-                                keybindOption.keyCode = (int) modInfo.get(keybindOption.name);
-                            }
+                JSONObject category = (JSONObject) categories.get(modCategory.toString());
+                if (category == null)
+                    continue;
+
+                JSONObject modInfo = (JSONObject) category.get(mod.name);
+                if (modInfo == null)
+                    continue;
+
+                if (!mod.alwaysEnabled) {
+                    if ((boolean) modInfo.get("enabled")) {
+                        mod.toggle();
+                    }
+                }
+                for (ModOption modOption : mod.modOptions) {
+                    if (modInfo.get(modOption.name) == null)
+                        continue;
+
+                    if (modOption instanceof SliderOption sliderOption) {
+                        sliderOption.value = ((Double) modInfo.get(sliderOption.name)).floatValue();
+                    } else if (modOption instanceof SwitchOption switchOption) {
+                        String switchVal = modInfo.getAsString(switchOption.name);
+                        if (Arrays.stream(switchOption.modes).toList().contains(switchVal)) {
+                            switchOption.value = modInfo.getAsString(switchOption.name);
                         }
+                    } else if (modOption instanceof ToggleOption toggleOption) {
+                        toggleOption.enabled = (boolean) modInfo.get(toggleOption.name);
+                    } else if (modOption instanceof KeybindOption keybindOption) {
+                        keybindOption.keyCode = (int) modInfo.get(keybindOption.name);
                     }
                 }
             }

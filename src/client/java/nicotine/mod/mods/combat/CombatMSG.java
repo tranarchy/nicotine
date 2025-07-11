@@ -27,7 +27,8 @@ public class CombatMSG {
         Mod combatMSG = new Mod("CombatMSG");
         ToggleOption poppedTotems = new ToggleOption("PoppedTotems", true);
         ToggleOption enterDistance = new ToggleOption("EnterDistance", true);
-        combatMSG.modOptions.addAll(Arrays.asList(poppedTotems, enterDistance));
+        ToggleOption playSound = new ToggleOption("PlaySound");
+        combatMSG.modOptions.addAll(Arrays.asList(poppedTotems, enterDistance, playSound));
         ModManager.addMod(ModCategory.Combat, combatMSG);
 
         EventBus.register(TotemPopEvent.class, event -> {
@@ -54,7 +55,8 @@ public class CombatMSG {
 
                     if (!prevPlayers.contains(player)) {
                         Message.sendInfo(String.format("%s entered your render distance", player.getName().getString()));
-                        mc.world.playSoundAtBlockCenterClient(mc.player.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, false);
+                        if (playSound.enabled)
+                            mc.world.playSoundAtBlockCenterClient(mc.player.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, false);
                     }
                 }
 

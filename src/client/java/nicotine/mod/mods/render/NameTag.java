@@ -17,8 +17,7 @@ import nicotine.util.render.Render;
 
 import java.util.Arrays;
 
-import static nicotine.util.Common.mc;
-import static nicotine.util.Common.totemPopCounter;
+import static nicotine.util.Common.*;
 
 public class NameTag {
 
@@ -46,6 +45,11 @@ public class NameTag {
                     Vec3d position = new Vec3d(player.getX(), player.getBoundingBox().maxY, player.getZ());
                     float hp = player.getHealth() + player.getAbsorptionAmount();
                     String nametagText = String.format("%s", player.getName().getString());
+
+                    if (friendList.contains(player.getUuid())) {
+                        nametagText = "[F] " + nametagText;
+                    }
+
                     if (health.enabled)
                         nametagText += String.format(" [%s%.1f%s]",  Formatting.RED, hp, Formatting.RESET);
                     if (armor.enabled)

@@ -1,5 +1,6 @@
 package nicotine.mod.mods.render;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.BlockPos;
@@ -10,6 +11,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
+import nicotine.util.Player;
 import nicotine.util.render.Render;
 import nicotine.util.math.BoxUtil;
 
@@ -23,6 +25,8 @@ public class HoleESP {
 
     public static List<BlockPos> holeSpots = new ArrayList<>();
 
+    private static final List<Block> validBlocks =  Arrays.asList(Blocks.OBSIDIAN, Blocks.BEDROCK);
+
     private static List<BlockPos> getHoleSpots(int horizontal, int vertical) {
         BlockPos initPos = mc.player.getBlockPos();
 
@@ -30,7 +34,7 @@ public class HoleESP {
             for (int y = -vertical; y <= vertical; y++) {
                 for (int z = -horizontal; z <= horizontal; z++) {
                     BlockPos pos = initPos.add(x, y, z);
-                    if (hardBlocks.contains(mc.world.getBlockState(pos).getBlock())) {
+                    if (validBlocks.contains(mc.world.getBlockState(pos).getBlock())) {
 
                         if (mc.world.getBlockState(pos.add(0, 1, 0)).getBlock() != Blocks.AIR) {
                             continue;
@@ -42,8 +46,8 @@ public class HoleESP {
 
                         boolean allValidBlocks = true;
 
-                        for (BlockPos surroundPos : getSurroundBlocks(pos, 1)) {
-                            if (!hardBlocks.contains(mc.world.getBlockState(surroundPos).getBlock())) {
+                        for (BlockPos surroundPos : Player.getSurroundBlocks(pos, 1)) {
+                            if (!validBlocks.contains(mc.world.getBlockState(surroundPos).getBlock())) {
                                 allValidBlocks = false;
                                 break;
                             }

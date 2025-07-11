@@ -65,8 +65,10 @@ public class Player {
 
     public static void init() {
         EventBus.register(SendMovementPacketBeforeEvent.class, event -> {
+            if (mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem())
+                actions.clear();
 
-            if (actions.isEmpty() || mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem())
+            if (actions.isEmpty())
                 return true;
 
             Action action = actions.getFirst();
@@ -118,7 +120,10 @@ public class Player {
         });
 
         EventBus.register(SendMovementPacketAfterEvent.class, event -> {
-            if (actions.isEmpty() || mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem())
+            if (mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem())
+                actions.clear();
+
+            if (actions.isEmpty())
                 return true;
 
             Action action = actions.getFirst();
@@ -255,5 +260,20 @@ public class Player {
         }
 
         return false;
+    }
+
+    public static List<BlockPos> getSurroundBlocks(BlockPos initPos) {
+        return getSurroundBlocks(initPos, -1);
+    }
+
+    public static List<BlockPos> getSurroundBlocks(BlockPos initPos, int y) {
+        List<BlockPos> surroundBlocks = new ArrayList<>();
+
+        surroundBlocks.add(initPos.add(1, y, 0));
+        surroundBlocks.add(initPos.add(0, y, 1));
+        surroundBlocks.add(initPos.add( -1, y ,0));
+        surroundBlocks.add(initPos.add(0, y, -1));
+
+        return surroundBlocks;
     }
 }

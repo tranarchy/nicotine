@@ -20,7 +20,6 @@ import nicotine.util.math.Boxf;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static nicotine.util.Common.getBlockEntities;
 import static nicotine.util.Common.mc;
 
 public class Storage {
@@ -49,7 +48,7 @@ public class Storage {
                 allSurroundingBlockEntities.clear();
             }
 
-            for (BlockEntity blockEntity : getBlockEntities()) {
+            for (BlockEntity blockEntity : BlockEntityUtil.getBlockEntities()) {
 
                 blockColor = ColorUtil.getBlockColor(blockEntity);
 

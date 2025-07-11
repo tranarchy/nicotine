@@ -1,15 +1,12 @@
 package nicotine.mod;
 
 import nicotine.mod.mods.combat.*;
-import nicotine.mod.mods.gui.Blur;
-import nicotine.mod.mods.gui.GUI;
-import nicotine.mod.mods.gui.Tooltip;
+import nicotine.mod.mods.gui.*;
 import nicotine.mod.mods.hud.*;
 import nicotine.mod.mods.misc.*;
 import nicotine.mod.mods.movement.*;
 import nicotine.mod.mods.player.*;
 import nicotine.mod.mods.render.*;
-import nicotine.mod.mods.render.Players;
 
 import java.util.*;
 

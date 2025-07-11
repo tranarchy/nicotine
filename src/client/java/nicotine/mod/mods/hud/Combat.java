@@ -22,7 +22,7 @@ import static nicotine.util.Common.*;
 public class Combat {
 
     public static void init() {
-        Mod combat = new Mod("Combat", "Shows the nearest player around you in a nice hud ");
+        Mod combat = new Mod("Combat", "Shows the nearest player around you in a nice HUD");
         ToggleOption distance = new ToggleOption("Distance", true);
         ToggleOption totemCount = new ToggleOption("TotemCount", true);
         ToggleOption otherPlayers = new ToggleOption("OtherPlayers", true);

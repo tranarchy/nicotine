@@ -23,9 +23,9 @@ import java.util.List;
 
 import static nicotine.util.Common.*;
 
-public class GUI extends Screen {
+public class ClickGUI extends Screen {
 
-    public GUI() {
+    public ClickGUI() {
         super(Text.literal("nicotine GUI"));
     }
 

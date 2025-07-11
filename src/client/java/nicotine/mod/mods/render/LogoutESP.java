@@ -42,7 +42,7 @@ public class LogoutESP {
             for (AbstractClientPlayerEntity player : prevPlayers) {
                 if (onlinePLayers.stream().filter(x -> x.getProfile().getName().equals(player.getGameProfile().getName())).toList().isEmpty()) {
                     Message.sendWarning(String.format("%s logged out at [%.1f %.1f %.1f]", player.getName().getString(), player.getX(), player.getY(), player.getZ()));
-                    loggedPlayers.put(player, getTimeInSeconds());
+                    loggedPlayers.put(player, System.currentTimeMillis() / 1000);
                 }
             }
 
@@ -92,7 +92,7 @@ public class LogoutESP {
                 Render.drawBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
 
                 String text = player.getName().getString();
-                text += String.format(" (%ss ago)", getTimeInSeconds() - loggedPlayers.get(player));
+                text += String.format(" (%ss ago)", (System.currentTimeMillis() / 1000) - loggedPlayers.get(player));
                 Vec3d position = new Vec3d(player.getX(), player.getBoundingBox().maxY, player.getZ());
                 Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, position, text, rgb.getColor(), 1.0f);
             }

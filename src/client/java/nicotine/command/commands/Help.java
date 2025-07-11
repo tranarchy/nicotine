@@ -6,7 +6,7 @@ import nicotine.util.Message;
 
 public class Help {
     public static void init() {
-        Command mods = new Command("help", "Explains what commands do") {
+        Command help = new Command("help", "Explains what commands do") {
             @Override
             public void trigger(String[] splitCommand) {
                 for (Command command : CommandManager.commands.stream().skip(1).toList()) {
@@ -14,6 +14,6 @@ public class Help {
                 }
             }
         };
-        CommandManager.addCommand(mods);
+        CommandManager.addCommand(help);
     }
 }

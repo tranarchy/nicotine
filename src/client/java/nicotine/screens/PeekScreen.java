@@ -7,8 +7,8 @@ import net.minecraft.text.Text;
 
 import static nicotine.util.Common.*;
 
-public class ShulkerPeekScreen extends GenericContainerScreen {
-    public ShulkerPeekScreen(Text shulkerName, Inventory shulkerInventory) {
+public class PeekScreen extends GenericContainerScreen {
+    public PeekScreen(Text shulkerName, Inventory shulkerInventory) {
         super(GenericContainerScreenHandler.createGeneric9x3(-1, mc.player.getInventory(), shulkerInventory), mc.player.getInventory(), shulkerName);
     }
 }

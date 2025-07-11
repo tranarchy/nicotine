@@ -1,6 +1,6 @@
 package nicotine.mod.mods.gui;
 
-import nicotine.clickgui.GUI;
+import nicotine.clickgui.ClickGUI;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -11,7 +11,7 @@ public class Blur {
             @Override
             public void toggle() {
                 this.enabled = !this.enabled;
-                GUI.blur = this.enabled;
+                ClickGUI.blur = this.enabled;
             }
         };
         ModManager.addMod(ModCategory.GUI, blur);

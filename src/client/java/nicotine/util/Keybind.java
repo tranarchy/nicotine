@@ -3,7 +3,7 @@ package nicotine.util;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Formatting;
-import nicotine.clickgui.GUI;
+import nicotine.clickgui.ClickGUI;
 import nicotine.mod.Mod;
 
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public class Keybind {
     }
 
     public static boolean keyReleased(String name, boolean enabled, int keycode) {
-        if (InputUtil.isKeyPressed(windowHandle, keycode) && !(mc.currentScreen instanceof ChatScreen) && !(mc.currentScreen instanceof GUI)) {
+        if (InputUtil.isKeyPressed(windowHandle, keycode) && !(mc.currentScreen instanceof ChatScreen) && !(mc.currentScreen instanceof ClickGUI)) {
             if (!keysPressed.containsKey(keycode)) {
                 keysPressed.put(name, keycode);
             }

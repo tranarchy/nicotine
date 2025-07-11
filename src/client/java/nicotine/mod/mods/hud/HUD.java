@@ -14,7 +14,6 @@ import nicotine.util.render.RenderGUI;
 
 import java.util.*;
 
-import static nicotine.util.Common.getTimeInSeconds;
 import static nicotine.util.Common.mc;
 
 public class HUD {
@@ -45,8 +44,7 @@ public class HUD {
     }
 
     public static void init() {
-        Mod options = new Mod("Options");
-        options.alwaysEnabled = true;
+        Mod hud = new Mod("HUD");
         ToggleOption borders = new ToggleOption("Borders", true);
         ToggleOption lowercase = new ToggleOption("Lowercase");
         ToggleOption bold = new ToggleOption("Bold");
@@ -55,12 +53,16 @@ public class HUD {
                 "Separator",
                 new String[]{"->", ">", "<", "=", ":", ""}
         );
-        options.modOptions.addAll(Arrays.asList(borders, lowercase, bold, italic, separator));
-        ModManager.addMod(ModCategory.HUD, options);
+        hud.modOptions.addAll(Arrays.asList(borders, lowercase, bold, italic, separator));
+        ModManager.addMod(ModCategory.HUD, hud);
 
         clearHud();
 
         EventBus.register(InGameHudRenderAfterEvent.class, event -> {
+            if (!hud.enabled) {
+                clearHud();
+                return true;
+            }
 
             if (mc.getDebugHud().shouldShowDebugHud()) {
                 clearHud();

@@ -13,6 +13,7 @@ import nicotine.mixininterfaces.IMobSpawnerLogic;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
+import nicotine.util.BlockEntityUtil;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
 import nicotine.util.Player;
@@ -35,7 +36,7 @@ public class ActiveSpawner {
             if (!activeSpawner.enabled)
                 return true;
 
-            for (BlockEntity blockEntity : getBlockEntities()) {
+            for (BlockEntity blockEntity : BlockEntityUtil.getBlockEntities()) {
                 if (blockEntity instanceof MobSpawnerBlockEntity mobSpawnerBlockEntity) {
                     MobSpawnerLogic mobSpawnerLogic = mobSpawnerBlockEntity.getLogic();
                     if (((IMobSpawnerLogic)mobSpawnerLogic).getSpawnDelay() != 20) {

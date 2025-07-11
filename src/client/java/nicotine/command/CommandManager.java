@@ -25,6 +25,7 @@ public class CommandManager {
         Connect.init();
         PeekHand.init();
         Waypoint.init();
+        Friend.init();
 
         if (System.getProperty("os.name").startsWith("Mac"))
             TouchBarCustom.init();

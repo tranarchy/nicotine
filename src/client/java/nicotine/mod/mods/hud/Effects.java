@@ -45,6 +45,10 @@ public class Effects {
                 int durationTicks = MathHelper.floor((float) statusEffectInstance.getDuration());
                 String duration = Text.literal(StringHelper.formatTicks(durationTicks, 20)).getString();
 
+                if (duration.contains("-1")) {
+                    duration = "∞";
+                }
+
                 String statusEffectText = String.format("%s%s %s [%s]", effect, Formatting.WHITE, strength, duration);
                 HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(statusEffectText));
             }

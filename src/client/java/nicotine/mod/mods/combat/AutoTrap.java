@@ -31,10 +31,8 @@ import java.util.List;
 
 public class AutoTrap {
 
-    private static List<BlockPos> surroundBlocks = new ArrayList<>();
-
     public static void init() {
-        Mod autoTrap = new Mod("AutoTrap", "Surrounds the closest player with obsidian");
+        Mod autoTrap = new Mod("AutoTrap", "Traps the closest player with obsidian");
         ToggleOption logoutSpot = new ToggleOption("LogoutSpot");
         KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_Y);
         autoTrap.modOptions.addAll(Arrays.asList(logoutSpot, keybind));
@@ -60,13 +58,13 @@ public class AutoTrap {
                 }
             }
 
-            if (target == null) {
+            if (target == null || friendList.contains(target.getUuid())) {
                 return true;
             }
 
             if (mc.player.distanceTo(target) + 1 <= blockInteractionRange) {
-                List<BlockPos> surroundBlocks = getSurroundBlocks(target.getBlockPos());
-                surroundBlocks.addAll(getSurroundBlocks(target.getBlockPos(), 0));
+                List<BlockPos> surroundBlocks = Player.getSurroundBlocks(target.getBlockPos());
+                surroundBlocks.addAll(Player.getSurroundBlocks(target.getBlockPos(), 0));
 
                 boolean alreadySurrounded = true;
 

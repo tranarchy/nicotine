@@ -21,11 +21,12 @@ import nicotine.util.Player;
 import java.util.Arrays;
 import java.util.Random;
 
+import static nicotine.util.Common.friendList;
 import static nicotine.util.Common.mc;
 
 public class KillAura {
 
-    private static float delayLeft = 0.0f;;
+    private static float delayLeft = 0.0f;
 
     public static void init() {
         Mod killAura = new Mod("KillAura");
@@ -60,16 +61,14 @@ public class KillAura {
                         (entity instanceof PassiveEntity && passive.enabled) ||
                         (entity instanceof Angerable && angerable.enabled)
                 ) {
-                    if (mc.player.canInteractWithEntity(entity, 0) && entity.isAlive() && delayLeft <= 0 && !Player.isBusy() && !entity.isInvulnerable()) {
+                    if (mc.player.canInteractWithEntity(entity, 0) && entity.isAlive() && delayLeft <= 0 && !Player.isBusy() && !entity.isInvulnerable() && !friendList.contains(entity.getUuid())) {
 
                         switch (rotation.value) {
                             case "Revert":
                                 Player.lookAndAttack(entity);
                                 break;
                             case "Stay":
-                                mc.player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, entity.getEyePos());
-                                Player.attack(entity);
-                                Player.swingHand();
+                                Player.lookAndAttack(entity, false);
                                 break;
                             case "None":
                                 Player.attack(entity);

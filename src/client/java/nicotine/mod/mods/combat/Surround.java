@@ -28,7 +28,6 @@ import static nicotine.util.Common.*;
 
 public class Surround {
 
-
     public static void init() {
         Mod surround = new Mod("Surround", "Surrounds you with obsidian");
         ToggleOption constant = new ToggleOption("Constant");
@@ -46,7 +45,7 @@ public class Surround {
             if (!surround.enabled || (!mc.player.isOnGround() && !inAir.enabled) || Player.isBusy())
                 return true;
 
-            List<BlockPos> surroundBlocks = getSurroundBlocks(mc.player.getBlockPos());
+            List<BlockPos> surroundBlocks = Player.getSurroundBlocks(mc.player.getBlockPos());
 
             if (selfCenter.enabled) {
                 Comparator<BlockPos> byDistanceToPlayer = Comparator.comparingInt(blockPos -> (int)blockPos.toCenterPos().distanceTo(mc.player.getPos()));
@@ -54,7 +53,7 @@ public class Surround {
             }
 
             if (doublePlace.enabled) {
-                surroundBlocks.addAll(getSurroundBlocks(mc.player.getBlockPos(), 0));
+                surroundBlocks.addAll(Player.getSurroundBlocks(mc.player.getBlockPos(), 0));
             }
 
             boolean alreadySurrounded = true;

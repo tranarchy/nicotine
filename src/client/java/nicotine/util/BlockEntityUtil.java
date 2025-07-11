@@ -2,8 +2,8 @@ package nicotine.util;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.chunk.WorldChunk;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
 
@@ -11,9 +11,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static nicotine.util.Common.mc;
+import static nicotine.util.Common.*;
 
 public class BlockEntityUtil {
+    public static List<BlockEntity> getBlockEntities() {
+
+        List<BlockEntity> blockEntities = new ArrayList<>();
+
+        for (WorldChunk worldChunk : loadedChunks) {
+            blockEntities.addAll(worldChunk.getBlockEntities().values());
+        }
+
+        return blockEntities;
+    }
+
     public static void findSurroundingBlockEntities(BlockEntity blockEntity, ArrayList<BlockEntity> surroundingBlockEntities) {
         List<Vec3i> surroundPositions = Arrays.asList(
                 new Vec3i(1, 0, 0),

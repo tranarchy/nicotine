@@ -12,7 +12,7 @@ import static nicotine.util.Common.mc;
 
 public class Connect {
     public static void init() {
-        Command mods = new Command("connect", "Connect to another server (.connect <IP/address>)") {
+        Command connect = new Command("connect", "Connect to another server (.connect <IP/address>)") {
             @Override
             public void trigger(String[] splitCommand) {
                 if (splitCommand.length != 2) {
@@ -23,6 +23,6 @@ public class Connect {
                 ConnectScreen.connect(new TitleScreen(), mc, ServerAddress.parse(splitCommand[1]), new ServerInfo("", splitCommand[1], ServerInfo.ServerType.OTHER), false, null);
             }
         };
-        CommandManager.addCommand(mods);
+        CommandManager.addCommand(connect);
     }
 }

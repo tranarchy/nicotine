@@ -13,7 +13,6 @@ import nicotine.events.ClientTickEvent;
 import nicotine.events.ClientWorldTickEvent;
 
 public class ColorUtil {
-    public static final int CATEGORY_FOREGROUND_COLOR = 0xFFF8F8F2;
     public static final int FOREGROUND_COLOR = 0xFF626282;
     public static final int BACKGROUND_COLOR = 0xC810101A;
     public static final int SELECTED_BACKGROUND_COLOR = 0x7810101A;

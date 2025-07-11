@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.util.InputUtil;
-import nicotine.clickgui.GUI;
+import nicotine.clickgui.ClickGUI;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -36,7 +36,7 @@ public class Zoom {
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!zoom.enabled || !InputUtil.isKeyPressed(windowHandle, keybind.keyCode) ||
-                    mc.currentScreen instanceof ChatScreen || mc.currentScreen instanceof GUI) {
+                    mc.currentScreen instanceof ChatScreen || mc.currentScreen instanceof ClickGUI) {
                 int fov =  fovOption.getValue();
                 if (fov == zoomFov.value)
                     fovOption.setValue(defaultFov);
