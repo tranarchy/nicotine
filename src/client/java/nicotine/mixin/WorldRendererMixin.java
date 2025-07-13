@@ -85,7 +85,7 @@ public abstract class WorldRendererMixin {
         FramePass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
         this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
         afterTranslucentPass.setRenderer(() -> {
-            EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
+            //EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
         });
     }
 
@@ -113,4 +113,17 @@ public abstract class WorldRendererMixin {
             EventBus.post(new RenderEntityOutlineEvent(outlineVertexConsumerProvider));
         }
     }
+
+    @Inject(
+            method = "method_62214",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDD)V",
+                    ordinal = 0
+            )
+    )
+    private void beforeDebugRender(CallbackInfo ci) {
+        EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
+    }
+
 }

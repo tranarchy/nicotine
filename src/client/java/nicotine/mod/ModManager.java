@@ -105,6 +105,7 @@ public class ModManager {
         Server.init();
         Armor.init();
         Totem.init();
+        ECrystal.init();
         Combat.init();
 
         GUI.init();

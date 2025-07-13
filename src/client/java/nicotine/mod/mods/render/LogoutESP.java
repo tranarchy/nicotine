@@ -74,8 +74,6 @@ public class LogoutESP {
                     continue;
 
                 if (showPlayer.enabled) {
-                    Render.toggleRender();
-
                     Vec3d view = event.camera.getPos();
                     event.matrixStack.push();
                     event.matrixStack.translate(-view.x, -view.y, -view.z);
@@ -84,8 +82,6 @@ public class LogoutESP {
                     mc.getEntityRenderDispatcher().render(player, player.getX(), player.getY(), player.getZ(), 0, event.matrixStack, event.vertexConsumerProvider, 0);
 
                     event.matrixStack.pop();
-
-                    Render.toggleRender();
                 }
 
                 Boxf boundingBox = new Boxf(player.getBoundingBox());

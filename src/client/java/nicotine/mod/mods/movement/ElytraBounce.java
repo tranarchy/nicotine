@@ -28,8 +28,10 @@ public class ElytraBounce {
     private static boolean antiCheatTrigger = false;
     private static float prevYaw = -1;
 
+    public static Mod elytraBounce;
+
     public static void init() {
-        Mod elytraBounce = new Mod("ElytraBounce") {
+        elytraBounce = new Mod("ElytraBounce") {
             @Override
             public void toggle() {
                 this.enabled = !this.enabled;

@@ -70,10 +70,16 @@ public class Combat {
                     (modelY1 + modelY2) / 2.0F,
                     nearestPlayer);
 
-
-
             List<String> playerInfo = new ArrayList<>();
-            playerInfo.add(nearestPlayer.getName().getString());
+
+            String playerName = nearestPlayer.getName().getString();
+
+            if (friendList.contains(nearestPlayer.getUuid())) {
+                playerInfo.add("[F] " + playerName);
+            } else {
+                playerInfo.add(playerName);
+            }
+
             playerInfo.add("");
 
             if (distance.enabled)
