@@ -1,6 +1,5 @@
-# nicotine
-
-![image](https://github.com/user-attachments/assets/5002950b-d3e6-49d0-aa31-c1acdba2552a)
+<p align="center"><img width="128" height="128" alt="image" src="https://github.com/user-attachments/assets/c4120222-8826-43ef-802f-8721b64b0f80" /></p>
+<h3 align="center">nicotine</h3>
 <p align="center">Minecraft utility mod for anarchy servers</p>
 
 ## About
@@ -38,6 +37,6 @@ The default keybind for the click GUI is **Right Shift**, you can change this an
 
 ## Other versions
 
-nicotine is currently made for version **1.21.7**
+nicotine is currently made for version **1.21.8**
 
-If you want to use nicotine with another Minecraft version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod
+If you want to use nicotine on a server that runs on another version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod
