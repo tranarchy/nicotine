@@ -38,7 +38,7 @@ public class DiscordActivity {
         if (System.getProperty("os.name").startsWith("Win")) {
             for (int i = 0; i < 10; i++) {
                 try {
-                    randomAccessFile = new RandomAccessFile("\\\\\\\\?\\\\pipe\\\\discord-ipc-" + i, "w");
+                    randomAccessFile = new RandomAccessFile("\\\\\\\\?\\\\pipe\\\\discord-ipc-" + i, "rw");
                 } catch (FileNotFoundException e) {
                     continue;
                 }
