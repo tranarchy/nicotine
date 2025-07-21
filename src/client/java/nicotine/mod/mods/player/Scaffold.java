@@ -14,18 +14,15 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
-import nicotine.util.Inventory;
 import nicotine.util.Keybind;
 import nicotine.util.Player;
+import nicotine.util.math.BoxUtil;
 
 import java.util.Arrays;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class Scaffold {
-
-    private static BlockPos prevPlacementPos = BlockPos.ORIGIN;
-    private static BlockPos prevPlayerPos = BlockPos.ORIGIN;
 
     public static void init() {
 
@@ -36,51 +33,68 @@ public class Scaffold {
         ModManager.addMod(ModCategory.Player, scaffold);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (Keybind.keyReleased(scaffold, keybind.keyCode)) {
+            if (Keybind.keyReleased(scaffold, keybind.keyCode))
                 scaffold.toggle();
-            }
 
             if (!scaffold.enabled || (!(mc.player.getMainHandStack().getItem() instanceof BlockItem) && !selectBlock.enabled) || Player.isBusy())
                 return true;
 
-            if (!mc.player.isOnGround() && mc.world.getBlockState(mc.player.getBlockPos().add(0, -2, 0)).getBlock() == Blocks.AIR) {
-                return true;
-
-            }
             BlockPos initPos = mc.player.getBlockPos();
-            BlockPos scaffoldPos = BlockPos.ORIGIN;
+
             BlockPos placementPos = BlockPos.ORIGIN;
+
+            Vec3d lookAtPos;
+            double lookatX = 0;
+            double lookatY = 0;
+            double lookatZ = 0;
 
             Direction scaffoldDirection;
 
             switch (mc.player.getMovementDirection()) {
                 case SOUTH:
-                    placementPos = initPos.add(0, -1, 1);
+                    placementPos = initPos.add(0, -1, -1);
+                    lookatX = initPos.getX();
+                    lookatY = initPos.getY() - 1;
+                    lookatZ = BoxUtil.getBlockBoundingBox(placementPos).getMax(Direction.Axis.Z);
                     break;
                 case NORTH:
-                    placementPos = initPos.add(0, -1, -1);
+                    placementPos = initPos.add(0, -1, 1);
+                    lookatX = initPos.getX();
+                    lookatY = initPos.getY() - 1;
+                    lookatZ = BoxUtil.getBlockBoundingBox(placementPos).getMin(Direction.Axis.Z);
                     break;
                 case EAST:
-                    placementPos = initPos.add(1, -1, 0);
+                    placementPos = initPos.add(-1, -1, 0);
+                    lookatX = BoxUtil.getBlockBoundingBox(placementPos).getMax(Direction.Axis.X);
+                    lookatY = initPos.getY() - 1;
+                    lookatZ = initPos.getZ();
                     break;
                 case WEST:
-                    placementPos = initPos.add(-1, -1, 0);
+                    placementPos = initPos.add(1, -1, 0);
+                    lookatX = BoxUtil.getBlockBoundingBox(placementPos).getMin(Direction.Axis.X);
+                    lookatY = initPos.getY() - 1;
+                    lookatZ = initPos.getZ();
                     break;
             }
 
             if (!mc.player.isOnGround()) {
                 scaffoldDirection = Direction.UP;
-                scaffoldPos = prevPlayerPos.add(0, -2, 0);
-                placementPos = initPos.add(0, -1, 0);
+                placementPos = initPos.add(0, -2, 0);
+
+                lookAtPos = placementPos.toCenterPos();
+
+                if (mc.world.getBlockState(placementPos).getBlock().getDefaultState().isReplaceable())
+                    return true;
+
             } else {
                 scaffoldDirection = mc.player.getMovementDirection();
-                scaffoldPos = prevPlayerPos.add(0, -1, 0);
+
+                lookAtPos = new Vec3d(lookatX, lookatY, lookatZ);
             }
 
+            int targetSlot = -1;
 
-            if (mc.world.getBlockState(prevPlacementPos).getBlock().getDefaultState().isReplaceable() && initPos.add(0, -1, 0).equals(prevPlacementPos)) {
-                int targetSlot = -1;
-
+            if (mc.world.getBlockState(initPos.add(0, -1, 0)).getBlock() == Blocks.AIR) {
                 if (selectBlock.enabled && !(mc.player.getMainHandStack().getItem() instanceof BlockItem)) {
                     for (int i = 0; i < 9; i++) {
                         if (mc.player.getInventory().getStack(i).getItem() instanceof BlockItem) {
@@ -96,13 +110,9 @@ public class Scaffold {
                     targetSlot = mc.player.getInventory().getSelectedSlot();
                 }
 
-                BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(scaffoldPos.getX(), scaffoldPos.getY(), scaffoldPos.getZ()), scaffoldDirection, scaffoldPos.mutableCopy(), false);
-                Player.lookAndPlace(blockHitResult, targetSlot, true, false);
+                BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(placementPos.getX(), placementPos.getY(), placementPos.getZ()), scaffoldDirection, placementPos, false);
+                Player.lookAndPlace(lookAtPos, blockHitResult, targetSlot, true, false);
             }
-
-
-            prevPlacementPos = placementPos;
-            prevPlayerPos = initPos;
 
             return true;
         });

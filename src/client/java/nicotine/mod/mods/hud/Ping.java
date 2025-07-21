@@ -2,20 +2,17 @@ package nicotine.mod.mods.hud;
 
 import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
 import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import nicotine.events.ClientWorldTickEvent;
-import nicotine.events.InGameHudRenderBeforeEvent;
 import nicotine.events.PacketInEvent;
-import nicotine.mod.Mod;
+import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.SwitchOption;
-import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
 
-import java.util.Arrays;
+import java.util.List;
 
 import static nicotine.util.Common.mc;
 
@@ -24,41 +21,32 @@ public class Ping {
     private static int pingVal = 0;
 
     public static void init() {
-        Mod ping = new Mod("Ping");
-        SwitchOption position = new SwitchOption(
-                "Position",
-                new String[]{"TL", "TC", "TR", "BL", "BR"}
-        );
+        HUDMod ping = new HUDMod("Ping");
+        ping.anchor = HUDMod.Anchor.TopLeft;
         SwitchOption source = new SwitchOption(
                 "Source",
                 new String[]{"Tab", "QueryPingPacket"}
         );
-        ping.modOptions.addAll(Arrays.asList(position, source));
+        ping.modOptions.add(source);
         ModManager.addMod(ModCategory.HUD, ping);
 
-        EventBus.register(InGameHudRenderBeforeEvent.class, event -> {
+        EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!ping.enabled || mc.isInSingleplayer())
                 return true;
 
             if (source.value.equals("Tab"))
                 pingVal = Player.getPing(mc.player);
+            else {
+                if (tick == 120) {
+                    mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(System.nanoTime()));
+                    tick = 0;
+                }
 
-            String pingText = String.format("ping %s%s %dms", Formatting.WHITE, HUD.separatorText, pingVal);
-            HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(pingText));
-
-            return true;
-        });
-
-        EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!ping.enabled || source.value.equals("Tab") || mc.isInSingleplayer())
-                return true;
-
-            if (tick == 120) {
-                mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(System.nanoTime()));
-                tick = 0;
+                tick++;
             }
 
-            tick++;
+            String pingText = String.format("ping %s%s %dms", Formatting.WHITE, HUD.separatorText, pingVal);
+            ping.texts = List.of(pingText);
 
             return true;
         });

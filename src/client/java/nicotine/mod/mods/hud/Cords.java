@@ -1,35 +1,27 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
-import nicotine.events.InGameHudRenderBeforeEvent;
-import nicotine.mod.Mod;
+import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.SwitchOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import org.apache.commons.lang3.StringUtils;
 import org.joml.Vector2d;
 
-import java.util.Arrays;
-
 import static nicotine.util.Common.mc;
 
 public class Cords {
     public static void init() {
-        Mod cords = new Mod("Cords");
-        SwitchOption position = new SwitchOption(
-                "Position",
-                new String[]{"TL", "TC", "TR", "BL", "BR"}
-        );
+        HUDMod cords = new HUDMod("Cords");
+        cords.anchor = HUDMod.Anchor.BottomLeft;
         ToggleOption showDirection = new ToggleOption("ShowDirection", true);
-
-        cords.modOptions.addAll(Arrays.asList(position, showDirection));
+        cords.modOptions.add(showDirection);
         ModManager.addMod(ModCategory.HUD, cords);
 
-        EventBus.register(InGameHudRenderBeforeEvent.class, event -> {
+        EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!cords.enabled)
                 return true;
 
@@ -61,10 +53,12 @@ public class Cords {
                 cordsText = cordsText.concat(String.format(" %s[%s%.1f %.1f%s]", Formatting.RESET, Formatting.WHITE, otherWorld.x, otherWorld.y, Formatting.RESET));
             }
 
-            HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(cordsText));
+            cords.texts.clear();
 
             if (showDirection.enabled)
-                HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(directionText));
+                cords.texts.add(directionText);
+
+            cords.texts.add(cordsText);
 
             return true;
         });

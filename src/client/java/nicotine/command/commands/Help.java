@@ -10,7 +10,7 @@ public class Help {
             @Override
             public void trigger(String[] splitCommand) {
                 for (Command command : CommandManager.commands.stream().skip(1).toList()) {
-                    Message.command(command.name, command.description);
+                    Message.command(command.name, command.description.replace('.', CommandManager.prefix.charAt(0)));
                 }
             }
         };

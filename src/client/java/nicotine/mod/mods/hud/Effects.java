@@ -5,11 +5,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.StringHelper;
 import net.minecraft.util.math.MathHelper;
-import nicotine.events.InGameHudRenderBeforeEvent;
-import nicotine.mod.Mod;
+import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.SwitchOption;
 import nicotine.util.EventBus;
 
 import java.util.ArrayList;
@@ -20,15 +19,11 @@ import static nicotine.util.Common.mc;
 
 public class Effects {
     public static void init() {
-        Mod effects = new Mod("Effects");
-        SwitchOption position = new SwitchOption(
-                "Position",
-                new String[]{"TL", "TC", "TR", "BL", "BR"}
-        );
-        effects.modOptions.add(position);
+        HUDMod effects = new HUDMod("Effects");
+        effects.anchor = HUDMod.Anchor.BottomRight;
         ModManager.addMod(ModCategory.HUD, effects);
 
-        EventBus.register(InGameHudRenderBeforeEvent.class, event -> {
+        EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!effects.enabled)
                 return true;
 
@@ -38,7 +33,10 @@ public class Effects {
             if (!statusEffects.isEmpty())
                 statusEffects.sort(byAmplifier);
 
+            effects.texts.clear();
+
             for (StatusEffectInstance statusEffectInstance : statusEffects) {
+
                 String effect = Text.translatable(statusEffectInstance.getTranslationKey()).getString();
                 String strength = Text.translatable("enchantment.level." + (statusEffectInstance.getAmplifier() + 1)).getString();
 
@@ -50,7 +48,7 @@ public class Effects {
                 }
 
                 String statusEffectText = String.format("%s%s %s [%s]", effect, Formatting.WHITE, strength, duration);
-                HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(statusEffectText));
+                effects.texts.add(statusEffectText);
             }
 
             return true;

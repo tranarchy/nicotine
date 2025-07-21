@@ -1,31 +1,34 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.block.entity.BellBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import nicotine.events.InGameHudRenderAfterEvent;
-import nicotine.events.InGameHudRenderBeforeEvent;
-import nicotine.mod.Mod;
+import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
+import nicotine.util.render.RenderGUI;
+import org.joml.Vector2i;
 
 import static nicotine.util.Common.mc;
 
 public class ECrystal {
 
-    public static Mod eCrystal;
-
     public static void init() {
-        eCrystal = new Mod("ECrystal");
+        HUDMod eCrystal = new HUDMod("ECrystal");
         ModManager.addMod(ModCategory.HUD, eCrystal);
+
+        final int x = (mc.getWindow().getScaledWidth() / 2) - 18;
+        final int y = mc.getWindow().getScaledHeight() - 68;
+
+        eCrystal.size = new Vector2i(16, 16);
+        eCrystal.pos = RenderGUI.absPosToRelativePos(new Vector2i(x, y), eCrystal.size);
 
         EventBus.register(InGameHudRenderAfterEvent.class, event -> {
             if (!eCrystal.enabled)
                 return true;
 
-            final int x = (mc.getWindow().getScaledWidth() / 2) - (Totem.totem.enabled ? 18 : 9);
-            final int y = mc.getWindow().getScaledHeight() - 68;
+            Vector2i pos = RenderGUI.relativePosToAbsPos(eCrystal.pos, eCrystal.size);
 
             int eCrystalCount = 0;
 
@@ -36,8 +39,8 @@ public class ECrystal {
                 }
             }
 
-            event.drawContext.drawItem(Items.END_CRYSTAL.getDefaultStack(), x, y);
-            event.drawContext.drawStackOverlay(mc.textRenderer, Items.END_CRYSTAL.getDefaultStack(), x, y, String.valueOf(eCrystalCount));
+            event.drawContext.drawItem(Items.END_CRYSTAL.getDefaultStack(), pos.x, pos.y);
+            event.drawContext.drawStackOverlay(mc.textRenderer, Items.END_CRYSTAL.getDefaultStack(), pos.x, pos.y, String.valueOf(eCrystalCount));
 
             return true;
         });

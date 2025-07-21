@@ -13,9 +13,9 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.util.BlockEntityUtil;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.render.Render;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
+import nicotine.util.render.Render;
 
 import java.util.ArrayList;
 import java.util.Arrays;

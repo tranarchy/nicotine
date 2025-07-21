@@ -209,7 +209,7 @@ public class AutoCrystal {
                         if (targetSlot != -1) {
                             placementPositionToRender = bestPlacementPos;
 
-                            BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(bestPlacementPos.getX(), bestPlacementPos.getY(), bestPlacementPos.getZ()), Direction.DOWN, bestPlacementPos, false);
+                            BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(bestPlacementPos.getX(), bestPlacementPos.getY(), bestPlacementPos.getZ()), Direction.UP, bestPlacementPos, false);
                             Player.lookAndPlace(blockHitResult, targetSlot, false, false);
 
                             placeDelayLeft = placeDelay.value;

@@ -14,7 +14,6 @@ public class Main implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		EventBus.register(FinishedLoadingEvent.class, event -> {
-			ColorUtil.init();
 			ModManager.init();
 			CommandManager.init();
 			Player.init();

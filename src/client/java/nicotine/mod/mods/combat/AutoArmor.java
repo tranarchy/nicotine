@@ -43,27 +43,30 @@ public class AutoArmor {
             if (!armorItems.contains(ItemStack.EMPTY) && !elytraSwap.enabled)
                 return true;
 
-            ItemStack chestplate = armorItems.get(2);
-
             for (int i = 0; i <= 35; i++) {
-                Item curItem = mc.player.getInventory().getStack(i).getItem();
+                ItemStack curStack = mc.player.getInventory().getStack(i);
+                Item curItem = curStack.getItem();
                 if (curItem.getComponents().contains(DataComponentTypes.EQUIPPABLE)) {
                     EquipmentSlot equipment = curItem.getComponents().get(DataComponentTypes.EQUIPPABLE).slot();
                     int equipmentSlot = equipment.getIndex();
                     int armorSlot = 35 + equipmentSlot;
 
-                    if (mc.player.getInventory().getStack(armorSlot) == ItemStack.EMPTY || (mc.player.getInventory().getStack(armorSlot).getItem() == Items.ELYTRA && elytraSwap.enabled)) {
-                        Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
+                    ItemStack armorStack = mc.player.getInventory().getStack(armorSlot);
 
-                        if (mc.player.getInventory().getStack(armorSlot).getItem() == Items.ELYTRA && elytraSwap.enabled)
+                    if (elytraSwap.enabled) {
+                        if ((armorStack.getItem() == Items.ELYTRA && curItem != Items.ELYTRA) || (armorStack.getItem() != Items.ELYTRA && curItem == Items.ELYTRA)) {
+                            Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
                             elytraSwap.enabled = false;
-                   }
+                            return true;
+                        }
+                    } else if (armorStack == ItemStack.EMPTY && curItem != Items.ELYTRA) {
+                        Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
+                    } else if (curItem == Items.ELYTRA && armorStack.getItem() == Items.ELYTRA) {
+                        if (armorStack.getDamage() > curStack.getDamage() && armorStack.getDamage() == armorStack.getMaxDamage()) {
+                            Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
+                        }
+                    }
                 }
-
-               if (curItem == Items.ELYTRA && chestplate.getItem() != Items.ELYTRA && elytraSwap.enabled) {
-                   Inventory.swap(i < 9 ? 36 + i : i, 6);
-                   elytraSwap.enabled = false;
-               }
             }
 
             elytraSwap.enabled = false;

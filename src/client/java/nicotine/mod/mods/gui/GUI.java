@@ -29,7 +29,6 @@ public class GUI {
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
             ColorUtil.ACTIVE_FOREGROUND_COLOR = rgb.getColor();
-            ColorUtil.CATEGORY_BACKGROUND_COLOR = rgb.getColor();
 
             if (InputUtil.isKeyPressed(windowHandle, keybind.keyCode) && mc.currentScreen == null)
                 mc.setScreen(clickGUI);

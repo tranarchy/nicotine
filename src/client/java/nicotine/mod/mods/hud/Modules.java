@@ -1,7 +1,7 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.text.Text;
-import nicotine.events.InGameHudRenderBeforeEvent;
+import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -9,7 +9,6 @@ import nicotine.mod.option.SwitchOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,20 +17,20 @@ import static nicotine.util.Common.mc;
 
 public class Modules {
     public static void init() {
-        Mod modules = new Mod("Modules");
-        SwitchOption position = new SwitchOption(
-                "Position",
-                new String[]{"TL", "TC", "TR", "BL", "BR"}
+        HUDMod modules = new HUDMod("Modules");
+        modules.anchor = HUDMod.Anchor.TopRight;
+        SwitchOption sorted = new SwitchOption(
+                "Sort",
+                new String[]{"No", "Yes", "Reverse"}
         );
-        ToggleOption sorted = new ToggleOption("Sorted");
-        modules.modOptions.addAll(Arrays.asList(position, sorted));
+        modules.modOptions.add(sorted);
         for (int i = 0; i < ModCategory.values().length - 2; i ++) {
             modules.modOptions.add(new ToggleOption(ModCategory.values()[i].name(), true));
         }
 
         ModManager.addMod(ModCategory.HUD, modules);
 
-        EventBus.register(InGameHudRenderBeforeEvent.class, event -> {
+        EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!modules.enabled)
                 return true;
 
@@ -39,22 +38,28 @@ public class Modules {
             mods.removeAll(ModManager.modules.get(ModCategory.HUD));
             mods.removeAll(ModManager.modules.get(ModCategory.GUI));
 
-            for (int i = 2; i < modules.modOptions.size(); i++) {
+            for (int i = 1; i < modules.modOptions.size(); i++) {
                 if (modules.modOptions.get(i) instanceof ToggleOption toggleOption) {
                     if (!toggleOption.enabled) {
-                        mods.removeAll(ModManager.modules.get(ModCategory.values()[i - 2]));
+                        mods.removeAll(ModManager.modules.get(ModCategory.values()[i - 1]));
                     }
                 }
             }
 
-            if (sorted.enabled) {
-                Comparator<Mod> byNameLength = Comparator.comparingInt(mod -> mc.textRenderer.getWidth(mod.name));
+
+            Comparator<Mod> byNameLength = Comparator.comparingInt(mod -> mc.textRenderer.getWidth(mod.name));
+
+            if (sorted.value.equals("Yes")) {
+                mods.sort(byNameLength);
+            } else if (sorted.value.equals("Reverse")) {
                 mods.sort(byNameLength.reversed());
             }
 
+            modules.texts.clear();
+
             for (Mod mod : mods) {
                 if (mod.enabled) {
-                    HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(mod.name));
+                    modules.texts.add(mod.name);
                 }
             }
 

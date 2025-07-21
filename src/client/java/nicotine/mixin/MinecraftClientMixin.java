@@ -32,7 +32,7 @@ public class MinecraftClientMixin {
         }
     }
 
-    @Inject(at = @At("TAIL"), method = "Lnet/minecraft/client/MinecraftClient;tick()V")
+    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/MinecraftClient;tick()V")
     public void tick(CallbackInfo info) {
         EventBus.post(new ClientTickEvent());
     }

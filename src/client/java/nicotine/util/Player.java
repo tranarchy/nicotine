@@ -25,8 +25,6 @@ import static nicotine.util.Common.*;
 public class Player {
     private static boolean packetSneak = true;
 
-    private static boolean rotated = false;
-
     private enum ActionType {
         ATTACK, PLACE
     }
@@ -44,6 +42,11 @@ public class Player {
 
         public boolean sneak;
         public boolean selfCenter;
+
+        public boolean delayAction = false;
+        public boolean rotated = false;
+
+        public Vec3d lookAtPos = null;
 
         public Action(ActionType actionType, Entity entity, boolean revertRotation) {
             this.actionType = actionType;
@@ -66,58 +69,71 @@ public class Player {
     public static void init() {
         EventBus.register(SendMovementPacketBeforeEvent.class, event -> {
             if (mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem())
-                actions.clear();
+               actions.clear();
 
             if (actions.isEmpty())
                 return true;
 
             Action action = actions.getFirst();
 
-            if (rotated) {
-                if (action.actionType == ActionType.ATTACK) {
-                    attack(action.entity);
-                    swingHand();
-                } else {
-                    int originalSlot = mc.player.getInventory().getSelectedSlot();
+            Vec2f rotation;
 
-                    Inventory.selectSlot(action.slot);
+            if (!action.rotated) {
 
-                    if (action.sneak)
-                        toggleSneak();
-
-                    place(action.blockHitResult);
-                    swingHand();
-
-                    if (action.sneak)
-                        toggleSneak();
-
-                    if (originalSlot != action.slot)
-                        Inventory.selectSlot(originalSlot);
-                }
-
-                rotated = false;
-
-                actions.removeFirst();
-            } else {
-
-                Vec2f rotation;
                 if (action.actionType == ActionType.ATTACK) {
                     rotation = getRotation(action.entity);
                 } else {
-                    rotation = getRotation(action.blockHitResult.getBlockPos());
+                    if (action.lookAtPos != null)
+                        rotation = getRotation(action.lookAtPos);
+                    else
+                        rotation = getRotation(action.blockHitResult.getBlockPos());
 
                     if (action.selfCenter) {
                         selfCenter();
                     }
                 }
 
-                mc.player.setYaw(rotation.x);
-                mc.player.setPitch(rotation.y);
-                rotated = true;
+                mc.player.setPitch(rotation.x);
+                mc.player.setYaw(rotation.y);
+
+                action.rotated = true;
+            }
+
+            if (action.delayAction)
+                return true;
+
+            if (action.actionType == ActionType.ATTACK) {
+                if (!mc.player.canInteractWithEntity(action.entity, 0)) {
+                    return true;
+                }
+
+                attack(action.entity);
+                swingHand();
+            } else {
+                if (!mc.player.canInteractWithBlockAt(action.blockHitResult.getBlockPos(), 0)) {
+                    return true;
+                }
+
+                int originalSlot = mc.player.getInventory().getSelectedSlot();
+
+                Inventory.selectSlot(action.slot);
+
+                if (action.sneak)
+                    toggleSneak();
+
+                place(action.blockHitResult);
+                swingHand();
+
+                if (action.sneak)
+                    toggleSneak();
+
+                if (originalSlot != action.slot)
+                    Inventory.selectSlot(originalSlot);
             }
 
             return true;
         });
+
 
         EventBus.register(SendMovementPacketAfterEvent.class, event -> {
             if (mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem())
@@ -129,9 +145,16 @@ public class Player {
             Action action = actions.getFirst();
 
             if (action.revertRotation) {
-                mc.player.setYaw(mc.player.lastYaw);
                 mc.player.setPitch(mc.player.lastPitch);
+                mc.player.setYaw(mc.player.lastYaw);
+                action.revertRotation = false;
             }
+
+            if (!action.delayAction) {
+                actions.removeFirst();
+            }
+
+            action.delayAction = false;
 
             return true;
         });
@@ -145,10 +168,12 @@ public class Player {
         double f = target.z - vec3d.z;
         double g = Math.sqrt(d * d + f * f);
 
-        float yaw = MathHelper.wrapDegrees((float)(MathHelper.atan2(f, d) * 180.0F / (float)Math.PI) - 90.0F);
         float pitch = MathHelper.wrapDegrees((float)(-(MathHelper.atan2(e, g) * 180.0F / (float)Math.PI)));
+        float yaw = MathHelper.wrapDegrees((float)(MathHelper.atan2(f, d) * 180.0F / (float)Math.PI) - 90.0F);
 
-        Vec2f rotation = new Vec2f(yaw, pitch);
+        yaw = MathHelper.wrapDegrees(yaw - mc.player.getYaw()) + mc.player.getYaw();
+
+        Vec2f rotation = new Vec2f(pitch, yaw);
 
         return rotation;
     }
@@ -166,6 +191,12 @@ public class Player {
         actions.add(action);
     }
 
+    public static void lookAndPlace(Vec3d lookAtPos, BlockHitResult blockHitResult, int targetSlot, boolean sneak, boolean center) {
+        Action action = new Action(ActionType.PLACE, blockHitResult, true, targetSlot, sneak, center);
+        action.lookAtPos = lookAtPos;
+        actions.add(action);
+    }
+
     public static void lookAndAttack(Entity entity, boolean revertRotation) {
         Action action = new Action(ActionType.ATTACK, entity, revertRotation);
         actions.add(action);
@@ -173,6 +204,7 @@ public class Player {
 
     public static void lookAndAttack(Entity entity) {
         Action action = new Action(ActionType.ATTACK, entity, true);
+        action.delayAction = true;
         actions.add(action);
     }
 
@@ -181,11 +213,11 @@ public class Player {
     }
 
     public static void attack(Entity entity) {
-        mc.getNetworkHandler().sendPacket(PlayerInteractEntityC2SPacket.attack(entity, mc.player.isSneaking()));
+        mc.interactionManager.attackEntity(mc.player, entity);
     }
 
     public static void swingHand() {
-        mc.getNetworkHandler().sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
+        mc.player.swingHand(Hand.MAIN_HAND);
     }
 
     public static void toggleSneak() {
@@ -210,7 +242,7 @@ public class Player {
     }
 
     public static boolean isBusy() {
-        return !actions.isEmpty() || mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem();
+        return !actions.isEmpty() && !mc.interactionManager.isBreakingBlock() && !mc.player.isUsingItem();
     }
 
     public static int getPing(AbstractClientPlayerEntity player) {

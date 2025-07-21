@@ -34,7 +34,7 @@ public class RGBOption  {
     }
 
     public int getColor() {
-        return rainbow.enabled ? ColorUtil.rainbow : new Color(red.value / 255, green.value / 255, blue.value / 255).getRGB();
+        return rainbow.enabled ? ColorUtil.getRainbowColor() : new Color(red.value / 255, green.value / 255, blue.value / 255).getRGB();
     }
 
 }

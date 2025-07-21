@@ -15,6 +15,7 @@ import nicotine.mod.option.*;
 import nicotine.util.ColorUtil;
 import nicotine.util.Settings;
 import nicotine.util.render.RenderGUI;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
@@ -25,28 +26,29 @@ import static nicotine.util.Common.*;
 
 public class ClickGUI extends Screen {
 
-    public ClickGUI() {
-        super(Text.literal("nicotine GUI"));
-    }
+    public static Vector2f guiPos = new Vector2f(-1, -1);
 
-    public static Vector2i guiPos = new Vector2i(-1, -1);
-    Vector2i guiSize = new Vector2i(-1, -1);
-    Vector2i guiPosDragOffset = new Vector2i(-1, -1);
+    private static final Vector2i guiSize = new Vector2i(-1, -1);
+    private static final Vector2i guiPosDragOffset = new Vector2i(-1, -1);
 
-    CategoryButton selectedCategory = null;
-    ModButton selectedModButton = null;
+    private static CategoryButton selectedCategory = null;
+    private static ModButton selectedModButton = null;
 
-    KeybindOption keybindOptionToSet = null;
+    private static KeybindOption keybindOptionToSet = null;
 
-    HashMap<CategoryButton, List<ModButton>> buttons = new HashMap<>();
-    List<OptionButton> optionButtons = new ArrayList<>();
+    private static final HashMap<CategoryButton, List<ModButton>> buttons = new HashMap<>();
+    private static final List<OptionButton> optionButtons = new ArrayList<>();
 
     public static boolean showDescription = false;
     public static boolean blur = false;
 
+    public ClickGUI() {
+        super(Text.literal("nicotine GUI"));
+    }
+
     private void initGuiPos() {
-        guiPos.x = 30;
-        guiPos.y = 30;
+        guiPos.x = 0.5f;
+        guiPos.y = 0.5f;
     }
 
     private void setGuiSize() {
@@ -73,14 +75,16 @@ public class ClickGUI extends Screen {
 
         final int fontHeight = mc.textRenderer.fontHeight;
 
-        int guiY = guiPos.y + fontHeight + 15;
+        Vector2i pos = RenderGUI.relativePosToAbsPos(guiPos, guiSize);
+
+        int guiY = pos.y + fontHeight + 15;
 
         Mod mod = selectedModButton.mod;
 
         for (ModOption modOption : mod.modOptions) {
             guiY += fontHeight + 7;
             int modWidth = mc.textRenderer.getWidth(modOption.name);
-            int posX = (guiPos.x + guiSize.x / 2) + 10;
+            int posX = (pos.x + guiSize.x / 2) + 10;
 
             if (modOption instanceof SwitchOption switchOption) {
                 modWidth +=  mc.textRenderer.getWidth(switchOption.value + " []");
@@ -99,11 +103,13 @@ public class ClickGUI extends Screen {
 
         final int fontHeight =  mc.textRenderer.fontHeight;
 
-        int guiX = guiPos.x + 30;
+        Vector2i pos = RenderGUI.relativePosToAbsPos(guiPos, guiSize);
+
+        int guiX = pos.x + 30;
 
         for (ModCategory modCategory : ModManager.modules.keySet()) {
 
-            int guiY = guiPos.y + 5;
+            int guiY = pos.y + 5;
 
             int categoryWidth =  mc.textRenderer.getWidth(modCategory.name());
             CategoryButton categoryButton = new CategoryButton(guiX, guiY, categoryWidth, fontHeight, modCategory.name());
@@ -121,7 +127,7 @@ public class ClickGUI extends Screen {
             for (Mod mod : mods)
             {
                 guiY += fontHeight + 7;
-                ModButton modButton = new ModButton(guiPos.x + 5, guiY, (guiSize.x / 2) - 6, fontHeight + 5, mod);
+                ModButton modButton = new ModButton(pos.x + 5, guiY, (guiSize.x / 2) - 6, fontHeight + 5, mod);
                 modButtons.add(modButton);
 
                 if (selectedModButton == null) {
@@ -157,13 +163,15 @@ public class ClickGUI extends Screen {
     private void drawGUI(DrawContext context, double mouseX, double mouseY) {
         final int fontHeight = textRenderer.fontHeight;
 
-        int dynColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal);
+        Vector2i pos = RenderGUI.relativePosToAbsPos(guiPos, guiSize);
 
-        context.fill(guiPos.x, guiPos.y, guiPos.x + guiSize.x, guiPos.y + guiSize.y, ColorUtil.BACKGROUND_COLOR);
+        int dynColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
-        RenderGUI.drawBorder(context, guiPos.x, guiPos.y, guiSize.x, guiSize.y, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
+        context.fill(pos.x, pos.y, pos.x + guiSize.x, pos.y + guiSize.y, ColorUtil.BACKGROUND_COLOR);
 
-        RenderGUI.drawBorder(context, guiPos.x, guiPos.y, guiSize.x, fontHeight + 9, dynColor);
+        RenderGUI.drawBorder(context, pos.x, pos.y, guiSize.x, guiSize.y, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
+
+        RenderGUI.drawBorder(context, pos.x, pos.y, guiSize.x, fontHeight + 9, dynColor);
 
 
         for (CategoryButton button : buttons.keySet()) {
@@ -219,11 +227,11 @@ public class ClickGUI extends Screen {
             context.drawText(textRenderer, text, button.x, button.y, modColor, true);
         }
 
-        int lineY =  guiPos.y + fontHeight + 9;
-        context.drawVerticalLine((guiPos.x + guiSize.x / 2) - 1, lineY, lineY + (guiSize.y - fontHeight - 9), dynColor);
+        int lineY = pos.y + fontHeight + 9;
+        context.drawVerticalLine((pos.x + guiSize.x / 2) - 1, lineY, lineY + (guiSize.y - fontHeight - 9), dynColor);
 
         ModButton firstModButton = buttons.get(selectedCategory).getFirst(); // we just use this for the position
-        selectedModButton.x = (guiPos.x + guiSize.x / 2) + 5;
+        selectedModButton.x = (pos.x + guiSize.x / 2) + 5;
         selectedModButton.y = firstModButton.y;
         selectedModButton.width = mc.textRenderer.getWidth("Enabled");
 
@@ -310,20 +318,11 @@ public class ClickGUI extends Screen {
         if (guiPos.x == -1 && guiPos.y == -1) {
             initGuiPos();
         }
-
-        if (buttons.isEmpty()) {
-            getButtons();
-        }
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == InputUtil.GLFW_KEY_ESCAPE) {
-            if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT_CONTROL)) {
-                initGuiPos();
-                return true;
-            }
-
             Settings.save();
             this.close();
         }
@@ -350,7 +349,6 @@ public class ClickGUI extends Screen {
                 if (clickedButton == 0) {
                     selectedCategory = categoryButton;
                     selectedModButton = buttons.get(categoryButton).getFirst();
-                    getButtons();
                 }
 
                 return true;
@@ -361,7 +359,6 @@ public class ClickGUI extends Screen {
             if (mouseOver(modButton, mouseX, mouseY))  {
                 if (clickedButton == 0) {
                     selectedModButton = modButton;
-                    getButtons();
                 }
 
                 return true;
@@ -410,17 +407,35 @@ public class ClickGUI extends Screen {
             }
         }
 
-
         if (guiPosDragOffset.x != -1 && guiPosDragOffset.y != -1) {
-            guiPos.x = (int) mouseX + guiPosDragOffset.x;
-            guiPos.y = (int) mouseY + guiPosDragOffset.y;
-            getButtons();
+
+            final int width = mc.getWindow().getScaledWidth();
+            final int height = mc.getWindow().getScaledHeight();
+
+            int posX = (int) mouseX + guiPosDragOffset.x;
+            int posY = (int) mouseY + guiPosDragOffset.y;
+
+            if (posX < 0) {
+                posX = 0;
+            } else if (posX + guiSize.x >= width) {
+                posX = width - guiSize.x - 1;
+            }
+
+            if (posY < 0) {
+                posY = 0;
+            } else if (posY + guiSize.y >= height) {
+                posY = height - guiSize.y - 1;
+            }
+
+            guiPos = RenderGUI.absPosToRelativePos(new Vector2i(posX, posY), guiSize);
             return true;
         }
 
-        if (mouseOver(guiPos.x, guiPos.y, guiSize.x, mc.textRenderer.fontHeight + 9, mouseX, mouseY)) {
-            guiPosDragOffset.x = guiPos.x - (int) mouseX;
-            guiPosDragOffset.y = guiPos.y - (int) mouseY;
+        Vector2i pos = RenderGUI.relativePosToAbsPos(guiPos, guiSize);
+
+        if (mouseOver(pos.x, pos.y, guiSize.x, mc.textRenderer.fontHeight + 9, mouseX, mouseY)) {
+            guiPosDragOffset.x = pos.x - (int) mouseX;
+            guiPosDragOffset.y = pos.y - (int) mouseY;
         }
 
         return true;
@@ -436,6 +451,7 @@ public class ClickGUI extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+        getButtons();
         super.render(context, mouseX, mouseY, delta);
         drawGUI(context, mouseX, mouseY);
     }

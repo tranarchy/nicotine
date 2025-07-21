@@ -1,33 +1,28 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import nicotine.events.InGameHudRenderBeforeEvent;
-import nicotine.mod.Mod;
+import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.SwitchOption;
 import nicotine.util.EventBus;
 
-import static nicotine.util.Common.*;
+import java.util.List;
+
+import static nicotine.util.Common.nicotine;
 
 public class Watermark {
     public static void init() {
-        Mod watermark = new Mod("Watermark");
-        SwitchOption position = new SwitchOption(
-                "Position",
-                new String[]{"TL", "TC", "TR", "BL", "BR"}
-        );
-        watermark.modOptions.add(position);
+        HUDMod watermark = new HUDMod("Watermark");
+        watermark.anchor = HUDMod.Anchor.TopLeft;
         ModManager.addMod(ModCategory.HUD, watermark);
 
-        EventBus.register(InGameHudRenderBeforeEvent.class, event -> {
+        EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!watermark.enabled)
                 return true;
 
             String watermarkText = String.format("nicotine %sv%s", Formatting.WHITE, nicotine.getVersion());
-            HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(watermarkText));
-            HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(""));
+            watermark.texts = List.of(watermarkText);
 
             return true;
         });

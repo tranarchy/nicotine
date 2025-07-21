@@ -11,13 +11,11 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
-import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Keybind;
 import nicotine.util.Player;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

@@ -1,8 +1,8 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import nicotine.events.InGameHudRenderAfterEvent;
+import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -11,41 +11,19 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.render.RenderGUI;
+import org.joml.Vector2i;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 
 import static nicotine.util.Common.mc;
 
 public class HUD {
     public static String separatorText;
 
-    public enum HudPosition {
-        TopLeft, TopCenter, TopRight, BottomLeft, BottomRight
-    }
-
-    public static HashMap<HudPosition, List<Text>> hudElements = new LinkedHashMap<>();
-
-    public static HudPosition getHudPos(String pos) {
-        return switch (pos) {
-            case "TL" -> HudPosition.TopLeft;
-            case "TC" -> HudPosition.TopCenter;
-            case "TR" -> HudPosition.TopRight;
-            case "BL" -> HudPosition.BottomLeft;
-            case "BR" -> HudPosition.BottomRight;
-            default -> HudPosition.TopLeft;
-        };
-    }
-
-    private static void clearHud() {
-        hudElements.clear();
-        for (HudPosition hudPosition : HudPosition.values()) {
-            hudElements.put(hudPosition, new ArrayList<>());
-        }
-    }
-
     public static void init() {
         Mod hud = new Mod("HUD");
-        ToggleOption borders = new ToggleOption("Borders", true);
         ToggleOption lowercase = new ToggleOption("Lowercase");
         ToggleOption bold = new ToggleOption("Bold");
         ToggleOption italic = new ToggleOption("Italic");
@@ -53,39 +31,40 @@ public class HUD {
                 "Separator",
                 new String[]{"->", ">", "<", "=", ":", ""}
         );
-        hud.modOptions.addAll(Arrays.asList(borders, lowercase, bold, italic, separator));
+        hud.modOptions.addAll(Arrays.asList(lowercase, bold, italic, separator));
         ModManager.addMod(ModCategory.HUD, hud);
 
-        clearHud();
+        final int fontHeight = mc.textRenderer.fontHeight + 4;
+
+        final int padding = 8;
 
         EventBus.register(InGameHudRenderAfterEvent.class, event -> {
-            if (!hud.enabled) {
-                clearHud();
+            if (!hud.enabled || mc.getDebugHud().shouldShowDebugHud()) {
                 return true;
             }
-
-            if (mc.getDebugHud().shouldShowDebugHud()) {
-                clearHud();
-                return true;
-            }
-
-            separatorText = separator.value;
 
             final int width = mc.getWindow().getScaledWidth();
             final int height = mc.getWindow().getScaledHeight();
-            final int padding = 8;
 
-            for (HashMap.Entry<HudPosition, List<Text>> hudElement : hudElements.entrySet()) {
-                int initPosX = -1;
-                int initPosY = -1;
+            separatorText = separator.value;
 
-                int posX = -1;
-                int posY = -1;
+            HashMap<HUDMod.Anchor, Integer> anchorIndexes = new HashMap<>();
 
-                int yOffset = mc.textRenderer.fontHeight + (borders.enabled ? 4 : 0);
+            for (Mod mod : ModManager.modules.get(ModCategory.HUD)) {
+                if (!(mod instanceof HUDMod hudMod) || hudMod.texts.isEmpty() || !hudMod.enabled)
+                    continue;
 
-                for (Text hudText : hudElement.getValue()) {
-                    String formattedText = hudText.getString();
+                int anchorIndex = anchorIndexes.getOrDefault(hudMod.anchor, 0);
+                String longestText = hudMod.texts.stream().max(Comparator.comparingInt(mc.textRenderer::getWidth)).get();
+
+                hudMod.size.x = mc.textRenderer.getWidth(longestText);
+                hudMod.size.y = (fontHeight * hudMod.texts.size()) - 4;
+
+                int posX = 0;
+                int posY = 0;
+
+                for (int i = 0; i < hudMod.texts.size(); i++) {
+                    String formattedText = hudMod.texts.get(i);
 
                     if (lowercase.enabled) {
                         formattedText = formattedText.toLowerCase();
@@ -99,80 +78,69 @@ public class HUD {
                         formattedText = Formatting.ITALIC + formattedText;
                     }
 
-                    switch (hudElement.getKey()) {
+                    switch (hudMod.anchor) {
                         case TopLeft:
-                            if (initPosX == -1) {
-                                initPosX = padding;
-                                initPosY = padding;
-                            }
+                            hudMod.pos.x = padding;
+                            hudMod.pos.y = padding + (fontHeight * anchorIndex);
 
-                            posX = initPosX;
-                            posY = initPosY;
-                            initPosY += yOffset;
-
+                            posX = (int) hudMod.pos.x;
+                            posY = padding + (fontHeight * (anchorIndex + i));
                             break;
                         case TopCenter:
-                            if (initPosX == -1) {
-                                initPosX = width / 2;
-                                initPosY = padding;
-                            }
+                            hudMod.pos.x = ((float) width / 2) - ((float) mc.textRenderer.getWidth(longestText) / 2);
+                            hudMod.pos.y = padding + (fontHeight * anchorIndex);
 
-                            posX = initPosX - (mc.textRenderer.getWidth(formattedText) / 2);
-                            posY = initPosY;
-                            initPosY += yOffset;
-
+                            posX = (width / 2) - (mc.textRenderer.getWidth(formattedText) / 2);
+                            posY = padding + (fontHeight * (anchorIndex + i));
                             break;
                         case TopRight:
-                            if (initPosX == -1) {
-                                initPosX = width - padding;
-                                initPosY = padding;
-                            }
+                            hudMod.pos.x = width - padding - mc.textRenderer.getWidth(longestText);
+                            hudMod.pos.y = padding + (fontHeight * anchorIndex);
 
-                            posX = initPosX - mc.textRenderer.getWidth(formattedText);
-                            posY = initPosY;
-                            initPosY += yOffset;
-
+                            posX = width - padding - mc.textRenderer.getWidth(formattedText);
+                            posY = padding + (fontHeight  * (anchorIndex + i));
                             break;
                         case BottomLeft:
-                            if (initPosX == -1) {
-                                initPosX = padding;
-                                initPosY = height - padding;
-                            }
+                            hudMod.pos.x = padding;
+                            hudMod.pos.y = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size()));
 
-                            posX = initPosX;
-                            posY = initPosY - yOffset;
-                            initPosY -= yOffset;
-
+                            posX = (int) hudMod.pos.x;
+                            posY = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size() - i));
                             break;
                         case BottomRight:
-                            if (initPosX == -1) {
-                                initPosX = width - padding;
-                                initPosY = height - padding;
-                            }
+                            hudMod.pos.x = width - padding - mc.textRenderer.getWidth(longestText);
+                            hudMod.pos.y = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size()));
 
-                            posX = initPosX - mc.textRenderer.getWidth(formattedText);
-                            posY = initPosY - yOffset;
-                            initPosY -= yOffset;
-
+                            posX = width - padding - mc.textRenderer.getWidth(formattedText);
+                            posY = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size() - i));
                             break;
+                        case None:
+                            Vector2i pos = RenderGUI.relativePosToAbsPos(hudMod.pos, hudMod.size);
+
+                            posX = pos.x;
+                            posY = pos.y + (fontHeight * i);
                     }
 
-                    if (borders.enabled && !formattedText.isBlank()) {
-                        int borderPadding = 2;
-                        int borderX = posX - borderPadding - (borderPadding / 2);
-                        int borderY = posY - borderPadding - (borderPadding / 2);
-                        int borderWidth = mc.textRenderer.getWidth(formattedText) + 2 * borderPadding;
-                        int borderHeight = mc.textRenderer.fontHeight + 2 * borderPadding;
+                    int borderPadding = 2;
 
-                        event.drawContext.fill(borderX, borderY, borderX + borderWidth, borderY + borderHeight, ColorUtil.BACKGROUND_COLOR);
-                        RenderGUI.drawBorder(event.drawContext, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.dynamicBrightnessVal));
-                    }
+                    int borderX = posX - borderPadding - (borderPadding / 2);
+                    int borderY = posY - borderPadding - (borderPadding / 2);
+
+                    int borderWidth = mc.textRenderer.getWidth(formattedText) + 2 * borderPadding;
+                    int borderHeight = mc.textRenderer.fontHeight + 2 * borderPadding;
+
+                    event.drawContext.fill(borderX, borderY, borderX + borderWidth, borderY + borderHeight, ColorUtil.BACKGROUND_COLOR);
+                    RenderGUI.drawBorder(event.drawContext, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
 
                     event.drawContext.drawText(mc.textRenderer, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
                 }
-            }
 
-            clearHud();
+                if (hudMod.anchor != HUDMod.Anchor.None) {
+                    hudMod.pos = RenderGUI.absPosToRelativePos(new Vector2i((int)hudMod.pos.x, (int)hudMod.pos.y), hudMod.size);
+                }
+
+                anchorIndexes.put(hudMod.anchor, anchorIndex + hudMod.texts.size());
+            }
 
             return true;
         });

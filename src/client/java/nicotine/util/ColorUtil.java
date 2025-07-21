@@ -9,8 +9,9 @@ import net.minecraft.entity.vehicle.ChestBoatEntity;
 import net.minecraft.entity.vehicle.ChestMinecartEntity;
 import net.minecraft.entity.vehicle.HopperMinecartEntity;
 import net.minecraft.util.Colors;
-import nicotine.events.ClientTickEvent;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.math.MathHelper;
 
 public class ColorUtil {
     public static final int FOREGROUND_COLOR = 0xFF626282;
@@ -21,8 +22,17 @@ public class ColorUtil {
     public static final int PURPLE = 0xFF5F44C4;
     public static final int GOLD = 0xFFFFAA00;
 
-    public static int CATEGORY_BACKGROUND_COLOR = 0xFF9889FA;
-    public static int ACTIVE_FOREGROUND_COLOR = CATEGORY_BACKGROUND_COLOR;
+    public static int ACTIVE_FOREGROUND_COLOR = 0xFF9889FA;
+
+    private static final int[] rainbowList = {
+            0xFFFF6663,
+            0xFFFEB144,
+            0xFFFDFD97,
+            0xFF9EE09E,
+            0xFF6DC1E3,
+            0xFFCC99C9,
+            0xFFCF7ECA
+    };
 
     public static int getBlockColor(BlockEntity blockEntity) {
         if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof TrappedChestBlockEntity || blockEntity instanceof CrafterBlockEntity ||
@@ -76,70 +86,32 @@ public class ColorUtil {
         return color;
     }
 
-    private static int interpolateColor(int startColor, int endColor, float ratio) {
-        int alpha = (int) ((1 - ratio) * ((startColor >> 24) & 0xff) + ratio * ((endColor >> 24) & 0xff));
-        int red = (int) ((1 - ratio) * ((startColor >> 16) & 0xff) + ratio * ((endColor >> 16) & 0xff));
-        int green = (int) ((1 - ratio) * ((startColor >> 8) & 0xff) + ratio * ((endColor >> 8) & 0xff));
-        int blue = (int) ((1 - ratio) * (startColor & 0xff) + ratio * (endColor & 0xff));
-        return (alpha << 24) | (red << 16) | (green << 8) | blue;
+    public static int getRainbowColor() {
+        double curTime = Util.getMeasuringTimeMs() / 600.0;
+
+        int colorIndex = (int) curTime % rainbowList.length;
+        int targetColorIndex = (colorIndex + 1) % rainbowList.length;
+
+        float lerpedAmount = (float) (curTime - Math.floor(curTime));
+        int lerpedColor = ColorHelper.lerp(lerpedAmount, rainbowList[colorIndex], rainbowList[targetColorIndex]);
+
+        return lerpedColor;
     }
 
-    private static final int[] rainbowList = {
-            0xFFFF6663,
-            0xFFFEB144,
-            0xFFFDFD97,
-            0xFF9EE09E,
-            0xFF6DC1E3,
-            0xFFCC99C9,
-            0xFFCF7ECA
-    };
+    public static int lerpValue(int value, int targetValue, double timeDivisor) {
+        double curTime = Util.getMeasuringTimeMs() / timeDivisor;
 
-    public static int getNextRainbowColor() {
-        final int steps = 6;
+        float lerpedAmount = MathHelper.abs(MathHelper.sin((float) curTime));
+        int lerpedValue = ColorHelper.lerp(lerpedAmount, value, targetValue);
 
-        int startColor = rainbowList[rainbowIndex];
-        int endColor = rainbowList[(rainbowIndex + 1) % rainbowList.length];
-
-        float ratio = (float) rainbowStepCount / (float) steps;
-        int interpolatedColor = interpolateColor(startColor, endColor, ratio);
-
-        rainbowStepCount++;
-        if (rainbowStepCount >= steps) {
-            rainbowStepCount = 0;
-            rainbowIndex = (rainbowIndex + 1) % rainbowList.length;
-        }
-        return interpolatedColor;
+        return lerpedValue;
     }
 
-    public static int dynamicBrightnessVal = 100;
-    private static int brightnessIncr = 3;
+    public static int getDynamicBrightnessVal() {
+        return lerpValue(40, 100, 700);
+    }
 
-    public static int dynamicFadeVal = 0x1E;
-    private static int fadeIncr;
-
-    public static int rainbow = rainbowList[0];
-    private static int rainbowIndex = 0;
-    private static int rainbowStepCount = 0;
-
-    public static void init() {
-        EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (dynamicBrightnessVal >= 100)
-                brightnessIncr = -3;
-            else if (dynamicBrightnessVal <= 40)
-                brightnessIncr = 3;
-
-            dynamicBrightnessVal += brightnessIncr;
-
-            if (dynamicFadeVal >= 0x78)
-                fadeIncr = -3;
-            else if (dynamicFadeVal <= 0x1E)
-                fadeIncr = 3;
-
-            dynamicFadeVal += fadeIncr;
-
-            rainbow = getNextRainbowColor();
-
-            return true;
-        });
+    public static int getDynamicFadeVal() {
+        return lerpValue(30, 120, 1000);
     }
 }

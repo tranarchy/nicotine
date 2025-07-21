@@ -88,11 +88,13 @@ public class ModManager {
         SmartFocus.init();
         AutoReconnect.init();
         ExtraTab.init();
+        DiscordActivity.init();
 
         if (System.getProperty("os.name").startsWith("Mac"))
             TouchBar.init();
 
         HUD.init();
+        HUDEditor.init();
         Watermark.init();
         Modules.init();
         Cords.init();

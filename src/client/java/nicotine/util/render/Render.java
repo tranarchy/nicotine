@@ -138,7 +138,7 @@ public class Render {
         BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         MatrixStack.Entry entry = matrixStack.peek();
 
-        color = ColorUtil.changeAlpha(color, fade ? ColorUtil.dynamicFadeVal : 0x32);
+        color = ColorUtil.changeAlpha(color, fade ? ColorUtil.getDynamicFadeVal() : 0x32);
 
         bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color);
         bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color);

@@ -7,6 +7,7 @@ import net.minidev.json.parser.ParseException;
 import nicotine.clickgui.ClickGUI;
 import nicotine.command.CommandManager;
 import nicotine.command.commands.TouchBarCustom;
+import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -84,6 +85,16 @@ public class Settings {
                 if (!mod.alwaysEnabled)
                     modDetails.put("enabled", mod.enabled);
 
+                if (mod instanceof HUDMod hudMod) {
+                    JSONObject hudInfo = new JSONObject();
+
+                    hudInfo.put("x", hudMod.pos.x);
+                    hudInfo.put("y", hudMod.pos.y);
+                    hudInfo.put("anchor", hudMod.anchor.ordinal());
+
+                    modDetails.put("hud", hudInfo);
+                }
+
                 for (ModOption modOption : mod.modOptions) {
                    if (modOption instanceof SliderOption sliderOption) {
                        modDetails.put(sliderOption.name, sliderOption.value);
@@ -135,7 +146,14 @@ public class Settings {
             JSONObject waypoints = (JSONObject) settings.get("waypoints");
             for (String waypoint : waypoints.keySet()) {
                 JSONObject waypointInfo = (JSONObject) waypoints.get(waypoint);
-                allWaypoints.add(new WaypointInstance(waypoint, waypointInfo.getAsString("dimension"), waypointInfo.getAsString("server"), (int)waypointInfo.get("x"), (int)waypointInfo.get("y"), (int) waypointInfo.get("z")));
+                allWaypoints.add(new WaypointInstance(
+                        waypoint,
+                        waypointInfo.getAsString("dimension"),
+                        waypointInfo.getAsString("server"),
+                        waypointInfo.getAsNumber("x").intValue(),
+                        waypointInfo.getAsNumber("y").intValue(),
+                        waypointInfo.getAsNumber("z").intValue())
+                );
             }
         }
 
@@ -157,8 +175,8 @@ public class Settings {
 
         if (settings.containsKey("gui")) {
             JSONObject guiPos = (JSONObject) settings.get("gui");
-            ClickGUI.guiPos.x = (int) guiPos.get("x");
-            ClickGUI.guiPos.y = (int) guiPos.get("y");
+            ClickGUI.guiPos.x = guiPos.getAsNumber("x").floatValue();
+            ClickGUI.guiPos.y = guiPos.getAsNumber("y").floatValue();
          }
 
         JSONObject categories = (JSONObject) settings.get("settings");
@@ -178,12 +196,22 @@ public class Settings {
                         mod.toggle();
                     }
                 }
+
+                if (mod instanceof HUDMod hudMod) {
+                    if (modInfo.containsKey("hud")) {
+                        JSONObject hudInfo = (JSONObject) modInfo.get("hud");
+                        hudMod.pos.x = hudInfo.getAsNumber("x").floatValue();
+                        hudMod.pos.y = hudInfo.getAsNumber("y").floatValue();
+                        hudMod.anchor = HUDMod.Anchor.values()[hudInfo.getAsNumber("anchor").intValue()];
+                    }
+                }
+
                 for (ModOption modOption : mod.modOptions) {
                     if (modInfo.get(modOption.name) == null)
                         continue;
 
                     if (modOption instanceof SliderOption sliderOption) {
-                        sliderOption.value = ((Double) modInfo.get(sliderOption.name)).floatValue();
+                        sliderOption.value = modInfo.getAsNumber(sliderOption.name).floatValue();
                     } else if (modOption instanceof SwitchOption switchOption) {
                         String switchVal = modInfo.getAsString(switchOption.name);
                         if (Arrays.stream(switchOption.modes).toList().contains(switchVal)) {
@@ -192,7 +220,7 @@ public class Settings {
                     } else if (modOption instanceof ToggleOption toggleOption) {
                         toggleOption.enabled = (boolean) modInfo.get(toggleOption.name);
                     } else if (modOption instanceof KeybindOption keybindOption) {
-                        keybindOption.keyCode = (int) modInfo.get(keybindOption.name);
+                        keybindOption.keyCode = modInfo.getAsNumber(keybindOption.name).intValue();
                     }
                 }
             }

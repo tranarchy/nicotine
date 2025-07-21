@@ -1,32 +1,28 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import nicotine.events.InGameHudRenderBeforeEvent;
-import nicotine.mod.Mod;
+import nicotine.events.ClientWorldTickEvent;
+import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.SwitchOption;
 import nicotine.util.EventBus;
+
+import java.util.List;
 
 import static nicotine.util.Common.mc;
 
 public class Player {
     public static void init() {
-        Mod player = new Mod("Player");
-        SwitchOption position = new SwitchOption(
-                "Position",
-                new String[]{"TL", "TC", "TR", "BL", "BR"}
-        );
-        player.modOptions.add(position);
+        HUDMod player = new HUDMod("Player");
+        player.anchor = HUDMod.Anchor.TopLeft;
         ModManager.addMod(ModCategory.HUD, player);
 
-        EventBus.register(InGameHudRenderBeforeEvent.class, event -> {
+        EventBus.register(ClientWorldTickEvent.class, event -> {
             if (!player.enabled)
                 return true;
 
             String playerText = String.format("player %s%s %s", Formatting.WHITE, HUD.separatorText, mc.player.getName().getString());
-            HUD.hudElements.get(HUD.getHudPos(position.value)).add(Text.literal(playerText));
+            player.texts = List.of(playerText);
 
             return true;
         });

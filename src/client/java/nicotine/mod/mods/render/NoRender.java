@@ -20,8 +20,19 @@ public class NoRender {
         ToggleOption weather = new ToggleOption("Weather");
         ToggleOption sky = new ToggleOption("Sky");
         ToggleOption particles = new ToggleOption("Particles");
-        noRender.modOptions.addAll(Arrays.asList(overlays, bossBars, potionEffects, miscOverlays, toastNotifs, weather, sky, particles));
+        ToggleOption totemAnimation = new ToggleOption("TotemAnimation");
+        noRender.modOptions.addAll(Arrays.asList(overlays, bossBars, potionEffects, miscOverlays, toastNotifs, weather, sky, particles, totemAnimation));
         ModManager.addMod(ModCategory.Render, noRender);
+
+        EventBus.register(TotemAnimationEvent.class, event -> {
+            if (!noRender.enabled)
+                return true;
+
+            if (totemAnimation.enabled)
+                return false;
+
+            return true;
+        });
 
         EventBus.register(RenderOverlaysEvent.class, event -> {
            if (!noRender.enabled)
