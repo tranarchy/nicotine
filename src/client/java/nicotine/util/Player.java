@@ -268,12 +268,18 @@ public class Player {
     }
 
 
-    public static AbstractClientPlayerEntity findNearestPlayer() {
+    public static AbstractClientPlayerEntity findNearestPlayer(boolean ignoreFriends) {
         AbstractClientPlayerEntity nearestPlayer = null;
         float nearestDistance = Float.MAX_VALUE;
 
         for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
             if (!(player instanceof OtherClientPlayerEntity))
+                continue;
+
+            if (player.isDead())
+                continue;
+
+            if (ignoreFriends && friendList.contains(player.getUuid()))
                 continue;
 
             float distance = player.distanceTo(mc.player);

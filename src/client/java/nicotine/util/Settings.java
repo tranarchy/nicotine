@@ -88,8 +88,11 @@ public class Settings {
                 if (mod instanceof HUDMod hudMod) {
                     JSONObject hudInfo = new JSONObject();
 
-                    hudInfo.put("x", hudMod.pos.x);
-                    hudInfo.put("y", hudMod.pos.y);
+                    if (hudMod.anchor == HUDMod.Anchor.None) {
+                        hudInfo.put("x", hudMod.pos.x);
+                        hudInfo.put("y", hudMod.pos.y);
+                    }
+
                     hudInfo.put("anchor", hudMod.anchor.ordinal());
 
                     modDetails.put("hud", hudInfo);
@@ -200,9 +203,13 @@ public class Settings {
                 if (mod instanceof HUDMod hudMod) {
                     if (modInfo.containsKey("hud")) {
                         JSONObject hudInfo = (JSONObject) modInfo.get("hud");
-                        hudMod.pos.x = hudInfo.getAsNumber("x").floatValue();
-                        hudMod.pos.y = hudInfo.getAsNumber("y").floatValue();
+
                         hudMod.anchor = HUDMod.Anchor.values()[hudInfo.getAsNumber("anchor").intValue()];
+
+                        if (hudMod.anchor == HUDMod.Anchor.None) {
+                            hudMod.pos.x = hudInfo.getAsNumber("x").floatValue();
+                            hudMod.pos.y = hudInfo.getAsNumber("y").floatValue();
+                        }
                     }
                 }
 

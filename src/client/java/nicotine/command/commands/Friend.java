@@ -3,8 +3,6 @@ package nicotine.command.commands;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
 import nicotine.command.Command;
 import nicotine.command.CommandManager;
 import nicotine.events.ClientWorldTickEvent;
@@ -12,7 +10,8 @@ import nicotine.util.EventBus;
 import nicotine.util.Message;
 import nicotine.util.Settings;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.friendList;
+import static nicotine.util.Common.mc;
 
 public class Friend {
     public static void init() {
@@ -65,23 +64,20 @@ public class Friend {
         CommandManager.addCommand(friend);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            HitResult crosshairTarget = mc.crosshairTarget;
 
-            if (crosshairTarget.getType() != HitResult.Type.ENTITY)
+            Entity targetedEntity = mc.targetedEntity;
+
+            if (targetedEntity == null)
                 return true;
 
-            EntityHitResult entityHitResult = ((EntityHitResult)crosshairTarget);
-
-            Entity entity = entityHitResult.getEntity();
-
-            if (entity.isPlayer()) {
+            if (targetedEntity.isPlayer()) {
                 if (mc.options.pickItemKey.isPressed()) {
-                    if (friendList.contains(entity.getUuid())) {
-                        friendList.remove(entity.getUuid());
-                        Message.sendWarning(String.format("Removed %s from friend list!", entity.getName().getString()));
+                    if (friendList.contains(targetedEntity.getUuid())) {
+                        friendList.remove(targetedEntity.getUuid());
+                        Message.sendWarning(String.format("Removed %s from friend list!", targetedEntity.getName().getString()));
                     } else {
-                        friendList.add(entity.getUuid());
-                        Message.sendInfo(String.format("Added %s to friend list!", entity.getName().getString()));
+                        friendList.add(targetedEntity.getUuid());
+                        Message.sendInfo(String.format("Added %s to friend list!", targetedEntity.getName().getString()));
                     }
 
                     mc.options.pickItemKey.setPressed(false);

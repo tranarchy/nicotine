@@ -1,11 +1,9 @@
 package nicotine.mod.mods.combat;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.Items;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -19,15 +17,17 @@ import nicotine.mod.ModManager;
 import nicotine.mod.mods.render.LogoutESP;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
-import static nicotine.util.Common.*;
-
-import nicotine.util.*;
+import nicotine.util.EventBus;
+import nicotine.util.Keybind;
+import nicotine.util.Message;
+import nicotine.util.Player;
 import nicotine.util.math.BoxUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
+
+import static nicotine.util.Common.mc;
 
 public class AutoTrap {
 
@@ -45,9 +45,9 @@ public class AutoTrap {
             if (!autoTrap.enabled || Player.isBusy())
                 return true;
 
-            final double blockInteractionRange = mc.player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).getValue();
+            final double blockInteractionRange = mc.player.getBlockInteractionRange();
 
-            AbstractClientPlayerEntity target = Player.findNearestPlayer();
+            AbstractClientPlayerEntity target = Player.findNearestPlayer(true);
 
             if (logoutSpot.enabled) {
                 for (AbstractClientPlayerEntity loggedPlayer : LogoutESP.loggedPlayers.keySet()) {
@@ -58,9 +58,8 @@ public class AutoTrap {
                 }
             }
 
-            if (target == null || friendList.contains(target.getUuid())) {
+            if (target == null)
                 return true;
-            }
 
             if (mc.player.distanceTo(target) + 1 <= blockInteractionRange) {
                 List<BlockPos> surroundBlocks = Player.getSurroundBlocks(target.getBlockPos());

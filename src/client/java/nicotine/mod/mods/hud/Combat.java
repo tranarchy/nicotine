@@ -51,7 +51,7 @@ public class Combat {
                 return true;
             }
 
-            AbstractClientPlayerEntity nearestPlayer = Player.findNearestPlayer();
+            AbstractClientPlayerEntity nearestPlayer = Player.findNearestPlayer(false);
 
             if (mc.currentScreen instanceof HUDEditorScreen)
                 nearestPlayer = mc.player;

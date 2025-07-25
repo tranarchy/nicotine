@@ -40,7 +40,7 @@ public class AutoCrystal {
     private static final List<Block> validBlocks =  Arrays.asList(Blocks.OBSIDIAN, Blocks.BEDROCK);
 
     private static float calculateExplosionDamage(Vec3d explosionPos, Entity entity) {
-        float power = 12.0F;
+        final float power = 12.0F;
 
         double distance = Math.sqrt(entity.squaredDistanceTo(explosionPos));
         double d = distance / power;
@@ -63,12 +63,19 @@ public class AutoCrystal {
         List<BlockPos> placementPositions = new ArrayList<>();
 
         BlockPos initPos = mc.player.getBlockPos();
+        int blockRange = (int) Math.ceil(mc.player.getBlockInteractionRange());
 
-        for (int x = -5; x <= 5; x++) {
-            for (int y = -5; y <= 5; y++) {
-                for (int z = -5; z <= 5; z++) {
+        for (int x = -blockRange; x <= blockRange; x++) {
+            for (int y = -blockRange; y <= blockRange; y++) {
+                for (int z = -blockRange; z <= blockRange; z++) {
                     BlockPos pos = initPos.add(x, y, z);
-                    if (!mc.player.canInteractWithBlockAt(pos.add(0, 1, 0), 0))
+
+                    if (!mc.player.canInteractWithBlockAt(pos, 0))
+                        continue;
+
+                    EndCrystalEntity endCrystalEntity = new EndCrystalEntity(null, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+
+                    if (!mc.player.canInteractWithEntity(endCrystalEntity, 0))
                         continue;
 
                     if (!validBlocks.contains(mc.world.getBlockState(pos).getBlock()))
@@ -121,28 +128,32 @@ public class AutoCrystal {
             if (Keybind.keyReleased(autoCrystal, keybind.keyCode))
                 autoCrystal.toggle();
 
-            if (!autoCrystal.enabled || Player.isBusy())
+            if (!autoCrystal.enabled)
+                return true;
+
+            AbstractClientPlayerEntity nearestPlayer = Player.findNearestPlayer(true);
+
+            if (nearestPlayer == null)
                 return true;
 
             for (Entity entity : mc.world.getEntities()) {
                 if (entity instanceof EndCrystalEntity endCrystalEntity) {
-                    for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-                        if (player == mc.player || player.isDead() || friendList.contains(player.getUuid()))
-                            continue;
+                    if (Player.isBusy() || !mc.player.canInteractWithEntity(endCrystalEntity, 0))
+                        continue;
 
-                        float dmg = calculateExplosionDamage(endCrystalEntity.getPos(), player);
-                        float selfDmg = calculateExplosionDamage(endCrystalEntity.getPos(), mc.player);
+                    float dmg = calculateExplosionDamage(endCrystalEntity.getPos(), nearestPlayer);
+                    float selfDmg = calculateExplosionDamage(endCrystalEntity.getPos(), mc.player);
 
-                        if (
-                                dmg >= minDamage.value && selfDmg <= selfDamage.value &&
-                                mc.player.canInteractWithEntity(endCrystalEntity, 0)
-                                && delayLeft <= 0
-                                && !Player.isBusy() && !player.isInvulnerable()
-                        ) {
-                            Player.lookAndAttack(endCrystalEntity);
-                            delayLeft = delay.value;
-                        }
-                    }
+                    if (dmg < minDamage.value || selfDmg > selfDamage.value)
+                        continue;
+
+                    if (delayLeft > 0)
+                        continue;
+
+                    Player.lookAndAttack(endCrystalEntity);
+                    delayLeft = delay.value;
+
+                    break;
                 }
             }
 
@@ -159,40 +170,35 @@ public class AutoCrystal {
                 BlockPos bestPlacementPos = BlockPos.ORIGIN;
 
                 float bestDamage = -1;
-                for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-                    if (mc.player == player || player.isDead() || friendList.contains(player.getUuid()))
-                        continue;
 
-                    for (BlockPos placementPosition : placementPositions) {
-                        boolean invalidPlacement = false;
+                for (BlockPos placementPosition : placementPositions) {
+                    boolean invalidPlacement = false;
 
-                        Vec3d interSectionPos = new Vec3d(placementPosition.getX(), placementPosition.getY() + 1, placementPosition.getZ());
+                    Vec3d interSectionPos = new Vec3d(placementPosition.getX(), placementPosition.getY() + 1, placementPosition.getZ());
 
-                        for (Box takenPosition : takenPositions) {
-                            if (BoxUtil.get1x1Box(interSectionPos).intersects(takenPosition)) {
-                                invalidPlacement = true;
-                                break;
-                            }
-                        }
-
-                        if (invalidPlacement)
-                            continue;
-
-                        Vec3d crystalPos = placementPosition.toBottomCenterPos().add(0, 1, 0);
-
-                        float selfDmg = calculateExplosionDamage(crystalPos, mc.player);
-                        if (selfDmg > selfDamage.value)
-                            continue;
-
-
-                        float dmg = calculateExplosionDamage(crystalPos, player);
-                        if (bestDamage < dmg) {
-                            bestPlacementPos = placementPosition;
-                            bestDamage = dmg;
+                    for (Box takenPosition : takenPositions) {
+                        if (BoxUtil.get1x1Box(interSectionPos).intersects(takenPosition)) {
+                            invalidPlacement = true;
+                            break;
                         }
                     }
-                }
 
+                    if (invalidPlacement)
+                        continue;
+
+                    Vec3d crystalPos = placementPosition.toBottomCenterPos().add(0, 1, 0);
+
+                    float selfDmg = calculateExplosionDamage(crystalPos, mc.player);
+                    if (selfDmg > selfDamage.value)
+                        continue;
+
+
+                    float dmg = calculateExplosionDamage(crystalPos, nearestPlayer);
+                    if (bestDamage < dmg) {
+                        bestPlacementPos = placementPosition;
+                        bestDamage = dmg;
+                    }
+                }
 
                 if (placeDelayLeft <= 0 && !Player.isBusy()) {
                     if (bestDamage >= minDamage.value) {
