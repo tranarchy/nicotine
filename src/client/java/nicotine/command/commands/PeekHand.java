@@ -5,6 +5,7 @@ import net.minecraft.component.type.ContainerComponent;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.tag.ItemTags;
 import nicotine.command.Command;
 import nicotine.command.CommandManager;
 import nicotine.events.ClientWorldTickEvent;
@@ -27,7 +28,7 @@ public class PeekHand {
               if (mc.player == null)
                   return;
 
-              if (Peek.shulkerBoxItems.contains(mc.player.getMainHandStack().getItem()) || mc.player.getMainHandStack().getItem() == Items.ENDER_CHEST) {
+              if (mc.player.getMainHandStack().isIn(ItemTags.SHULKER_BOXES) || mc.player.getMainHandStack().getItem() == Items.ENDER_CHEST) {
                   openScreen = true;
               } else {
                   Message.sendWarning("You are not holding a shulker box or ender chest!");

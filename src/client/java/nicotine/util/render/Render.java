@@ -93,22 +93,27 @@ public class Render {
         bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
         bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
         bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
+
         bufferBuilder.vertex(entry, box.minX, box.minY, box.minZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
         bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
         bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
         bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
+
         bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color).normal(entry, -1.0F, 0.0F, 0.0F);
         bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color).normal(entry, -1.0F, 0.0F, 0.0F);
         bufferBuilder.vertex(entry, box.minX, box.maxY, box.minZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
         bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
+
         bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color).normal(entry, 0.0F, -1.0F, 0.0F);
         bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color).normal(entry, 0.0F, -1.0F, 0.0F);
         bufferBuilder.vertex(entry, box.minX, box.minY, box.maxZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
         bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
+
         bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color).normal(entry, 0.0F, 0.0F, -1.0F);
         bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color).normal(entry, 0.0F, 0.0F, -1.0F);
         bufferBuilder.vertex(entry, box.minX, box.maxY, box.maxZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
         bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color).normal(entry, 1.0F, 0.0F, 0.0F);
+
         bufferBuilder.vertex(entry, box.maxX, box.minY, box.maxZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
         bufferBuilder.vertex(entry, box.maxX, box.maxY, box.maxZ).color(color).normal(entry, 0.0F, 1.0F, 0.0F);
         bufferBuilder.vertex(entry, box.maxX, box.maxY, box.minZ).color(color).normal(entry, 0.0F, 0.0F, 1.0F);
@@ -171,57 +176,6 @@ public class Render {
         bufferBuilder.vertex(entry, box.maxX, box.minY, box.minZ).color(color);
 
         RenderLayer.getDebugQuads().draw(bufferBuilder.end());
-
-        matrixStack.pop();
-
-        toggleRender();
-    }
-
-    public static void drawWireframeBox(Camera camera, MatrixStack matrixStack, Boxf box, int color) {
-        drawBox(camera, matrixStack, box, color);
-
-        toggleRender();
-
-        Vec3d view = camera.getPos();
-        matrixStack.push();
-        matrixStack.translate(-view.x, -view.y, -view.z);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-        MatrixStack.Entry entry = matrixStack.peek();
-
-        //a >
-        bufferBuilder.vertex(entry, box.minX,box.minY,box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX,box.minY,box.maxZ).color(color);//c
-        bufferBuilder.vertex(entry, box.minX,box.minY,box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.minZ).color(color);//f
-        bufferBuilder.vertex(entry, box.minX,box.minY,box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.minX,box.maxY,box.maxZ).color(color);//h
-        //b >
-        bufferBuilder.vertex(entry, box.maxX,box.minY,box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.minX,box.minY,box.maxZ).color(color);//d
-        bufferBuilder.vertex(entry, box.maxX,box.minY,box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.minX,box.maxY,box.minZ).color(color);//e
-        bufferBuilder.vertex(entry, box.maxX,box.minY,box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.maxZ).color(color);//g
-        //c >
-        bufferBuilder.vertex(entry, box.maxX,box.minY,box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.minZ).color(color);//f
-        bufferBuilder.vertex(entry, box.maxX,box.minY,box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.minX,box.maxY,box.maxZ).color(color);//h
-        //d >
-        bufferBuilder.vertex(entry, box.minX,box.minY,box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.maxZ).color(color);//g
-        bufferBuilder.vertex(entry, box.minX,box.minY,box.maxZ).color(color);
-        bufferBuilder.vertex(entry, box.minX,box.maxY,box.minZ).color(color);//e
-        //e > g
-        bufferBuilder.vertex(entry, box.minX,box.maxY,box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.maxZ).color(color);
-        //f > h
-        bufferBuilder.vertex(entry, box.maxX,box.maxY,box.minZ).color(color);
-        bufferBuilder.vertex(entry, box.minX,box.maxY,box.maxZ).color(color);
-
-        RenderLayer.getDebugLineStrip(1d).draw(bufferBuilder.end());
 
         matrixStack.pop();
 

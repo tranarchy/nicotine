@@ -1,6 +1,5 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.option.Perspective;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -11,9 +10,9 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SwitchOption;
 import nicotine.util.EventBus;
-import nicotine.util.render.Render;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
+import nicotine.util.render.Render;
 
 import java.util.Arrays;
 
@@ -30,7 +29,7 @@ public class BlockOutline {
         };
         SwitchOption render = new SwitchOption(
                  "Render",
-                 new String[]{"Box", "Wire", "Filled", "Fade"}
+                 new String[]{"Box", "Filled", "Fade"}
         );
         RGBOption rgb = new RGBOption();
         blockOutline.modOptions.addAll(Arrays.asList(render, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
@@ -51,9 +50,6 @@ public class BlockOutline {
             switch (render.value) {
                 case "Box":
                     Render.drawBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
-                    break;
-                case "Wire":
-                    Render.drawWireframeBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
                     break;
                 case "Filled":
                     Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());

@@ -28,7 +28,7 @@ public class Storage {
         ToggleOption esp = new ToggleOption("ESP");
         SwitchOption espRender = new SwitchOption(
                 "ERender",
-                new String[]{"Box", "Wire", "Filled", "Fade"}
+                new String[]{"Box", "Filled", "Fade"}
         );
         ToggleOption tracer = new ToggleOption("Tracer");
         SliderOption tracerAlpha = new SliderOption("TAlpha", 255, 10, 255);
@@ -76,9 +76,6 @@ public class Storage {
                        case "Box":
                            Render.drawBox(event.camera, event.matrixStack, boundingBox, blockColor);
                            break;
-                       case "Wire":
-                           Render.drawWireframeBox(event.camera, event.matrixStack, boundingBox, blockColor);
-                           break;
                        case "Filled":
                            Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor);
                            break;
@@ -111,9 +108,6 @@ public class Storage {
                     switch (espRender.value) {
                         case "Box":
                             Render.drawBox(event.camera, event.matrixStack, boundingBox, blockColor);
-                            break;
-                        case "Wire":
-                            Render.drawWireframeBox(event.camera, event.matrixStack, boundingBox, blockColor);
                             break;
                         case "Filled":
                             Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor);

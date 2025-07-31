@@ -24,7 +24,7 @@ public class Players {
          ToggleOption esp = new ToggleOption("ESP");
          SwitchOption espRender = new SwitchOption(
                  "ERender",
-                 new String[]{"Box", "Wire", "Filled", "Fade"}
+                 new String[]{"Box", "Filled", "Fade"}
          );
          SliderOption espScale = new SliderOption(
                  "EScale",
@@ -56,9 +56,6 @@ public class Players {
                         switch (espRender.value) {
                             case "Box":
                                 Render.drawBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor());
-                                break;
-                            case "Wire":
-                                Render.drawWireframeBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor());
                                 break;
                             case "Filled":
                                 Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor());

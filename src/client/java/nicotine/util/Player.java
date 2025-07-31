@@ -6,7 +6,8 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.c2s.play.*;
+import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInputC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.PlayerInput;
 import net.minecraft.util.hit.BlockHitResult;
@@ -20,7 +21,8 @@ import nicotine.events.SendMovementPacketBeforeEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.friendList;
+import static nicotine.util.Common.mc;
 
 public class Player {
     private static boolean packetSneak = true;
@@ -76,22 +78,9 @@ public class Player {
 
             Action action = actions.getFirst();
 
-            Vec2f rotation;
-
             if (!action.rotated) {
 
-                if (action.actionType == ActionType.ATTACK) {
-                    rotation = getRotation(action.entity);
-                } else {
-                    if (action.lookAtPos != null)
-                        rotation = getRotation(action.lookAtPos);
-                    else
-                        rotation = getRotation(action.blockHitResult.getBlockPos());
-
-                    if (action.selfCenter) {
-                        selfCenter();
-                    }
-                }
+                Vec2f rotation = getRotation(action);
 
                 mc.player.setPitch(rotation.x);
                 mc.player.setYaw(rotation.y);
@@ -134,7 +123,6 @@ public class Player {
             return true;
         });
 
-
         EventBus.register(SendMovementPacketAfterEvent.class, event -> {
             if (mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem())
                 actions.clear();
@@ -160,7 +148,23 @@ public class Player {
         });
     }
 
-    public static Vec2f getRotation(Vec3d target) {
+    public static Vec2f getRotation(Action action) {
+
+        Vec3d target;
+
+        if (action.actionType == ActionType.ATTACK) {
+            target = action.entity.getBoundingBox().getCenter();
+        } else {
+            if (action.lookAtPos != null)
+                target = action.lookAtPos;
+            else
+                target = action.blockHitResult.getBlockPos().toCenterPos();
+
+            if (action.selfCenter) {
+                selfCenter();
+            }
+        }
+
         Vec3d vec3d = EntityAnchorArgumentType.EntityAnchor.EYES.positionAt(mc.player);
 
         double d = target.x - vec3d.x;
@@ -178,14 +182,6 @@ public class Player {
         return rotation;
     }
 
-    public static Vec2f getRotation(Entity entity) {
-        return getRotation(entity.getBoundingBox().getCenter());
-    }
-
-    public static Vec2f getRotation(BlockPos blockPos) {
-        return getRotation(blockPos.toCenterPos());
-    }
-
     public static void lookAndPlace(BlockHitResult blockHitResult, int targetSlot, boolean sneak, boolean center) {
         Action action = new Action(ActionType.PLACE, blockHitResult, true, targetSlot, sneak, center);
         actions.add(action);
@@ -199,6 +195,7 @@ public class Player {
 
     public static void lookAndAttack(Entity entity, boolean revertRotation) {
         Action action = new Action(ActionType.ATTACK, entity, revertRotation);
+        action.delayAction = true;
         actions.add(action);
     }
 

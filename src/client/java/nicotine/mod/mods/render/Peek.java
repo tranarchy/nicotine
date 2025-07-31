@@ -4,9 +4,9 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.registry.tag.ItemTags;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.events.DrawMouseoverTooltipEvent;
 import nicotine.mod.Mod;
@@ -16,7 +16,6 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.render.RenderGUI;
-import org.joml.Matrix3fStack;
 import org.joml.Matrix3x2fStack;
 
 import java.util.ArrayList;
@@ -26,27 +25,6 @@ import java.util.List;
 import static nicotine.util.Common.mc;
 
 public class Peek {
-
-    public static final List<Item> shulkerBoxItems = Arrays.asList(
-            Items.SHULKER_BOX,
-            Items.WHITE_SHULKER_BOX,
-            Items.ORANGE_SHULKER_BOX,
-            Items.MAGENTA_SHULKER_BOX,
-            Items.LIGHT_BLUE_SHULKER_BOX,
-            Items.YELLOW_SHULKER_BOX,
-            Items.LIME_SHULKER_BOX,
-            Items.PINK_SHULKER_BOX,
-            Items.GRAY_SHULKER_BOX,
-            Items.LIGHT_GRAY_SHULKER_BOX,
-            Items.CYAN_SHULKER_BOX,
-            Items.PURPLE_SHULKER_BOX,
-            Items.BLUE_SHULKER_BOX,
-            Items.BROWN_SHULKER_BOX,
-            Items.GREEN_SHULKER_BOX,
-            Items.RED_SHULKER_BOX,
-            Items.BLACK_SHULKER_BOX
-    );
-
     public static boolean echestWasOpened = false;
     public static List<ItemStack> enderChestItems = new ArrayList<>();
 
@@ -67,7 +45,7 @@ public class Peek {
             if (event.focusedSlot != null) {
                 ItemStack focusedStack = event.focusedSlot.getStack();
 
-                if ((shulkerBoxItems.contains(focusedStack.getItem()) && shulker.enabled) || (focusedStack.getItem() == Items.ENDER_CHEST && enderChest.enabled) && echestWasOpened) {
+                if ((focusedStack.isIn(ItemTags.SHULKER_BOXES) && shulker.enabled) || (focusedStack.getItem() == Items.ENDER_CHEST && enderChest.enabled) && echestWasOpened) {
 
                     List<ItemStack> itemsToPeek;
 

@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class ClickGUI extends Screen {
 

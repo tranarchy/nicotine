@@ -21,14 +21,20 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
-import nicotine.util.*;
+import nicotine.util.ColorUtil;
+import nicotine.util.EventBus;
+import nicotine.util.Keybind;
+import nicotine.util.Player;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
 import nicotine.util.render.Render;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
 
 public class AutoCrystal {
 
@@ -73,7 +79,8 @@ public class AutoCrystal {
                     if (!mc.player.canInteractWithBlockAt(pos, 0))
                         continue;
 
-                    EndCrystalEntity endCrystalEntity = new EndCrystalEntity(null, pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+                    Vec3d centerPos = pos.toCenterPos();
+                    EndCrystalEntity endCrystalEntity = new EndCrystalEntity(null, centerPos.x, pos.getY() + 1, centerPos.z);
 
                     if (!mc.player.canInteractWithEntity(endCrystalEntity, 0))
                         continue;
@@ -90,6 +97,36 @@ public class AutoCrystal {
         }
 
         return placementPositions;
+    }
+
+    private static Direction getPlacementDir(BlockPos placementPos) {
+        Direction placementDir = null;
+
+        HashMap<BlockPos, Direction> directions = new HashMap<>();
+
+        directions.put(placementPos.up(), Direction.UP);
+        directions.put(placementPos.down(), Direction.DOWN);
+        directions.put(placementPos.north(), Direction.NORTH);
+        directions.put(placementPos.west(), Direction.WEST);
+        directions.put(placementPos.south(), Direction.SOUTH);
+        directions.put(placementPos.east(), Direction.EAST);
+
+        BlockPos nearestPos = BlockPos.ORIGIN;
+        Vec3d playerPos = mc.player.getPos();
+
+        for (BlockPos pos : directions.keySet()) {
+            if (mc.player.canInteractWithBlockAt(pos, 0) && mc.world.getBlockState(pos).getBlock() == Blocks.AIR) {
+                if (pos.toCenterPos().distanceTo(playerPos) < nearestPos.toCenterPos().distanceTo(playerPos)) {
+                    nearestPos = pos;
+                }
+            }
+        }
+
+        if (nearestPos != BlockPos.ORIGIN) {
+            placementDir = directions.get(nearestPos);
+        }
+
+        return placementDir;
     }
 
     public static void init() {
@@ -215,10 +252,13 @@ public class AutoCrystal {
                         if (targetSlot != -1) {
                             placementPositionToRender = bestPlacementPos;
 
-                            BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(bestPlacementPos.getX(), bestPlacementPos.getY(), bestPlacementPos.getZ()), Direction.UP, bestPlacementPos, false);
-                            Player.lookAndPlace(blockHitResult, targetSlot, false, false);
+                            Direction placementDir = getPlacementDir(bestPlacementPos);
 
-                            placeDelayLeft = placeDelay.value;
+                            if (placementDir != null) {
+                                BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(bestPlacementPos.getX(), bestPlacementPos.getY(), bestPlacementPos.getZ()), placementDir, bestPlacementPos, false);
+                                Player.lookAndPlace(blockHitResult, targetSlot, false, false);
+                                placeDelayLeft = placeDelay.value;
+                            }
                         }
                     }
                     else {

@@ -28,7 +28,7 @@ public class Item {
         ToggleOption esp = new ToggleOption("ESP");
         SwitchOption espRender = new SwitchOption(
                 "ERender",
-                new String[]{"Box", "Wire", "Filled", "Fade"}
+                new String[]{"Box", "Filled", "Fade"}
         );
         ToggleOption tracer = new ToggleOption("Tracer");
         SliderOption tracerAlpha = new SliderOption("TAlpha", 255, 10, 255);
@@ -54,9 +54,6 @@ public class Item {
                         switch (espRender.value) {
                             case "Box":
                                 Render.drawBox(event.camera, event.matrixStack, boundingBox, Colors.WHITE);
-                                break;
-                            case "Wire":
-                                Render.drawWireframeBox(event.camera, event.matrixStack, boundingBox, Colors.WHITE);
                                 break;
                             case "Filled":
                                 Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, Colors.WHITE);
