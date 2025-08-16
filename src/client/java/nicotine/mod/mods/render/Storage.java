@@ -27,11 +27,11 @@ public class Storage {
         Mod storage = new Mod("Storage");
         ToggleOption esp = new ToggleOption("ESP");
         SwitchOption espRender = new SwitchOption(
-                "ERender",
+                "Render",
                 new String[]{"Box", "Filled", "Fade"}
         );
         ToggleOption tracer = new ToggleOption("Tracer");
-        SliderOption tracerAlpha = new SliderOption("TAlpha", 255, 10, 255);
+        SliderOption tracerAlpha = new SliderOption("TracerAlpha", 255, 10, 255);
         ToggleOption optimizeRender = new ToggleOption("OptimizeRender", false);
         storage.modOptions.addAll(Arrays.asList(esp, espRender, tracer, tracerAlpha, optimizeRender));
         ModManager.addMod(ModCategory.Render, storage);

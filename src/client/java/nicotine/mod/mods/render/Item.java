@@ -27,11 +27,11 @@ public class Item {
         ToggleOption text = new ToggleOption("Text");
         ToggleOption esp = new ToggleOption("ESP");
         SwitchOption espRender = new SwitchOption(
-                "ERender",
+                "Render",
                 new String[]{"Box", "Filled", "Fade"}
         );
         ToggleOption tracer = new ToggleOption("Tracer");
-        SliderOption tracerAlpha = new SliderOption("TAlpha", 255, 10, 255);
+        SliderOption tracerAlpha = new SliderOption("TracerAlpha", 255, 10, 255);
         item.modOptions.addAll(Arrays.asList(text, esp, espRender, tracer, tracerAlpha));
         ModManager.addMod(ModCategory.Render, item);
 
