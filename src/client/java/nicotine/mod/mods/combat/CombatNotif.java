@@ -3,6 +3,8 @@ package nicotine.mod.mods.combat;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.events.ConnectEvent;
 import nicotine.events.TotemPopEvent;
@@ -10,6 +12,7 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.ToggleOption;
+import nicotine.util.CombatToast;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
 
@@ -17,26 +20,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static nicotine.util.Common.*;
+import static nicotine.util.Common.mc;
+import static nicotine.util.Common.totemPopCounter;
 
-public class CombatMSG {
+public class CombatNotif {
 
     private static List<AbstractClientPlayerEntity> prevPlayers = new ArrayList<>();
 
     public static void init() {
-        Mod combatMSG = new Mod("CombatMSG");
+        Mod combatNotif = new Mod("CombatNotif");
         ToggleOption poppedTotems = new ToggleOption("PoppedTotems", true);
         ToggleOption enterDistance = new ToggleOption("EnterDistance", true);
+        ToggleOption toastNotif = new ToggleOption("ToastNotif");
         ToggleOption playSound = new ToggleOption("PlaySound");
-        combatMSG.modOptions.addAll(Arrays.asList(poppedTotems, enterDistance, playSound));
-        ModManager.addMod(ModCategory.Combat, combatMSG);
+        combatNotif.modOptions.addAll(Arrays.asList(poppedTotems, enterDistance, toastNotif, playSound));
+        ModManager.addMod(ModCategory.Combat, combatNotif);
 
         EventBus.register(TotemPopEvent.class, event -> {
             int totemCount = totemPopCounter.getOrDefault(event.player, 0) + 1;
             totemPopCounter.put(event.player, totemCount);
 
-            if (!combatMSG.enabled || !poppedTotems.enabled)
+            if (!combatNotif.enabled || !poppedTotems.enabled)
                 return true;
+
 
             if (event.player == mc.player) {
                 Message.sendWarning(String.format("Popped a totem [%d]", totemCount));
@@ -44,17 +50,27 @@ public class CombatMSG {
                 Message.sendInfo(String.format("%s popped a totem [%d]", event.player.getName().getString(), totemCount));
             }
 
+            if (toastNotif.enabled) {
+                mc.getToastManager().clear();
+                mc.getToastManager().add(new CombatToast(Text.of(String.format("Popped a totem [%s%d%s]", Formatting.DARK_PURPLE, totemCount, Formatting.RESET)), event.player));
+            }
+
             return true;
         });
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (combatMSG.enabled && enterDistance.enabled) {
+            if (combatNotif.enabled && enterDistance.enabled) {
                 for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
                     if (mc.player == player)
                         continue;
 
                     if (!prevPlayers.contains(player)) {
                         Message.sendInfo(String.format("%s entered your render distance", player.getName().getString()));
+
+                        if (toastNotif.enabled) {
+                            mc.getToastManager().add(new CombatToast(Text.of("In render distance"), player));
+                        }
+
                         if (playSound.enabled)
                             mc.world.playSoundAtBlockCenterClient(mc.player.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, false);
                     }

@@ -82,7 +82,7 @@ public class ModManager {
         KillAura.init();
         NoKnockback.init();
         Surround.init();
-        CombatMSG.init();
+        CombatNotif.init();
 
         NoTelemetry.init();
         SmartFocus.init();
