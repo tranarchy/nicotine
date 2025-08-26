@@ -58,6 +58,7 @@ public class ModManager {
         Crosshair.init();
 
         PortalScreen.init();
+        AlphaInventory.init();
         ExtraRange.init();
         AutoRespawn.init();
         AutoEject.init();
