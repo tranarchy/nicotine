@@ -1,19 +1,18 @@
 package nicotine.command.commands;
 
-import net.minecraft.client.util.InputUtil;
 import nicotine.command.Command;
 import nicotine.command.CommandManager;
 import nicotine.mod.Mod;
-import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
 import nicotine.util.Message;
 import nicotine.util.Settings;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.lwjgl.glfw.GLFW;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
+import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 public class Set {
@@ -30,94 +29,88 @@ public class Set {
                 String optionName = splitCommand[2];
                 String value = splitCommand[3];
 
-                for (ModCategory modCategory : ModManager.modules.keySet()) {
-                    for (Mod mod : ModManager.modules.get(modCategory)) {
-                        if (mod.name.equalsIgnoreCase(modName)) {
-                            for (ModOption modOption : mod.modOptions) {
-                                if (modOption.name.equalsIgnoreCase(optionName)) {
-                                    if (modOption instanceof SliderOption sliderOption) {
+                Optional<Mod> optSelectedMod = ModManager.modules.values().stream().flatMap(Collection::stream).filter(
+                        x -> x.name.equalsIgnoreCase(modName)
+                ).findFirst();
 
-                                        if (!NumberUtils.isParsable(value) ) {
-                                            Message.sendWarning("Value must be a float or integer!");
-                                            return;
-                                        }
+                if (!optSelectedMod.isPresent()) {
+                    Message.sendWarning("Module doesn't exist!");
+                    return;
+                }
 
-                                        float valueToSet = Float.parseFloat(value);
-                                        if (valueToSet < sliderOption.minValue || valueToSet > sliderOption.maxValue) {
-                                            Message.sendWarning("Value is outside of valid range!");
-                                            return;
-                                        }
-                                        sliderOption.value = valueToSet;
-                                    } else if (modOption instanceof SwitchOption switchOption) {
-                                        boolean validSwitchOption = false;
+                Optional<ModOption> optModOption = optSelectedMod.get().modOptions.stream().filter(
+                        x -> x.name.equalsIgnoreCase(optionName)
+                ).findFirst();
 
-                                        for (int i = 0; i < switchOption.modes.length; i++) {
-                                            if (switchOption.modes[i].equalsIgnoreCase(value)) {
-                                                switchOption.value = switchOption.modes[i];
-                                                validSwitchOption = true;
-                                                break;
-                                            }
-                                        }
+                if (!optModOption.isPresent()) {
+                    Message.sendWarning("No such option!");
+                    return;
+                }
 
-                                        if (!validSwitchOption) {
-                                            Message.sendWarning("Wrong value!");
-                                            return;
-                                        }
+                ModOption modOption = optModOption.get();
 
-                                    } else if (modOption instanceof ToggleOption toggleOption) {
+                if (modOption instanceof SliderOption sliderOption) {
 
-                                        if (!(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false"))) {
-                                            Message.sendWarning("Value must be true or false!");
-                                            return;
-                                        }
+                    if (!NumberUtils.isParsable(value) ) {
+                        Message.sendWarning("Value must be a float or integer!");
+                        return;
+                    }
 
-                                        toggleOption.enabled = Boolean.parseBoolean(value);
-                                    } else if (modOption instanceof KeybindOption keybindOption) {
-                                        Map<String, InputUtil.Key> keys = new HashMap<>();
+                    float valueToSet = Float.parseFloat(value);
+                    if (valueToSet < sliderOption.minValue || valueToSet > sliderOption.maxValue) {
+                        Message.sendWarning("Value is outside of valid range!");
+                        return;
+                    }
+                    sliderOption.value = valueToSet;
 
-                                        try {
-                                            Field field = InputUtil.Key.class.getDeclaredField("KEYS");
-                                            field.setAccessible(true);
+                } else if (modOption instanceof SwitchOption switchOption) {
+                    boolean validSwitchOption = false;
 
-                                            keys = (Map<String, InputUtil.Key>)field.get(null);
-
-                                        } catch (NoSuchFieldException | IllegalAccessException e) {
-                                           e.fillInStackTrace();
-                                        }
-
-                                        boolean validKeybindOption = false;
-
-                                        for (String translationKey : keys.keySet()) {
-                                            String[] splitKey = translationKey.split("\\.");
-                                            String formattedKey = splitKey[2];
-
-                                            if (splitKey.length > 3) {
-                                                formattedKey = String.format("%s.%s", splitKey[2], splitKey[3]);
-                                            }
-
-                                            if (formattedKey.equals(value)) {
-                                                InputUtil.Key key = InputUtil.fromTranslationKey(translationKey);
-                                                validKeybindOption = true;
-                                                keybindOption.keyCode = key.getCode();
-                                            }
-                                        }
-
-                                        if (!validKeybindOption) {
-                                            Message.sendWarning("Invalid key!");
-                                            return;
-                                        }
-                                    }
-
-                                    Settings.save();
-                                    Message.send(String.format("Set %s %s to %s", modName, optionName, value));
-
-                                    return;
-                                }
-                            }
-                            return;
+                    for (int i = 0; i < switchOption.modes.length; i++) {
+                        if (switchOption.modes[i].equalsIgnoreCase(value)) {
+                            switchOption.value = switchOption.modes[i];
+                            validSwitchOption = true;
+                            break;
                         }
                     }
+
+                    if (!validSwitchOption) {
+                        Message.sendWarning("Wrong value!");
+                        return;
+                    }
+
+                } else if (modOption instanceof ToggleOption toggleOption) {
+
+                    if (!(value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false"))) {
+                        Message.sendWarning("Value must be true or false!");
+                        return;
+                    }
+
+                    toggleOption.enabled = Boolean.parseBoolean(value);
+                } else if (modOption instanceof KeybindOption keybindOption) {
+                    String glfwKey = String.format("GLFW_KEY_%s", value.toUpperCase());
+                    int keyCode = -1;
+
+                    try {
+                        Field field = GLFW.class.getDeclaredField(glfwKey);
+                        field.setAccessible(true);
+
+                        keyCode = field.getInt(null);
+
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        e.fillInStackTrace();
+                    }
+
+                    if (keyCode == -1) {
+                        Message.sendWarning("Invalid key!");
+                        return;
+                    }
+
+                   keybindOption.keyCode = keyCode;
                 }
+
+                Settings.save();
+                Message.send(String.format("Set %s %s to %s", modName, optionName, value));
             }
         };
         CommandManager.addCommand(set);
