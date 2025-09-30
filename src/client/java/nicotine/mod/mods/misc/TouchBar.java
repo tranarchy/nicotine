@@ -94,7 +94,7 @@ public class TouchBar {
         String coordsText = "0 0 0 [0 0]";
 
         if (mc.player != null) {
-            Vec3d pos = mc.player.getPos();
+            Vec3d pos = mc.player.getEntityPos();
 
             Vector2d otherWorld = new Vector2d(pos.x, pos.z);
             if (!mc.world.getRegistryKey().equals(World.END)) {

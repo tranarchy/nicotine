@@ -40,18 +40,18 @@ public class LogoutESP {
             onlinePLayers.addAll(mc.getNetworkHandler().getListedPlayerListEntries());
 
             for (AbstractClientPlayerEntity player : prevPlayers) {
-                if (onlinePLayers.stream().filter(x -> x.getProfile().getName().equals(player.getGameProfile().getName())).toList().isEmpty()) {
+                if (onlinePLayers.stream().filter(x -> x.getProfile().name().equals(player.getGameProfile().name())).toList().isEmpty()) {
                     Message.sendWarning(String.format("%s logged out at [%.1f %.1f %.1f]", player.getName().getString(), player.getX(), player.getY(), player.getZ()));
                     loggedPlayers.put(player, System.currentTimeMillis() / 1000);
                 }
             }
 
             for (PlayerListEntry playerListEntry : onlinePLayers) {
-                if (playerListEntry.getProfile().getName().equals(mc.player.getName().getString()))
+                if (playerListEntry.getProfile().name().equals(mc.player.getName().getString()))
                     continue;
 
                 for (AbstractClientPlayerEntity player : loggedPlayers.keySet().stream().toList()) {
-                    if (playerListEntry.getProfile().getName().equals(player.getGameProfile().getName())) {
+                    if (playerListEntry.getProfile().name().equals(player.getGameProfile().name())) {
                         Message.sendInfo(String.format("%s logged back at [%.1f %.1f %.1f]", player.getName().getString(), player.getX(), player.getY(), player.getZ()));
                         loggedPlayers.remove(player);
                     }
@@ -70,7 +70,7 @@ public class LogoutESP {
                 return true;
 
             for (AbstractClientPlayerEntity player : loggedPlayers.keySet()) {
-                if (!Player.isPositionInRenderDistance(player.getPos()))
+                if (!Player.isPositionInRenderDistance(player.getEntityPos()))
                     continue;
 
                 if (showPlayer.enabled) {
@@ -79,7 +79,7 @@ public class LogoutESP {
                     event.matrixStack.translate(-view.x, -view.y, -view.z);
 
                     player.getInventory().clear();
-                    mc.getEntityRenderDispatcher().render(player, player.getX(), player.getY(), player.getZ(), 0, event.matrixStack, event.vertexConsumerProvider, 0);
+                    //mc.getEntityRenderDispatcher().render(player, player.getX(), player.getY(), player.getZ(), 0, event.matrixStack, event.vertexConsumerProvider, 0);
 
                     event.matrixStack.pop();
                 }

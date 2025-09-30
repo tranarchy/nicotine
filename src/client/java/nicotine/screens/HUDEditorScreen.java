@@ -1,7 +1,9 @@
 package nicotine.screens;
 
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -52,7 +54,10 @@ public class HUDEditorScreen extends Screen {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(Click click) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+
         if (dragOffset.x != -1 && dragOffset.y != -1) {
             dragOffset.x = -1;
             dragOffset.y = -1;
@@ -71,7 +76,9 @@ public class HUDEditorScreen extends Screen {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+    public boolean mouseDragged(Click click, double offsetX, double offsetY) {
+        double mouseX = click.x();
+        double mouseY = click.y();
 
         if (dragOffset.x != -1 && dragOffset.y != -1) {
 
@@ -120,8 +127,8 @@ public class HUDEditorScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == InputUtil.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyInput input) {
+        if (input.key() == InputUtil.GLFW_KEY_ESCAPE) {
             Settings.save();
             this.close();
         }

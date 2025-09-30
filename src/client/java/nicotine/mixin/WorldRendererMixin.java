@@ -5,6 +5,7 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
@@ -56,7 +57,7 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(at = @At("HEAD"), method = "renderBlockDamage", cancellable = true)
-    private void renderBlockDamage(MatrixStack matrices, Camera camera, VertexConsumerProvider.Immediate vertexConsumers, CallbackInfo info) {
+    private void renderBlockDamage(MatrixStack matrices, VertexConsumerProvider.Immediate immediate, WorldRenderState renderStates, CallbackInfo info) {
         boolean result = EventBus.post(new RenderBlockDamageEvent());
 
         if (!result) {
@@ -65,7 +66,7 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(at = @At("HEAD"), method = "renderWeather", cancellable = true)
-    private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d cameraPos, float tickProgress, GpuBufferSlice fog, CallbackInfo info) {
+    private void renderWeather(FrameGraphBuilder frameGraphBuilder, Vec3d cameraPos, GpuBufferSlice fogBuffer, CallbackInfo info) {
         boolean result = EventBus.post(new RenderWeatherEvent());
 
         if (!result) {
@@ -74,10 +75,12 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(method = {"render"}, at = {@At("HEAD")})
-    private void beforeRender(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f projectionMatrix, GpuBufferSlice fog, Vector4f fogColor, boolean shouldRenderSky, CallbackInfo info) {
+    public void render(ObjectAllocator allocator, RenderTickCounter tickCounter, boolean renderBlockOutline, Camera camera, Matrix4f positionMatrix, Matrix4f matrix4f, Matrix4f projectionMatrix, GpuBufferSlice fogBuffer, Vector4f fogColor, boolean renderSky, CallbackInfo info) {
         this.camera = camera;
         this.matrixStack = new MatrixStack();
         this.vertexConsumerProvider = this.bufferBuilders.getEntityVertexConsumers();
+
+        EventBus.post(new RenderEntityOutlineEvent(this.bufferBuilders.getOutlineVertexConsumers()));
     }
 
     @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;")})
@@ -85,12 +88,12 @@ public abstract class WorldRendererMixin {
         FramePass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
         this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
         afterTranslucentPass.setRenderer(() -> {
-            //EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
+            EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
         });
     }
 
     @Inject(at = @At("HEAD"), method = "renderParticles", cancellable = true)
-    private void renderParticles(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickProgress, GpuBufferSlice fog, CallbackInfo info) {
+    private void renderParticles(FrameGraphBuilder frameGraphBuilder, GpuBufferSlice fogBuffer, CallbackInfo info) {
         boolean result = EventBus.post(new RenderParticlesEvent());
 
         if (!result) {
@@ -99,31 +102,11 @@ public abstract class WorldRendererMixin {
     }
 
     @Inject(at = @At("HEAD"), method = "renderSky", cancellable = true)
-    private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, float tickProgress, GpuBufferSlice fog, CallbackInfo info) {
+    private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, GpuBufferSlice fogBuffer, CallbackInfo info) {
         boolean result = EventBus.post(new RenderSkyEvent());
 
         if (!result) {
             info.cancel();
         }
     }
-
-    @Inject(at = @At("HEAD"), method = "renderEntity", cancellable = true)
-    private void renderEntityBefore(Entity entity, double cameraX, double cameraY, double cameraZ, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo info) {
-        if (vertexConsumers instanceof OutlineVertexConsumerProvider outlineVertexConsumerProvider) {
-            EventBus.post(new RenderEntityOutlineEvent(outlineVertexConsumerProvider));
-        }
-    }
-
-    @Inject(
-            method = "method_62214",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/render/debug/DebugRenderer;render(Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;DDD)V",
-                    ordinal = 0
-            )
-    )
-    private void beforeDebugRender(CallbackInfo ci) {
-        EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
-    }
-
 }

@@ -192,7 +192,7 @@ public class Render {
         matrix.push();
         matrix.translate((float)(position.x - d), (float)(position.y - e) + 0.50F, (float)(position.z - f));
         matrix.multiply(camera.getRotation());
-        float size = (0.025F * scale) + (float)position.distanceTo(mc.player.getPos()) / 1000;
+        float size = (0.025F * scale) + (float)position.distanceTo(mc.player.getEntityPos()) / 1000;
         matrix.scale(size, -size, size);
         float x = (float) textRenderer.getWidth(text) / 2.0F;
 

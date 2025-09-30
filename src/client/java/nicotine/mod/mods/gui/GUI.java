@@ -13,8 +13,7 @@ import nicotine.util.EventBus;
 
 import java.util.Arrays;
 
-import static nicotine.util.Common.mc;
-import static nicotine.util.Common.windowHandle;
+import static nicotine.util.Common.*;
 
 public class GUI {
     public static void init() {
@@ -30,7 +29,7 @@ public class GUI {
         EventBus.register(ClientWorldTickEvent.class, event -> {
             ColorUtil.ACTIVE_FOREGROUND_COLOR = rgb.getColor();
 
-            if (InputUtil.isKeyPressed(windowHandle, keybind.keyCode) && mc.currentScreen == null)
+            if (InputUtil.isKeyPressed(window, keybind.keyCode) && mc.currentScreen == null)
                 mc.setScreen(clickGUI);
 
             return true;

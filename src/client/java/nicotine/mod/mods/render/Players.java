@@ -81,7 +81,7 @@ public class Players {
                     }
 
                     if (tracer.enabled) {
-                        Vec3d targetPos = player.getPos();
+                        Vec3d targetPos = player.getEntityPos();
                         Render.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerRgb.getColor(), (int)tracerAlpha.value));
                     }
                 }

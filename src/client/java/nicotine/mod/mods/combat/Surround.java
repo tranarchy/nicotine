@@ -48,7 +48,7 @@ public class Surround {
             List<BlockPos> surroundBlocks = Player.getSurroundBlocks(mc.player.getBlockPos());
 
             if (selfCenter.enabled) {
-                Comparator<BlockPos> byDistanceToPlayer = Comparator.comparingInt(blockPos -> (int)blockPos.toCenterPos().distanceTo(mc.player.getPos()));
+                Comparator<BlockPos> byDistanceToPlayer = Comparator.comparingInt(blockPos -> (int)blockPos.toCenterPos().distanceTo(mc.player.getEntityPos()));
                 surroundBlocks.sort(byDistanceToPlayer.reversed());
             }
 

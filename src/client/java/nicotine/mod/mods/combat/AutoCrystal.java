@@ -112,7 +112,7 @@ public class AutoCrystal {
         directions.put(placementPos.east(), Direction.EAST);
 
         BlockPos nearestPos = BlockPos.ORIGIN;
-        Vec3d playerPos = mc.player.getPos();
+        Vec3d playerPos = mc.player.getEntityPos();
 
         for (BlockPos pos : directions.keySet()) {
             if (mc.player.canInteractWithBlockAt(pos, 0) && mc.world.getBlockState(pos).getBlock() == Blocks.AIR) {
@@ -178,8 +178,8 @@ public class AutoCrystal {
                     if (Player.isBusy() || !mc.player.canInteractWithEntity(endCrystalEntity, 0))
                         continue;
 
-                    float dmg = calculateExplosionDamage(endCrystalEntity.getPos(), nearestPlayer);
-                    float selfDmg = calculateExplosionDamage(endCrystalEntity.getPos(), mc.player);
+                    float dmg = calculateExplosionDamage(endCrystalEntity.getEntityPos(), nearestPlayer);
+                    float selfDmg = calculateExplosionDamage(endCrystalEntity.getEntityPos(), mc.player);
 
                     if (dmg < minDamage.value || selfDmg > selfDamage.value)
                         continue;

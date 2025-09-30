@@ -15,7 +15,7 @@ import nicotine.util.EventBus;
 import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
-import static nicotine.util.Common.windowHandle;
+import static nicotine.util.Common.window;
 
 public class Zoom {
     private static int defaultFov = 0;
@@ -35,7 +35,7 @@ public class Zoom {
         SimpleOption<Integer> fovOption = mc.options.getFov();
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!zoom.enabled || !InputUtil.isKeyPressed(windowHandle, keybind.keyCode) ||
+            if (!zoom.enabled || !InputUtil.isKeyPressed(window, keybind.keyCode) ||
                     mc.currentScreen instanceof ChatScreen || mc.currentScreen instanceof ClickGUI) {
                 int fov =  fovOption.getValue();
                 if (fov == zoomFov.value)

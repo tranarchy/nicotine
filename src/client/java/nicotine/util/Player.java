@@ -246,7 +246,7 @@ public class Player {
         int ping = -1;
 
         for (PlayerListEntry playerListEntry : mc.getNetworkHandler().getListedPlayerListEntries()) {
-            if (playerListEntry.getProfile().getName().equals(player.getGameProfile().getName())) {
+            if (playerListEntry.getProfile().name().equals(player.getGameProfile().name())) {
                 ping = playerListEntry.getLatency();
                 break;
             }
@@ -290,7 +290,7 @@ public class Player {
     }
 
     public static boolean isPositionInRenderDistance(Vec3d position) {
-        if (position.distanceTo(mc.player.getPos()) <= mc.options.getViewDistance().getValue() * 16) {
+        if (position.distanceTo(mc.player.getEntityPos()) <= mc.options.getViewDistance().getValue() * 16) {
             return true;
         }
 

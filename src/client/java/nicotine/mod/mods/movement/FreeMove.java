@@ -9,8 +9,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 
-import static nicotine.util.Common.mc;
-import static nicotine.util.Common.windowHandle;
+import static nicotine.util.Common.*;
 
 public class FreeMove {
     public static void init() {
@@ -32,7 +31,7 @@ public class FreeMove {
 
             for (KeyBinding freeMoveKeybind : freeMoveKeybinds) {
                 InputUtil.Key key = InputUtil.fromTranslationKey(freeMoveKeybind.getBoundKeyTranslationKey());
-                if (InputUtil.isKeyPressed(windowHandle, key.getCode())) {
+                if (InputUtil.isKeyPressed(window, key.getCode())) {
                     freeMoveKeybind.setPressed(true);
                 }
             }

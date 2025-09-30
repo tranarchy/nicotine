@@ -32,10 +32,10 @@ public abstract class PlayerListHudMixin {
 
     @Inject(method = "getPlayerName", at = @At("TAIL"), cancellable = true)
     public Text getPlayerName(PlayerListEntry entry, CallbackInfoReturnable<Text> callbackInfoReturnable) {
-        if (friendList.contains(entry.getProfile().getId()) && entry.getProfile().getName() != null) {
-            return Text.of(String.format("%s%s", Formatting.AQUA, entry.getProfile().getName()));
+        if (friendList.contains(entry.getProfile().id()) && entry.getProfile().name() != null) {
+            return Text.of(String.format("%s%s", Formatting.AQUA, entry.getProfile().name()));
         }
-        return entry.getDisplayName() != null ? this.applyGameModeFormatting(entry, entry.getDisplayName().copy()) : this.applyGameModeFormatting(entry, Team.decorateName(entry.getScoreboardTeam(), Text.literal(entry.getProfile().getName())));
+        return entry.getDisplayName() != null ? this.applyGameModeFormatting(entry, entry.getDisplayName().copy()) : this.applyGameModeFormatting(entry, Team.decorateName(entry.getScoreboardTeam(), Text.literal(entry.getProfile().name())));
     }
 
     @Inject(method = "Lnet/minecraft/client/gui/hud/PlayerListHud;collectPlayerEntries()Ljava/util/List;", at = @At("TAIL"))

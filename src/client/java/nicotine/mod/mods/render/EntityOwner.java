@@ -31,9 +31,9 @@ public class EntityOwner {
 
         @Override
         public void run() {
-            ProfileResult profileResult = mc.getSessionService().fetchProfile(ownerUUID, true);
+            ProfileResult profileResult = mc.getApiServices().sessionService().fetchProfile(ownerUUID, true);
 
-            String ownerName = profileResult == null ? null : profileResult.profile().getName();
+            String ownerName = profileResult == null ? null : profileResult.profile().name();
 
             owners.put(ownerUUID,  ownerName);
             runningFetch = false;
@@ -69,7 +69,7 @@ public class EntityOwner {
                     }
 
                     String text = String.format("Owned by %s",  ownerName);
-                    Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, entity.getPos().add(0, 1, 0), text, Colors.WHITE, 1.0f);
+                    Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, entity.getEntityPos().add(0, 1, 0), text, Colors.WHITE, 1.0f);
                 }
             }
 

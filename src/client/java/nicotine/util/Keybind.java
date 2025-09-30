@@ -19,7 +19,7 @@ public class Keybind {
     }
 
     public static boolean keyReleased(String name, boolean enabled, int keycode) {
-        if (InputUtil.isKeyPressed(windowHandle, keycode) && !(mc.currentScreen instanceof ChatScreen) && !(mc.currentScreen instanceof ClickGUI)) {
+        if (InputUtil.isKeyPressed(window, keycode) && !(mc.currentScreen instanceof ChatScreen) && !(mc.currentScreen instanceof ClickGUI)) {
             if (!keysPressed.containsKey(keycode)) {
                 keysPressed.put(name, keycode);
             }

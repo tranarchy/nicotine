@@ -34,7 +34,7 @@ public class InGameOverlayRendererMixin {
     }
 
     @Inject(at = @At("HEAD"), method = "renderFireOverlay", cancellable = true)
-    private static void renderFireOverlay(MatrixStack matrices, VertexConsumerProvider vertexConsumers, CallbackInfo info) {
+    private static void renderFireOverlay(MatrixStack matrices, VertexConsumerProvider vertexConsumers, Sprite sprite, CallbackInfo info) {
         boolean result = EventBus.post(new RenderOverlaysEvent());
 
         if (!result && info != null) {

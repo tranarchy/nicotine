@@ -34,7 +34,7 @@ public class ClientWorldMixin {
     public void playSound(double x, double y, double z, SoundEvent sound, SoundCategory category, float volume, float pitch, boolean useDistance, CallbackInfo info) {
         if (SoundEvents.ITEM_TOTEM_USE == sound) {
             for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-                if (player.getPos().squaredDistanceTo(x, y, z) <= 0) {
+                if (player.getEntityPos().squaredDistanceTo(x, y, z) <= 0) {
                    EventBus.post(new TotemPopEvent(player));
                 }
             }

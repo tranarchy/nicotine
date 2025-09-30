@@ -3,6 +3,7 @@ package nicotine.mixin;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 import nicotine.events.KnockbackEvent;
 import nicotine.events.PushEvent;
 import nicotine.mod.ModManager;
@@ -23,10 +24,10 @@ public class EntityMixin {
     @Shadow
     private int id;
 
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/entity/Entity;setVelocityClient(DDD)V", cancellable = true)
-    public void setVelocityClient(double x, double y, double z, CallbackInfo info)  {
+    @Inject(at = @At("HEAD"), method = "setVelocityClient", cancellable = true)
+    public void setVelocityClient(Vec3d clientVelocity, CallbackInfo info)  {
         if (id == mc.player.getId()) {
-            boolean result = EventBus.post(new KnockbackEvent(x, y, z));
+            boolean result = EventBus.post(new KnockbackEvent(clientVelocity.x, clientVelocity.y, clientVelocity.z));
 
             if (!result) {
                 info.cancel();

@@ -47,7 +47,7 @@ public class Item {
                     if (text.enabled) {
                         ItemStack itemStack = itemEntity.getStack();
                         String itemText = String.format("%s (%d)", itemStack.getItem().getName().getString(), itemStack.getCount());
-                        Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, itemEntity.getPos().add(0, 0.3, 0), itemText, Colors.WHITE, 0.6f);
+                        Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, itemEntity.getEntityPos().add(0, 0.3, 0), itemText, Colors.WHITE, 0.6f);
                     }
 
                     if (esp.enabled) {
@@ -65,7 +65,7 @@ public class Item {
                     }
 
                     if (tracer.enabled) {
-                        Vec3d targetPos = entity.getPos();
+                        Vec3d targetPos = entity.getEntityPos();
 
                         Render.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(Colors.WHITE, (int)tracerAlpha.value));
                     }

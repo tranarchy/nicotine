@@ -23,8 +23,7 @@ public class GlowESP {
             if (!glowESP.enabled)
                 return true;
 
-            Color color = new Color(rgb.getColor());
-            event.outlineVertexConsumerProvider.setColor(color.getRed(), color.getGreen(), color.getBlue(), 255);
+            event.outlineVertexConsumerProvider.setColor(rgb.getColor());
 
             return true;
         });

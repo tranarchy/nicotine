@@ -23,7 +23,7 @@ public class Waypoints {
         Vec3d adjustedPosition = new Vec3d(pos.getX(), pos.getY() + 3, pos.getZ());
 
         if (!Player.isPositionInRenderDistance(adjustedPosition)) {
-            adjustedPosition = mc.player.getPos().add(adjustedPosition.subtract(mc.player.getPos()).normalize().multiply( mc.options.getViewDistance().getValue() * 16));
+            adjustedPosition = mc.player.getEntityPos().add(adjustedPosition.subtract(mc.player.getEntityPos()).normalize().multiply( mc.options.getViewDistance().getValue() * 16));
         }
 
         return adjustedPosition;

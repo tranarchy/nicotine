@@ -32,7 +32,7 @@ public class CombatToast implements Toast {
     @Override
     public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
         context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, Identifier.ofVanilla("toast/advancement"), 0, 0, this.getWidth(), this.getHeight());
-        PlayerSkinDrawer.draw(context, player.getSkinTextures().texture(), 8, 7,  16, false, false, -1);
+        PlayerSkinDrawer.draw(context, player.getSkin().body().id(), 8, 7,  16, false, false, -1);
         context.drawText(mc.textRenderer, this.player.getName().getString(), 30, 7, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
         context.drawText(mc.textRenderer, this.text, 30, 18, Colors.WHITE, true);
     }
