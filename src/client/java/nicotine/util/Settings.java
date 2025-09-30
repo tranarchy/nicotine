@@ -32,8 +32,8 @@ public class Settings {
         settings.appendField("commandPrefix", CommandManager.prefix);
 
         JSONObject gui = new JSONObject();
-        gui.appendField("x", ClickGUI.guiPos.x);
-        gui.appendField("y", ClickGUI.guiPos.y);
+        gui.appendField("x", ClickGUI.pos.x);
+        gui.appendField("y", ClickGUI.pos.y);
 
         settings.appendField("gui", gui);
 
@@ -178,8 +178,8 @@ public class Settings {
 
         if (settings.containsKey("gui")) {
             JSONObject guiPos = (JSONObject) settings.get("gui");
-            ClickGUI.guiPos.x = guiPos.getAsNumber("x").floatValue();
-            ClickGUI.guiPos.y = guiPos.getAsNumber("y").floatValue();
+            ClickGUI.pos.x = guiPos.getAsNumber("x").floatValue();
+            ClickGUI.pos.y = guiPos.getAsNumber("y").floatValue();
          }
 
         JSONObject categories = (JSONObject) settings.get("settings");
