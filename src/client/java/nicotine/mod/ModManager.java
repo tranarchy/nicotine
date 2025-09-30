@@ -63,7 +63,6 @@ public class ModManager {
         AutoRespawn.init();
         AutoEject.init();
         AutoRefill.init();
-        AutoMine.init();
         AutoFish.init();
         AutoEat.init();
         Scaffold.init();
