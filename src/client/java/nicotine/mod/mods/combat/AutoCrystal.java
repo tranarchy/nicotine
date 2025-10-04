@@ -162,9 +162,6 @@ public class AutoCrystal {
         ModManager.addMod(ModCategory.Combat, autoCrystal);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (Keybind.keyReleased(autoCrystal, keybind.keyCode))
-                autoCrystal.toggle();
-
             if (!autoCrystal.enabled)
                 return true;
 

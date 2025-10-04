@@ -49,9 +49,6 @@ public class ElytraBounce {
         ModManager.addMod(ModCategory.Movement, elytraBounce);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (Keybind.keyReleased(elytraBounce, keybind.keyCode))
-                elytraBounce.toggle();
-
             if (!elytraBounce.enabled)
                 return true;
 

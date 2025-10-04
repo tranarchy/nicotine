@@ -4,10 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import nicotine.command.CommandManager;
 import nicotine.events.FinishedLoadingEvent;
 import nicotine.mod.ModManager;
-import nicotine.util.ColorUtil;
-import nicotine.util.EventBus;
-import nicotine.util.Player;
-import nicotine.util.Settings;
+import nicotine.util.*;
 
 public class Main implements ClientModInitializer {
 
@@ -17,6 +14,7 @@ public class Main implements ClientModInitializer {
 			ModManager.init();
 			CommandManager.init();
 			Player.init();
+            Keybind.init();
 			Settings.load();
 
 			return true;

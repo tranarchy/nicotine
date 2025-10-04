@@ -75,14 +75,5 @@ public class Xray {
 
             return false;
         });
-
-
-        EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (Keybind.keyReleased(xray, keybind.keyCode)) {
-                xray.toggle();
-            }
-
-            return true;
-        });
     }
 }

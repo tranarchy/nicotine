@@ -106,6 +106,9 @@ public class Settings {
                    } else if (modOption instanceof ToggleOption toggleOption) {
                        modDetails.put(toggleOption.name, toggleOption.enabled);
                    }  else if (modOption instanceof KeybindOption keybindOption) {
+                       if (keybindOption.keyCode == -1)
+                           continue;
+
                        modDetails.put(keybindOption.name, keybindOption.keyCode);
                    }
                 }

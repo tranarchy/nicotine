@@ -29,9 +29,6 @@ public class AutoWalk {
         ModManager.addMod(ModCategory.Movement, autoWalk);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (Keybind.keyReleased(autoWalk, keybind.keyCode))
-                autoWalk.toggle();
-
             if (!autoWalk.enabled)
                 return true;
 

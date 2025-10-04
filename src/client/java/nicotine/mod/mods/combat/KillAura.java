@@ -55,9 +55,6 @@ public class KillAura {
         ModManager.addMod(ModCategory.Combat, killAura);
 
         EventBus.register(ClientTickEvent.class, event -> {
-            if (Keybind.keyReleased(killAura, keybind.keyCode))
-                killAura.toggle();
-
             if (!killAura.enabled || mc.world == null)
                 return true;
 

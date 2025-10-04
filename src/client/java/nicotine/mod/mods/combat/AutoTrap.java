@@ -39,9 +39,6 @@ public class AutoTrap {
         ModManager.addMod(ModCategory.Combat, autoTrap);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (Keybind.keyReleased(autoTrap, keybind.keyCode))
-                autoTrap.toggle();
-
             if (!autoTrap.enabled || Player.isBusy())
                 return true;
 

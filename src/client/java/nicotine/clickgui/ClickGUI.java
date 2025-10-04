@@ -200,7 +200,7 @@ public class ClickGUI extends Screen {
 
                 optionButtons.add(optionButton);
             } else if (modOption instanceof KeybindOption keybindOption) {
-                String keybind = InputUtil.fromKeyCode(new KeyInput(keybindOption.keyCode, 0, 0)).getLocalizedText().getString();
+                String keybind = keybindOption.keyCode == -1 ? "" : InputUtil.fromKeyCode(new KeyInput(keybindOption.keyCode, 0, 0)).getLocalizedText().getString();
                 String keybindOptionString = String.format("%s [%s]", keybindOption.name, formatKeybind(keybind, keybindOption));
                 optionButton.width = mc.textRenderer.getWidth(keybindOptionString);
 
@@ -348,7 +348,7 @@ public class ClickGUI extends Screen {
             } else if (optionButton.modOption instanceof SwitchOption switchOption) {
                 optionButtonText = String.format("%s [%s]", switchOption.name, switchOption.value);
             } else if (optionButton.modOption instanceof KeybindOption keybindOption) {
-                String keybind = InputUtil.fromKeyCode(new KeyInput(keybindOption.keyCode, 0, 0)).getLocalizedText().getString();
+                String keybind = keybindOption.keyCode == -1 ? "" : InputUtil.fromKeyCode(new KeyInput(keybindOption.keyCode, 0, 0)).getLocalizedText().getString();
                 optionButtonText = String.format("%s [%s]", keybindOption.name, formatKeybind(keybind, keybindOption));
             } else if (optionButton.modOption instanceof ToggleOption toggleOption) {
                 optionColor = toggleOption.enabled ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;

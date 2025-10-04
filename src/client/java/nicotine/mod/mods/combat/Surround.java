@@ -39,9 +39,6 @@ public class Surround {
         ModManager.addMod(ModCategory.Combat, surround);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (Keybind.keyReleased(surround, keybind.keyCode))
-               surround.toggle();
-
             if (!surround.enabled || (!mc.player.isOnGround() && !inAir.enabled) || Player.isBusy())
                 return true;
 
