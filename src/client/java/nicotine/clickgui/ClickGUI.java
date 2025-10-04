@@ -135,7 +135,7 @@ public class ClickGUI extends Screen {
             ModButton modButton = new ModButton(
                     posX,
                     posY,
-                    size.x / 2,
+                    (size.x / 2) - PADDING,
                     mc.textRenderer.fontHeight + 3,
                     mod
             );
@@ -260,8 +260,22 @@ public class ClickGUI extends Screen {
             int modColor = modButton.mod.enabled || modButton.mod.alwaysEnabled ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
 
             if (selectedMod.name.equals(modButton.mod.name)) {
-                context.fill(modButton.x - PADDING + 1,  modButton.y - 3, modButton.x - PADDING + modButton.width, modButton.y + modButton.height + 1, ColorUtil.SELECTED_BACKGROUND_COLOR);
-                RenderGUI.drawBorderHorizontal(context, modButton.x - PADDING + 1, modButton.y - 3, modButton.width - 2, modButton.height + 3, dynamicColor);
+                context.fill(
+                        modButton.x - PADDING + 1,
+                        modButton.y - 3,
+                        modButton.x + modButton.width,
+                        modButton.y + modButton.height + 1,
+                        ColorUtil.SELECTED_BACKGROUND_COLOR
+                );
+
+                RenderGUI.drawBorderHorizontal(
+                        context,
+                        modButton.x - PADDING + 1,
+                        modButton.y - 3,
+                        modButton.width + PADDING - 2,
+                        modButton.height + 3,
+                        dynamicColor
+                );
             }
 
             if (mouseOver(modButton, mouseX, mouseY)) {
