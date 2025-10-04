@@ -384,7 +384,7 @@ public class ClickGUI extends Screen {
                 if (optionButton.modOption instanceof ToggleOption toggleOption) {
 
                     if (toggleOption.name.equals("Enabled") && !selectedMod.alwaysEnabled) {
-                        selectedMod.enabled = !selectedMod.enabled;
+                        selectedMod.toggle();
                     } else {
                         toggleOption.enabled = !toggleOption.enabled;
                     }
