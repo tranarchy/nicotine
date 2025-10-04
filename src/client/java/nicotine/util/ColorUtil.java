@@ -36,7 +36,7 @@ public class ColorUtil {
 
     public static int getBlockColor(BlockEntity blockEntity) {
         if (blockEntity instanceof ChestBlockEntity || blockEntity instanceof TrappedChestBlockEntity || blockEntity instanceof CrafterBlockEntity ||
-                blockEntity instanceof BarrelBlockEntity || blockEntity instanceof DecoratedPotBlockEntity)
+                blockEntity instanceof BarrelBlockEntity || blockEntity instanceof DecoratedPotBlockEntity || blockEntity instanceof ShelfBlockEntity)
             return GOLD;
         else if (blockEntity instanceof EnderChestBlockEntity)
             return PURPLE;
