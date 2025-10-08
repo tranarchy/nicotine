@@ -45,6 +45,6 @@ The default keybind for the click GUI is **Right Shift**, you can change this an
 
 ## Other versions
 
-nicotine is currently made for version **1.21.9**
+nicotine is currently made for version **1.21.10**
 
 If you want to use nicotine on a server that runs on another version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod
