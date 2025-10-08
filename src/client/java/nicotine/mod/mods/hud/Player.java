@@ -21,7 +21,7 @@ public class Player {
             if (!player.enabled)
                 return true;
 
-            String playerText = String.format("player %s%s %s", Formatting.WHITE, HUD.separatorText, mc.player.getName().getString());
+            String playerText = String.format("player %s%s %s", Formatting.WHITE, HUD.separator.value, mc.player.getName().getString());
             player.texts = List.of(playerText);
 
             return true;

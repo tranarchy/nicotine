@@ -21,7 +21,7 @@ public class FPS {
             if (!fps.enabled)
                 return true;
 
-            String fpsText = String.format("fps %s%s %d", Formatting.WHITE, HUD.separatorText, mc.getCurrentFps());
+            String fpsText = String.format("fps %s%s %d", Formatting.WHITE, HUD.separator.value, mc.getCurrentFps());
             fps.texts = List.of(fpsText);
 
             return true;

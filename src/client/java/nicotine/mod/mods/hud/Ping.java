@@ -45,7 +45,7 @@ public class Ping {
                 tick++;
             }
 
-            String pingText = String.format("ping %s%s %dms", Formatting.WHITE, HUD.separatorText, pingVal);
+            String pingText = String.format("ping %s%s %dms", Formatting.WHITE, HUD.separator.value, pingVal);
             ping.texts = List.of(pingText);
 
             return true;

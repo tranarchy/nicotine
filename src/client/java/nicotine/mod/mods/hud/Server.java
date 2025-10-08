@@ -22,7 +22,7 @@ public class Server {
             if (!server.enabled || mc.isInSingleplayer())
                 return true;
 
-            String serverText = String.format("server %s%s %s", Formatting.WHITE, HUD.separatorText, currentServer.address);
+            String serverText = String.format("server %s%s %s", Formatting.WHITE, HUD.separator.value, currentServer.address);
             server.texts = List.of(serverText);
 
             return true;

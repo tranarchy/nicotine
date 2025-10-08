@@ -40,7 +40,7 @@ public class Cords {
             double y = mc.player.getY();
             double z = mc.player.getZ();
 
-            String cordsText = String.format("xyz %s%s %.1f %.1f %.1f", Formatting.WHITE, HUD.separatorText, x, y, z);
+            String cordsText = String.format("xyz %s%s %.1f %.1f %.1f", Formatting.WHITE, HUD.separator.value, x, y, z);
 
             Vector2d otherWorld = new Vector2d(x, z);
             if (!mc.world.getRegistryKey().equals(World.END)) {

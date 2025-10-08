@@ -11,7 +11,9 @@ import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
+import nicotine.mod.mods.hud.HUD;
 import nicotine.util.ColorUtil;
+import nicotine.util.GUIUtil;
 import nicotine.util.Settings;
 import nicotine.util.render.RenderGUI;
 import org.joml.Vector2f;
@@ -49,9 +51,7 @@ public class HUDEditorScreen extends Screen {
         this.showPosition = showPosition;
     }
 
-    private boolean mouseOver(int posX, int posY, int width, int height, double mouseX, double mouseY) {
-        return (posX <= mouseX && mouseX <= posX + width && posY <= mouseY && mouseY <= posY + height);
-    }
+
 
     @Override
     public boolean mouseReleased(Click click) {
@@ -63,7 +63,7 @@ public class HUDEditorScreen extends Screen {
             dragOffset.y = -1;
 
            for (AnchorArea anchorArea : anchorAreas) {
-               if (mouseOver(anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, mouseX, mouseY)) {
+               if (GUIUtil.mouseOver(anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, mouseX, mouseY)) {
                    selectedHudMod.anchor = anchorArea.anchor;
                    break;
                }
@@ -82,27 +82,10 @@ public class HUDEditorScreen extends Screen {
 
         if (dragOffset.x != -1 && dragOffset.y != -1) {
 
-            final int windowWidth = mc.getWindow().getScaledWidth();
-            final int windowHeight = mc.getWindow().getScaledHeight();
-
             Vector2i size = selectedHudMod.size;
+            Vector2i dragPos = GUIUtil.mouseDragInBounds(mouseX, mouseY, dragOffset, size);
 
-            int posX = (int) mouseX + dragOffset.x;
-            int posY = (int) mouseY + dragOffset.y;
-
-            if (posX < 0) {
-                posX = 0;
-            } else if (posX + size.x >= windowWidth) {
-                posX = windowWidth - size.x - 1;
-            }
-
-            if (posY < 0) {
-                posY = 0;
-            } else if (posY + size.y  >= windowHeight) {
-                posY = windowHeight - size.y - 1;
-            }
-
-            selectedHudMod.pos = RenderGUI.absPosToRelativePos(new Vector2i(posX, posY), size);
+            selectedHudMod.pos = RenderGUI.absPosToRelativePos(new Vector2i(dragPos.x, dragPos.y), size);
             return true;
         }
 
@@ -113,7 +96,7 @@ public class HUDEditorScreen extends Screen {
             Vector2i size = hudMod.size;
             Vector2i pos = RenderGUI.relativePosToAbsPos(hudMod.pos, size);
 
-            if (mouseOver(pos.x, pos.y, size.x, size.y, mouseX, mouseY)) {
+            if (GUIUtil.mouseOver(pos.x, pos.y, size.x, size.y, mouseX, mouseY)) {
                 selectedHudMod = hudMod;
                 selectedHudMod.anchor = HUDMod.Anchor.None;
 
@@ -144,6 +127,8 @@ public class HUDEditorScreen extends Screen {
         int windowAreaX = windowWidth / 4;
         int windowAreaY = windowHeight / 4;
 
+        int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
+
         anchorAreas = Arrays.asList(
                 new AnchorArea(new Vector2i(0, 0), new Vector2i(windowAreaX, windowAreaY), HUDMod.Anchor.TopLeft),
                 new AnchorArea(new Vector2i(windowWidth - windowAreaX - 1, 0), new Vector2i(windowAreaX, windowAreaY), HUDMod.Anchor.TopRight),
@@ -153,19 +138,8 @@ public class HUDEditorScreen extends Screen {
         );
 
         for (AnchorArea anchorArea : anchorAreas) {
-            switch (anchorArea.anchor) {
-                case TopLeft:
-                case BottomLeft:
-                    context.drawVerticalLine(anchorArea.pos.x, anchorArea.pos.y, anchorArea.pos.y + anchorArea.size.y, ColorUtil.getRainbowColor());
-                    break;
-                case TopRight:
-                case BottomRight:
-                    context.drawVerticalLine(anchorArea.pos.x + anchorArea.size.x - 1, anchorArea.pos.y, anchorArea.pos.y + anchorArea.size.y, ColorUtil.getRainbowColor());
-                    break;
-                case TopCenter:
-                    context.drawHorizontalLine(anchorArea.pos.x, anchorArea.pos.x + anchorArea.size.x, anchorArea.pos.y, ColorUtil.getRainbowColor());
-                    break;
-            }
+            context.fill(anchorArea.pos.x, anchorArea.pos.y, anchorArea.pos.x + anchorArea.size.x, anchorArea.pos.y + anchorArea.size.y, ColorUtil.BACKGROUND_COLOR);
+            RenderGUI.drawBorder(context, anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, dynamicColor);
         }
 
         if (selectedHudMod != null && showPosition) {
@@ -176,6 +150,8 @@ public class HUDEditorScreen extends Screen {
 
             context.drawTooltip(posText, mouseX, mouseY - 10);
         }
+
+        HUD.drawHUD(context);
 
         super.render(context, mouseX, mouseY, delta);
     }

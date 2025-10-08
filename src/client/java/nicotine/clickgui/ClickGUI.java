@@ -14,6 +14,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
 import nicotine.util.ColorUtil;
+import nicotine.util.GUIUtil;
 import nicotine.util.Settings;
 import nicotine.util.render.RenderGUI;
 import org.joml.Vector2f;
@@ -50,12 +51,8 @@ public class ClickGUI extends Screen {
         super(Text.of("nicotine GUI"));
     }
 
-    private static boolean mouseOver(GUIButton button, double mouseX, double mouseY) {
+    private static boolean mouseOverButton(GUIButton button, double mouseX, double mouseY) {
         return (button.x <= mouseX && mouseX <= button.x + button.width && button.y <= mouseY && mouseY <= button.y + button.height);
-    }
-
-    private boolean mouseOver(int posX, int posY, int width, int height, double mouseX, double mouseY) {
-        return (posX <= mouseX && mouseX <= posX + width && posY <= mouseY && mouseY <= posY + height);
     }
 
     private String formatKeybind(String keybind, KeybindOption keybindOption) {
@@ -248,7 +245,7 @@ public class ClickGUI extends Screen {
         context.drawHorizontalLine(absPos.x, absPos.x + size.x, dividerLinePosY, dynamicColor);
 
         for (CategoryButton categoryButton : categoryButtons) {
-            int categoryColor = mouseOver(categoryButton, mouseX, mouseY) ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
+            int categoryColor = mouseOverButton(categoryButton, mouseX, mouseY) ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
 
             context.drawText(mc.textRenderer, categoryButton.text, categoryButton.x, categoryButton.y, categoryColor, true);
         }
@@ -278,7 +275,7 @@ public class ClickGUI extends Screen {
                 );
             }
 
-            if (mouseOver(modButton, mouseX, mouseY)) {
+            if (mouseOverButton(modButton, mouseX, mouseY)) {
                 buttonText = " " + buttonText;
 
 
@@ -382,7 +379,7 @@ public class ClickGUI extends Screen {
         double mouseY = click.y();
 
         for (GUIButton guiButton : Stream.concat(Stream.concat(categoryButtons.stream(), modButtons.stream()), optionButtons.stream()).toList()) {
-            if (!mouseOver(guiButton, mouseX, mouseY))
+            if (!mouseOverButton(guiButton, mouseX, mouseY))
                 continue;
 
             if (guiButton instanceof CategoryButton categoryButton) {
@@ -415,7 +412,7 @@ public class ClickGUI extends Screen {
                 } else if (optionButton.modOption instanceof SliderOption sliderOption) {
                     SliderButton sliderButton = (SliderButton) optionButton;
 
-                    if (!mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.width, sliderButton.height, mouseX, mouseY))
+                    if (!GUIUtil.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.width, sliderButton.height, mouseX, mouseY))
                         break;
 
                     setSliderOption(sliderOption, sliderButton, mouseX);
@@ -438,7 +435,7 @@ public class ClickGUI extends Screen {
             if (optionButton.modOption instanceof SliderOption sliderOption) {
                 SliderButton sliderButton = (SliderButton) optionButton;
 
-                if (mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY))  {
+                if (GUIUtil.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY))  {
                     setSliderOption(sliderOption, sliderButton, mouseX);
                     return true;
                 }
@@ -447,31 +444,16 @@ public class ClickGUI extends Screen {
 
         if (dragOffset.x != -1 && dragOffset.y != -1) {
 
-            final int width = mc.getWindow().getScaledWidth();
-            final int height = mc.getWindow().getScaledHeight();
+            Vector2i dragPos = GUIUtil.mouseDragInBounds(mouseX, mouseY, dragOffset, size);
 
-            int posX = (int) mouseX + dragOffset.x;
-            int posY = (int) mouseY + dragOffset.y;
+            pos = RenderGUI.absPosToRelativePos(new Vector2i(dragPos.x, dragPos.y), size);
 
-            if (posX < 0) {
-                posX = 0;
-            } else if (posX + size.x >= width) {
-                posX = width - size.x - 1;
-            }
-
-            if (posY < 0) {
-                posY = 0;
-            } else if (posY + size.y >= height) {
-                posY = height - size.y - 1;
-            }
-
-            pos = RenderGUI.absPosToRelativePos(new Vector2i(posX, posY), size);
             return true;
         }
 
         Vector2i absPos = RenderGUI.relativePosToAbsPos(pos, size);
 
-        if (mouseOver(absPos.x, absPos.y, size.x, mc.textRenderer.fontHeight + 9, mouseX, mouseY)) {
+        if (GUIUtil.mouseOver(absPos.x, absPos.y, size.x, mc.textRenderer.fontHeight + 9, mouseX, mouseY)) {
             dragOffset.x = absPos.x - (int) mouseX;
             dragOffset.y = absPos.y - (int) mouseY;
         }

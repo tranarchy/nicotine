@@ -24,7 +24,7 @@ public class Memory {
             long freeMemory = Runtime.getRuntime().freeMemory();
             long usedMemory = (totalMemory - freeMemory) / 1024L / 1024L;
 
-            String memoryText = String.format("memory %s%s %03dMB", Formatting.WHITE, HUD.separatorText, usedMemory);
+            String memoryText = String.format("memory %s%s %03dMB", Formatting.WHITE, HUD.separator.value, usedMemory);
             memory.texts = List.of(memoryText);
 
             return true;

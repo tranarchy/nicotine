@@ -32,7 +32,7 @@ public class Speed {
             double deltaZ = mc.player.getZ() - mc.player.lastZ;
             double speedVal = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaZ, 2)) * 20d * (unit.value.equals(unit.modes[0]) ? 3.6d : 1d);
 
-            String speedText = String.format("speed %s%s %.1f%s", Formatting.WHITE, HUD.separatorText, speedVal, unit.value);
+            String speedText = String.format("speed %s%s %.1f%s", Formatting.WHITE, HUD.separator.value, speedVal, unit.value);
             speed.texts = List.of(speedText);
 
             return true;
