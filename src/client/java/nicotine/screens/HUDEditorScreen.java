@@ -150,8 +150,11 @@ public class HUDEditorScreen extends Screen {
 
             context.drawTooltip(posText, mouseX, mouseY - 10);
 
-            context.drawVerticalLine(absPos.x + selectedHudMod.size.x / 2, 0, windowHeight, ColorUtil.ACTIVE_FOREGROUND_COLOR);
-            context.drawHorizontalLine(0, windowWidth, absPos.y + selectedHudMod.size.y / 2, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+            context.drawVerticalLine(absPos.x + selectedHudMod.size.x / 2, 0, absPos.y, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+            context.drawVerticalLine(absPos.x + selectedHudMod.size.x / 2, absPos.y + selectedHudMod.size.y, windowHeight, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+
+            context.drawHorizontalLine(0, absPos.x, absPos.y + selectedHudMod.size.y / 2, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+            context.drawHorizontalLine(absPos.x + selectedHudMod.size.x, windowWidth, absPos.y + selectedHudMod.size.y / 2, ColorUtil.ACTIVE_FOREGROUND_COLOR);
         }
 
         HUD.drawHUD(context);
