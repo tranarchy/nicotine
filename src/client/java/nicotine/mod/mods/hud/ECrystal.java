@@ -6,6 +6,8 @@ import nicotine.events.InGameHudRenderAfterEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
+import nicotine.screens.HUDEditorScreen;
+import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.render.RenderGUI;
 import org.joml.Vector2i;
@@ -41,6 +43,12 @@ public class ECrystal {
 
             event.drawContext.drawItem(Items.END_CRYSTAL.getDefaultStack(), pos.x, pos.y);
             event.drawContext.drawStackOverlay(mc.textRenderer, Items.END_CRYSTAL.getDefaultStack(), pos.x, pos.y, String.valueOf(eCrystalCount));
+
+            if (mc.currentScreen instanceof HUDEditorScreen) {
+                int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
+
+                RenderGUI.drawBorder(event.drawContext, pos.x, pos.y, eCrystal.size.x, eCrystal.size.y, dynamicColor);
+            }
 
             return true;
         });

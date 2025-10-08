@@ -10,6 +10,8 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.HUDMod;
 import nicotine.mod.option.ToggleOption;
+import nicotine.screens.HUDEditorScreen;
+import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
 import nicotine.util.render.RenderGUI;
@@ -89,7 +91,11 @@ public class Armor {
                 event.drawContext.drawStackOverlay(mc.textRenderer, armorItems.get(i), x, y, armorCount.getOrDefault(i + 1, 1).toString());
            }
 
+            if (mc.currentScreen instanceof HUDEditorScreen) {
+                int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
+                RenderGUI.drawBorder(event.drawContext, x, y, armor.size.x, armor.size.y, dynamicColor);
+            }
 
             return true;
         });

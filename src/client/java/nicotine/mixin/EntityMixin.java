@@ -46,7 +46,7 @@ public class EntityMixin {
 
     @Inject(at = @At("HEAD"), method = "Lnet/minecraft/entity/Entity;isGlowing()Z", cancellable = true)
     public void isGlowing(CallbackInfoReturnable<Boolean> info) {
-        if (GlowESP.glowESP.enabled && mc.world.getEntityById(id) instanceof OtherClientPlayerEntity) {
+        if (GlowESP.glowESP.enabled &&  mc.world.getEntityById(id) instanceof OtherClientPlayerEntity) {
             info.setReturnValue(true);
         }
     }

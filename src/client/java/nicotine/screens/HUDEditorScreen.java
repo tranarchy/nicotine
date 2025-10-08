@@ -149,10 +149,16 @@ public class HUDEditorScreen extends Screen {
             Text posText = Text.of(String.format("X: %d Y: %d (%s%d%% %d%%%s)", absPos.x, absPos.y, Formatting.AQUA, (int)(pos.x * 100), (int)(pos.y * 100), Formatting.RESET));
 
             context.drawTooltip(posText, mouseX, mouseY - 10);
+
+            context.drawVerticalLine(absPos.x + selectedHudMod.size.x / 2, 0, windowHeight, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+            context.drawHorizontalLine(0, windowWidth, absPos.y + selectedHudMod.size.y / 2, ColorUtil.ACTIVE_FOREGROUND_COLOR);
         }
 
         HUD.drawHUD(context);
 
         super.render(context, mouseX, mouseY, delta);
     }
+
+    @Override
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {}
 }
