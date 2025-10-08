@@ -1,5 +1,6 @@
 package nicotine.mod.mods.hud;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import nicotine.events.InGameHudRenderAfterEvent;
@@ -16,8 +17,34 @@ import static nicotine.util.Common.mc;
 
 public class ECrystal {
 
+    private static HUDMod eCrystal = new HUDMod("ECrystal");;
+
+    public static void drawHUD(DrawContext context) {
+        if (!eCrystal.enabled)
+            return;
+
+        Vector2i pos = RenderGUI.relativePosToAbsPos(eCrystal.pos, eCrystal.size);
+
+        int eCrystalCount = 0;
+
+        for (int i = 0; i <= 45; i++) {
+            ItemStack stack = mc.player.getInventory().getStack(i);
+            if (stack.getItem() == Items.END_CRYSTAL) {
+                eCrystalCount += stack.getCount();
+            }
+        }
+
+        context.drawItem(Items.END_CRYSTAL.getDefaultStack(), pos.x, pos.y);
+        context.drawStackOverlay(mc.textRenderer, Items.END_CRYSTAL.getDefaultStack(), pos.x, pos.y, String.valueOf(eCrystalCount));
+
+        if (mc.currentScreen instanceof HUDEditorScreen) {
+            int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
+
+            RenderGUI.drawBorder(context, pos.x, pos.y, eCrystal.size.x, eCrystal.size.y, dynamicColor);
+        }
+    }
+
     public static void init() {
-        HUDMod eCrystal = new HUDMod("ECrystal");
         ModManager.addMod(ModCategory.HUD, eCrystal);
 
         final int x = (mc.getWindow().getScaledWidth() / 2) - 18;
@@ -27,28 +54,10 @@ public class ECrystal {
         eCrystal.pos = RenderGUI.absPosToRelativePos(new Vector2i(x, y), eCrystal.size);
 
         EventBus.register(InGameHudRenderAfterEvent.class, event -> {
-            if (!eCrystal.enabled)
+            if (!eCrystal.enabled || mc.currentScreen instanceof HUDEditorScreen)
                 return true;
 
-            Vector2i pos = RenderGUI.relativePosToAbsPos(eCrystal.pos, eCrystal.size);
-
-            int eCrystalCount = 0;
-
-            for (int i = 0; i <= 45; i++) {
-                ItemStack stack = mc.player.getInventory().getStack(i);
-                if (stack.getItem() == Items.END_CRYSTAL) {
-                    eCrystalCount += stack.getCount();
-                }
-            }
-
-            event.drawContext.drawItem(Items.END_CRYSTAL.getDefaultStack(), pos.x, pos.y);
-            event.drawContext.drawStackOverlay(mc.textRenderer, Items.END_CRYSTAL.getDefaultStack(), pos.x, pos.y, String.valueOf(eCrystalCount));
-
-            if (mc.currentScreen instanceof HUDEditorScreen) {
-                int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
-
-                RenderGUI.drawBorder(event.drawContext, pos.x, pos.y, eCrystal.size.x, eCrystal.size.y, dynamicColor);
-            }
+            drawHUD(event.drawContext);
 
             return true;
         });

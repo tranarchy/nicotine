@@ -11,7 +11,7 @@ import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.mods.hud.HUD;
+import nicotine.mod.mods.hud.*;
 import nicotine.util.ColorUtil;
 import nicotine.util.GUIUtil;
 import nicotine.util.Settings;
@@ -155,6 +155,10 @@ public class HUDEditorScreen extends Screen {
         }
 
         HUD.drawHUD(context);
+        Combat.drawHUD(context);
+        Totem.drawHUD(context);
+        ECrystal.drawHUD(context);
+        Armor.drawHUD(context);
 
         super.render(context, mouseX, mouseY, delta);
     }
