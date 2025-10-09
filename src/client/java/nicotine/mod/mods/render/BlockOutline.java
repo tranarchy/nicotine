@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -35,7 +35,7 @@ public class BlockOutline {
         blockOutline.modOptions.addAll(Arrays.asList(render, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
         ModManager.addMod(ModCategory.Render, blockOutline);
 
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!blockOutline.enabled)
                 return true;
 

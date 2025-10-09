@@ -2,6 +2,7 @@ package nicotine.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import net.minecraft.client.render.*;
@@ -17,7 +18,6 @@ import nicotine.util.EventBus;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,10 +50,12 @@ public abstract class WorldRendererMixin {
     public void setBlockBreakingInfo(int entityId, BlockPos pos, int stage, CallbackInfo info) {
         BlockBreakingInfo blockBreakingInfo = this.blockBreakingInfos.get(entityId);
 
-        if (stage >= 0 && stage < 10 && blockBreakingInfo != null) {
-            BlockBreaking.blockBreakingInfos.put(blockBreakingInfo.getPos(), blockBreakingInfo.getStage());
-        } else if (blockBreakingInfo != null) {
-            BlockBreaking.blockBreakingInfos.remove(blockBreakingInfo.getPos());
+        if (blockBreakingInfo != null) {
+            if (stage == -1) {
+                BlockBreaking.blockBreakingInfos.remove(blockBreakingInfo.getPos());
+            } else {
+                BlockBreaking.blockBreakingInfos.put(blockBreakingInfo.getPos(), blockBreakingInfo.getStage());
+            }
         }
     }
 
@@ -82,22 +84,17 @@ public abstract class WorldRendererMixin {
         this.vertexConsumerProvider = this.bufferBuilders.getEntityVertexConsumers();
 
         EventBus.post(new RenderEntityOutlineEvent(this.bufferBuilders.getOutlineVertexConsumers()));
+        EventBus.post(new RenderBeforeEvent(camera, matrixStack, vertexConsumerProvider));
     }
 
-    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;", shift = At.Shift.BEFORE)})
-    private void beforeCloudsX(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
+    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;")})
+    private void beforeClouds(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
         FramePass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
         this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
         afterTranslucentPass.setRenderer(() -> {
-            EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
-        });
-    }
+            //GlStateManager._enableDepthTest();
+            //GlStateManager._disableDepthTest();
 
-    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;", shift = At.Shift.AFTER)})
-    private void beforeCloudsY(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
-        FramePass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
-        this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
-        afterTranslucentPass.setRenderer(() -> {
             GL11.glDisable(GL11.GL_DEPTH_TEST);
 
             GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
@@ -106,9 +103,10 @@ public abstract class WorldRendererMixin {
             GL11.glEnable(GL11.GL_LINE_SMOOTH);
             GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
 
-            EventBus.post(new RenderAfterEvent(camera, matrixStack, vertexConsumerProvider));
+            EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
 
             GL11.glEnable(GL11.GL_DEPTH_TEST);
+            //GlStateManager._enableDepthTest();
 
             GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
             GL11.glDisable(GL11.GL_LINE_SMOOTH);

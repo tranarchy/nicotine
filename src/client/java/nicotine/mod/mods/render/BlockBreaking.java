@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import nicotine.events.RenderBlockDamageEvent;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -28,7 +28,7 @@ public class BlockBreaking {
         blockBreaking.modOptions.addAll(Arrays.asList(rgb.red, rgb.green, rgb.blue, rgb.rainbow, noAnimation));
         ModManager.addMod(ModCategory.Render, blockBreaking);
 
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!blockBreaking.enabled)
                 return true;
 

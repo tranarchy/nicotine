@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.util.math.Vec3d;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -57,7 +57,7 @@ public class Players {
 
          ModManager.addMod(ModCategory.Render, players);
 
-         EventBus.register(RenderEvent.class, event -> {
+         EventBus.register(RenderBeforeEvent.class, event -> {
 
             if (!players.enabled)
                 return true;

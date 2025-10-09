@@ -4,7 +4,7 @@ import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.util.Colors;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -45,7 +45,7 @@ public class EntityOwner {
         ModManager.addMod(ModCategory.Render, entityOwner);
 
 
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!entityOwner.enabled)
                 return true;
 

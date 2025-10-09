@@ -6,7 +6,7 @@ import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
-import nicotine.events.RenderAfterEvent;
+import nicotine.events.RenderEvent;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.math.Boxf;
@@ -25,7 +25,7 @@ public class Render {
         bufferBuilderLines = tessellatorLines.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL);
         bufferBuilderQuads = tessellatorQuads.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
-        EventBus.register(RenderAfterEvent.class, event -> {
+        EventBus.register(RenderEvent.class, event -> {
             Vec3d view = event.camera.getPos();
             event.matrixStack.push();
             event.matrixStack.translate(-view.x, -view.y, -view.z);

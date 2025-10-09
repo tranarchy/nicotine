@@ -5,7 +5,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.BlockPos;
 import nicotine.events.ClientWorldTickEvent;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -82,7 +82,7 @@ public class HoleESP {
         holeESP.modOptions.addAll(Arrays.asList(width, height));
         ModManager.addMod(ModCategory.Render, holeESP);
 
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!holeESP.enabled)
                 return true;
 

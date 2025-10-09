@@ -5,7 +5,7 @@ import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.util.math.Vec3d;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.events.ConnectEvent;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -65,7 +65,7 @@ public class LogoutESP {
             return true;
         });
 
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!logoutESP.enabled)
                 return true;
 

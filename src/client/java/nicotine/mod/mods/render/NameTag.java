@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.events.RenderLabelIfPresentEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -36,7 +36,7 @@ public class NameTag {
             return !nameTag.enabled;
         });
 
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!nameTag.enabled)
                 return true;
 

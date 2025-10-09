@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -38,7 +38,7 @@ public class Storage {
 
         ArrayList<BlockEntity> allSurroundingBlockEntities = new ArrayList<>();
 
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!storage.enabled)
                 return true;
 

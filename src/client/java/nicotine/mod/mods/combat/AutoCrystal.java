@@ -14,7 +14,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.explosion.ExplosionImpl;
 import nicotine.events.ClientWorldTickEvent;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -23,7 +23,6 @@ import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.Keybind;
 import nicotine.util.Player;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
@@ -271,7 +270,7 @@ public class AutoCrystal {
             return true;
         });
 
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!autoCrystal.enabled || !renderPosition.enabled || placementPositionToRender == null)
                 return true;
 

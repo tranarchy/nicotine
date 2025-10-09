@@ -8,7 +8,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.BlockPos;
 import nicotine.events.ClientWorldTickEvent;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mixininterfaces.IMobSpawnerLogic;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -54,7 +54,7 @@ public class ActiveSpawner {
             return true;
         });
         
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!activeSpawner.enabled)
                 return true;
             

@@ -5,7 +5,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.Vec3d;
-import nicotine.events.RenderEvent;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -35,7 +35,7 @@ public class Item {
         item.modOptions.addAll(Arrays.asList(text, esp, espRender, tracer, tracerAlpha));
         ModManager.addMod(ModCategory.Render, item);
 
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
 
             if (!item.enabled)
                 return true;
