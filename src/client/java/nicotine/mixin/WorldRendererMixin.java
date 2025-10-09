@@ -8,7 +8,6 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.render.state.WorldRenderState;
 import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.BlockBreakingInfo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -17,6 +16,8 @@ import nicotine.mod.mods.render.BlockBreaking;
 import nicotine.util.EventBus;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -83,12 +84,34 @@ public abstract class WorldRendererMixin {
         EventBus.post(new RenderEntityOutlineEvent(this.bufferBuilders.getOutlineVertexConsumers()));
     }
 
-    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;")})
-    private void beforeClouds(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
+    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;", shift = At.Shift.BEFORE)})
+    private void beforeCloudsX(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
         FramePass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
         this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
         afterTranslucentPass.setRenderer(() -> {
             EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
+        });
+    }
+
+    @Inject(method = {"render"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getCloudRenderModeValue()Lnet/minecraft/client/option/CloudRenderMode;", shift = At.Shift.AFTER)})
+    private void beforeCloudsY(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
+        FramePass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
+        this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
+        afterTranslucentPass.setRenderer(() -> {
+            GL11.glDisable(GL11.GL_DEPTH_TEST);
+
+            GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
+            GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST);
+
+            GL11.glEnable(GL11.GL_LINE_SMOOTH);
+            GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+
+            EventBus.post(new RenderAfterEvent(camera, matrixStack, vertexConsumerProvider));
+
+            GL11.glEnable(GL11.GL_DEPTH_TEST);
+
+            GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
+            GL11.glDisable(GL11.GL_LINE_SMOOTH);
         });
     }
 

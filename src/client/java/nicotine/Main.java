@@ -5,6 +5,7 @@ import nicotine.command.CommandManager;
 import nicotine.events.FinishedLoadingEvent;
 import nicotine.mod.ModManager;
 import nicotine.util.*;
+import nicotine.util.render.Render;
 
 public class Main implements ClientModInitializer {
 
@@ -15,6 +16,7 @@ public class Main implements ClientModInitializer {
 			CommandManager.init();
 			Player.init();
             Keybind.init();
+            Render.init();
 			Settings.load();
 
 			return true;
