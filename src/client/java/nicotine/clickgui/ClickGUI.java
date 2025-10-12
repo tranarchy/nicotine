@@ -242,7 +242,7 @@ public class ClickGUI extends Screen {
         context.drawHorizontalLine(absPos.x, absPos.x + size.x, dividerLinePosY, dynamicColor);
 
         for (CategoryButton categoryButton : categoryButtons) {
-            int categoryColor = mouseOverButton(categoryButton, mouseX, mouseY) ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
+            int categoryColor = mouseOverButton(categoryButton, mouseX, mouseY) || categoryButton.text.equals(selectedCategory.name()) ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
 
             context.drawText(mc.textRenderer, categoryButton.text, categoryButton.x, categoryButton.y, categoryColor, true);
         }
