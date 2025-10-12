@@ -1,12 +1,10 @@
 package nicotine.clickgui;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Text;
 import nicotine.clickgui.guibutton.*;
 import nicotine.mod.Mod;
@@ -14,9 +12,8 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
 import nicotine.util.ColorUtil;
-import nicotine.util.GUIUtil;
 import nicotine.util.Settings;
-import nicotine.util.render.RenderGUI;
+import nicotine.util.render.GUI;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
@@ -95,7 +92,7 @@ public class ClickGUI extends Screen {
     private static void getCategoryButtons() {
         categoryButtons.clear();
 
-        Vector2i absPos = RenderGUI.relativePosToAbsPos(pos, size);
+        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
 
         int posX = absPos.x + (PADDING * 2);
         int posY = absPos.y + 4;
@@ -118,7 +115,7 @@ public class ClickGUI extends Screen {
     private static void getModButtons() {
         modButtons.clear();
 
-        Vector2i absPos = RenderGUI.relativePosToAbsPos(pos, size);
+        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
 
         if (selectedCategory == null) {
             selectedCategory = ModCategory.values()[0];
@@ -146,7 +143,7 @@ public class ClickGUI extends Screen {
     private void getOptionButtons() {
         optionButtons.clear();
 
-        Vector2i absPos = RenderGUI.relativePosToAbsPos(pos, size);
+        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
 
         int posX = absPos.x + size.x / 2 + PADDING;
         int posY = categoryButtons.getFirst().y + categoryButtons.getFirst().height + PADDING;
@@ -231,7 +228,7 @@ public class ClickGUI extends Screen {
     }
 
     private void drawGUI(DrawContext context, int mouseX, int mouseY) {
-        Vector2i absPos = RenderGUI.relativePosToAbsPos(pos, size);
+        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
 
         int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
@@ -239,7 +236,7 @@ public class ClickGUI extends Screen {
         int dividerLinePosY = firstCategoryButton.y + firstCategoryButton.height + 2;
 
         context.fill(absPos.x, absPos.y, absPos.x + size.x, absPos.y + size.y, ColorUtil.BACKGROUND_COLOR);
-        RenderGUI.drawBorder(context, absPos.x, absPos.y, size.x, size.y, dynamicColor);
+        GUI.drawBorder(context, absPos.x, absPos.y, size.x, size.y, dynamicColor);
         context.drawVerticalLine(absPos.x + size.x / 2, dividerLinePosY, absPos.y + size.y, dynamicColor);
 
         context.drawHorizontalLine(absPos.x, absPos.x + size.x, dividerLinePosY, dynamicColor);
@@ -265,7 +262,7 @@ public class ClickGUI extends Screen {
                         ColorUtil.SELECTED_BACKGROUND_COLOR
                 );
 
-                RenderGUI.drawBorderHorizontal(
+                GUI.drawBorderHorizontal(
                         context,
                         modButton.x - PADDING + 1,
                         modButton.y - 3,
@@ -313,7 +310,7 @@ public class ClickGUI extends Screen {
                         ColorUtil.SELECTED_BACKGROUND_COLOR
                 );
 
-                RenderGUI.drawBorder(
+                GUI.drawBorder(
                         context,
                         sliderButton.sliderX,
                         sliderButton.sliderY,
@@ -330,7 +327,7 @@ public class ClickGUI extends Screen {
                 }
 
                 context.fill(sliderPosX,sliderButton.sliderY, sliderPosX + 3, sliderButton.sliderY + sliderButton.height - 1, ColorUtil.ACTIVE_FOREGROUND_COLOR);
-                RenderGUI.drawBorder(context, sliderPosX, sliderButton.sliderY, 3, sliderButton.height - 2, ColorUtil.BORDER_COLOR);
+                GUI.drawBorder(context, sliderPosX, sliderButton.sliderY, 3, sliderButton.height - 2, ColorUtil.BORDER_COLOR);
 
                 String sliderText = sliderOption.decimal ? Float.toString(sliderOption.value) : Integer.toString((int)sliderOption.value);
 
@@ -412,7 +409,7 @@ public class ClickGUI extends Screen {
                 } else if (optionButton.modOption instanceof SliderOption sliderOption) {
                     SliderButton sliderButton = (SliderButton) optionButton;
 
-                    if (!GUIUtil.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.width, sliderButton.height, mouseX, mouseY))
+                    if (!GUI.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.width, sliderButton.height, mouseX, mouseY))
                         break;
 
                     setSliderOption(sliderOption, sliderButton, mouseX);
@@ -435,7 +432,7 @@ public class ClickGUI extends Screen {
             if (optionButton.modOption instanceof SliderOption sliderOption) {
                 SliderButton sliderButton = (SliderButton) optionButton;
 
-                if (GUIUtil.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY))  {
+                if (GUI.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY))  {
                     setSliderOption(sliderOption, sliderButton, mouseX);
                     return true;
                 }
@@ -444,16 +441,16 @@ public class ClickGUI extends Screen {
 
         if (dragOffset.x != -1 && dragOffset.y != -1) {
 
-            Vector2i dragPos = GUIUtil.mouseDragInBounds(mouseX, mouseY, dragOffset, size);
+            Vector2i dragPos = GUI.mouseDragInBounds(mouseX, mouseY, dragOffset, size);
 
-            pos = RenderGUI.absPosToRelativePos(new Vector2i(dragPos.x, dragPos.y), size);
+            pos = GUI.absPosToRelativePos(new Vector2i(dragPos.x, dragPos.y), size);
 
             return true;
         }
 
-        Vector2i absPos = RenderGUI.relativePosToAbsPos(pos, size);
+        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
 
-        if (GUIUtil.mouseOver(absPos.x, absPos.y, size.x, mc.textRenderer.fontHeight + 9, mouseX, mouseY)) {
+        if (GUI.mouseOver(absPos.x, absPos.y, size.x, mc.textRenderer.fontHeight + 9, mouseX, mouseY)) {
             dragOffset.x = absPos.x - (int) mouseX;
             dragOffset.y = absPos.y - (int) mouseY;
         }

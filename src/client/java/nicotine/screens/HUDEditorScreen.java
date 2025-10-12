@@ -13,9 +13,8 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.mods.hud.*;
 import nicotine.util.ColorUtil;
-import nicotine.util.GUIUtil;
 import nicotine.util.Settings;
-import nicotine.util.render.RenderGUI;
+import nicotine.util.render.GUI;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 
@@ -51,8 +50,6 @@ public class HUDEditorScreen extends Screen {
         this.showPosition = showPosition;
     }
 
-
-
     @Override
     public boolean mouseReleased(Click click) {
         double mouseX = click.x();
@@ -63,7 +60,7 @@ public class HUDEditorScreen extends Screen {
             dragOffset.y = -1;
 
            for (AnchorArea anchorArea : anchorAreas) {
-               if (GUIUtil.mouseOver(anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, mouseX, mouseY)) {
+               if (GUI.mouseOver(anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, mouseX, mouseY)) {
                    selectedHudMod.anchor = anchorArea.anchor;
                    break;
                }
@@ -83,9 +80,9 @@ public class HUDEditorScreen extends Screen {
         if (dragOffset.x != -1 && dragOffset.y != -1) {
 
             Vector2i size = selectedHudMod.size;
-            Vector2i dragPos = GUIUtil.mouseDragInBounds(mouseX, mouseY, dragOffset, size);
+            Vector2i dragPos = GUI.mouseDragInBounds(mouseX, mouseY, dragOffset, size);
 
-            selectedHudMod.pos = RenderGUI.absPosToRelativePos(new Vector2i(dragPos.x, dragPos.y), size);
+            selectedHudMod.pos = GUI.absPosToRelativePos(new Vector2i(dragPos.x, dragPos.y), size);
             return true;
         }
 
@@ -94,9 +91,9 @@ public class HUDEditorScreen extends Screen {
                 continue;
 
             Vector2i size = hudMod.size;
-            Vector2i pos = RenderGUI.relativePosToAbsPos(hudMod.pos, size);
+            Vector2i pos = GUI.relativePosToAbsPos(hudMod.pos, size);
 
-            if (GUIUtil.mouseOver(pos.x, pos.y, size.x, size.y, mouseX, mouseY)) {
+            if (GUI.mouseOver(pos.x, pos.y, size.x, size.y, mouseX, mouseY)) {
                 selectedHudMod = hudMod;
                 selectedHudMod.anchor = HUDMod.Anchor.None;
 
@@ -139,12 +136,12 @@ public class HUDEditorScreen extends Screen {
 
         for (AnchorArea anchorArea : anchorAreas) {
             context.fill(anchorArea.pos.x, anchorArea.pos.y, anchorArea.pos.x + anchorArea.size.x, anchorArea.pos.y + anchorArea.size.y, ColorUtil.BACKGROUND_COLOR);
-            RenderGUI.drawBorder(context, anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, dynamicColor);
+            GUI.drawBorder(context, anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, dynamicColor);
         }
 
         if (selectedHudMod != null && showPosition) {
             Vector2f pos = selectedHudMod.pos;
-            Vector2i absPos =  RenderGUI.relativePosToAbsPos(selectedHudMod.pos, selectedHudMod.size);
+            Vector2i absPos =  GUI.relativePosToAbsPos(selectedHudMod.pos, selectedHudMod.size);
 
             Text posText = Text.of(String.format("X: %d Y: %d (%s%d%% %d%%%s)", absPos.x, absPos.y, Formatting.AQUA, (int)(pos.x * 100), (int)(pos.y * 100), Formatting.RESET));
 

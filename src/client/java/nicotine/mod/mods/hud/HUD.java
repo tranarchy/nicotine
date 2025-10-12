@@ -12,7 +12,7 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.screens.HUDEditorScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.render.RenderGUI;
+import nicotine.util.render.GUI;
 import org.joml.Vector2i;
 
 import java.util.Arrays;
@@ -106,7 +106,7 @@ public class HUD {
                         posY = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size() - i));
                         break;
                     case None:
-                        Vector2i pos = RenderGUI.relativePosToAbsPos(hudMod.pos, hudMod.size);
+                        Vector2i pos = GUI.relativePosToAbsPos(hudMod.pos, hudMod.size);
 
                         posX = pos.x;
                         posY = pos.y + (fontHeight * i);
@@ -121,13 +121,13 @@ public class HUD {
                 int borderHeight = mc.textRenderer.fontHeight + 2 * borderPadding;
 
                 context.fill(borderX, borderY, borderX + borderWidth, borderY + borderHeight, ColorUtil.BACKGROUND_COLOR);
-                RenderGUI.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
+                GUI.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
 
                 context.drawText(mc.textRenderer, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
             }
 
             if (hudMod.anchor != HUDMod.Anchor.None) {
-                hudMod.pos = RenderGUI.absPosToRelativePos(new Vector2i((int)hudMod.pos.x, (int)hudMod.pos.y), hudMod.size);
+                hudMod.pos = GUI.absPosToRelativePos(new Vector2i((int)hudMod.pos.x, (int)hudMod.pos.y), hudMod.size);
             }
 
             anchorIndexes.put(hudMod.anchor, anchorIndex + hudMod.texts.size());

@@ -15,7 +15,7 @@ import nicotine.screens.HUDEditorScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
-import nicotine.util.render.RenderGUI;
+import nicotine.util.render.GUI;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public class Armor {
             armor.size = new Vector2i(19 * 4, 16);
         }
 
-        Vector2i pos = RenderGUI.relativePosToAbsPos(armor.pos, armor.size);
+        Vector2i pos = GUI.relativePosToAbsPos(armor.pos, armor.size);
 
         HashMap<Integer, Integer> armorCount= new HashMap<>();
 
@@ -87,7 +87,7 @@ public class Armor {
         if (mc.currentScreen instanceof HUDEditorScreen) {
             int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
-            RenderGUI.drawBorder(context, x, y, armor.size.x, armor.size.y, dynamicColor);
+            GUI.drawBorder(context, x, y, armor.size.x, armor.size.y, dynamicColor);
         }
     }
 
@@ -99,7 +99,7 @@ public class Armor {
         final int initX = (mc.getWindow().getScaledWidth() / 2) + 19;
 
         armor.size = new Vector2i(19 * 4, 16);
-        armor.pos = RenderGUI.absPosToRelativePos(new Vector2i(initX, initY), armor.size);
+        armor.pos = GUI.absPosToRelativePos(new Vector2i(initX, initY), armor.size);
 
         EventBus.register(InGameHudRenderAfterEvent.class, event -> {
             if (!armor.enabled || mc.currentScreen instanceof HUDEditorScreen)

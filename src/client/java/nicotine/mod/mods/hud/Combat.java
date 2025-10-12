@@ -13,7 +13,7 @@ import nicotine.screens.HUDEditorScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
-import nicotine.util.render.RenderGUI;
+import nicotine.util.render.GUI;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
@@ -48,10 +48,10 @@ public class Combat {
         if (nearestPlayer == null || mc.currentScreen instanceof InventoryScreen)
             return;
 
-        Vector2i pos = RenderGUI.relativePosToAbsPos(combat.pos, combat.size);
+        Vector2i pos = GUI.relativePosToAbsPos(combat.pos, combat.size);
 
         context.fill(pos.x, pos.y, pos.x + WINDOW_WIDTH, pos.y + WINDOW_HEIGHT, ColorUtil.BACKGROUND_COLOR);
-        RenderGUI.drawBorder(context, pos.x, pos.y, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
+        GUI.drawBorder(context, pos.x, pos.y, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
 
         int modelX1 = pos.x;
         int modelY1 = pos.y;
@@ -111,7 +111,7 @@ public class Combat {
         final int WINDOW_POS_X = CENTER_WIDTH - (WINDOW_WIDTH / 2);
 
         combat.size = new Vector2i(WINDOW_WIDTH, WINDOW_HEIGHT);
-        combat.pos = RenderGUI.absPosToRelativePos(new Vector2i(WINDOW_POS_X, WINDOW_POS_Y), combat.size);
+        combat.pos = GUI.absPosToRelativePos(new Vector2i(WINDOW_POS_X, WINDOW_POS_Y), combat.size);
 
         EventBus.register(InGameHudRenderBeforeEvent.class, event -> {
             if (!combat.enabled || mc.getDebugHud().shouldShowDebugHud() || mc.currentScreen instanceof HUDEditorScreen)

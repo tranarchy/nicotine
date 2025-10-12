@@ -9,7 +9,7 @@ import nicotine.mod.ModManager;
 import nicotine.screens.HUDEditorScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.render.RenderGUI;
+import nicotine.util.render.GUI;
 import org.joml.Vector2i;
 
 import static nicotine.util.Common.mc;
@@ -22,7 +22,7 @@ public class Totem {
         if (!totem.enabled)
             return;
 
-        Vector2i pos = RenderGUI.relativePosToAbsPos(totem.pos, totem.size);
+        Vector2i pos = GUI.relativePosToAbsPos(totem.pos, totem.size);
 
         int totemCount = 0;
 
@@ -38,7 +38,7 @@ public class Totem {
         if (mc.currentScreen instanceof HUDEditorScreen) {
             int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
-            RenderGUI.drawBorder(context, pos.x, pos.y, totem.size.x, totem.size.y, dynamicColor);
+            GUI.drawBorder(context, pos.x, pos.y, totem.size.x, totem.size.y, dynamicColor);
         }
     }
 
@@ -49,7 +49,7 @@ public class Totem {
         final int y = mc.getWindow().getScaledHeight() - 68;
 
         totem.size = new Vector2i(16, 16);
-        totem.pos = RenderGUI.absPosToRelativePos(new Vector2i(x, y), totem.size);
+        totem.pos = GUI.absPosToRelativePos(new Vector2i(x, y), totem.size);
 
         EventBus.register(InGameHudRenderAfterEvent.class, event -> {
             if (!totem.enabled || mc.currentScreen instanceof HUDEditorScreen)
