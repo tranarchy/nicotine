@@ -30,7 +30,8 @@
 		"MobSpawnerLogicMixin",
 		"ClientPlayerInteractionManagerMixin",
 		"ClientChunkManagerMixin",
-		"RenderLayerMixin"
+		"RenderLayerMixin",
+        "ClientCommandSourceMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,
