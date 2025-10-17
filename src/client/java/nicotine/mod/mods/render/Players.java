@@ -2,6 +2,7 @@ package nicotine.mod.mods.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.math.Vec3d;
 import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;

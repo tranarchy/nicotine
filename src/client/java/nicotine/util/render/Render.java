@@ -34,10 +34,10 @@ public class Render {
             BuiltBuffer builtBufferQuads = bufferBuilderQuads.endNullable();
 
             if (builtBufferLines != null)
-                RenderLayer.getLines().draw(builtBufferLines);
+                CustomRenderLayer.LINES.draw(builtBufferLines);
 
             if (builtBufferQuads != null)
-                RenderLayer.getDebugQuads().draw(builtBufferQuads);
+                CustomRenderLayer.QUADS.draw(builtBufferQuads);
 
             tessellatorLines.clear();
             tessellatorQuads.clear();

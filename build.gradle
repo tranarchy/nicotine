@@ -21,6 +21,8 @@ repositories {
 loom {
 	splitEnvironmentSourceSets()
 
+    accessWidenerPath = file("src/client/resources/nicotine.accesswidener")
+
 	mods {
 		"modid" {
 			sourceSet sourceSets.main

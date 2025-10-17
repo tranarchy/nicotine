@@ -92,24 +92,7 @@ public abstract class WorldRendererMixin {
         FramePass afterTranslucentPass = frameGraphBuilder.createPass("afterTranslucent");
         this.framebufferSet.mainFramebuffer = afterTranslucentPass.transfer(this.framebufferSet.mainFramebuffer);
         afterTranslucentPass.setRenderer(() -> {
-            //GlStateManager._enableDepthTest();
-            //GlStateManager._disableDepthTest();
-
-            GL11.glDisable(GL11.GL_DEPTH_TEST);
-
-            GL11.glEnable(GL11.GL_POLYGON_SMOOTH);
-            GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST);
-
-            GL11.glEnable(GL11.GL_LINE_SMOOTH);
-            GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
-
             EventBus.post(new RenderEvent(camera, matrixStack, vertexConsumerProvider));
-
-            GL11.glEnable(GL11.GL_DEPTH_TEST);
-            //GlStateManager._enableDepthTest();
-
-            GL11.glDisable(GL11.GL_POLYGON_SMOOTH);
-            GL11.glDisable(GL11.GL_LINE_SMOOTH);
         });
     }
 
