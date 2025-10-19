@@ -4,6 +4,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.math.Vec3d;
+import nicotine.events.RenderArmorEvent;
 import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -22,6 +23,7 @@ public class Players {
 
      public static void init() {
          Mod players = new Mod("Players");
+         ToggleOption noArmor = new ToggleOption("NoArmor");
          ToggleOption esp = new ToggleOption("ESP");
          SwitchOption espRender = new SwitchOption(
                  "Render",
@@ -53,7 +55,7 @@ public class Players {
 
          players.modOptions.addAll(Arrays.asList(
                  esp, espRender, espScale, espRgb.red, espRgb.green, espRgb.blue, espRgb.rainbow,
-                 tracer, tracerRgb.red, tracerRgb.green, tracerRgb.blue, tracerRgb.rainbow, tracerAlpha
+                 tracer, tracerRgb.red, tracerRgb.green, tracerRgb.blue, tracerRgb.rainbow, tracerAlpha, noArmor
          ));
 
          ModManager.addMod(ModCategory.Render, players);
@@ -90,5 +92,12 @@ public class Players {
 
             return true;
         });
+
+         EventBus.register(RenderArmorEvent.class, event -> {
+             if (!players.enabled || !noArmor.enabled)
+                 return true;
+
+             return false;
+         });
     }
 }

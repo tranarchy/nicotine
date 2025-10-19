@@ -31,7 +31,8 @@
 		"ClientPlayerInteractionManagerMixin",
 		"ClientChunkManagerMixin",
 		"RenderLayerMixin",
-        "ClientCommandSourceMixin"
+        "ClientCommandSourceMixin",
+		"ArmorFeatureRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,
