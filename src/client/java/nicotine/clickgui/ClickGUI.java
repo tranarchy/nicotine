@@ -165,7 +165,7 @@ public class ClickGUI extends Screen {
 
         for (ModOption modOption : selectedMod.modOptions) {
             OptionButton optionButton = new OptionButton(
-                    posX,
+                    modOption.subOption ? posX + PADDING : posX,
                     posY,
                     mc.textRenderer.getWidth(modOption.name),
                     mc.textRenderer.fontHeight + 3,
@@ -181,7 +181,7 @@ public class ClickGUI extends Screen {
                         optionButton.height,
                         optionButton.x + optionButton.width + 3,
                         optionButton.y - 2,
-                        (size.x / 2) - optionButton.width - (PADDING * 2) - 6,
+                        (size.x / 2) - optionButton.width - (PADDING * (modOption.subOption ? 3 : 2)) - 6,
                         optionButton.height - 2,
                         optionButton.mod,
                         optionButton.modOption

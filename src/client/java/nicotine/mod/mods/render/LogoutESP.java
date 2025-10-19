@@ -80,7 +80,6 @@ public class LogoutESP {
 
                     player.getInventory().clear();
                     //mc.getEntityRenderDispatcher().render(player, player.getX(), player.getY(), player.getZ(), 0, event.matrixStack, event.vertexConsumerProvider, 0);
-
                     event.matrixStack.pop();
                 }
 

@@ -30,8 +30,10 @@ public class Item {
                 "Render",
                 new String[]{"Box", "Filled", "Fade"}
         );
+        espRender.subOption = true;
         ToggleOption tracer = new ToggleOption("Tracer");
-        SliderOption tracerAlpha = new SliderOption("TracerAlpha", 255, 10, 255);
+        SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
+        tracerAlpha.subOption = true;
         item.modOptions.addAll(Arrays.asList(text, esp, espRender, tracer, tracerAlpha));
         ModManager.addMod(ModCategory.Render, item);
 
