@@ -100,11 +100,11 @@ public class Settings {
 
                 for (ModOption modOption : mod.modOptions) {
                    if (modOption instanceof SliderOption sliderOption) {
-                       modDetails.put(sliderOption.name, sliderOption.value);
+                       modDetails.put(sliderOption.id, sliderOption.value);
                    } else if (modOption instanceof SwitchOption switchOption) {
-                       modDetails.put(switchOption.name, switchOption.value);
+                       modDetails.put(switchOption.id, switchOption.value);
                    } else if (modOption instanceof ToggleOption toggleOption) {
-                       modDetails.put(toggleOption.name, toggleOption.enabled);
+                       modDetails.put(toggleOption.id, toggleOption.enabled);
                    }  else if (modOption instanceof KeybindOption keybindOption) {
                        if (keybindOption.keyCode == -1)
                            continue;
@@ -217,20 +217,20 @@ public class Settings {
                 }
 
                 for (ModOption modOption : mod.modOptions) {
-                    if (modInfo.get(modOption.name) == null)
+                    if (modInfo.get(modOption.id) == null)
                         continue;
 
                     if (modOption instanceof SliderOption sliderOption) {
-                        sliderOption.value = modInfo.getAsNumber(sliderOption.name).floatValue();
+                        sliderOption.value = modInfo.getAsNumber(sliderOption.id).floatValue();
                     } else if (modOption instanceof SwitchOption switchOption) {
-                        String switchVal = modInfo.getAsString(switchOption.name);
+                        String switchVal = modInfo.getAsString(switchOption.id);
                         if (Arrays.stream(switchOption.modes).toList().contains(switchVal)) {
-                            switchOption.value = modInfo.getAsString(switchOption.name);
+                            switchOption.value = modInfo.getAsString(switchOption.id);
                         }
                     } else if (modOption instanceof ToggleOption toggleOption) {
-                        toggleOption.enabled = (boolean) modInfo.get(toggleOption.name);
+                        toggleOption.enabled = (boolean) modInfo.get(toggleOption.id);
                     } else if (modOption instanceof KeybindOption keybindOption) {
-                        keybindOption.keyCode = modInfo.getAsNumber(keybindOption.name).intValue();
+                        keybindOption.keyCode = modInfo.getAsNumber(keybindOption.id).intValue();
                     }
                 }
             }
