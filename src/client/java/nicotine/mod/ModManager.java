@@ -73,6 +73,7 @@ public class ModManager {
         AutoSprint.init();
         AntiAFK.init();
         ElytraBounce.init();
+        Pitch40.init();
         FreeMove.init();
 
         AutoTotem.init();
