@@ -62,8 +62,9 @@ public class AutoArmor {
                     } else if (armorStack == ItemStack.EMPTY && curItem != Items.ELYTRA) {
                         Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
                     } else if (curItem == Items.ELYTRA && armorStack.getItem() == Items.ELYTRA) {
-                        if (armorStack.getDamage() > curStack.getDamage() && armorStack.getDamage() == armorStack.getMaxDamage()) {
+                        if (armorStack.getDamage() > curStack.getDamage() && armorStack.getDamage() == armorStack.getMaxDamage() - 1) {
                             Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
+                            Player.startFlying();
                         }
                     }
                 }
