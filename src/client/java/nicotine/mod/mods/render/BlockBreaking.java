@@ -1,5 +1,7 @@
 package nicotine.mod.mods.render;
 
+import net.minecraft.client.render.block.entity.state.BlockEntityRenderState;
+import net.minecraft.client.render.state.BreakingBlockRenderState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import nicotine.events.RenderBlockDamageEvent;
@@ -18,6 +20,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+import static nicotine.util.Common.mc;
+
 public class BlockBreaking {
     public static HashMap<BlockPos, Integer> blockBreakingInfos = new LinkedHashMap<>();
 
@@ -32,9 +36,9 @@ public class BlockBreaking {
             if (!blockBreaking.enabled)
                 return true;
 
-            for (BlockPos blockPos : blockBreakingInfos.keySet()) {
-
-                int stage = Math.abs(blockBreakingInfos.get(blockPos) - 9);
+            for (BreakingBlockRenderState breakingBlockRenderState : mc.gameRenderer.getEntityRenderStates().breakingBlockRenderStates) {
+                BlockPos blockPos = breakingBlockRenderState.entityBlockPos;
+                int stage = Math.abs(breakingBlockRenderState.breakProgress - 9);
 
                 Box blockBreakingBox = BoxUtil.getBlockBoundingBox(blockPos).contract(stage / 20.0f);
 

@@ -36,28 +36,11 @@ public abstract class WorldRendererMixin {
 
     @Final
     @Shadow
-    private Int2ObjectMap<BlockBreakingInfo> blockBreakingInfos;
-
-    @Final
-    @Shadow
     private BufferBuilderStorage bufferBuilders;
 
     @Shadow
     @Final
     private DefaultFramebufferSet framebufferSet;
-
-    @Inject(at = @At("HEAD"), method = "setBlockBreakingInfo")
-    public void setBlockBreakingInfo(int entityId, BlockPos pos, int stage, CallbackInfo info) {
-        BlockBreakingInfo blockBreakingInfo = this.blockBreakingInfos.get(entityId);
-
-        if (blockBreakingInfo != null) {
-            if (stage == -1) {
-                BlockBreaking.blockBreakingInfos.remove(blockBreakingInfo.getPos());
-            } else {
-                BlockBreaking.blockBreakingInfos.put(blockBreakingInfo.getPos(), blockBreakingInfo.getStage());
-            }
-        }
-    }
 
     @Inject(at = @At("HEAD"), method = "renderBlockDamage", cancellable = true)
     private void renderBlockDamage(MatrixStack matrices, VertexConsumerProvider.Immediate immediate, WorldRenderState renderStates, CallbackInfo info) {
