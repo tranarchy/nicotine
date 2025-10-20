@@ -32,7 +32,6 @@ public class ConnectScreenMixin {
 
         loadedChunks.clear();
         ActiveSpawner.activeSpawners.clear();
-        BlockBreaking.blockBreakingInfos.clear();
 
         currentServer = info;
     }

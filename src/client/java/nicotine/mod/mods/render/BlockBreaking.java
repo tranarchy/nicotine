@@ -23,8 +23,6 @@ import java.util.LinkedHashMap;
 import static nicotine.util.Common.mc;
 
 public class BlockBreaking {
-    public static HashMap<BlockPos, Integer> blockBreakingInfos = new LinkedHashMap<>();
-
     public static void init() {
         Mod blockBreaking = new Mod("BlockBreaking");
         RGBOption rgb = new RGBOption();
