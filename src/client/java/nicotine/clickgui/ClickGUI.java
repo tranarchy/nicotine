@@ -52,6 +52,21 @@ public class ClickGUI extends Screen {
         return (button.x <= mouseX && mouseX <= button.x + button.width && button.y <= mouseY && mouseY <= button.y + button.height);
     }
 
+    private String keyCodeToString(int keyCode) {
+        if (keyCode == -1)
+            return "";
+        else if (keyCode < 8) {
+            return switch (keyCode) {
+                case InputUtil.GLFW_MOUSE_BUTTON_LEFT -> "MBL";
+                case InputUtil.GLFW_MOUSE_BUTTON_RIGHT -> "MBR";
+                case InputUtil.GLFW_MOUSE_BUTTON_MIDDLE -> "MBM";
+                default -> String.format("MB%d", keyCode);
+            };
+        } else {
+            return InputUtil.fromKeyCode(new KeyInput(keyCode, 0, 0)).getLocalizedText().getString();
+        }
+    }
+
     private String formatKeybind(String keybind, KeybindOption keybindOption) {
         String keyBindText = "";
         String[] splitKeybind = keybind.split(" ");
@@ -194,8 +209,7 @@ public class ClickGUI extends Screen {
 
                 optionButtons.add(optionButton);
             } else if (modOption instanceof KeybindOption keybindOption) {
-                String keybind = keybindOption.keyCode == -1 ? "" : InputUtil.fromKeyCode(new KeyInput(keybindOption.keyCode, 0, 0)).getLocalizedText().getString();
-                String keybindOptionString = String.format("%s [%s]", keybindOption.name, formatKeybind(keybind, keybindOption));
+                String keybindOptionString = String.format("%s [%s]", keybindOption.name, formatKeybind(keyCodeToString(keybindOption.keyCode), keybindOption));
                 optionButton.width = mc.textRenderer.getWidth(keybindOptionString);
 
                 optionButtons.add(optionButton);
@@ -342,8 +356,7 @@ public class ClickGUI extends Screen {
             } else if (optionButton.modOption instanceof SwitchOption switchOption) {
                 optionButtonText = String.format("%s [%s]", switchOption.name, switchOption.value);
             } else if (optionButton.modOption instanceof KeybindOption keybindOption) {
-                String keybind = keybindOption.keyCode == -1 ? "" : InputUtil.fromKeyCode(new KeyInput(keybindOption.keyCode, 0, 0)).getLocalizedText().getString();
-                optionButtonText = String.format("%s [%s]", keybindOption.name, formatKeybind(keybind, keybindOption));
+                optionButtonText = String.format("%s [%s]", keybindOption.name, formatKeybind(keyCodeToString(keybindOption.keyCode), keybindOption));
             } else if (optionButton.modOption instanceof ToggleOption toggleOption) {
                 optionColor = toggleOption.enabled ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
             }
@@ -369,6 +382,14 @@ public class ClickGUI extends Screen {
 
     @Override
     public boolean mouseClicked(Click click, boolean doubled) {
+
+        if (keybindOptionToSet != null) {
+            keybindOptionToSet.keyCode = click.getKeycode();
+            keybindOptionToSet = null;
+
+            return true;
+        }
+
         if (click.getKeycode() != InputUtil.GLFW_MOUSE_BUTTON_LEFT)
             return true;
 

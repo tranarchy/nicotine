@@ -10,6 +10,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ModOption;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 
@@ -61,7 +62,8 @@ public class Keybind {
         if (keycode == -1)
             return false;
 
-        if (InputUtil.isKeyPressed(window, keycode) && !(mc.currentScreen instanceof ChatScreen) && !(mc.currentScreen instanceof ClickGUI)) {
+        if (((keycode < 8 && GLFW.glfwGetMouseButton(window.getHandle(), keycode) == 1) || (keycode > 7 && InputUtil.isKeyPressed(window, keycode))) &&
+                !(mc.currentScreen instanceof ChatScreen) && !(mc.currentScreen instanceof ClickGUI)) {
             if (!keysPressed.containsKey(keycode)) {
                 keysPressed.put(name, keycode);
             }
