@@ -32,7 +32,9 @@
 		"ClientChunkManagerMixin",
 		"RenderLayerMixin",
         "ClientCommandSourceMixin",
-		"ArmorFeatureRendererMixin"
+		"ArmorFeatureRendererMixin",
+        "ItemRenderStateMixin",
+        "LayerRenderStateMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,

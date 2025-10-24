@@ -1,5 +1,6 @@
 package nicotine.util.render;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -8,9 +9,12 @@ import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderPhase;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import org.joml.Matrix4fStack;
 
 import java.util.OptionalDouble;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class CustomRenderLayer {
@@ -29,4 +33,9 @@ public class CustomRenderLayer {
             CustomRenderPipelines.NO_DEPTH_TEST_QUADS,
             RenderLayer.MultiPhaseParameters.builder().build(false)
     );
+
+    public static Function<Identifier, RenderLayer> ITEM_ENTITY_TRANSLUCENT_CULL = Util.memoize((texture) -> {
+        RenderLayer.MultiPhaseParameters multiPhaseParameters = RenderLayer.MultiPhaseParameters.builder().texture(new RenderPhase.Texture(texture, false)).target(RenderLayer.ITEM_ENTITY_TARGET).lightmap(RenderLayer.ENABLE_LIGHTMAP).overlay(RenderLayer.ENABLE_OVERLAY_COLOR).build(true);
+        return RenderLayer.of("no_depth_test_item_entity_translucent_cull", 1536, true, true, CustomRenderPipelines.NO_DEPTH_TEST_RENDERTYPE_ITEM_ENTITY_TRANSLUCENT_CULL, multiPhaseParameters);
+    });
 }

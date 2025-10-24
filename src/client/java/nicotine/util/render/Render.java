@@ -4,9 +4,15 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.item.ItemRenderState;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.math.Vec3d;
 import nicotine.events.RenderEvent;
+import nicotine.mixininterfaces.IItemRenderState;
+import nicotine.mixininterfaces.ILayerRenderState;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.math.Boxf;
@@ -15,15 +21,17 @@ import static nicotine.util.Common.mc;
 
 public class Render {
 
-    private static Tessellator tessellator;
     private static BufferBuilder bufferBuilderLines;
     private static BufferBuilder bufferBuilderQuads;
+    private static BufferBuilder bufferBuilderItems;
 
     public static void init() {
         Tessellator tessellatorLines = new Tessellator();
         Tessellator tessellatorQuads = new Tessellator();
+        Tessellator tessellatorItems = new Tessellator();
         bufferBuilderLines = tessellatorLines.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL);
         bufferBuilderQuads = tessellatorQuads.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        bufferBuilderItems = tessellatorItems.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
 
         EventBus.register(RenderEvent.class, event -> {
             Vec3d view = event.camera.getPos();
@@ -32,6 +40,7 @@ public class Render {
 
             BuiltBuffer builtBufferLines = bufferBuilderLines.endNullable();
             BuiltBuffer builtBufferQuads = bufferBuilderQuads.endNullable();
+            BuiltBuffer builtBufferItems = bufferBuilderItems.endNullable();
 
             if (builtBufferLines != null)
                 CustomRenderLayer.LINES.draw(builtBufferLines);
@@ -39,12 +48,16 @@ public class Render {
             if (builtBufferQuads != null)
                 CustomRenderLayer.QUADS.draw(builtBufferQuads);
 
+            if (builtBufferItems != null)
+                CustomRenderLayer.ITEM_ENTITY_TRANSLUCENT_CULL.apply(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).draw(builtBufferItems);
+
             tessellatorLines.clear();
             tessellatorQuads.clear();
+            tessellatorItems.clear();
 
             bufferBuilderLines = tessellatorLines.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL);
             bufferBuilderQuads = tessellatorQuads.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-
+            bufferBuilderItems = tessellatorItems.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_OVERLAY_LIGHT_NORMAL);
 
             event.matrixStack.pop();
 
@@ -165,15 +178,58 @@ public class Render {
         matrixStack.pop();
     }
 
+    private static int getTint(int[] tints, int index) {
+        return index >= 0 && index < tints.length ? tints[index] : -1;
+    }
+
+    public static void drawItem(MatrixStack matrixStack, Camera camera, Vec3d position, IItemRenderState itemRenderState, float scale) {
+        Vec3d cameraPos = camera.getPos();
+
+        matrixStack.push();
+        matrixStack.translate((float)(position.x - cameraPos.x), (float)(position.y - cameraPos.y) + 0.50F, (float)(position.z - cameraPos.z));
+        matrixStack.multiply(camera.getRotation());
+        float size = (0.6F * scale) + (float)position.distanceTo(mc.player.getEntityPos()) / 1000;
+        matrixStack.scale(size, size, size);
+
+        MatrixStack.Entry entry = matrixStack.peek();
+
+        for (int i = 0; i < itemRenderState.getLayerCount(); i++) {
+
+            ItemRenderState.LayerRenderState layerRenderState =  itemRenderState.getLayers()[i];
+            ILayerRenderState iLayerRenderState = (ILayerRenderState) layerRenderState;
+
+            for (BakedQuad bakedQuad :layerRenderState.getQuads()) {
+                float alpha;
+                float red;
+                float green;
+                float blue;
+                if (bakedQuad.hasTint()) {
+                    int tint = getTint(iLayerRenderState.getTints(), bakedQuad.tintIndex());
+                    alpha = (float) ColorHelper.getAlpha(tint) / 255.0F;
+                    red = (float) ColorHelper.getRed(tint) / 255.0F;
+                    green = (float) ColorHelper.getGreen(tint) / 255.0F;
+                    blue = (float) ColorHelper.getBlue(tint) / 255.0F;
+                } else {
+                    alpha = 1.0F;
+                    red = 1.0F;
+                    green = 1.0F;
+                    blue = 1.0F;
+                }
+
+                bufferBuilderItems.quad(entry, bakedQuad, red, green, blue, alpha, 15728640, OverlayTexture.DEFAULT_UV);
+            }
+        }
+
+        matrixStack.pop();
+    }
+
     public static void drawText(MatrixStack matrix, VertexConsumerProvider vertexConsumerProvider, Camera camera, Vec3d position, String text, int color, float scale) {
         TextRenderer textRenderer = mc.textRenderer;
 
-        double d = camera.getPos().x;
-        double e = camera.getPos().y;
-        double f = camera.getPos().z;
+        Vec3d cameraPos = camera.getPos();
 
         matrix.push();
-        matrix.translate((float)(position.x - d), (float)(position.y - e) + 0.50F, (float)(position.z - f));
+        matrix.translate((float)(position.x - cameraPos.x), (float)(position.y - cameraPos.y) + 0.50F, (float)(position.z - cameraPos.z));
         matrix.multiply(camera.getRotation());
         float size = (0.025F * scale) + (float)position.distanceTo(mc.player.getEntityPos()) / 1000;
         matrix.scale(size, -size, size);
