@@ -2,8 +2,10 @@ package nicotine.mod.mods.render;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.ContainerComponent;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.tag.ItemTags;
@@ -12,9 +14,12 @@ import nicotine.events.DrawMouseoverTooltipEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
+import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
+import nicotine.screens.PeekScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
+import nicotine.util.Keybind;
 import nicotine.util.render.GUI;
 import org.joml.Matrix3x2fStack;
 
@@ -32,7 +37,8 @@ public class Peek {
         Mod peek = new Mod("Peek", "Lets you see inside shulkers and echets without opening them");
         ToggleOption shulker = new ToggleOption("Shulker", true);
         ToggleOption enderChest = new ToggleOption("EnderChest");
-        peek.modOptions.addAll(Arrays.asList(shulker, enderChest));
+        KeybindOption keybindOption = new KeybindOption("InspectKey", InputUtil.GLFW_KEY_LEFT_ALT);
+        peek.modOptions.addAll(Arrays.asList(shulker, enderChest, keybindOption));
         ModManager.addMod(ModCategory.Render, peek);
 
         final int SLOT_WIDTH = 18;
@@ -54,6 +60,15 @@ public class Peek {
                     } else {
                         ContainerComponent shulkerContainer = focusedStack.getComponents().get(DataComponentTypes.CONTAINER);
                         itemsToPeek = shulkerContainer.stream().toList();
+                    }
+
+                    if (InputUtil.isKeyPressed(mc.getWindow(), keybindOption.keyCode)) {
+                        SimpleInventory peekInventory = new SimpleInventory(9 * 3);
+
+                        for (int i = 0; i < itemsToPeek.size(); i++) {
+                            peekInventory.setStack(i, itemsToPeek.get(i));
+                        }
+                        mc.setScreen(new PeekScreen(focusedStack.getName(), peekInventory));
                     }
 
                     int posX = event.x + (SLOT_WIDTH / 2);

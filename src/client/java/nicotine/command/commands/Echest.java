@@ -6,6 +6,7 @@ import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.text.Text;
 import nicotine.command.Command;
 import nicotine.command.CommandManager;
 import nicotine.events.ClientWorldTickEvent;
@@ -18,42 +19,31 @@ import java.util.List;
 
 import static nicotine.util.Common.*;
 
-public class PeekHand {
+public class Echest {
     private static boolean openScreen = false;
 
     public static void init() {
-        Command peekhand = new Command("peekhand", "Peeks the shulker box / echest in your hand") {
+        Command echest = new Command("echest", "Shows your ender chest if you have opened it before") {
             @Override
             public void trigger(String[] splitCommand) {
               if (mc.player == null)
                   return;
 
-              if (mc.player.getMainHandStack().isIn(ItemTags.SHULKER_BOXES) || mc.player.getMainHandStack().getItem() == Items.ENDER_CHEST) {
-                  openScreen = true;
-              } else {
-                  Message.sendWarning("You are not holding a shulker box or ender chest!");
-              }
+                openScreen = true;
             }
         };
-        CommandManager.addCommand(peekhand);
+        CommandManager.addCommand(echest);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
             if (mc.currentScreen == null && openScreen) {
                 openScreen = false;
-                ItemStack mainHandStack = mc.player.getMainHandStack();
-
                 List<ItemStack> peekItems;
 
-                if (mainHandStack.getItem() == Items.ENDER_CHEST) {
-                    if (Peek.echestWasOpened) {
-                        peekItems = Peek.enderChestItems;
-                    } else {
-                        Message.sendWarning("You haven't opened your ender chest yet!");
-                        return true;
-                    }
+                if (Peek.echestWasOpened) {
+                    peekItems = Peek.enderChestItems;
                 } else {
-                    ContainerComponent shulkerContainer = mainHandStack.getComponents().get(DataComponentTypes.CONTAINER);
-                    peekItems = shulkerContainer.stream().toList();
+                    Message.sendWarning("You haven't opened your ender chest yet!");
+                    return true;
                 }
 
                 SimpleInventory peekInventory = new SimpleInventory(9 * 3);
@@ -61,7 +51,7 @@ public class PeekHand {
                 for (int i = 0; i < peekItems.size(); i++) {
                     peekInventory.setStack(i, peekItems.get(i));
                 }
-                mc.setScreen(new PeekScreen(mainHandStack.getName(), peekInventory));
+                mc.setScreen(new PeekScreen(Text.of("Ender Chest"), peekInventory));
             }
 
             return true;

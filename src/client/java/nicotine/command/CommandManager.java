@@ -23,7 +23,7 @@ public class CommandManager {
         Mods.init();
         Set.init();
         Connect.init();
-        PeekHand.init();
+        Echest.init();
         Waypoint.init();
         Friend.init();
 

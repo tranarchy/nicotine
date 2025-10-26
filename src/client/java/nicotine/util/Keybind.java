@@ -20,7 +20,7 @@ public class Keybind {
 
     private static final HashMap<String, Integer> keysPressed = new HashMap<>();
 
-    private static final List<String> denyList = Arrays.asList("Zoom", "AutoArmor");
+    private static final List<String> denyList = Arrays.asList("Zoom", "AutoArmor", "Peek");
 
     public static void init() {
         for (ModCategory modCategory : ModCategory.values()) {
