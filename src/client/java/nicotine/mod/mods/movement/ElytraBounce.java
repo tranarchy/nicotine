@@ -11,6 +11,7 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
+import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Keybind;
@@ -42,10 +43,13 @@ public class ElytraBounce {
                 }
             }
         };
-        KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_V);
+
+        SliderOption pitch = new SliderOption("Pitch", 85, 45, 180, true);
+        SliderOption acDelay = new SliderOption("ACDelay", 7, 0, 20);
         ToggleOption yawLock = new ToggleOption("YawLock");
         ToggleOption thirdPerson = new ToggleOption("ThirdPerson");
-        elytraBounce.modOptions.addAll(Arrays.asList(yawLock, thirdPerson, keybind));
+        KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_V);
+        elytraBounce.modOptions.addAll(Arrays.asList(pitch, acDelay, yawLock, thirdPerson, keybind));
         ModManager.addMod(ModCategory.Movement, elytraBounce);
 
         EventBus.register(ClientWorldTickEvent.class, event -> {
@@ -67,7 +71,7 @@ public class ElytraBounce {
                 }
 
                 mc.options.jumpKey.setPressed(true);
-                mc.player.setPitch(85.0f);
+                mc.player.setPitch(pitch.value);
 
                 if (yawLock.enabled) {
                     if (prevYaw == -1) {
@@ -82,7 +86,7 @@ public class ElytraBounce {
                 if (antiCheatDelay <= 0) {
                     Player.startFlying();
                     antiCheatTrigger = false;
-                    antiCheatDelay = 7;
+                    antiCheatDelay = (int)acDelay.value;
                 } else {
                     mc.options.jumpKey.setPressed(false);
                     antiCheatDelay--;
