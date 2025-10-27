@@ -102,14 +102,16 @@ public class DiscordActivity {
             try {
                 randomAccessFile.write(buffer.array());
             } catch (IOException e) {
-                Message.sendWarning("Can't connect to Discord!");
+                if (mc.player != null)
+                    Message.sendWarning("Can't connect to Discord!");
                 discordActivity.toggle();
             }
         } else {
             try {
                 socketChannel.write(buffer);
             } catch (IOException e) {
-                Message.sendWarning("Can't connect to Discord!");
+                if (mc.player != null)
+                    Message.sendWarning("Can't connect to Discord!");
                 discordActivity.toggle();
             }
         }
@@ -166,7 +168,8 @@ public class DiscordActivity {
                     socketClose();
                 } else {
                     if (!socketOpen()) {
-                        Message.sendWarning("Can't connect to Discord!");
+                        if (mc.player != null)
+                            Message.sendWarning("Can't connect to Discord!");
                         toggle();
                         return;
                     }
