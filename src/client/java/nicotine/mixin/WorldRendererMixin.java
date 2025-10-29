@@ -66,7 +66,6 @@ public abstract class WorldRendererMixin {
         this.matrixStack = new MatrixStack();
         this.vertexConsumerProvider = this.bufferBuilders.getEntityVertexConsumers();
 
-        EventBus.post(new RenderEntityOutlineEvent(this.bufferBuilders.getOutlineVertexConsumers()));
         EventBus.post(new RenderBeforeEvent(camera, matrixStack, vertexConsumerProvider));
     }
 

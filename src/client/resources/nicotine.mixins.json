@@ -34,7 +34,8 @@
         "ClientCommandSourceMixin",
 		"ArmorFeatureRendererMixin",
         "ItemRenderStateMixin",
-        "LayerRenderStateMixin"
+        "LayerRenderStateMixin",
+        "LivingEntityRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,

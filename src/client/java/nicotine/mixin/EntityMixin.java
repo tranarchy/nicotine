@@ -1,13 +1,11 @@
 package nicotine.mixin;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 import nicotine.events.KnockbackEvent;
 import nicotine.events.PushEvent;
-import nicotine.mod.ModManager;
-import nicotine.mod.mods.render.GlowESP;
+import nicotine.mod.mods.render.Chams;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -45,7 +43,7 @@ public class EntityMixin {
 
     @Inject(at = @At("HEAD"), method = "Lnet/minecraft/entity/Entity;isGlowing()Z", cancellable = true)
     public void isGlowing(CallbackInfoReturnable<Boolean> info) {
-        if (GlowESP.glowESP.enabled && mc.world != null && mc.world.getEntityById(id) instanceof OtherClientPlayerEntity) {
+        if (Chams.chams.enabled && Chams.outline.enabled && mc.world != null && mc.world.getEntityById(id) instanceof OtherClientPlayerEntity) {
             info.setReturnValue(true);
         }
     }

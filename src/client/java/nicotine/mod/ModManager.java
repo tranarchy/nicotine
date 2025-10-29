@@ -37,9 +37,9 @@ public class ModManager {
         }
 
         Players.init();
+        Chams.init();
         Storage.init();
         Item.init();
-        GlowESP.init();
         LogoutESP.init();
         HoleESP.init();
         NameTag.init();
