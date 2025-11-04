@@ -36,8 +36,7 @@ public class ClickGUI extends Screen {
     private static Mod selectedMod = null;
     private static ModCategory selectedCategory = null;
 
-    public static Vector2f pos = new Vector2f(0.5f, 0.5f);
-    private static Vector2i dragOffset = new Vector2i(-1, -1);
+    public static Vector2i pos = new Vector2i(0, 0);
     private static Vector2i size = new Vector2i(0, 0);
 
     public static boolean showDescription = false;
@@ -104,13 +103,16 @@ public class ClickGUI extends Screen {
         size.y = (highestModCount + 1) * (mc.textRenderer.fontHeight + PADDING) + 2;
     }
 
+    private static void setGUIPos() {
+        pos.x = (mc.getWindow().getScaledWidth() / 2) - (size.x / 2);
+        pos.y = (mc.getWindow().getScaledHeight() / 2) - (size.y / 2);
+    }
+
     private static void getCategoryButtons() {
         categoryButtons.clear();
 
-        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
-
-        int posX = absPos.x + (PADDING * 2);
-        int posY = absPos.y + 4;
+        int posX = pos.x + (PADDING * 2);
+        int posY = pos.y + 4;
 
         for (ModCategory modCategory : ModCategory.values()) {
             CategoryButton categoryButton = new CategoryButton(
@@ -130,14 +132,12 @@ public class ClickGUI extends Screen {
     private static void getModButtons() {
         modButtons.clear();
 
-        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
-
         if (selectedCategory == null) {
             selectedCategory = ModCategory.values()[0];
             selectedMod = ModManager.modules.get(selectedCategory).getFirst();
         }
 
-        int posX = absPos.x + PADDING;
+        int posX = pos.x + PADDING;
         int posY = categoryButtons.getFirst().y + categoryButtons.getFirst().height + PADDING;
 
         for (Mod mod : ModManager.modules.get(selectedCategory)) {
@@ -158,9 +158,7 @@ public class ClickGUI extends Screen {
     private void getOptionButtons() {
         optionButtons.clear();
 
-        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
-
-        int posX = absPos.x + size.x / 2 + PADDING;
+        int posX = pos.x + size.x / 2 + PADDING;
         int posY = categoryButtons.getFirst().y + categoryButtons.getFirst().height + PADDING;
 
         ToggleOption toggleModOption = new ToggleOption("Enabled", selectedMod.enabled);
@@ -242,18 +240,16 @@ public class ClickGUI extends Screen {
     }
 
     private void drawGUI(DrawContext context, int mouseX, int mouseY) {
-        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
-
         int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
         CategoryButton firstCategoryButton = categoryButtons.getFirst();
         int dividerLinePosY = firstCategoryButton.y + firstCategoryButton.height + 2;
 
-        context.fill(absPos.x, absPos.y, absPos.x + size.x, absPos.y + size.y, ColorUtil.BACKGROUND_COLOR);
-        GUI.drawBorder(context, absPos.x, absPos.y, size.x, size.y, dynamicColor);
-        context.drawVerticalLine(absPos.x + size.x / 2, dividerLinePosY, absPos.y + size.y, dynamicColor);
+        context.fill(pos.x, pos.y, pos.x + size.x, pos.y + size.y, ColorUtil.BACKGROUND_COLOR);
+        GUI.drawBorder(context, pos.x, pos.y, size.x, size.y, dynamicColor);
+        context.drawVerticalLine(pos.x + size.x / 2, dividerLinePosY, pos.y + size.y, dynamicColor);
 
-        context.drawHorizontalLine(absPos.x, absPos.x + size.x, dividerLinePosY, dynamicColor);
+        context.drawHorizontalLine(pos.x, pos.x + size.x, dividerLinePosY, dynamicColor);
 
         for (CategoryButton categoryButton : categoryButtons) {
             int categoryColor = mouseOverButton(categoryButton, mouseX, mouseY) || categoryButton.text.equals(selectedCategory.name()) ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
@@ -460,34 +456,9 @@ public class ClickGUI extends Screen {
             }
         }
 
-        if (dragOffset.x != -1 && dragOffset.y != -1) {
-
-            Vector2i dragPos = GUI.mouseDragInBounds(mouseX, mouseY, dragOffset, size);
-
-            pos = GUI.absPosToRelativePos(new Vector2i(dragPos.x, dragPos.y), size);
-
-            return true;
-        }
-
-        Vector2i absPos = GUI.relativePosToAbsPos(pos, size);
-
-        if (GUI.mouseOver(absPos.x, absPos.y, size.x, mc.textRenderer.fontHeight + 9, mouseX, mouseY)) {
-            dragOffset.x = absPos.x - (int) mouseX;
-            dragOffset.y = absPos.y - (int) mouseY;
-        }
-
         return true;
     }
 
-    @Override
-    public boolean mouseReleased(Click click) {
-        if (dragOffset.x != -1 && dragOffset.y != -1) {
-            dragOffset.x = -1;
-            dragOffset.y = -1;
-        }
-
-        return true;
-    }
 
     @Override
     public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
@@ -500,6 +471,7 @@ public class ClickGUI extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         setGUISize();
+        setGUIPos();
         getCategoryButtons();
         getModButtons();
         getOptionButtons();

@@ -8,12 +8,12 @@ import java.util.List;
 
 public class HUDMod extends Mod {
     public enum Anchor {
-        TopLeft, TopRight, BottomLeft, BottomRight, TopCenter, None
+        TopLeft, TopRight, BottomLeft, BottomRight, None
     }
 
     public Anchor anchor = Anchor.None;
 
-    public Vector2f pos = new Vector2f(-1, -1);
+    public Vector2i pos = new Vector2i(-1, -1);
     public Vector2i size = new Vector2i(-1, -1);
 
     public List<String> texts = new ArrayList<>();

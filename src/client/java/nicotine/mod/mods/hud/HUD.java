@@ -74,14 +74,7 @@ public class HUD {
                         hudMod.pos.x = padding;
                         hudMod.pos.y = padding + (fontHeight * anchorIndex);
 
-                        posX = (int) hudMod.pos.x;
-                        posY = padding + (fontHeight * (anchorIndex + i));
-                        break;
-                    case TopCenter:
-                        hudMod.pos.x = ((float) width / 2) - ((float) mc.textRenderer.getWidth(longestText) / 2);
-                        hudMod.pos.y = padding + (fontHeight * anchorIndex);
-
-                        posX = (width / 2) - (mc.textRenderer.getWidth(formattedText) / 2);
+                        posX = hudMod.pos.x;
                         posY = padding + (fontHeight * (anchorIndex + i));
                         break;
                     case TopRight:
@@ -95,7 +88,7 @@ public class HUD {
                         hudMod.pos.x = padding;
                         hudMod.pos.y = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size()));
 
-                        posX = (int) hudMod.pos.x;
+                        posX = hudMod.pos.x;
                         posY = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size() - i));
                         break;
                     case BottomRight:
@@ -106,10 +99,8 @@ public class HUD {
                         posY = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size() - i));
                         break;
                     case None:
-                        Vector2i pos = GUI.relativePosToAbsPos(hudMod.pos, hudMod.size);
-
-                        posX = pos.x;
-                        posY = pos.y + (fontHeight * i);
+                        posX = hudMod.pos.x;
+                        posY = hudMod.pos.y + (fontHeight * i);
                 }
 
                 int borderPadding = 2;
@@ -124,10 +115,6 @@ public class HUD {
                 GUI.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
 
                 context.drawText(mc.textRenderer, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
-            }
-
-            if (hudMod.anchor != HUDMod.Anchor.None) {
-                hudMod.pos = GUI.absPosToRelativePos(new Vector2i((int)hudMod.pos.x, (int)hudMod.pos.y), hudMod.size);
             }
 
             anchorIndexes.put(hudMod.anchor, anchorIndex + hudMod.texts.size());

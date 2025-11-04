@@ -31,12 +31,6 @@ public class Settings {
 
         settings.appendField("commandPrefix", CommandManager.prefix);
 
-        JSONObject gui = new JSONObject();
-        gui.appendField("x", ClickGUI.pos.x);
-        gui.appendField("y", ClickGUI.pos.y);
-
-        settings.appendField("gui", gui);
-
         JSONObject waypoints = new JSONObject();
         for (WaypointInstance waypointInstance : allWaypoints) {
 
@@ -87,11 +81,6 @@ public class Settings {
 
                 if (mod instanceof HUDMod hudMod) {
                     JSONObject hudInfo = new JSONObject();
-
-                    if (hudMod.anchor == HUDMod.Anchor.None) {
-                        hudInfo.put("x", hudMod.pos.x);
-                        hudInfo.put("y", hudMod.pos.y);
-                    }
 
                     hudInfo.put("anchor", hudMod.anchor.ordinal());
 
@@ -179,12 +168,6 @@ public class Settings {
             }
         }
 
-        if (settings.containsKey("gui")) {
-            JSONObject guiPos = (JSONObject) settings.get("gui");
-            ClickGUI.pos.x = guiPos.getAsNumber("x").floatValue();
-            ClickGUI.pos.y = guiPos.getAsNumber("y").floatValue();
-         }
-
         JSONObject categories = (JSONObject) settings.get("settings");
         for (ModCategory modCategory : ModManager.modules.keySet()) {
             for (Mod mod :  ModManager.modules.get(modCategory)) {
@@ -207,12 +190,10 @@ public class Settings {
                     if (modInfo.containsKey("hud")) {
                         JSONObject hudInfo = (JSONObject) modInfo.get("hud");
 
-                        hudMod.anchor = HUDMod.Anchor.values()[hudInfo.getAsNumber("anchor").intValue()];
+                        int anchorIndex = hudInfo.getAsNumber("anchor").intValue();
 
-                        if (hudMod.anchor == HUDMod.Anchor.None) {
-                            hudMod.pos.x = hudInfo.getAsNumber("x").floatValue();
-                            hudMod.pos.y = hudInfo.getAsNumber("y").floatValue();
-                        }
+                        if (anchorIndex < HUDMod.Anchor.values().length)
+                            hudMod.anchor = HUDMod.Anchor.values()[anchorIndex];
                     }
                 }
 
