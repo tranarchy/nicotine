@@ -1,9 +1,14 @@
 package nicotine.clickgui;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.RenderPipelines;
 import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.input.KeyInput;
+import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import nicotine.clickgui.guibutton.*;
@@ -465,6 +470,12 @@ public class ClickGUI extends Screen {
         if (blur) {
             this.applyBlur(context);
             this.renderDarkening(context);
+        }
+
+        if (mc.world == null) {
+            TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
+            TextureSetup textureSetup = TextureSetup.of(textureManager.getTexture(EndPortalBlockEntityRenderer.SKY_TEXTURE).getGlTextureView(), textureManager.getTexture(EndPortalBlockEntityRenderer.PORTAL_TEXTURE).getGlTextureView());
+            context.fill(RenderPipelines.END_PORTAL, textureSetup, 0, 0, this.width, this.height);
         }
     }
 

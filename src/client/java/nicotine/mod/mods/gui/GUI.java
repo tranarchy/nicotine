@@ -1,8 +1,10 @@
 package nicotine.mod.mods.gui;
 
+import net.minecraft.client.gui.screen.TitleScreen;
+import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.util.InputUtil;
 import nicotine.clickgui.ClickGUI;
-import nicotine.events.ClientWorldTickEvent;
+import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -26,10 +28,10 @@ public class GUI {
 
         final ClickGUI clickGUI = new ClickGUI();
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientTickEvent.class, event -> {
             ColorUtil.ACTIVE_FOREGROUND_COLOR = rgb.getColor();
 
-            if (InputUtil.isKeyPressed(window, keybind.keyCode) && mc.currentScreen == null)
+            if (InputUtil.isKeyPressed(window, keybind.keyCode) && (mc.currentScreen == null || mc.currentScreen instanceof TitleScreen))
                 mc.setScreen(clickGUI);
 
             return true;
