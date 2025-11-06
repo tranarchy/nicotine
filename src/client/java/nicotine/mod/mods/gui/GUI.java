@@ -1,9 +1,8 @@
 package nicotine.mod.mods.gui;
 
 import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
 import net.minecraft.client.util.InputUtil;
-import nicotine.clickgui.ClickGUI;
+import nicotine.screens.clickgui.ClickGUI;
 import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;

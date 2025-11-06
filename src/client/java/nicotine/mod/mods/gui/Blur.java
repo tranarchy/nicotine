@@ -1,6 +1,6 @@
 package nicotine.mod.mods.gui;
 
-import nicotine.clickgui.ClickGUI;
+import nicotine.screens.clickgui.ClickGUI;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;

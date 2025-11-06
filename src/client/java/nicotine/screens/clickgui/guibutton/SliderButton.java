@@ -1,4 +1,4 @@
-package nicotine.clickgui.guibutton;
+package nicotine.screens.clickgui.guibutton;
 
 import nicotine.mod.Mod;
 import nicotine.mod.option.ModOption;

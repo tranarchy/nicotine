@@ -3,7 +3,7 @@ package nicotine.util;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Formatting;
-import nicotine.clickgui.ClickGUI;
+import nicotine.screens.clickgui.ClickGUI;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;

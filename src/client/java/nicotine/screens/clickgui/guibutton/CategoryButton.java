@@ -1,4 +1,4 @@
-package nicotine.clickgui.guibutton;
+package nicotine.screens.clickgui.guibutton;
 
 public class CategoryButton extends GUIButton {
     public String text;

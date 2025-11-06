@@ -4,7 +4,6 @@ import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
-import nicotine.clickgui.ClickGUI;
 import nicotine.command.CommandManager;
 import nicotine.command.commands.TouchBarCustom;
 import nicotine.mod.HUDMod;

@@ -1,4 +1,4 @@
-package nicotine.clickgui;
+package nicotine.screens.clickgui;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.RenderPipelines;
@@ -11,7 +11,7 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.client.texture.TextureSetup;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
-import nicotine.clickgui.guibutton.*;
+import nicotine.screens.clickgui.guibutton.*;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -19,7 +19,6 @@ import nicotine.mod.option.*;
 import nicotine.util.ColorUtil;
 import nicotine.util.Settings;
 import nicotine.util.render.GUI;
-import org.joml.Vector2f;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
