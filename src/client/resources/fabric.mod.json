@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "nicotine",
-	"version": "0.6.0",
+	"version": "0.6.1",
 	"name": "nicotine",
 	"description": "Utility mod for anarchy servers",
 	"authors": [
