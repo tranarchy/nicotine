@@ -2,6 +2,7 @@ package nicotine.mod.mods.render;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.PlayerListEntry;
+import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
 import net.minecraft.util.math.Vec3d;
 import nicotine.events.ClientWorldTickEvent;
 import nicotine.events.ConnectEvent;
@@ -77,9 +78,8 @@ public class LogoutESP {
                     Vec3d view = event.camera.getPos();
                     event.matrixStack.push();
                     event.matrixStack.translate(-view.x, -view.y, -view.z);
-
-                    player.getInventory().clear();
-                    //mc.getEntityRenderDispatcher().render(player, player.getX(), player.getY(), player.getZ(), 0, event.matrixStack, event.vertexConsumerProvider, 0);
+                    PlayerEntityRenderState playerEntityRenderState = mc.getEntityRenderDispatcher().getPlayerRenderer(player).getAndUpdateRenderState(player, 0.0f);
+                    mc.getEntityRenderDispatcher().render(playerEntityRenderState, mc.gameRenderer.getEntityRenderStates().cameraRenderState, player.getX(), player.getY(), player.getZ(), event.matrixStack, mc.gameRenderer.getEntityRenderCommandQueue());
                     event.matrixStack.pop();
                 }
 
