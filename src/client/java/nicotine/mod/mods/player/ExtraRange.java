@@ -37,7 +37,7 @@ public class ExtraRange {
             public void toggle() {
                 this.enabled = !this.enabled;
 
-                if (!enabled) {
+                if (!enabled && mc.world != null) {
                     mc.player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).setBaseValue(BLOCK_INTERACT_RANGE);
                     mc.player.getAttributeInstance(EntityAttributes.ENTITY_INTERACTION_RANGE).setBaseValue(ENTITY_INTERACT_RANGE);
                 }
