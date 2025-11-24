@@ -27,8 +27,9 @@ public class LogoutESP {
     public static void init() {
         Mod logoutESP = new Mod("LogoutESP", "Shows where a player logged out");
         ToggleOption showPlayer = new ToggleOption("ShowPlayer");
+        ToggleOption showElapsed = new ToggleOption("ShowElapsed");
         RGBOption rgb = new RGBOption();
-        logoutESP.modOptions.addAll(Arrays.asList(showPlayer, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+        logoutESP.modOptions.addAll(Arrays.asList(showPlayer, showElapsed, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
         ModManager.addMod(ModCategory.Render, logoutESP);
 
         List<AbstractClientPlayerEntity> prevPlayers = new ArrayList<>();
@@ -87,7 +88,8 @@ public class LogoutESP {
                 Render.drawBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
 
                 String text = player.getName().getString();
-                text += String.format(" (%ss ago)", (System.currentTimeMillis() / 1000) - loggedPlayers.get(player));
+                if (showElapsed.enabled)
+                    text += String.format(" (%ss ago)", (System.currentTimeMillis() / 1000) - loggedPlayers.get(player));
                 Vec3d position = new Vec3d(player.getX(), player.getBoundingBox().maxY, player.getZ());
                 Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, position, text, rgb.getColor(), 1.0f);
             }
