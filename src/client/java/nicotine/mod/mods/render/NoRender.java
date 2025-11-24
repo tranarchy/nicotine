@@ -7,6 +7,8 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 
+import static nicotine.util.Common.*;
+
 import java.util.Arrays;
 
 public class NoRender {
@@ -104,12 +106,12 @@ public class NoRender {
             return true;
         });
 
-        EventBus.register(RenderParticlesEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!noRender.enabled)
                 return true;
 
             if (particles.enabled)
-                return false;
+                mc.particleManager.clearParticles();
 
             return true;
         });

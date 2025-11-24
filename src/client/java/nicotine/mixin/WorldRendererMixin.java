@@ -78,15 +78,6 @@ public abstract class WorldRendererMixin {
         });
     }
 
-    @Inject(at = @At("HEAD"), method = "renderParticles", cancellable = true)
-    private void renderParticles(FrameGraphBuilder frameGraphBuilder, GpuBufferSlice fogBuffer, CallbackInfo info) {
-        boolean result = EventBus.post(new RenderParticlesEvent());
-
-        if (!result) {
-            info.cancel();
-        }
-    }
-
     @Inject(at = @At("HEAD"), method = "renderSky", cancellable = true)
     private void renderSky(FrameGraphBuilder frameGraphBuilder, Camera camera, GpuBufferSlice fogBuffer, CallbackInfo info) {
         boolean result = EventBus.post(new RenderSkyEvent());
