@@ -1,9 +1,9 @@
 package nicotine.mod.mods.movement;
 
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import nicotine.events.ClientWorldTickEvent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.screens.ChatScreen;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -16,23 +16,23 @@ public class FreeMove {
         Mod freeMove = new Mod("FreeMove", "Lets you move while a container, game menu etc. is open");
         ModManager.addMod(ModCategory.Movement, freeMove);
 
-        final KeyBinding[] freeMoveKeybinds =  new KeyBinding[]{
-                mc.options.forwardKey,
-                mc.options.backKey,
-                mc.options.leftKey,
-                mc.options.rightKey,
-                mc.options.jumpKey,
-                mc.options.sprintKey
+        final KeyMapping[] freeMoveKeybinds =  new KeyMapping[]{
+                mc.options.keyUp,
+                mc.options.keyDown,
+                mc.options.keyLeft,
+                mc.options.keyRight,
+                mc.options.keyJump,
+                mc.options.keySprint
         };
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!freeMove.enabled || mc.currentScreen == null || mc.currentScreen instanceof ChatScreen)
+        EventBus.register(ClientLevelTickEvent.class, event -> {
+            if (!freeMove.enabled || mc.screen == null || mc.screen instanceof ChatScreen)
                 return true;
 
-            for (KeyBinding freeMoveKeybind : freeMoveKeybinds) {
-                InputUtil.Key key = InputUtil.fromTranslationKey(freeMoveKeybind.getBoundKeyTranslationKey());
-                if (InputUtil.isKeyPressed(window, key.getCode())) {
-                    freeMoveKeybind.setPressed(true);
+            for (KeyMapping freeMoveKeybind : freeMoveKeybinds) {
+                InputConstants.Key key = InputConstants.getKey(freeMoveKeybind.saveString());
+                if (InputConstants.isKeyDown(window, key.getValue())) {
+                    freeMoveKeybind.setDown(true);
                 }
             }
 

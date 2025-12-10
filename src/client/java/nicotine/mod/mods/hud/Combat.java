@@ -1,9 +1,9 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.util.Formatting;
-import nicotine.events.InGameHudRenderBeforeEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.player.AbstractClientPlayer;
+import nicotine.events.GuiRenderBeforeEvent;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.HUDMod;
@@ -35,19 +35,19 @@ public class Combat {
         combat.modOptions.addAll(Arrays.asList(distance, totemCount, otherPlayers));
         ModManager.addMod(ModCategory.HUD, combat);
 
-        EventBus.register(InGameHudRenderBeforeEvent.class, event -> {
-            if (!combat.enabled || mc.getDebugHud().shouldShowDebugHud())
+        EventBus.register(GuiRenderBeforeEvent.class, event -> {
+            if (!combat.enabled || mc.getDebugOverlay().showDebugScreen())
                 return true;
 
-            AbstractClientPlayerEntity nearestPlayer = Player.findNearestPlayer(false);
+            AbstractClientPlayer nearestPlayer = Player.findNearestPlayer(false);
 
-            if (mc.currentScreen instanceof HUDEditorScreen)
+            if (mc.screen instanceof HUDEditorScreen)
                 nearestPlayer = mc.player;
 
-            if (nearestPlayer == null || mc.currentScreen instanceof InventoryScreen)
+            if (nearestPlayer == null || mc.screen instanceof InventoryScreen)
                 return true;
 
-            final int CENTER_WIDTH = mc.getWindow().getScaledWidth() / 2;
+            final int CENTER_WIDTH = mc.getWindow().getGuiScaledWidth() / 2;
 
             combat.pos.x = CENTER_WIDTH - (WINDOW_WIDTH / 2);
             combat.pos.y = 10;
@@ -60,7 +60,7 @@ public class Combat {
             int modelX2 = combat.pos.x + (PADDING + 5) + PLAYER_MODEL_SIZE;
             int modelY2 = combat.pos.y + PADDING + (PLAYER_MODEL_SIZE * 2);
 
-            InventoryScreen.drawEntity(event.drawContext,
+            InventoryScreen.renderEntityInInventoryFollowsMouse(event.drawContext,
                     modelX1,
                     modelY1,
                     modelX2,
@@ -76,7 +76,7 @@ public class Combat {
 
             String playerName = nearestPlayer.getName().getString();
 
-            if (friendList.contains(nearestPlayer.getUuid())) {
+            if (friendList.contains(nearestPlayer.getUUID())) {
                 playerInfo.add("[F] " + playerName);
             } else {
                 playerInfo.add(playerName);
@@ -85,21 +85,21 @@ public class Combat {
             playerInfo.add("");
 
             if (distance.enabled)
-                playerInfo.add(String.format("%.1f %sblocks away", nearestPlayer.distanceTo(mc.player), Formatting.WHITE));
+                playerInfo.add(String.format("%.1f %sblocks away", nearestPlayer.distanceTo(mc.player), ChatFormatting.WHITE));
 
             if (totemCount.enabled) {
                 int poppedTotems = totemPopCounter.getOrDefault(nearestPlayer, 0);
-                playerInfo.add(String.format("%d %spopped totems", poppedTotems, Formatting.WHITE));
+                playerInfo.add(String.format("%d %spopped totems", poppedTotems, ChatFormatting.WHITE));
             }
 
             if (otherPlayers.enabled)
-                playerInfo.add(String.format("%d %sother players nearby", mc.world.getPlayers().size() - (mc.currentScreen instanceof HUDEditorScreen ? 1 : 2), Formatting.WHITE));
+                playerInfo.add(String.format("%d %sother players nearby", mc.level.players().size() - (mc.screen instanceof HUDEditorScreen ? 1 : 2), ChatFormatting.WHITE));
 
             for (int i = 0; i < playerInfo.size(); i++) {
-                event.drawContext.drawText(mc.textRenderer,
+                event.drawContext.drawString(mc.font,
                         playerInfo.get(i),
-                        combat.pos.x + (WINDOW_WIDTH / 2) - (mc.textRenderer.getWidth(playerInfo.get(i)) / 2),
-                        combat.pos.y + PADDING + (mc.textRenderer.fontHeight * i),
+                        combat.pos.x + (WINDOW_WIDTH / 2) - (mc.font.width(playerInfo.get(i)) / 2),
+                        combat.pos.y + PADDING + (mc.font.lineHeight * i),
                         ColorUtil.ACTIVE_FOREGROUND_COLOR,
                         true);
             }

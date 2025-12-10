@@ -1,18 +1,18 @@
 package nicotine.util.math;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import static nicotine.util.Common.mc;
 
 public class BoxUtil {
-    public static Box getBlockBoundingBox(BlockEntity blockEntity) {
-        BlockPos pos = blockEntity.getPos();
-        Box offset = blockEntity.getCachedState().getOutlineShape(mc.world, pos).getBoundingBox();
-        Box boundingBox = new Box(
+    public static AABB getBlockBoundingBox(BlockEntity blockEntity) {
+        BlockPos pos = blockEntity.getBlockPos();
+        AABB offset = blockEntity.getBlockState().getShape(mc.level, pos).bounds();
+        AABB boundingBox = new AABB(
                 pos.getX() + offset.minX,
                 pos.getY() + offset.minY,
                 pos.getZ() + offset.minZ,
@@ -24,13 +24,13 @@ public class BoxUtil {
         return boundingBox;
     }
 
-    public static Box getBlockBoundingBox(BlockPos pos) {
-        VoxelShape voxelShape = mc.world.getBlockState(pos).getOutlineShape(mc.world, pos);
+    public static AABB getBlockBoundingBox(BlockPos pos) {
+        VoxelShape voxelShape = mc.level.getBlockState(pos).getShape(mc.level, pos);
         if (voxelShape.isEmpty())
             return get1x1Box(pos.getX(), pos.getY(), pos.getZ());
 
-        Box offset = voxelShape.getBoundingBox();
-        Box boundingBox = new Box(
+        AABB offset = voxelShape.bounds();
+        AABB boundingBox = new AABB(
                 pos.getX() + offset.minX,
                 pos.getY() + offset.minY,
                 pos.getZ() + offset.minZ,
@@ -50,11 +50,11 @@ public class BoxUtil {
         return new Boxf(getBlockBoundingBox(pos));
     }
 
-    public static Box get1x1Box(int x, int y, int z) {
-        return new Box(x, y, z, x + 1, y + 1, z + 1);
+    public static AABB get1x1Box(int x, int y, int z) {
+        return new AABB(x, y, z, x + 1, y + 1, z + 1);
     }
 
-    public static Box get1x1Box(Vec3d pos) {
-        return new Box(pos.x, pos.y, pos.z, pos.x + 1, pos.y + 1, pos.z + 1);
+    public static AABB get1x1Box(Vec3 pos) {
+        return new AABB(pos.x, pos.y, pos.z, pos.x + 1, pos.y + 1, pos.z + 1);
     }
 }

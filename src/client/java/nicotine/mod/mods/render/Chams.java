@@ -1,6 +1,5 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
 import nicotine.events.RenderPlayerEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -23,10 +22,10 @@ public class Chams {
         ModManager.addMod(ModCategory.Render, chams);
 
         EventBus.register(RenderPlayerEvent.class, event -> {
-            if (!chams.enabled || event.playerEntityRenderState.id == mc.player.getId())
+            if (!chams.enabled || event.avatarRenderState.id == mc.player.getId())
                 return true;
 
-            event.playerEntityRenderState.outlineColor = rgb.getColor();
+            event.avatarRenderState.outlineColor = rgb.getColor();
 
             return true;
         });

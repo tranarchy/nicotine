@@ -1,17 +1,17 @@
 package nicotine.events;
 
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Camera;
+import net.minecraft.client.renderer.MultiBufferSource;
 
 public class RenderBeforeEvent {
     public final Camera camera;
-    public final MatrixStack matrixStack;
-    public final VertexConsumerProvider vertexConsumerProvider;
+    public final PoseStack matrixStack;
+    public final MultiBufferSource multiBufferSource;
 
-    public RenderBeforeEvent(Camera camera, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider) {
+    public RenderBeforeEvent(Camera camera, PoseStack matrixStack, MultiBufferSource multiBufferSource) {
         this.camera = camera;
         this.matrixStack = matrixStack;
-        this.vertexConsumerProvider = vertexConsumerProvider;
+        this.multiBufferSource = multiBufferSource;
     }
 }

@@ -1,9 +1,10 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -88,7 +89,7 @@ public class Storage {
                }
 
                if (tracer.enabled) {
-                   Vec3d tracerPos = new Vec3d(
+                   Vec3 tracerPos = new Vec3(
                            boundingBox.minX,
                            boundingBox.minY,
                            boundingBox.minZ
@@ -98,7 +99,7 @@ public class Storage {
                }
             }
 
-            for (Entity entity : mc.world.getEntities()) {
+            for (Entity entity : mc.level.entitiesForRendering()) {
                 blockColor = ColorUtil.getBlockColor(entity);
 
                 if (blockColor == -1)
@@ -121,7 +122,7 @@ public class Storage {
                 }
 
                 if (tracer.enabled) {
-                    Vec3d targetPos = new Vec3d(
+                    Vec3 targetPos = new Vec3(
                             boundingBox.minX,
                             boundingBox.minY,
                             boundingBox.minZ

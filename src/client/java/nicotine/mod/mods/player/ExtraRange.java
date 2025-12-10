@@ -1,7 +1,7 @@
 package nicotine.mod.mods.player;
 
-import net.minecraft.entity.attribute.EntityAttributes;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -37,9 +37,9 @@ public class ExtraRange {
             public void toggle() {
                 this.enabled = !this.enabled;
 
-                if (!enabled && mc.world != null) {
-                    mc.player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).setBaseValue(BLOCK_INTERACT_RANGE);
-                    mc.player.getAttributeInstance(EntityAttributes.ENTITY_INTERACTION_RANGE).setBaseValue(ENTITY_INTERACT_RANGE);
+                if (!enabled && mc.level != null) {
+                    mc.player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE).setBaseValue(BLOCK_INTERACT_RANGE);
+                    mc.player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).setBaseValue(ENTITY_INTERACT_RANGE);
                 }
             }
         };
@@ -47,12 +47,12 @@ public class ExtraRange {
         extraRange.modOptions.addAll(Arrays.asList(block, entity));
         ModManager.addMod(ModCategory.Player, extraRange);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!extraRange.enabled)
                 return true;
 
-            mc.player.getAttributeInstance(EntityAttributes.BLOCK_INTERACTION_RANGE).setBaseValue(BLOCK_INTERACT_RANGE + block.value);
-            mc.player.getAttributeInstance(EntityAttributes.ENTITY_INTERACTION_RANGE).setBaseValue(ENTITY_INTERACT_RANGE + entity.value);
+            mc.player.getAttribute(Attributes.BLOCK_INTERACTION_RANGE).setBaseValue(BLOCK_INTERACT_RANGE + block.value);
+            mc.player.getAttribute(Attributes.ENTITY_INTERACTION_RANGE).setBaseValue(ENTITY_INTERACT_RANGE + entity.value);
 
             return true;
         });

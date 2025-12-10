@@ -1,8 +1,8 @@
 package nicotine.mixin;
 
-import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import nicotine.events.KnockbackEvent;
 import nicotine.events.PushEvent;
 import nicotine.mod.mods.render.Chams;
@@ -22,8 +22,8 @@ public class EntityMixin {
     @Shadow
     private int id;
 
-    @Inject(at = @At("HEAD"), method = "setVelocityClient", cancellable = true)
-    public void setVelocityClient(Vec3d clientVelocity, CallbackInfo info)  {
+    @Inject(at = @At("HEAD"), method = "lerpMotion", cancellable = true)
+    public void lerpMotion(Vec3 clientVelocity, CallbackInfo info)  {
         if (id == mc.player.getId()) {
             boolean result = EventBus.post(new KnockbackEvent(clientVelocity.x, clientVelocity.y, clientVelocity.z));
 
@@ -33,17 +33,17 @@ public class EntityMixin {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/entity/Entity;pushAwayFrom(Lnet/minecraft/entity/Entity;)V", cancellable = true)
-    public void pushAwayFrom(Entity entity, CallbackInfo info) {
+    @Inject(at = @At("HEAD"), method = "push", cancellable = true)
+    public void push(Entity entity, CallbackInfo info) {
         boolean result = EventBus.post(new PushEvent());
         if (!result) {
             info.cancel();
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "Lnet/minecraft/entity/Entity;isGlowing()Z", cancellable = true)
-    public void isGlowing(CallbackInfoReturnable<Boolean> info) {
-        if (Chams.chams.enabled && Chams.outline.enabled && mc.world != null && mc.world.getEntityById(id) instanceof OtherClientPlayerEntity) {
+    @Inject(at = @At("HEAD"), method = "isCurrentlyGlowing", cancellable = true)
+    public void isCurrentlyGlowing(CallbackInfoReturnable<Boolean> info) {
+        if (Chams.chams.enabled && Chams.outline.enabled && mc.level != null && mc.level.getEntity(id) instanceof RemotePlayer) {
             info.setReturnValue(true);
         }
     }

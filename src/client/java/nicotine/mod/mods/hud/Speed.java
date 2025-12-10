@@ -1,7 +1,7 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.util.Formatting;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -24,15 +24,15 @@ public class Speed {
         speed.modOptions.add(unit);
         ModManager.addMod(ModCategory.HUD, speed);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!speed.enabled)
                 return true;
 
-            double deltaX = mc.player.getX() - mc.player.lastX;
-            double deltaZ = mc.player.getZ() - mc.player.lastZ;
+            double deltaX = mc.player.getX() - mc.player.xo;
+            double deltaZ = mc.player.getZ() - mc.player.zo;
             double speedVal = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaZ, 2)) * 20d * (unit.value.equals(unit.modes[0]) ? 3.6d : 1d);
 
-            String speedText = String.format("speed %s%s %.1f%s", Formatting.WHITE, HUD.separator.value, speedVal, unit.value);
+            String speedText = String.format("speed %s%s %.1f%s", ChatFormatting.WHITE, HUD.separator.value, speedVal, unit.value);
             speed.texts = List.of(speedText);
 
             return true;

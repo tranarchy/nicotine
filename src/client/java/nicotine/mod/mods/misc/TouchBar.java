@@ -5,11 +5,11 @@ import ca.weblite.objc.Proxy;
 import ca.weblite.objc.RuntimeUtils;
 import ca.weblite.objc.annotations.Msg;
 import com.sun.jna.Pointer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import nicotine.command.Command;
 import nicotine.command.CommandManager;
 import nicotine.command.commands.TouchBarCustom;
@@ -94,12 +94,12 @@ public class TouchBar {
         String coordsText = "0 0 0 [0 0]";
 
         if (mc.player != null) {
-            Vec3d pos = mc.player.getEntityPos();
+            Vec3 pos = mc.player.position();
 
             Vector2d otherWorld = new Vector2d(pos.x, pos.z);
-            if (!mc.world.getRegistryKey().equals(World.END)) {
+            if (!mc.level.dimension().equals(Level.END)) {
 
-                if (mc.world.getRegistryKey().equals(World.NETHER)) {
+                if (mc.level.dimension().equals(Level.NETHER)) {
                     otherWorld.mul(8);
                 } else
                     otherWorld.div(8);
@@ -116,7 +116,7 @@ public class TouchBar {
 
         if (mc.player != null) {
             for (int i = 0; i <= 45; i++) {
-                ItemStack itemStack = mc.player.getInventory().getStack(i);
+                ItemStack itemStack = mc.player.getInventory().getItem(i);
 
                 if (itemStack.getItem() == Items.TOTEM_OF_UNDYING) {
                     totemCount++;
@@ -132,7 +132,7 @@ public class TouchBar {
 
         if (mc.player != null) {
             for (int i = 0; i <= 45; i++) {
-                ItemStack itemStack = mc.player.getInventory().getStack(i);
+                ItemStack itemStack = mc.player.getInventory().getItem(i);
 
                 if (itemStack.getItem() == Items.END_CRYSTAL) {
                     eCrystalCount += itemStack.getCount();
@@ -150,11 +150,11 @@ public class TouchBar {
 
         if (mc.player == null)
             address = "main menu";
-        else if (mc.isInSingleplayer())
+        else if (mc.isSingleplayer())
             address = "single player";
         else if (currentServer != null) {
-            address = currentServer.address;
-            favicon = currentServer.getFavicon();
+            address = currentServer.ip;
+            favicon = currentServer.getIconBytes();
         }
 
         return createButton("server", address, favicon, true, true, null);
@@ -317,7 +317,7 @@ public class TouchBar {
             if (fileName.contains("-")) { // minecraft
                 String path = String.format("minecraft:textures/%s", fileName.replace('-', '/'));
                 try {
-                    InputStream inputStream = mc.getResourceManager().getResource(Identifier.of(path)).get().getInputStream();
+                    InputStream inputStream = mc.getResourceManager().getResource(Identifier.parse(path)).get().open();
                     touchBarImages.put(fileName, inputStream.readAllBytes());
                 } catch (IOException e) {
                     e.printStackTrace();

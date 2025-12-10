@@ -1,6 +1,6 @@
 package nicotine.mod.mods.hud;
 
-import nicotine.events.ClientWorldTickEvent;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -30,7 +30,7 @@ public class Modules {
 
         ModManager.addMod(ModCategory.HUD, modules);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!modules.enabled)
                 return true;
 
@@ -47,7 +47,7 @@ public class Modules {
             }
 
 
-            Comparator<Mod> byNameLength = Comparator.comparingInt(mod -> mc.textRenderer.getWidth(mod.name));
+            Comparator<Mod> byNameLength = Comparator.comparingInt(mod -> mc.font.width(mod.name));
 
             if (sorted.value.equals("Yes")) {
                 mods.sort(byNameLength);

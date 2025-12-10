@@ -1,9 +1,9 @@
 package nicotine.command.commands;
 
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.gui.screen.multiplayer.ConnectScreen;
-import net.minecraft.client.network.ServerAddress;
-import net.minecraft.client.network.ServerInfo;
+import net.minecraft.client.gui.screens.ConnectScreen;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import nicotine.command.Command;
 import nicotine.command.CommandManager;
 import nicotine.util.Message;
@@ -20,7 +20,7 @@ public class Connect {
                     return;
                 }
 
-                ConnectScreen.connect(new TitleScreen(), mc, ServerAddress.parse(splitCommand[1]), new ServerInfo("", splitCommand[1], ServerInfo.ServerType.OTHER), false, null);
+                ConnectScreen.startConnecting(new TitleScreen(), mc, ServerAddress.parseString(splitCommand[1]), new ServerData("", splitCommand[1], ServerData.Type.OTHER), false, null);
             }
         };
         CommandManager.addCommand(connect);

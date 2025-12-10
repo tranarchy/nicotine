@@ -24,7 +24,7 @@ public class NoKnockback {
             if (!noKnockback.enabled)
                 return true;
 
-            mc.player.addVelocity(event.x * entity.value, event.y * entity.value, event.z * entity.value);
+            mc.player.push(event.x * entity.value, event.y * entity.value, event.z * entity.value);
 
             return false;
         });
@@ -33,7 +33,7 @@ public class NoKnockback {
             if (!noKnockback.enabled)
                 return true;
 
-            mc.player.addVelocity(event.x * explosion.value, event.y * explosion.value, event.z * explosion.value);
+            mc.player.push(event.x * explosion.value, event.y * explosion.value, event.z * explosion.value);
 
             return false;
         });

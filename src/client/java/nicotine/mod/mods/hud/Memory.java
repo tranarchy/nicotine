@@ -1,7 +1,7 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.util.Formatting;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -16,7 +16,7 @@ public class Memory {
         memory.anchor = HUDMod.Anchor.TopLeft;
         ModManager.addMod(ModCategory.HUD, memory);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!memory.enabled)
                 return true;
 
@@ -24,7 +24,7 @@ public class Memory {
             long freeMemory = Runtime.getRuntime().freeMemory();
             long usedMemory = (totalMemory - freeMemory) / 1024L / 1024L;
 
-            String memoryText = String.format("memory %s%s %03dMB", Formatting.WHITE, HUD.separator.value, usedMemory);
+            String memoryText = String.format("memory %s%s %03dMB", ChatFormatting.WHITE, HUD.separator.value, usedMemory);
             memory.texts = List.of(memoryText);
 
             return true;

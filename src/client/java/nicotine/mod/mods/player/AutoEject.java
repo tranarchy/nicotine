@@ -1,9 +1,8 @@
 package nicotine.mod.mods.player;
 
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.screen.slot.SlotActionType;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -31,12 +30,12 @@ public class AutoEject {
                 Items.ROTTEN_FLESH
         );
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!autoEject.enabled)
                 return true;
 
             for (int i = 0; i <= 35; i++) {
-                if (junkItems.contains(mc.player.getInventory().getStack(i).getItem())) {
+                if (junkItems.contains(mc.player.getInventory().getItem(i).getItem())) {
                     Inventory.throwAway(i < 9 ? 36 + i : i);
                 }
             }

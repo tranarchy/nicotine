@@ -1,15 +1,16 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.MobSpawnerBlockEntity;
-import net.minecraft.block.spawner.MobSpawnerLogic;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Colors;
-import net.minecraft.util.math.BlockPos;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.level.BaseSpawner;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.mixininterfaces.IMobSpawnerLogic;
+import nicotine.events.RenderEvent;
+import nicotine.mixininterfaces.IBaseSpawner;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -32,20 +33,20 @@ public class ActiveSpawner {
         Mod activeSpawner = new Mod("ActiveSpawner", "Shows active spawners for stash hunting");
         ModManager.addMod(ModCategory.Render, activeSpawner);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!activeSpawner.enabled)
                 return true;
 
             for (BlockEntity blockEntity : BlockEntityUtil.getBlockEntities()) {
-                if (blockEntity instanceof MobSpawnerBlockEntity mobSpawnerBlockEntity) {
-                    MobSpawnerLogic mobSpawnerLogic = mobSpawnerBlockEntity.getLogic();
-                    if (((IMobSpawnerLogic)mobSpawnerLogic).getSpawnDelay() != 20) {
-                        if (!activeSpawners.contains(mobSpawnerBlockEntity.getPos())) {
+                if (blockEntity instanceof SpawnerBlockEntity spawnerBlockEntity) {
+                    BaseSpawner mobSpawnerLogic = spawnerBlockEntity.getSpawner();
+                    if (((IBaseSpawner)mobSpawnerLogic).getSpawnDelay() != 20) {
+                        if (!activeSpawners.contains(spawnerBlockEntity.getBlockPos())) {
                             Message.sendInfo(String.format("Found an active spawner at %d %d %d!",
-                                    mobSpawnerBlockEntity.getPos().getX(), mobSpawnerBlockEntity.getPos().getY(), mobSpawnerBlockEntity.getPos().getZ())
+                                    spawnerBlockEntity.getBlockPos().getX(), spawnerBlockEntity.getBlockPos().getY(), spawnerBlockEntity.getBlockPos().getZ())
                             );
-                            mc.world.playSoundAtBlockCenterClient(mc.player.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, false);
-                            activeSpawners.add(mobSpawnerBlockEntity.getPos());
+                            mc.level.playLocalSound(mc.player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f, false);
+                            activeSpawners.add(spawnerBlockEntity.getBlockPos());
                         }
                     }
                 } 
@@ -59,8 +60,8 @@ public class ActiveSpawner {
                 return true;
             
             for (BlockPos blockPos : activeSpawners) {
-                if (Player.isPositionInRenderDistance(blockPos.toCenterPos())) {
-                    Render.drawFilledBox(event.camera, event.matrixStack, BoxUtil.getBlockBoundingBoxf(blockPos), Colors.GREEN);
+                if (Player.isPositionInRenderDistance(blockPos.getCenter())) {
+                    Render.drawFilledBox(event.camera, event.matrixStack, BoxUtil.getBlockBoundingBoxf(blockPos), CommonColors.GREEN);
                 }
             }
             

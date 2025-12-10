@@ -1,8 +1,8 @@
 package nicotine.mod.mods.movement;
 
-import net.minecraft.client.option.Perspective;
-import net.minecraft.client.util.InputUtil;
-import nicotine.events.ClientWorldTickEvent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.CameraType;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -32,35 +32,35 @@ public class Pitch40 {
                 start = false;
 
                 if (!this.enabled) {
-                    mc.options.setPerspective(Perspective.FIRST_PERSON);
+                    mc.options.setCameraType(CameraType.FIRST_PERSON);
                 }
             }
         };
-        KeybindOption keyBind = new KeybindOption(InputUtil.GLFW_KEY_I);
+        KeybindOption keyBind = new KeybindOption(InputConstants.KEY_I);
         ToggleOption yawLock = new ToggleOption("YawLock");
         ToggleOption thirdPerson = new ToggleOption("ThirdPerson");
         pitch40.modOptions.addAll(Arrays.asList(yawLock, thirdPerson, keyBind));
         ModManager.addMod(ModCategory.Movement, pitch40);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!pitch40.enabled)
                 return true;
 
-            if (mc.player.isGliding() && !mc.player.isInFluid()) {
+            if (mc.player.isFallFlying() && !mc.player.isInLiquid()) {
 
                 if (thirdPerson.enabled) {
-                    mc.options.setPerspective(Perspective.THIRD_PERSON_BACK);
+                    mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
                 }
 
                 if (yawLock.enabled) {
                     if (prevYaw == -1) {
-                        prevYaw = mc.player.getYaw();
+                        prevYaw = mc.player.getYRot();
                     }
-                    mc.player.setYaw(Math.round(prevYaw / 45) * 45);
+                    mc.player.setYRot(Math.round(prevYaw / 45) * 45);
                 }
 
                 if (!start) {
-                    mc.player.setPitch(40);
+                    mc.player.setXRot(40);
                     tickDelay = 0;
                     start = true;
                     constantPitch = true;
@@ -71,7 +71,7 @@ public class Pitch40 {
                     if (lookUp) {
                         if (tickDelay < 30) {
                             pitchToAdjust = -40;
-                            mc.player.setPitch(pitchToAdjust);
+                            mc.player.setXRot(pitchToAdjust);
                         } else {
                             lookUp = false;
                             constantPitch = false;
@@ -80,7 +80,7 @@ public class Pitch40 {
                     } else {
                         if (tickDelay < 100) {
                             pitchToAdjust = 40;
-                            mc.player.setPitch(pitchToAdjust);
+                            mc.player.setXRot(pitchToAdjust);
                         } else {
                             lookUp = true;
                             constantPitch = false;
@@ -92,7 +92,7 @@ public class Pitch40 {
                 } else {
                     pitchToAdjust += (lookUp ? -2.0f : 2.0f);
 
-                    mc.player.setPitch(pitchToAdjust);
+                    mc.player.setXRot(pitchToAdjust);
 
                     if (pitchToAdjust == 40 || pitchToAdjust == -40) {
                         constantPitch = true;

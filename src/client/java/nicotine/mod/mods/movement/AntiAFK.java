@@ -1,10 +1,8 @@
 package nicotine.mod.mods.movement;
 
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Hand;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.world.InteractionHand;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -18,7 +16,7 @@ import static nicotine.util.Common.mc;
 
 public class AntiAFK {
     private static int ticks = 0;
-    private static KeyBinding randomMovementKeybind = null;
+    private static KeyMapping randomMovementKeybind = null;
 
     public static void init() {
         Mod antiAFK = new Mod("AntiAFK") {
@@ -27,7 +25,7 @@ public class AntiAFK {
                 this.enabled = !this.enabled;
 
                 if (!this.enabled && randomMovementKeybind != null) {
-                    randomMovementKeybind.setPressed(false);
+                    randomMovementKeybind.setDown(false);
                     ticks = 0;
                 }
             }
@@ -39,14 +37,14 @@ public class AntiAFK {
         antiAFK.modOptions.addAll(Arrays.asList(move, jump, look, swing));
         ModManager.addMod(ModCategory.Movement, antiAFK);
 
-        final KeyBinding[] movementKeybinds =  new KeyBinding[]{
-                mc.options.forwardKey,
-                mc.options.backKey,
-                mc.options.leftKey,
-                mc.options.rightKey,
+        final KeyMapping[] movementKeybinds =  new KeyMapping[]{
+                mc.options.keyUp,
+                mc.options.keyDown,
+                mc.options.keyLeft,
+                mc.options.keyRight,
         };
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!antiAFK.enabled)
                 return true;
 
@@ -54,23 +52,23 @@ public class AntiAFK {
                 Random random = new Random();
 
                 if (randomMovementKeybind != null)
-                    randomMovementKeybind.setPressed(false);
+                    randomMovementKeybind.setDown(false);
 
                 if (move.enabled && random.nextBoolean()) {
                     randomMovementKeybind = movementKeybinds[random.nextInt(movementKeybinds.length)];
-                    randomMovementKeybind.setPressed(true);
+                    randomMovementKeybind.setDown(true);
                 }
 
                 if (jump.enabled && random.nextBoolean()) {
-                    mc.player.jump();
+                    mc.player.jumpFromGround();
                 }
 
                 if (swing.enabled && random.nextBoolean()) {
-                    mc.player.swingHand(Hand.MAIN_HAND);
+                    mc.player.swing(InteractionHand.MAIN_HAND);
                 }
 
                 if (look.enabled && random.nextBoolean()) {
-                   mc.player.setYaw(random.nextFloat(360));
+                   mc.player.setYRot(random.nextFloat(360));
                 }
 
 

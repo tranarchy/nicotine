@@ -1,9 +1,9 @@
 package nicotine.util;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
 
@@ -18,8 +18,8 @@ public class BlockEntityUtil {
 
         List<BlockEntity> blockEntities = new ArrayList<>();
 
-        for (WorldChunk worldChunk : loadedChunks) {
-            blockEntities.addAll(worldChunk.getBlockEntities().values());
+        for (LevelChunk levelChunk : loadedChunks) {
+            blockEntities.addAll(levelChunk.getBlockEntities().values());
         }
 
         return blockEntities;
@@ -37,9 +37,9 @@ public class BlockEntityUtil {
         );
 
         for (Vec3i surroundPosition : surroundPositions) {
-            BlockPos blockPos = blockEntity.getPos().add(surroundPosition);
+            BlockPos blockPos = blockEntity.getBlockPos().offset(surroundPosition);
 
-            net.minecraft.block.entity.BlockEntity surroundingBlockEntity = mc.world.getBlockEntity(blockPos);
+            BlockEntity surroundingBlockEntity = mc.level.getBlockEntity(blockPos);
 
             if (surroundingBlockEntity == null)
                 continue;

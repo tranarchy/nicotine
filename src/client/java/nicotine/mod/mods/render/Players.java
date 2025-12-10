@@ -1,11 +1,11 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderArmorEvent;
 import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -84,9 +84,9 @@ public class Players {
             if (!players.enabled)
                 return true;
 
-            for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-                if (player instanceof OtherClientPlayerEntity) {
-                    Boxf boundingBox = new Boxf(player.getBoundingBox().expand(espScale.value - 1));
+            for (AbstractClientPlayer player : mc.level.players()) {
+                if (player instanceof RemotePlayer) {
+                    Boxf boundingBox = new Boxf(player.getBoundingBox().inflate(espScale.value - 1));
 
                     if (esp.enabled) {
                         switch (espRender.value) {
@@ -103,7 +103,7 @@ public class Players {
                     }
 
                     if (tracer.enabled) {
-                        Vec3d targetPos = player.getEntityPos();
+                        Vec3 targetPos = player.position();
                         Render.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerRgb.getColor(), (int)tracerAlpha.value));
                     }
                 }

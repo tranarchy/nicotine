@@ -1,7 +1,7 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.util.Formatting;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -18,11 +18,11 @@ public class Server {
         server.anchor = HUDMod.Anchor.TopLeft;
         ModManager.addMod(ModCategory.HUD, server);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!server.enabled || mc.isInSingleplayer())
+        EventBus.register(ClientLevelTickEvent.class, event -> {
+            if (!server.enabled || mc.isSingleplayer())
                 return true;
 
-            String serverText = String.format("server %s%s %s", Formatting.WHITE, HUD.separator.value, currentServer.address);
+            String serverText = String.format("server %s%s %s", ChatFormatting.WHITE, HUD.separator.value, currentServer.ip);
             server.texts = List.of(serverText);
 
             return true;

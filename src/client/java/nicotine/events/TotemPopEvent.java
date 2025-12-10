@@ -1,11 +1,12 @@
 package nicotine.events;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
+
+import net.minecraft.client.player.AbstractClientPlayer;
 
 public class TotemPopEvent {
-    public AbstractClientPlayerEntity player;
+    public AbstractClientPlayer player;
 
-    public TotemPopEvent(AbstractClientPlayerEntity player) {
+    public TotemPopEvent(AbstractClientPlayer player) {
         this.player = player;
     }
 }

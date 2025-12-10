@@ -1,7 +1,7 @@
 package nicotine.mod.mods.player;
 
-import net.minecraft.client.gui.screen.ingame.InventoryScreen;
-import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import nicotine.events.PacketOutEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -19,7 +19,7 @@ public class AlphaInventory {
             if (!alphaInventory.enabled)
                 return true;
 
-            if (event.packet instanceof CloseHandledScreenC2SPacket && mc.currentScreen instanceof InventoryScreen) {
+            if (event.packet instanceof ServerboundContainerClosePacket && mc.screen instanceof InventoryScreen) {
                 return false;
             }
 

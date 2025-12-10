@@ -1,6 +1,6 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.render.fog.FogRenderer;
+import net.minecraft.client.renderer.fog.FogRenderer;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;

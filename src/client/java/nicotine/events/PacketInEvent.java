@@ -1,6 +1,6 @@
 package nicotine.events;
 
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.protocol.Packet;
 
 public class PacketInEvent {
     public Packet<?> packet;

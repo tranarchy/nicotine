@@ -1,11 +1,11 @@
 package nicotine.events;
 
-import net.minecraft.client.render.RawProjectionMatrix;
+import net.minecraft.client.renderer.PerspectiveProjectionMatrixBuffer;
 
 public class RenderHandEvent {
-    public RawProjectionMatrix worldProjectionMatrix;
+    public PerspectiveProjectionMatrixBuffer levelProjectionMatrixBuffer;
 
-    public RenderHandEvent(RawProjectionMatrix worldProjectionMatrix){
-        this.worldProjectionMatrix = worldProjectionMatrix;
+    public RenderHandEvent(PerspectiveProjectionMatrixBuffer levelProjectionMatrixBuffer){
+        this.levelProjectionMatrixBuffer = levelProjectionMatrixBuffer;
     }
 }

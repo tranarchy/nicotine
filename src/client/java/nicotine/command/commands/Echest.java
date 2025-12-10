@@ -1,15 +1,11 @@
 package nicotine.command.commands;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.ContainerComponent;
-import net.minecraft.inventory.SimpleInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
 import nicotine.command.Command;
 import nicotine.command.CommandManager;
-import nicotine.events.ClientWorldTickEvent;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.mods.render.Peek;
 import nicotine.screens.PeekScreen;
 import nicotine.util.EventBus;
@@ -34,8 +30,8 @@ public class Echest {
         };
         CommandManager.addCommand(echest);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (mc.currentScreen == null && openScreen) {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
+            if (mc.screen == null && openScreen) {
                 openScreen = false;
                 List<ItemStack> peekItems;
 
@@ -46,12 +42,12 @@ public class Echest {
                     return true;
                 }
 
-                SimpleInventory peekInventory = new SimpleInventory(9 * 3);
+                SimpleContainer peekInventory = new SimpleContainer(9 * 3);
 
                 for (int i = 0; i < peekItems.size(); i++) {
-                    peekInventory.setStack(i, peekItems.get(i));
+                    peekInventory.setItem(i, peekItems.get(i));
                 }
-                mc.setScreen(new PeekScreen(Text.of("Ender Chest"), peekInventory));
+                mc.setScreen(new PeekScreen(Component.literal("Ender Chest"), peekInventory));
             }
 
             return true;

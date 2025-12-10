@@ -1,10 +1,10 @@
 package nicotine.util;
 
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.util.Formatting;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.ChatScreen;
 import nicotine.screens.clickgui.ClickGUI;
-import nicotine.events.ClientWorldTickEvent;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -33,7 +33,7 @@ public class Keybind {
             }
         }
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             for (ModCategory modCategory : ModCategory.values()) {
                 for (Mod mod : ModManager.modules.get(modCategory)) {
                     Optional<ModOption> optKeybindOption = mod.modOptions.stream().filter(x -> x instanceof KeybindOption).findAny();
@@ -62,14 +62,14 @@ public class Keybind {
         if (keycode == -1)
             return false;
 
-        if (((keycode < 8 && GLFW.glfwGetMouseButton(window.getHandle(), keycode) == 1) || (keycode > 7 && InputUtil.isKeyPressed(window, keycode))) &&
-                !(mc.currentScreen instanceof ChatScreen) && !(mc.currentScreen instanceof ClickGUI)) {
+        if (((keycode < 8 && GLFW.glfwGetMouseButton(window.handle(), keycode) == 1) || (keycode > 7 && InputConstants.isKeyDown(window, keycode))) &&
+                !(mc.screen instanceof ChatScreen) && !(mc.screen instanceof ClickGUI)) {
             if (!keysPressed.containsKey(keycode)) {
                 keysPressed.put(name, keycode);
             }
         } else if (keysPressed.getOrDefault(name, -1) != -1) {
             keysPressed.remove(name);
-            Message.send(String.format("%s [%s%s%s]", name, enabled ? Formatting.RED : Formatting.GREEN, enabled ? "OFF" : "ON", Formatting.DARK_GRAY));
+            Message.send(String.format("%s [%s%s%s]", name, enabled ? ChatFormatting.RED : ChatFormatting.GREEN, enabled ? "OFF" : "ON", ChatFormatting.DARK_GRAY));
             return true;
         }
 

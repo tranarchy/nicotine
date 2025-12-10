@@ -1,11 +1,11 @@
 package nicotine.events;
 
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 
 public class RenderPlayerEvent {
-    public PlayerEntityRenderState playerEntityRenderState;
+    public AvatarRenderState avatarRenderState;
 
-    public RenderPlayerEvent(PlayerEntityRenderState playerEntityRenderState) {
-        this.playerEntityRenderState = playerEntityRenderState;
+    public RenderPlayerEvent(AvatarRenderState avatarRenderState) {
+        this.avatarRenderState = avatarRenderState;
     }
 }

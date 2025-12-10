@@ -1,12 +1,12 @@
 package nicotine.screens;
 
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.network.chat.Component;
 import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -15,7 +15,6 @@ import nicotine.mod.mods.hud.*;
 import nicotine.util.ColorUtil;
 import nicotine.util.Settings;
 import nicotine.util.render.GUI;
-import org.joml.Vector2f;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
@@ -45,19 +44,17 @@ public class HUDEditorScreen extends Screen {
     private static List<AnchorArea> anchorAreas = new ArrayList<>();
 
     public HUDEditorScreen() {
-        super(Text.literal("nicotine HUD Editor"));
+        super(Component.literal("nicotine HUD Editor"));
     }
 
     @Override
-    public boolean mouseReleased(Click click) {
-        double mouseX = click.x();
-        double mouseY = click.y();
+    public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
+        double mouseX = mouseButtonEvent.x();
+        double mouseY = mouseButtonEvent.y();
 
         if (dragOffset.x != -1 && dragOffset.y != -1) {
             dragOffset.x = -1;
             dragOffset.y = -1;
-
-
 
            for (AnchorArea anchorArea : anchorAreas) {
                if (GUI.mouseOver(anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, mouseX, mouseY)) {
@@ -76,9 +73,9 @@ public class HUDEditorScreen extends Screen {
     }
 
     @Override
-    public boolean mouseDragged(Click click, double offsetX, double offsetY) {
-        double mouseX = click.x();
-        double mouseY = click.y();
+    public boolean mouseDragged(MouseButtonEvent mouseButtonEvent, double offsetX, double offsetY) {
+        double mouseX = mouseButtonEvent.x();
+        double mouseY = mouseButtonEvent.y();
 
         if (dragOffset.x != -1 && dragOffset.y != -1) {
 
@@ -110,19 +107,19 @@ public class HUDEditorScreen extends Screen {
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
-        if (input.key() == InputUtil.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
             Settings.save();
-            this.close();
+            this.onClose();
         }
 
         return true;
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        final int windowWidth = mc.getWindow().getScaledWidth();
-        final int windowHeight = mc.getWindow().getScaledHeight();
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        final int windowWidth = mc.getWindow().getGuiScaledWidth();
+        final int windowHeight = mc.getWindow().getGuiScaledHeight();
 
         int windowAreaX = windowWidth / 4;
         int windowAreaY = windowHeight / 4;
@@ -143,9 +140,9 @@ public class HUDEditorScreen extends Screen {
 
         HUD.drawHUD(context);
 
-        super.render(context, mouseX, mouseY, delta);
+       super.render(context, mouseX, mouseY, delta);
     }
 
     @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {}
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {}
 }

@@ -1,6 +1,6 @@
 package nicotine.mod.mods.misc;
 
-import net.minidev.json.JSONObject;
+import com.google.gson.JsonObject;
 import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -131,31 +131,31 @@ public class DiscordActivity {
     }
 
     private static void setActivity(String state, String details) {
-        JSONObject activity = new JSONObject();
+        JsonObject activity = new JsonObject();
         if (!state.isBlank())
-            activity.put("state", state);
-        activity.put("details", details);
+            activity.addProperty("state", state);
+        activity.addProperty("details", details);
 
-        JSONObject commandArgs = new JSONObject();
-        commandArgs.put("pid", ProcessHandle.current().pid());
-        commandArgs.put("activity", activity);
+        JsonObject commandArgs = new JsonObject();
+        commandArgs.addProperty("pid", ProcessHandle.current().pid());
+        commandArgs.add("activity", activity);
 
-        JSONObject command = new JSONObject();
-        command.put("nonce", UUID.randomUUID().toString());
-        command.put("cmd", "SET_ACTIVITY");
-        command.put("args", commandArgs);
+        JsonObject command = new JsonObject();
+        command.addProperty("nonce", UUID.randomUUID().toString());
+        command.addProperty("cmd", "SET_ACTIVITY");
+        command.add("args", commandArgs);
 
-        String jsonString = command.toJSONString();
+        String jsonString = command.toString();
 
         sendBuffer(1, jsonString);
     }
 
     private static void handShake() {
-        JSONObject handshake = new JSONObject();
-        handshake.put("v", 1);
-        handshake.put("client_id", APP_ID);
+        JsonObject handshake = new JsonObject();
+        handshake.addProperty("v", 1);
+        handshake.addProperty("client_id", APP_ID);
 
-        sendBuffer(0, handshake.toJSONString());
+        sendBuffer(0, handshake.toString());
     }
 
     public static void init() {
@@ -193,17 +193,17 @@ public class DiscordActivity {
 
                 if (mc.player == null)
                     details = "In main menu";
-                else if (mc.isInSingleplayer())
+                else if (mc.isSingleplayer())
                     details = "Playing single player";
                 else if (currentServer != null)
-                    details = "Playing on " + currentServer.address;
+                    details = "Playing on " + currentServer.ip;
 
                 if (mc.player != null) {
                     if (player.enabled)
                         state += mc.player.getName().getString() + " | ";
 
                     if (dimension.enabled)
-                        state += StringUtils.capitalize(mc.world.getRegistryKey().getValue().getPath()) + " | ";
+                        state += StringUtils.capitalize(mc.level.dimension().identifier().getPath()) + " | ";
 
                     if (state.length() > 3)
                         state = state.substring(0, state.length() - 3);

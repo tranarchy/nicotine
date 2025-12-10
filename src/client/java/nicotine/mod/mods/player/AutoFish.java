@@ -17,8 +17,8 @@ public class AutoFish {
             if (!autoFish.enabled)
                 return true;
 
-            mc.interactionManager.interactItem(mc.player, mc.player.getActiveHand());
-            mc.interactionManager.interactItem(mc.player, mc.player.getActiveHand());
+            mc.gameMode.useItem(mc.player, mc.player.getUsedItemHand());
+            mc.gameMode.useItem(mc.player, mc.player.getUsedItemHand());
 
             return true;
         });

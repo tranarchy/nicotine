@@ -1,17 +1,17 @@
 package nicotine.util;
 
-import net.minecraft.block.entity.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.ArmorStandEntity;
-import net.minecraft.entity.decoration.GlowItemFrameEntity;
-import net.minecraft.entity.decoration.ItemFrameEntity;
-import net.minecraft.entity.vehicle.ChestBoatEntity;
-import net.minecraft.entity.vehicle.ChestMinecartEntity;
-import net.minecraft.entity.vehicle.HopperMinecartEntity;
-import net.minecraft.util.Colors;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
-import net.minecraft.util.math.ColorHelper;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.decoration.GlowItemFrame;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.entity.vehicle.boat.ChestBoat;
+import net.minecraft.world.entity.vehicle.minecart.MinecartChest;
+import net.minecraft.world.entity.vehicle.minecart.MinecartHopper;
+import net.minecraft.world.level.block.entity.*;
 
 public class ColorUtil {
     public static final int FOREGROUND_COLOR = 0xFF626282;
@@ -41,21 +41,21 @@ public class ColorUtil {
         else if (blockEntity instanceof EnderChestBlockEntity)
             return PURPLE;
         else if (blockEntity instanceof ShulkerBoxBlockEntity)
-            return Colors.CYAN;
+            return CommonColors.HIGH_CONTRAST_DIAMOND;
         else if (blockEntity instanceof FurnaceBlockEntity || blockEntity instanceof BlastFurnaceBlockEntity || blockEntity instanceof HopperBlockEntity ||
                 blockEntity instanceof DropperBlockEntity || blockEntity instanceof DispenserBlockEntity || blockEntity instanceof SmokerBlockEntity)
-            return Colors.GRAY;
+            return CommonColors.GRAY;
 
         return -1;
     }
 
     public static int getBlockColor(Entity entity) {
-        if (entity instanceof ChestBoatEntity || entity instanceof ChestMinecartEntity)
+        if (entity instanceof ChestBoat || entity instanceof MinecartChest)
             return GOLD;
-        else if (entity instanceof ItemFrameEntity || entity instanceof GlowItemFrameEntity || entity instanceof ArmorStandEntity)
-            return Colors.WHITE;
-        else if (entity instanceof HopperMinecartEntity)
-            return Colors.GRAY;
+        else if (entity instanceof ItemFrame || entity instanceof GlowItemFrame || entity instanceof ArmorStand)
+            return CommonColors.WHITE;
+        else if (entity instanceof MinecartHopper)
+            return CommonColors.GRAY;
 
         return -1;
     }
@@ -87,22 +87,22 @@ public class ColorUtil {
     }
 
     public static int getRainbowColor() {
-        double curTime = Util.getMeasuringTimeMs() / 600.0;
+        double curTime = Util.getMillis() / 600.0;
 
         int colorIndex = (int) curTime % rainbowList.length;
         int targetColorIndex = (colorIndex + 1) % rainbowList.length;
 
         float lerpedAmount = (float) (curTime - Math.floor(curTime));
-        int lerpedColor = ColorHelper.lerp(lerpedAmount, rainbowList[colorIndex], rainbowList[targetColorIndex]);
+        int lerpedColor = ARGB.srgbLerp(lerpedAmount, rainbowList[colorIndex], rainbowList[targetColorIndex]);
 
         return lerpedColor;
     }
 
     public static int lerpValue(int value, int targetValue, double timeDivisor) {
-        double curTime = Util.getMeasuringTimeMs() / timeDivisor;
+        double curTime = Util.getMillis() / timeDivisor;
 
-        float lerpedAmount = MathHelper.abs(MathHelper.sin((float) curTime));
-        int lerpedValue = ColorHelper.lerp(lerpedAmount, value, targetValue);
+        float lerpedAmount = Mth.abs(Mth.sin((float) curTime));
+        int lerpedValue =  ARGB.srgbLerp(lerpedAmount, value, targetValue);
 
         return lerpedValue;
     }

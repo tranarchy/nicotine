@@ -1,14 +1,14 @@
 package nicotine.screens;
 
-import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.screen.GenericContainerScreenHandler;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.inventory.ContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.ChestMenu;
 
 import static nicotine.util.Common.*;
 
-public class PeekScreen extends GenericContainerScreen {
-    public PeekScreen(Text name, Inventory inventory) {
-        super(GenericContainerScreenHandler.createGeneric9x3(-1, mc.player.getInventory(), inventory), mc.player.getInventory(), name);
+public class PeekScreen extends ContainerScreen {
+    public PeekScreen(Component name, Container inventory) {
+        super(ChestMenu.threeRows(-1, mc.player.getInventory(), inventory), mc.player.getInventory(), name);
     }
 }

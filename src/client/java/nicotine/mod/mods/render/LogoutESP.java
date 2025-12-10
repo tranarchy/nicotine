@@ -1,12 +1,13 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.render.entity.state.PlayerEntityRenderState;
-import net.minecraft.util.math.Vec3d;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.world.phys.Vec3;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.ConnectEvent;
 import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -22,7 +23,7 @@ import static nicotine.util.Common.*;
 
 public class LogoutESP {
 
-    public static HashMap<AbstractClientPlayerEntity, Long> loggedPlayers = new HashMap<>();
+    public static HashMap<AbstractClientPlayer, Long> loggedPlayers = new HashMap<>();
 
     public static void init() {
         Mod logoutESP = new Mod("LogoutESP", "Shows where a player logged out");
@@ -32,27 +33,27 @@ public class LogoutESP {
         logoutESP.modOptions.addAll(Arrays.asList(showPlayer, showElapsed, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
         ModManager.addMod(ModCategory.Render, logoutESP);
 
-        List<AbstractClientPlayerEntity> prevPlayers = new ArrayList<>();
+        List<AbstractClientPlayer> prevPlayers = new ArrayList<>();
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!logoutESP.enabled)
                 return true;
 
-            Collection<PlayerListEntry> onlinePLayers = new ArrayList<>();
-            onlinePLayers.addAll(mc.getNetworkHandler().getListedPlayerListEntries());
+            Collection<PlayerInfo> onlinePLayers = new ArrayList<>();
+            onlinePLayers.addAll(mc.getConnection().getListedOnlinePlayers());
 
-            for (AbstractClientPlayerEntity player : prevPlayers) {
+            for (AbstractClientPlayer player : prevPlayers) {
                 if (onlinePLayers.stream().filter(x -> x.getProfile().name().equals(player.getGameProfile().name())).toList().isEmpty()) {
                     Message.sendWarning(String.format("%s logged out at [%.1f %.1f %.1f]", player.getName().getString(), player.getX(), player.getY(), player.getZ()));
                     loggedPlayers.put(player, System.currentTimeMillis() / 1000);
                 }
             }
 
-            for (PlayerListEntry playerListEntry : onlinePLayers) {
+            for (PlayerInfo playerListEntry : onlinePLayers) {
                 if (playerListEntry.getProfile().name().equals(mc.player.getName().getString()))
                     continue;
 
-                for (AbstractClientPlayerEntity player : loggedPlayers.keySet().stream().toList()) {
+                for (AbstractClientPlayer player : loggedPlayers.keySet().stream().toList()) {
                     if (playerListEntry.getProfile().name().equals(player.getGameProfile().name())) {
                         Message.sendInfo(String.format("%s logged back at [%.1f %.1f %.1f]", player.getName().getString(), player.getX(), player.getY(), player.getZ()));
                         loggedPlayers.remove(player);
@@ -61,7 +62,7 @@ public class LogoutESP {
             }
 
             prevPlayers.clear();
-            prevPlayers.addAll(mc.world.getPlayers());
+            prevPlayers.addAll(mc.level.players());
             prevPlayers.remove(mc.player);
 
             return true;
@@ -71,17 +72,17 @@ public class LogoutESP {
             if (!logoutESP.enabled)
                 return true;
 
-            for (AbstractClientPlayerEntity player : loggedPlayers.keySet()) {
-                if (!Player.isPositionInRenderDistance(player.getEntityPos()))
+            for (AbstractClientPlayer player : loggedPlayers.keySet()) {
+                if (!Player.isPositionInRenderDistance(player.position()))
                     continue;
 
                 if (showPlayer.enabled) {
-                    Vec3d view = event.camera.getPos();
-                    event.matrixStack.push();
+                    Vec3 view = event.camera.position();
+                    event.matrixStack.pushPose();
                     event.matrixStack.translate(-view.x, -view.y, -view.z);
-                    PlayerEntityRenderState playerEntityRenderState = mc.getEntityRenderDispatcher().getPlayerRenderer(player).getAndUpdateRenderState(player, 0.0f);
-                    mc.getEntityRenderDispatcher().render(playerEntityRenderState, mc.gameRenderer.getEntityRenderStates().cameraRenderState, player.getX(), player.getY(), player.getZ(), event.matrixStack, mc.gameRenderer.getEntityRenderCommandQueue());
-                    event.matrixStack.pop();
+                    AvatarRenderState avatarRenderState = mc.getEntityRenderDispatcher().getPlayerRenderer(player).createRenderState(player, 0.0f);
+                    mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.getLevelRenderState().cameraRenderState, player.getX(), player.getY(), player.getZ(), event.matrixStack, mc.gameRenderer.getSubmitNodeStorage());
+                    event.matrixStack.popPose();
                 }
 
                 Boxf boundingBox = new Boxf(player.getBoundingBox());
@@ -98,8 +99,8 @@ public class LogoutESP {
                     text += String.format(" [%s%ss]", (elapsedMin > 0 ? elapsedMin + "m " : ""), elapsedSec);
                 }
 
-                Vec3d position = new Vec3d(player.getX(), player.getBoundingBox().maxY, player.getZ());
-                Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, position, text, rgb.getColor(), 1.0f);
+                Vec3 position = new Vec3(player.getX(), player.getBoundingBox().maxY, player.getZ());
+                Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, position, text, rgb.getColor(), 1.0f);
             }
 
             return true;

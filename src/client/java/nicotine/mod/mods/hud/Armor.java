@@ -1,22 +1,16 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import nicotine.events.InGameHudRenderAfterEvent;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import nicotine.events.GuiRenderAfterEvent;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.HUDMod;
-import nicotine.mod.option.ToggleOption;
-import nicotine.screens.HUDEditorScreen;
-import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
-import nicotine.util.render.GUI;
-import org.joml.Vector2i;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +23,12 @@ public class Armor {
         HUDMod armor = new HUDMod("Armor");
         ModManager.addMod(ModCategory.HUD, armor);
 
-        EventBus.register(InGameHudRenderAfterEvent.class, event -> {
+        EventBus.register(GuiRenderAfterEvent.class, event -> {
             if (!armor.enabled)
                 return true;
 
-            armor.pos.x = (mc.getWindow().getScaledWidth() / 2) + 19;
-            armor.pos.y = mc.getWindow().getScaledHeight() - 59;
+            armor.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) + 19;
+            armor.pos.y = mc.getWindow().getGuiScaledHeight() - 59;
 
             HashMap<Integer, Integer> armorCount= new HashMap<>();
 
@@ -43,11 +37,12 @@ public class Armor {
             ItemStack chestplate = armorItems.get(2);
 
             for (int i = 0; i <= 35; i++) {
-                Item curItem = mc.player.getInventory().getStack(i).getItem();
-                if (curItem.getComponents().contains(DataComponentTypes.EQUIPPABLE)) {
-                    EquipmentSlot equipmentSlot = curItem.getComponents().get(DataComponentTypes.EQUIPPABLE).slot();
+                Item curItem = mc.player.getInventory().getItem(i).getItem();
+                if (curItem.components().has(DataComponents.EQUIPPABLE)) {
+                    EquipmentSlot equipmentSlot = curItem.components().get(DataComponents.EQUIPPABLE).slot();
 
-                    if (equipmentSlot.getIndex() == 3) {
+
+                    if (equipmentSlot.getIndex() == 2) {
                         if ((chestplate.getItem() != Items.ELYTRA && curItem == Items.ELYTRA) ||
                                 (chestplate.getItem() == Items.ELYTRA && curItem != Items.ELYTRA)) {
                             continue;
@@ -65,8 +60,8 @@ public class Armor {
 
                 armor.pos.x -= 18;
 
-                event.drawContext.drawItem(armorItems.get(i), armor.pos.x, armor.pos.y);
-                event.drawContext.drawStackOverlay(mc.textRenderer, armorItems.get(i), armor.pos.x, armor.pos.y, armorCount.getOrDefault(i + 1, 1).toString());
+                event.drawContext.renderItem(armorItems.get(i), armor.pos.x, armor.pos.y);
+                event.drawContext.renderItemDecorations(mc.font, armorItems.get(i), armor.pos.x, armor.pos.y, armorCount.getOrDefault(i, 1).toString());
             }
 
             return true;

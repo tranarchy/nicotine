@@ -1,7 +1,7 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.util.Formatting;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -17,11 +17,11 @@ public class Player {
         player.anchor = HUDMod.Anchor.TopLeft;
         ModManager.addMod(ModCategory.HUD, player);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!player.enabled)
                 return true;
 
-            String playerText = String.format("player %s%s %s", Formatting.WHITE, HUD.separator.value, mc.player.getName().getString());
+            String playerText = String.format("player %s%s %s", ChatFormatting.WHITE, HUD.separator.value, mc.player.getName().getString());
             player.texts = List.of(playerText);
 
             return true;

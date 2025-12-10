@@ -1,23 +1,5 @@
 accessWidener v2 named
-accessible class net/minecraft/client/render/RenderPhase$LineWidth
-accessible class net/minecraft/client/render/RenderPhase$Texture
-accessible method net/minecraft/client/gl/RenderPipelines register (Lcom/mojang/blaze3d/pipeline/RenderPipeline;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;
-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder build (Z)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder lineWidth (Lnet/minecraft/client/render/RenderPhase$LineWidth;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder target (Lnet/minecraft/client/render/RenderPhase$Target;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder layering (Lnet/minecraft/client/render/RenderPhase$Layering;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder texture (Lnet/minecraft/client/render/RenderPhase$TextureBase;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder lightmap (Lnet/minecraft/client/render/RenderPhase$Lightmap;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
-accessible method net/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder overlay (Lnet/minecraft/client/render/RenderPhase$Overlay;)Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters$Builder;
-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;ILcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
-accessible method net/minecraft/client/render/RenderLayer of (Ljava/lang/String;IZZLcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;)Lnet/minecraft/client/render/RenderLayer$MultiPhase;
-accessible field net/minecraft/client/gl/RenderPipelines RENDERTYPE_LINES_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
-accessible field net/minecraft/client/gl/RenderPipelines POSITION_COLOR_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
-accessible field net/minecraft/client/gl/RenderPipelines TRANSFORMS_PROJECTION_FOG_LIGHTING_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
-accessible field net/minecraft/client/render/RenderPhase VIEW_OFFSET_Z_LAYERING Lnet/minecraft/client/render/RenderPhase$Layering;
-accessible field net/minecraft/client/render/RenderPhase ITEM_ENTITY_TARGET Lnet/minecraft/client/render/RenderPhase$Target;
-accessible field net/minecraft/client/render/RenderPhase ENABLE_LIGHTMAP Lnet/minecraft/client/render/RenderPhase$Lightmap;
-accessible field net/minecraft/client/render/RenderPhase ENABLE_OVERLAY_COLOR Lnet/minecraft/client/render/RenderPhase$Overlay;
-accessible field net/minecraft/client/render/RenderLayer$MultiPhase phases Lnet/minecraft/client/render/RenderLayer$MultiPhaseParameters;
-accessible field net/minecraft/client/render/RenderLayer$MultiPhase pipeline Lcom/mojang/blaze3d/pipeline/RenderPipeline;
-accessible field net/minecraft/client/render/RenderLayer$MultiPhaseParameters target Lnet/minecraft/client/render/RenderPhase$Target;
+accessible method net/minecraft/client/renderer/RenderPipelines register (Lcom/mojang/blaze3d/pipeline/RenderPipeline;)Lcom/mojang/blaze3d/pipeline/RenderPipeline;
+accessible method net/minecraft/client/renderer/rendertype/RenderType create (Ljava/lang/String;Lnet/minecraft/client/renderer/rendertype/RenderSetup;)Lnet/minecraft/client/renderer/rendertype/RenderType;
+accessible field net/minecraft/client/renderer/RenderPipelines LINES_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+accessible field net/minecraft/client/renderer/RenderPipelines DEBUG_FILLED_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;

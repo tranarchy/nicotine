@@ -1,16 +1,15 @@
 package nicotine.mod.mods.combat;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.item.Items;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import nicotine.events.ClientWorldTickEvent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -34,29 +33,29 @@ public class Surround {
         ToggleOption doublePlace = new ToggleOption("Double");
         ToggleOption selfCenter = new ToggleOption("SelfCenter");
         ToggleOption inAir = new ToggleOption("InAir");
-        KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_B);
+        KeybindOption keybind = new KeybindOption(InputConstants.KEY_B);
         surround.modOptions.addAll(Arrays.asList(constant, doublePlace, selfCenter, inAir, keybind));
         ModManager.addMod(ModCategory.Combat, surround);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!surround.enabled || (!mc.player.isOnGround() && !inAir.enabled) || Player.isBusy())
+        EventBus.register(ClientLevelTickEvent.class, event -> {
+            if (!surround.enabled || (!mc.player.onGround() && !inAir.enabled) || Player.isBusy())
                 return true;
 
-            List<BlockPos> surroundBlocks = Player.getSurroundBlocks(mc.player.getBlockPos());
+            List<BlockPos> surroundBlocks = Player.getSurroundBlocks(mc.player.blockPosition());
 
             if (selfCenter.enabled) {
-                Comparator<BlockPos> byDistanceToPlayer = Comparator.comparingInt(blockPos -> (int)blockPos.toCenterPos().distanceTo(mc.player.getEntityPos()));
+                Comparator<BlockPos> byDistanceToPlayer = Comparator.comparingInt(blockPos -> (int)blockPos.getCenter().distanceTo(mc.player.position()));
                 surroundBlocks.sort(byDistanceToPlayer.reversed());
             }
 
             if (doublePlace.enabled) {
-                surroundBlocks.addAll(Player.getSurroundBlocks(mc.player.getBlockPos(), 0));
+                surroundBlocks.addAll(Player.getSurroundBlocks(mc.player.blockPosition(), 0));
             }
 
             boolean alreadySurrounded = true;
 
             for (BlockPos surroundBlock : surroundBlocks) {
-                if (mc.world.getBlockState(surroundBlock.add(0, 1, 0)).getBlock().getDefaultState().isReplaceable())
+                if (mc.level.getBlockState(surroundBlock.offset(0, 1, 0)).getBlock().defaultBlockState().canBeReplaced())
                     alreadySurrounded = false;
             }
 
@@ -68,9 +67,9 @@ public class Surround {
 
             int targetSlot = -1;
 
-            if (mc.player.getMainHandStack().getItem() != Items.OBSIDIAN) {
+            if (mc.player.getMainHandItem().getItem() != Items.OBSIDIAN) {
                 for (int i = 0; i < 9; i++) {
-                    if (mc.player.getInventory().getStack(i).getItem() == Items.OBSIDIAN) {
+                    if (mc.player.getInventory().getItem(i).getItem() == Items.OBSIDIAN) {
                         targetSlot = i;
                         break;
                     }
@@ -85,9 +84,9 @@ public class Surround {
                 targetSlot = mc.player.getInventory().getSelectedSlot();
             }
 
-            List<Box> takenPositions = new ArrayList<>();
+            List<AABB> takenPositions = new ArrayList<>();
 
-            for (Entity entity : mc.world.getEntities()) {
+            for (Entity entity : mc.level.entitiesForRendering()) {
                 if (!(entity instanceof ItemEntity)) {
                     if (entity == mc.player && selfCenter.enabled)
                         continue;
@@ -100,21 +99,21 @@ public class Surround {
             for (int i = 0; i < size; i++) {
                 BlockPos surroundBlock = surroundBlocks.get(i);
 
-                if (mc.world.getBlockState(surroundBlock).getBlock().getDefaultState().isReplaceable() && !surroundBlocks.contains(surroundBlock.add(0, -1, 0))) {
-                    surroundBlocks.add(i, surroundBlock.add(0, -1, 0));
+                if (mc.level.getBlockState(surroundBlock).getBlock().defaultBlockState().canBeReplaced() && !surroundBlocks.contains(surroundBlock.offset(0, -1, 0))) {
+                    surroundBlocks.add(i, surroundBlock.offset(0, -1, 0));
                     surroundBlock = surroundBlocks.get(i);
                     size++;
                 }
 
-                if (!(mc.world.getBlockState(surroundBlock.add(0, 1, 0)).getBlock().getDefaultState().isReplaceable())) {
+                if (!(mc.level.getBlockState(surroundBlock.offset(0, 1, 0)).getBlock().defaultBlockState().canBeReplaced())) {
                     continue;
                 }
 
                 boolean invalidPlacement = false;
 
-                Vec3d interSectionPos = new Vec3d(surroundBlock.getX(), surroundBlock.getY() + 1, surroundBlock.getZ());
+                Vec3 interSectionPos = new Vec3(surroundBlock.getX(), surroundBlock.getY() + 1, surroundBlock.getZ());
 
-                for (Box takenPosition : takenPositions) {
+                for (AABB takenPosition : takenPositions) {
                     if (BoxUtil.get1x1Box(interSectionPos).intersects(takenPosition)) {
                         invalidPlacement = true;
                         break;
@@ -125,7 +124,7 @@ public class Surround {
                    continue;
                 }
 
-                BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(surroundBlock.getX(), surroundBlock.getY(), surroundBlock.getZ()), Direction.UP, surroundBlock, false);
+                BlockHitResult blockHitResult = new BlockHitResult(new Vec3(surroundBlock.getX(), surroundBlock.getY(), surroundBlock.getZ()), Direction.UP, surroundBlock, false);
                 Player.lookAndPlace(blockHitResult, targetSlot, true, selfCenter.enabled);
             }
 

@@ -1,7 +1,7 @@
 package nicotine.mod.mods.player;
 
-import net.minecraft.item.Items;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.world.item.Items;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -24,12 +24,12 @@ public class FastXP {
         fastXP.modOptions.add(delay);
         ModManager.addMod(ModCategory.Player, fastXP);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!fastXP.enabled)
                 return true;
 
-            if (mc.player.getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE && mc.options.useKey.isPressed() && delayLeft <= 0) {
-                mc.interactionManager.interactItem(mc.player, mc.player.getActiveHand());
+            if (mc.player.getMainHandItem().getItem() == Items.EXPERIENCE_BOTTLE && mc.options.keyUse.isDown() && delayLeft <= 0) {
+                mc.gameMode.useItem(mc.player, mc.player.getUsedItemHand());
                 delayLeft = delay.value;
             }
 

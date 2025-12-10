@@ -1,11 +1,11 @@
 package nicotine.events;
 
-import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class RenderCrosshairEvent {
-    public DrawContext context;
+    public GuiGraphics context;
 
-    public RenderCrosshairEvent(DrawContext context) {
+    public RenderCrosshairEvent(GuiGraphics context) {
         this.context = context;
     }
 }

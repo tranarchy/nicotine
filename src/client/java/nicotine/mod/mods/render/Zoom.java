@@ -1,10 +1,10 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.client.util.InputUtil;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.client.gui.screens.ChatScreen;
 import nicotine.screens.clickgui.ClickGUI;
-import nicotine.events.ClientWorldTickEvent;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -28,24 +28,24 @@ public class Zoom {
                 5,
                 30
         );
-        KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_C);
+        KeybindOption keybind = new KeybindOption(InputConstants.KEY_C);
         zoom.modOptions.addAll(Arrays.asList(zoomFov, keybind));
         ModManager.addMod(ModCategory.Render, zoom);
 
-        SimpleOption<Integer> fovOption = mc.options.getFov();
+        OptionInstance<Integer> fovOption = mc.options.fov();
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!zoom.enabled || !InputUtil.isKeyPressed(window, keybind.keyCode) ||
-                    mc.currentScreen instanceof ChatScreen || mc.currentScreen instanceof ClickGUI) {
-                int fov =  fovOption.getValue();
+        EventBus.register(ClientLevelTickEvent.class, event -> {
+            if (!zoom.enabled || !InputConstants.isKeyDown(window, keybind.keyCode) ||
+                    mc.screen instanceof ChatScreen || mc.screen instanceof ClickGUI) {
+                int fov =  fovOption.get();
                 if (fov == zoomFov.value)
-                    fovOption.setValue(defaultFov);
+                    fovOption.set(defaultFov);
                 else
                     defaultFov = fov;
                 return true;
             }
 
-            fovOption.setValue((int)zoomFov.value);
+            fovOption.set((int)zoomFov.value);
 
             return true;
         });

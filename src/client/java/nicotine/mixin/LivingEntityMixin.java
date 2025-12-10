@@ -1,7 +1,6 @@
 package nicotine.mixin;
 
-import net.minecraft.entity.LivingEntity;
-import nicotine.mod.ModManager;
+import net.minecraft.world.entity.LivingEntity;
 import nicotine.mod.mods.movement.ElytraBounce;
 import nicotine.util.Player;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,11 +16,11 @@ public class LivingEntityMixin {
     @Unique
     private boolean wasGlidin = false;
 
-    @Inject(at = @At("TAIL"), method = "isGliding")
-    public boolean isGliding(CallbackInfoReturnable<Boolean> info) {
+    @Inject(at = @At("TAIL"), method = "isFallFlying")
+    public boolean isFallFlying(CallbackInfoReturnable<Boolean> info) {
         if (wasGlidin && !info.getReturnValue() && ElytraBounce.elytraBounce.enabled) {
             Player.startFlying();
-            mc.player.startGliding();
+            mc.player.startFallFlying();
         }
 
         wasGlidin = info.getReturnValue();

@@ -1,6 +1,6 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.option.Perspective;
+import net.minecraft.client.CameraType;
 import nicotine.events.RenderCrosshairEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -8,7 +8,6 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
-import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 
 import java.util.Arrays;
@@ -33,16 +32,16 @@ public class Crosshair {
             if (!crosshair.enabled)
                 return true;
 
-            if (noCrosshair.enabled || mc.options.getPerspective() != Perspective.FIRST_PERSON)
+            if (noCrosshair.enabled || mc.options.getCameraType() != CameraType.FIRST_PERSON)
                 return false;
 
             int widthVal = (int) width.value;
 
-            final int centerWidth = mc.getWindow().getScaledWidth() / 2;
-            final int centerHeight = (mc.getWindow().getScaledHeight() / 2) - 1;
+            final int centerWidth = mc.getWindow().getGuiScaledWidth() / 2;
+            final int centerHeight = (mc.getWindow().getGuiScaledHeight() / 2) - 1;
 
-            event.context.drawVerticalLine(centerWidth, centerHeight - widthVal - 1, centerHeight + widthVal + 1, rgb.getColor());
-            event.context.drawHorizontalLine(centerWidth - widthVal, centerWidth + widthVal, centerHeight, rgb.getColor());
+            event.context.vLine(centerWidth, centerHeight - widthVal - 1, centerHeight + widthVal + 1, rgb.getColor());
+            event.context.hLine(centerWidth - widthVal, centerWidth + widthVal, centerHeight, rgb.getColor());
 
             return false;
         });

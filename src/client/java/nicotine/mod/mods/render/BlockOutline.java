@@ -1,9 +1,10 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -24,7 +25,7 @@ public class BlockOutline {
             @Override
             public void toggle() {
                 this.enabled = !this.enabled;
-                mc.gameRenderer.setBlockOutlineEnabled(!enabled);
+                mc.gameRenderer.setRenderBlockOutline(!enabled);
             }
         };
         SwitchOption render = new SwitchOption(
@@ -39,7 +40,7 @@ public class BlockOutline {
             if (!blockOutline.enabled)
                 return true;
 
-            HitResult crosshairTarget = mc.crosshairTarget;
+            HitResult crosshairTarget = mc.hitResult;
 
             if (crosshairTarget.getType() != HitResult.Type.BLOCK)
                 return true;

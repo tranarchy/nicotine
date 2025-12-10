@@ -1,6 +1,6 @@
 package nicotine.mod.mods.movement;
 
-import nicotine.events.ClientWorldTickEvent;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -16,17 +16,17 @@ public class AutoSprint {
                 this.enabled = !this.enabled;
 
                 if (!this.enabled) {
-                    mc.options.sprintKey.setPressed(false);
+                    mc.options.keySprint.setDown(false);
                 }
             }
         };
         ModManager.addMod(ModCategory.Movement, autoSprint);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!autoSprint.enabled)
                 return true;
 
-            mc.options.sprintKey.setPressed(true);
+            mc.options.keySprint.setDown(true);
 
             return true;
         });

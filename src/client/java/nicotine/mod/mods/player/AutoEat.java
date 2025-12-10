@@ -1,9 +1,9 @@
 package nicotine.mod.mods.player;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.FoodComponent;
-import net.minecraft.item.Item;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.food.FoodProperties;
+import net.minecraft.world.item.Item;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -27,24 +27,24 @@ public class AutoEat {
         autoEat.modOptions.add(hunger);
         ModManager.addMod(ModCategory.Player, autoEat);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!autoEat.enabled)
                 return true;
 
             if (eating && !mc.player.isUsingItem()) {
-                mc.options.useKey.setPressed(false);
+                mc.options.keyUse.setDown(false);
                 eating = false;
             }
 
-            if (mc.player.getHungerManager().getFoodLevel() > hunger.value)
+            if (mc.player.getFoodData().getFoodLevel() > hunger.value)
                 return true;
 
             int slot = -1;
-            FoodComponent bestFoodComponent = null;
+            FoodProperties bestFoodComponent = null;
 
             for (int i = 0; i < 9; i++) {
-                Item item = mc.player.getInventory().getStack(i).getItem();
-                FoodComponent foodComponent = item.getComponents().getOrDefault(DataComponentTypes.FOOD, null);
+                Item item = mc.player.getInventory().getItem(i).getItem();
+                FoodProperties foodComponent = item.components().getOrDefault(DataComponents.FOOD, null);
 
                 if (foodComponent == null)
                     continue;
@@ -66,7 +66,7 @@ public class AutoEat {
 
 
             Inventory.selectSlot(slot);
-            mc.options.useKey.setPressed(true);
+            mc.options.keyUse.setDown(true);
             eating = true;
 
             return true;

@@ -111,7 +111,7 @@ public class NoRender {
                 return true;
 
             if (particles.enabled)
-                mc.particleManager.clearParticles();
+                mc.particleEngine.clearParticles();
 
             return true;
         });

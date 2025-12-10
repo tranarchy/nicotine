@@ -1,10 +1,11 @@
 package nicotine.mod.mods.render;
 
 import com.mojang.authlib.yggdrasil.ProfileResult;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.util.Colors;
+import net.minecraft.util.CommonColors;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.TamableAnimal;
 import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -31,7 +32,7 @@ public class EntityOwner {
 
         @Override
         public void run() {
-            ProfileResult profileResult = mc.getApiServices().sessionService().fetchProfile(ownerUUID, true);
+            ProfileResult profileResult = mc.services().sessionService().fetchProfile(ownerUUID, true);
 
             String ownerName = profileResult == null ? null : profileResult.profile().name();
 
@@ -49,13 +50,13 @@ public class EntityOwner {
             if (!entityOwner.enabled)
                 return true;
 
-            for (Entity entity : mc.world.getEntities()) {
-                if (entity instanceof TameableEntity tameableEntity) {
-                    if (tameableEntity.getOwnerReference() == null || runningFetch) {
+            for (Entity entity : mc.level.entitiesForRendering()) {
+                if (entity instanceof TamableAnimal tamableAnimal) {
+                    if (tamableAnimal.getOwnerReference() == null || runningFetch) {
                         continue;
                     }
 
-                    UUID ownerUUID = tameableEntity.getOwnerReference().getUuid();
+                    UUID ownerUUID = tamableAnimal.getOwnerReference().getUUID();
 
                     String ownerName = owners.getOrDefault(ownerUUID, "");
 
@@ -69,7 +70,7 @@ public class EntityOwner {
                     }
 
                     String text = String.format("Owned by %s",  ownerName);
-                    Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, entity.getEntityPos().add(0, 1, 0), text, Colors.WHITE, 1.0f);
+                    Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, entity.position().add(0, 0.3, 0), text, CommonColors.WHITE, 1.0f);
                 }
             }
 

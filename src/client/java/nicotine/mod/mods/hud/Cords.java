@@ -1,8 +1,8 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.util.Formatting;
-import net.minecraft.world.World;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.world.level.Level;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -21,11 +21,11 @@ public class Cords {
         cords.modOptions.add(showDirection);
         ModManager.addMod(ModCategory.HUD, cords);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!cords.enabled)
                 return true;
 
-            String direction =  StringUtils.capitalize(mc.player.getMovementDirection().asString());
+            String direction =  StringUtils.capitalize(mc.player.getMotionDirection().getName());
             String cordDirection = switch (direction) {
                 case "South" -> "+Z";
                 case "North" -> "-Z";
@@ -34,23 +34,23 @@ public class Cords {
                 default -> "";
             };
 
-            String directionText = String.format("%s [%s%s%s]",direction, Formatting.WHITE, cordDirection, Formatting.RESET);
+            String directionText = String.format("%s [%s%s%s]",direction, ChatFormatting.WHITE, cordDirection, ChatFormatting.RESET);
 
             double x = mc.player.getX();
             double y = mc.player.getY();
             double z = mc.player.getZ();
 
-            String cordsText = String.format("xyz %s%s %.1f %.1f %.1f", Formatting.WHITE, HUD.separator.value, x, y, z);
+            String cordsText = String.format("xyz %s%s %.1f %.1f %.1f", ChatFormatting.WHITE, HUD.separator.value, x, y, z);
 
             Vector2d otherWorld = new Vector2d(x, z);
-            if (!mc.world.getRegistryKey().equals(World.END)) {
+            if (!mc.level.dimension().equals(Level.END)) {
 
-                if (mc.world.getRegistryKey().equals(World.NETHER))
+                if (mc.level.dimension().equals(Level.NETHER))
                     otherWorld.mul(8);
                 else
                     otherWorld.div(8);
 
-                cordsText = cordsText.concat(String.format(" %s[%s%.1f %.1f%s]", Formatting.RESET, Formatting.WHITE, otherWorld.x, otherWorld.y, Formatting.RESET));
+                cordsText = cordsText.concat(String.format(" %s[%s%.1f %.1f%s]", ChatFormatting.RESET, ChatFormatting.WHITE, otherWorld.x, otherWorld.y, ChatFormatting.RESET));
             }
 
             cords.texts.clear();

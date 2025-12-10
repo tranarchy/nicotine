@@ -1,11 +1,11 @@
 package nicotine.mod.mods.combat;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.ConnectEvent;
 import nicotine.events.TotemPopEvent;
 import nicotine.mod.Mod;
@@ -25,7 +25,7 @@ import static nicotine.util.Common.totemPopCounter;
 
 public class CombatNotif {
 
-    private static List<AbstractClientPlayerEntity> prevPlayers = new ArrayList<>();
+    private static List<AbstractClientPlayer> prevPlayers = new ArrayList<>();
 
     public static void init() {
         Mod combatNotif = new Mod("CombatNotif");
@@ -52,15 +52,15 @@ public class CombatNotif {
 
             if (toastNotif.enabled) {
                 mc.getToastManager().clear();
-                mc.getToastManager().add(new CombatToast(Text.of(String.format("Popped a totem [%s%d%s]", Formatting.DARK_PURPLE, totemCount, Formatting.RESET)), event.player));
+                mc.getToastManager().addToast(new CombatToast(Component.literal(String.format("Popped a totem [%s%d%s]", ChatFormatting.DARK_PURPLE, totemCount, ChatFormatting.RESET)), event.player));
             }
 
             return true;
         });
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (combatNotif.enabled && enterDistance.enabled) {
-                for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
+                for (AbstractClientPlayer player : mc.level.players()) {
                     if (mc.player == player)
                         continue;
 
@@ -68,21 +68,21 @@ public class CombatNotif {
                         Message.sendInfo(String.format("%s entered your render distance", player.getName().getString()));
 
                         if (toastNotif.enabled) {
-                            mc.getToastManager().add(new CombatToast(Text.of("In render distance"), player));
+                            mc.getToastManager().addToast(new CombatToast(Component.literal("In render distance"), player));
                         }
 
                         if (playSound.enabled)
-                            mc.world.playSoundAtBlockCenterClient(mc.player.getBlockPos(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0f, 1.0f, false);
+                            mc.level.playLocalSound(mc.player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0f, 1.0f, false);
                     }
                 }
 
                 prevPlayers.clear();
-                prevPlayers.addAll(mc.world.getPlayers());
+                prevPlayers.addAll(mc.level.players());
             }
 
             if (!totemPopCounter.isEmpty()) {
-                for (AbstractClientPlayerEntity player : totemPopCounter.keySet().stream().toList()) {
-                    if (!mc.world.getPlayers().contains(player) || player.isDead()) {
+                for (AbstractClientPlayer player : totemPopCounter.keySet().stream().toList()) {
+                    if (!mc.level.players().contains(player) || player.isDeadOrDying()) {
                         if (totemPopCounter.containsKey(player)) {
                             totemPopCounter.remove(player);
                         }
@@ -90,7 +90,7 @@ public class CombatNotif {
                 }
             }
 
-            if (mc.player.isDead()) {
+            if (mc.player.isDeadOrDying()) {
                 if (totemPopCounter.containsKey(mc.player)) {
                     totemPopCounter.remove(mc.player);
                 }

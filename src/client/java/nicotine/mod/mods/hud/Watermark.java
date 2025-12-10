@@ -1,7 +1,7 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.util.Formatting;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -17,11 +17,11 @@ public class Watermark {
         watermark.anchor = HUDMod.Anchor.TopLeft;
         ModManager.addMod(ModCategory.HUD, watermark);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!watermark.enabled)
                 return true;
 
-            String watermarkText = String.format("nicotine %sv%s", Formatting.WHITE, nicotine.getVersion());
+            String watermarkText = String.format("nicotine %sv%s", ChatFormatting.WHITE, nicotine.getVersion());
             watermark.texts = List.of(watermarkText);
 
             return true;

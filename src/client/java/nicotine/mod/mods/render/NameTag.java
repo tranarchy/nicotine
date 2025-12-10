@@ -1,10 +1,11 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderLabelIfPresentEvent;
+import nicotine.events.RenderEvent;
+import nicotine.events.SubmitNameTagEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -32,7 +33,7 @@ public class NameTag {
         nameTag.modOptions.addAll(Arrays.asList(health, armor, poppedTotem, ping, scale, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
         ModManager.addMod(ModCategory.Render, nameTag);
 
-        EventBus.register(RenderLabelIfPresentEvent.class, event -> {
+        EventBus.register(SubmitNameTagEvent.class, event -> {
             return !nameTag.enabled;
         });
 
@@ -40,26 +41,26 @@ public class NameTag {
             if (!nameTag.enabled)
                 return true;
 
-            for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
+            for (AbstractClientPlayer player : mc.level.players()) {
                 if (mc.player != player) {
-                    Vec3d position = new Vec3d(player.getX(), player.getBoundingBox().maxY, player.getZ());
+                    Vec3 position = new Vec3(player.getX(), player.getBoundingBox().maxY, player.getZ());
                     float hp = player.getHealth() + player.getAbsorptionAmount();
                     String nametagText = String.format("%s", player.getName().getString());
 
-                    if (friendList.contains(player.getUuid())) {
+                    if (friendList.contains(player.getUUID())) {
                         nametagText = "[F] " + nametagText;
                     }
 
                     if (health.enabled)
-                        nametagText += String.format(" [%s%.1f%s]",  Formatting.RED, hp, Formatting.RESET);
+                        nametagText += String.format(" [%s%.1f%s]",  ChatFormatting.RED, hp, ChatFormatting.RESET);
                     if (armor.enabled)
-                        nametagText += String.format(" [%s%d%s]", Formatting.GOLD, player.getArmor(), Formatting.RESET);
+                        nametagText += String.format(" [%s%d%s]", ChatFormatting.GOLD, player.getArmorValue(), ChatFormatting.RESET);
                     if (poppedTotem.enabled)
-                        nametagText += String.format(" [%s%d%s]", Formatting.DARK_PURPLE, totemPopCounter.getOrDefault(player, 0), Formatting.RESET);
+                        nametagText += String.format(" [%s%d%s]", ChatFormatting.DARK_PURPLE, totemPopCounter.getOrDefault(player, 0), ChatFormatting.RESET);
                     if (ping.enabled)
-                        nametagText += String.format(" [%s%dms%s]", Formatting.GREEN, Player.getPing(player), Formatting.RESET);
+                        nametagText += String.format(" [%s%dms%s]", ChatFormatting.GREEN, Player.getPing(player), ChatFormatting.RESET);
 
-                    Render.drawText(event.matrixStack, event.vertexConsumerProvider, event.camera, position, nametagText, rgb.getColor(), scale.value);
+                    Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, position, nametagText, rgb.getColor(), scale.value);
                 }
             }
 

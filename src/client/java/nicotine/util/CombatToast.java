@@ -1,26 +1,26 @@
 package nicotine.util;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.PlayerSkinDrawer;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.toast.Toast;
-import net.minecraft.client.toast.ToastManager;
-import net.minecraft.text.Text;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.PlayerFaceRenderer;
+import net.minecraft.client.gui.components.toasts.Toast;
+import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
 
 import static nicotine.util.Common.mc;
 
 public class CombatToast implements Toast {
 
     private Toast.Visibility visibility;
-    private Text text;
-    private AbstractClientPlayerEntity player;
+    private Component component;
+    private AbstractClientPlayer player;
 
     @Override
-    public Visibility getVisibility() {
+    public Visibility getWantedVisibility() {
         return this.visibility;
     }
 
@@ -30,16 +30,16 @@ public class CombatToast implements Toast {
     }
 
     @Override
-    public void draw(DrawContext context, TextRenderer textRenderer, long startTime) {
-        context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, Identifier.ofVanilla("toast/advancement"), 0, 0, this.getWidth(), this.getHeight());
-        PlayerSkinDrawer.draw(context, player.getSkin().body().id(), 8, 7,  16, false, false, -1);
-        context.drawText(mc.textRenderer, this.player.getName().getString(), 30, 7, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
-        context.drawText(mc.textRenderer, this.text, 30, 18, Colors.WHITE, true);
+    public void render(GuiGraphics context, Font textRenderer, long startTime) {
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, Identifier.parse("toast/advancement"), 0, 0, this.width(), this.height());
+        PlayerFaceRenderer.draw(context, player.getSkin().body().id(), 8, 7,  16, false, false, -1);
+        context.drawString(mc.font, this.player.getName().getString(), 30, 7, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
+        context.drawString(mc.font, this.component, 30, 18, CommonColors.WHITE, true);
     }
 
-    public CombatToast(Text text, AbstractClientPlayerEntity player) {
+    public CombatToast(Component component, AbstractClientPlayer player) {
         this.visibility = Visibility.SHOW;
-        this.text = text;
+        this.component = component;
         this.player = player;
     }
 }

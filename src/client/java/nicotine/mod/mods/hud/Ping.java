@@ -1,9 +1,9 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.network.packet.c2s.query.QueryPingC2SPacket;
-import net.minecraft.network.packet.s2c.query.PingResultS2CPacket;
-import net.minecraft.util.Formatting;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.protocol.ping.ClientboundPongResponsePacket;
+import net.minecraft.network.protocol.ping.ServerboundPingRequestPacket;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.PacketInEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
@@ -30,33 +30,33 @@ public class Ping {
         ping.modOptions.add(source);
         ModManager.addMod(ModCategory.HUD, ping);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
-            if (!ping.enabled || mc.isInSingleplayer())
+        EventBus.register(ClientLevelTickEvent.class, event -> {
+            if (!ping.enabled || mc.isSingleplayer())
                 return true;
 
             if (source.value.equals("Tab"))
                 pingVal = Player.getPing(mc.player);
             else {
                 if (tick == 120) {
-                    mc.getNetworkHandler().sendPacket(new QueryPingC2SPacket(System.nanoTime()));
+                    mc.getConnection().send(new ServerboundPingRequestPacket(System.nanoTime()));
                     tick = 0;
                 }
 
                 tick++;
             }
 
-            String pingText = String.format("ping %s%s %dms", Formatting.WHITE, HUD.separator.value, pingVal);
+            String pingText = String.format("ping %s%s %dms", ChatFormatting.WHITE, HUD.separator.value, pingVal);
             ping.texts = List.of(pingText);
 
             return true;
         });
 
         EventBus.register(PacketInEvent.class, event -> {
-            if (!ping.enabled || source.value.equals("Tab") || mc.isInSingleplayer())
+            if (!ping.enabled || source.value.equals("Tab") || mc.isSingleplayer())
                 return true;
 
-            if (event.packet instanceof PingResultS2CPacket pingResultS2CPacket && mc.player != null) {
-                pingVal = (int)((System.nanoTime() - pingResultS2CPacket.startTime()) / 1E6);
+            if (event.packet instanceof ClientboundPongResponsePacket ClientboundPongResponsePacket && mc.player != null) {
+                pingVal = (int)((System.nanoTime() - ClientboundPongResponsePacket.time()) / 1E6);
             }
 
             return true;

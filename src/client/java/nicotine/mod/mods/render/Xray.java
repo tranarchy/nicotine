@@ -1,17 +1,15 @@
 package nicotine.mod.mods.render;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.util.InputUtil;
-import nicotine.events.ClientWorldTickEvent;
-import nicotine.events.GetCullingFaceEvent;
-import nicotine.events.GetRenderTypeEvent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import nicotine.events.GetFaceOcclusionShapeEvent;
+import nicotine.events.GetRenderShapeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.util.EventBus;
-import nicotine.util.Keybind;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,11 +23,11 @@ public class Xray {
             @Override
             public void toggle() {
                 this.enabled = !this.enabled;
-                mc.chunkCullingEnabled = !this.enabled;
-                mc.worldRenderer.reload();
+                mc.smartCull = !this.enabled;
+                mc.levelRenderer.allChanged();
             }
         };
-        KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_X);
+        KeybindOption keybind = new KeybindOption(InputConstants.KEY_X);
         xray.modOptions.add(keybind);
         ModManager.addMod(ModCategory.Render, xray);
 
@@ -55,7 +53,7 @@ public class Xray {
                 Blocks.END_PORTAL_FRAME
         );
 
-        EventBus.register(GetRenderTypeEvent.class, event -> {
+        EventBus.register(GetRenderShapeEvent.class, event -> {
             if (!xray.enabled || mc.player == null) {
                 return true;
             }
@@ -66,7 +64,7 @@ public class Xray {
             return false;
         });
 
-        EventBus.register(GetCullingFaceEvent.class, event -> {
+        EventBus.register(GetFaceOcclusionShapeEvent.class, event -> {
             if (!xray.enabled || mc.player == null)
                 return true;
 

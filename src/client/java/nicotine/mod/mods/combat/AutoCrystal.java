@@ -1,20 +1,21 @@
 package nicotine.mod.mods.combat;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.decoration.EndCrystalEntity;
-import net.minecraft.item.Items;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.explosion.ExplosionImpl;
-import nicotine.events.ClientWorldTickEvent;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ServerExplosion;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -44,10 +45,10 @@ public class AutoCrystal {
 
     private static final List<Block> validBlocks =  Arrays.asList(Blocks.OBSIDIAN, Blocks.BEDROCK);
 
-    private static float calculateExplosionDamage(Vec3d explosionPos, Entity entity) {
+    private static float calculateExplosionDamage(Vec3 explosionPos, Entity entity) {
         final float power = 12.0F;
 
-        double distance = Math.sqrt(entity.squaredDistanceTo(explosionPos));
+        double distance = Math.sqrt(entity.distanceToSqr(explosionPos));
         double d = distance / power;
 
         if (d <= 1.0) {
@@ -56,7 +57,7 @@ public class AutoCrystal {
             double h = entity.getZ() - explosionPos.z;
             double o = Math.sqrt(e * e + g * g + h * h);
             if (o != 0.0) {
-                double e2 = (1.0 - d) * (double) ExplosionImpl.calculateReceivedDamage(explosionPos, entity);
+                double e2 = (1.0 - d) * (double) ServerExplosion.getSeenPercent(explosionPos, entity);
                 return (float) ((e2 * e2 + e2) / 2.0 * 7.0 * (double) power + 1.0);
             }
         }
@@ -67,27 +68,27 @@ public class AutoCrystal {
     private static List<BlockPos> getPlacementPositions() {
         List<BlockPos> placementPositions = new ArrayList<>();
 
-        BlockPos initPos = mc.player.getBlockPos();
-        int blockRange = (int) Math.ceil(mc.player.getBlockInteractionRange());
+        BlockPos initPos = mc.player.blockPosition();
+        int blockRange = (int) Math.ceil(mc.player.blockInteractionRange());
 
         for (int x = -blockRange; x <= blockRange; x++) {
             for (int y = -blockRange; y <= blockRange; y++) {
                 for (int z = -blockRange; z <= blockRange; z++) {
-                    BlockPos pos = initPos.add(x, y, z);
+                    BlockPos pos = initPos.offset(x, y, z);
 
-                    if (!mc.player.canInteractWithBlockAt(pos, 0))
+                    if (!mc.player.isWithinBlockInteractionRange(pos, 0))
                         continue;
 
-                    Vec3d centerPos = pos.toCenterPos();
-                    EndCrystalEntity endCrystalEntity = new EndCrystalEntity(null, centerPos.x, pos.getY() + 1, centerPos.z);
+                    Vec3 centerPos = pos.getCenter();
+                    EndCrystal endCrystalEntity = new EndCrystal(null, centerPos.x, pos.getY() + 1, centerPos.z);
 
-                    if (!mc.player.canInteractWithEntity(endCrystalEntity, 0))
+                    if (!mc.player.isWithinEntityInteractionRange(endCrystalEntity, 0))
                         continue;
 
-                    if (!validBlocks.contains(mc.world.getBlockState(pos).getBlock()))
+                    if (!validBlocks.contains(mc.level.getBlockState(pos).getBlock()))
                         continue;
 
-                    if (mc.world.getBlockState(pos.add(0, 1, 0)).getBlock() != Blocks.AIR)
+                    if (mc.level.getBlockState(pos.offset(0, 1, 0)).getBlock() != Blocks.AIR)
                         continue;
 
                     placementPositions.add(pos);
@@ -103,25 +104,25 @@ public class AutoCrystal {
 
         HashMap<BlockPos, Direction> directions = new HashMap<>();
 
-        directions.put(placementPos.up(), Direction.UP);
-        directions.put(placementPos.down(), Direction.DOWN);
+        directions.put(placementPos.above(), Direction.UP);
+        directions.put(placementPos.below(), Direction.DOWN);
         directions.put(placementPos.north(), Direction.NORTH);
         directions.put(placementPos.west(), Direction.WEST);
         directions.put(placementPos.south(), Direction.SOUTH);
         directions.put(placementPos.east(), Direction.EAST);
 
-        BlockPos nearestPos = BlockPos.ORIGIN;
-        Vec3d playerPos = mc.player.getEntityPos();
+        BlockPos nearestPos = BlockPos.ZERO;
+        Vec3 playerPos = mc.player.position();
 
         for (BlockPos pos : directions.keySet()) {
-            if (mc.player.canInteractWithBlockAt(pos, 0) && mc.world.getBlockState(pos).getBlock() == Blocks.AIR) {
-                if (pos.toCenterPos().distanceTo(playerPos) < nearestPos.toCenterPos().distanceTo(playerPos)) {
+            if (mc.player.isWithinBlockInteractionRange(pos, 0) && mc.level.getBlockState(pos).getBlock() == Blocks.AIR) {
+                if (pos.getCenter().distanceTo(playerPos) < nearestPos.getCenter().distanceTo(playerPos)) {
                     nearestPos = pos;
                 }
             }
         }
 
-        if (nearestPos != BlockPos.ORIGIN) {
+        if (nearestPos != BlockPos.ZERO) {
             placementDir = directions.get(nearestPos);
         }
 
@@ -156,26 +157,26 @@ public class AutoCrystal {
         );
         ToggleOption manualPlace = new ToggleOption("ManualPlace");
         ToggleOption renderPosition = new ToggleOption("RenderPosition", true);
-        KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_R);
+        KeybindOption keybind = new KeybindOption(InputConstants.KEY_R);
         autoCrystal.modOptions.addAll(Arrays.asList(delay, placeDelay, minDamage, selfDamage, manualPlace, renderPosition, keybind));
         ModManager.addMod(ModCategory.Combat, autoCrystal);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!autoCrystal.enabled)
                 return true;
 
-            AbstractClientPlayerEntity nearestPlayer = Player.findNearestPlayer(true);
+            AbstractClientPlayer nearestPlayer = Player.findNearestPlayer(true);
 
             if (nearestPlayer == null)
                 return true;
 
-            for (Entity entity : mc.world.getEntities()) {
-                if (entity instanceof EndCrystalEntity endCrystalEntity) {
-                    if (Player.isBusy() || !mc.player.canInteractWithEntity(endCrystalEntity, 0))
+            for (Entity entity : mc.level.entitiesForRendering()) {
+                if (entity instanceof EndCrystal endCrystalEntity) {
+                    if (Player.isBusy() || !mc.player.isWithinEntityInteractionRange(endCrystalEntity, 0))
                         continue;
 
-                    float dmg = calculateExplosionDamage(endCrystalEntity.getEntityPos(), nearestPlayer);
-                    float selfDmg = calculateExplosionDamage(endCrystalEntity.getEntityPos(), mc.player);
+                    float dmg = calculateExplosionDamage(endCrystalEntity.position(), nearestPlayer);
+                    float selfDmg = calculateExplosionDamage(endCrystalEntity.position(), mc.player);
 
                     if (dmg < minDamage.value || selfDmg > selfDamage.value)
                         continue;
@@ -194,22 +195,22 @@ public class AutoCrystal {
 
                 List<BlockPos> placementPositions = getPlacementPositions();
 
-                List<Box> takenPositions = new ArrayList<>();
+                List<AABB> takenPositions = new ArrayList<>();
 
-                for (Entity entity : mc.world.getEntities()) {
+                for (Entity entity : mc.level.entitiesForRendering()) {
                     takenPositions.add(entity.getBoundingBox());
                 }
 
-                BlockPos bestPlacementPos = BlockPos.ORIGIN;
+                BlockPos bestPlacementPos = BlockPos.ZERO;
 
                 float bestDamage = -1;
 
                 for (BlockPos placementPosition : placementPositions) {
                     boolean invalidPlacement = false;
 
-                    Vec3d interSectionPos = new Vec3d(placementPosition.getX(), placementPosition.getY() + 1, placementPosition.getZ());
+                    Vec3 interSectionPos = new Vec3(placementPosition.getX(), placementPosition.getY() + 1, placementPosition.getZ());
 
-                    for (Box takenPosition : takenPositions) {
+                    for (AABB takenPosition : takenPositions) {
                         if (BoxUtil.get1x1Box(interSectionPos).intersects(takenPosition)) {
                             invalidPlacement = true;
                             break;
@@ -219,7 +220,7 @@ public class AutoCrystal {
                     if (invalidPlacement)
                         continue;
 
-                    Vec3d crystalPos = placementPosition.toBottomCenterPos().add(0, 1, 0);
+                    Vec3 crystalPos = placementPosition.getBottomCenter().add(0, 1, 0);
 
                     float selfDmg = calculateExplosionDamage(crystalPos, mc.player);
                     if (selfDmg > selfDamage.value)
@@ -239,7 +240,7 @@ public class AutoCrystal {
                         int targetSlot = -1;
 
                         for (int i = 0; i < 9; i++) {
-                            if (mc.player.getInventory().getStack(i).getItem() == Items.END_CRYSTAL) {
+                            if (mc.player.getInventory().getItem(i).getItem() == Items.END_CRYSTAL) {
                                 targetSlot = i;
                                 break;
                             }
@@ -251,7 +252,7 @@ public class AutoCrystal {
                             Direction placementDir = getPlacementDir(bestPlacementPos);
 
                             if (placementDir != null) {
-                                BlockHitResult blockHitResult = new BlockHitResult(new Vec3d(bestPlacementPos.getX(), bestPlacementPos.getY(), bestPlacementPos.getZ()), placementDir, bestPlacementPos, false);
+                                BlockHitResult blockHitResult = new BlockHitResult(new Vec3(bestPlacementPos.getX(), bestPlacementPos.getY(), bestPlacementPos.getZ()), placementDir, bestPlacementPos, false);
                                 Player.lookAndPlace(blockHitResult, targetSlot, false, false);
                                 placeDelayLeft = placeDelay.value;
                             }

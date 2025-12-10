@@ -1,16 +1,18 @@
 package nicotine.screens.clickgui;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.RenderPipelines;
-import net.minecraft.client.gui.Click;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.input.KeyInput;
-import net.minecraft.client.render.block.entity.EndPortalBlockEntityRenderer;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.client.texture.TextureSetup;
-import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.render.TextureSetup;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
+import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.network.chat.Component;
 import nicotine.screens.clickgui.guibutton.*;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -48,7 +50,7 @@ public class ClickGUI extends Screen {
 
 
     public ClickGUI() {
-        super(Text.of("nicotine GUI"));
+        super(Component.literal("nicotine GUI"));
     }
 
     private static boolean mouseOverButton(GUIButton button, double mouseX, double mouseY) {
@@ -60,13 +62,13 @@ public class ClickGUI extends Screen {
             return "";
         else if (keyCode < 8) {
             return switch (keyCode) {
-                case InputUtil.GLFW_MOUSE_BUTTON_LEFT -> "MBL";
-                case InputUtil.GLFW_MOUSE_BUTTON_RIGHT -> "MBR";
-                case InputUtil.GLFW_MOUSE_BUTTON_MIDDLE -> "MBM";
+                case InputConstants.MOUSE_BUTTON_LEFT -> "MBL";
+                case InputConstants.MOUSE_BUTTON_RIGHT -> "MBR";
+                case InputConstants.MOUSE_BUTTON_MIDDLE -> "MBM";
                 default -> String.format("MB%d", keyCode);
             };
         } else {
-            return InputUtil.fromKeyCode(new KeyInput(keyCode, 0, 0)).getLocalizedText().getString();
+            return InputConstants.getKey(new KeyEvent(keyCode, 0, 0)).getDisplayName().getString();
         }
     }
 
@@ -99,17 +101,17 @@ public class ClickGUI extends Screen {
                 highestModCount = modCount;
             }
 
-            size.x += mc.textRenderer.getWidth(modCategory.name()) + PADDING;
+            size.x += mc.font.width(modCategory.name()) + PADDING;
         }
 
         size.x -= PADDING;
 
-        size.y = (highestModCount + 1) * (mc.textRenderer.fontHeight + PADDING) + 2;
+        size.y = (highestModCount + 1) * (mc.font.lineHeight + PADDING) + 2;
     }
 
     private static void setGUIPos() {
-        pos.x = (mc.getWindow().getScaledWidth() / 2) - (size.x / 2);
-        pos.y = (mc.getWindow().getScaledHeight() / 2) - (size.y / 2);
+        pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - (size.x / 2);
+        pos.y = (mc.getWindow().getGuiScaledHeight() / 2) - (size.y / 2);
     }
 
     private static void getCategoryButtons() {
@@ -122,8 +124,8 @@ public class ClickGUI extends Screen {
             CategoryButton categoryButton = new CategoryButton(
                     posX,
                     posY,
-                    mc.textRenderer.getWidth(modCategory.name()),
-                    mc.textRenderer.fontHeight,
+                    mc.font.width(modCategory.name()),
+                    mc.font.lineHeight,
                     modCategory.name()
             );
 
@@ -149,13 +151,13 @@ public class ClickGUI extends Screen {
                     posX,
                     posY,
                     (size.x / 2) - PADDING,
-                    mc.textRenderer.fontHeight + 3,
+                    mc.font.lineHeight + 3,
                     mod
             );
 
             modButtons.add(modButton);
 
-            posY += mc.textRenderer.fontHeight + 5;
+            posY += mc.font.lineHeight + 5;
         }
     }
 
@@ -169,8 +171,8 @@ public class ClickGUI extends Screen {
         OptionButton toggleModOptionButton = new OptionButton(
                 posX,
                 posY,
-                mc.textRenderer.getWidth("Enabled"),
-                mc.textRenderer.fontHeight + 3,
+                mc.font.width("Enabled"),
+                mc.font.lineHeight + 3,
                 selectedMod,
                 toggleModOption
         );
@@ -178,14 +180,14 @@ public class ClickGUI extends Screen {
         optionButtons.add(toggleModOptionButton);
 
         posX += PADDING;
-        posY += mc.textRenderer.fontHeight + 5;
+        posY += mc.font.lineHeight + 5;
 
         for (ModOption modOption : selectedMod.modOptions) {
             OptionButton optionButton = new OptionButton(
                     modOption.subOption ? posX + PADDING : posX,
                     posY,
-                    mc.textRenderer.getWidth(modOption.name),
-                    mc.textRenderer.fontHeight + 3,
+                    mc.font.width(modOption.name),
+                    mc.font.lineHeight + 3,
                     selectedMod,
                     modOption
             );
@@ -207,19 +209,19 @@ public class ClickGUI extends Screen {
                 optionButtons.add(sliderButton);
             } else if (modOption instanceof SwitchOption switchOption) {
                 String switchOptionString = String.format("%s [%s]", switchOption.name, switchOption.value);
-                optionButton.width = mc.textRenderer.getWidth(switchOptionString);
+                optionButton.width = mc.font.width(switchOptionString);
 
                 optionButtons.add(optionButton);
             } else if (modOption instanceof KeybindOption keybindOption) {
                 String keybindOptionString = String.format("%s [%s]", keybindOption.name, formatKeybind(keyCodeToString(keybindOption.keyCode), keybindOption));
-                optionButton.width = mc.textRenderer.getWidth(keybindOptionString);
+                optionButton.width = mc.font.width(keybindOptionString);
 
                 optionButtons.add(optionButton);
             } else {
                 optionButtons.add(optionButton);
             }
 
-            posY += mc.textRenderer.fontHeight + 5;
+            posY += mc.font.lineHeight + 5;
         }
     }
 
@@ -243,7 +245,7 @@ public class ClickGUI extends Screen {
         }
     }
 
-    private void drawGUI(DrawContext context, int mouseX, int mouseY) {
+    private void drawGUI(GuiGraphics context, int mouseX, int mouseY) {
         int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
         CategoryButton firstCategoryButton = categoryButtons.getFirst();
@@ -251,14 +253,14 @@ public class ClickGUI extends Screen {
 
         context.fill(pos.x, pos.y, pos.x + size.x, pos.y + size.y, ColorUtil.BACKGROUND_COLOR);
         GUI.drawBorder(context, pos.x, pos.y, size.x, size.y, dynamicColor);
-        context.drawVerticalLine(pos.x + size.x / 2, dividerLinePosY, pos.y + size.y, dynamicColor);
+        context.vLine(pos.x + size.x / 2, dividerLinePosY, pos.y + size.y, dynamicColor);
 
-        context.drawHorizontalLine(pos.x, pos.x + size.x, dividerLinePosY, dynamicColor);
+        context.hLine(pos.x, pos.x + size.x, dividerLinePosY, dynamicColor);
 
         for (CategoryButton categoryButton : categoryButtons) {
             int categoryColor = mouseOverButton(categoryButton, mouseX, mouseY) || categoryButton.text.equals(selectedCategory.name()) ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
 
-            context.drawText(mc.textRenderer, categoryButton.text, categoryButton.x, categoryButton.y, categoryColor, true);
+            context.drawString(mc.font, categoryButton.text, categoryButton.x, categoryButton.y, categoryColor, true);
         }
 
         for (int i = 0; i < modButtons.size(); i++) {
@@ -291,20 +293,20 @@ public class ClickGUI extends Screen {
 
 
                 if (showDescription && !modButton.mod.description.isBlank()) {
-                    List<Text> description = new ArrayList<>();
+                    List<Component> description = new ArrayList<>();
                     String[] splitDescription = modButton.mod.description.split("\n");
                     for (int j = 0; j < splitDescription.length; j++) {
-                        description.add(Text.of(splitDescription[j]));
+                        description.add(Component.literal(splitDescription[j]));
                         if (j + 1 < splitDescription.length) {
-                            description.add(Text.of(""));
+                            description.add(Component.literal(""));
                         }
                     }
 
-                    context.drawTooltip(mc.textRenderer, description, mouseX + 3, mouseY + splitDescription.length * 3);
+                    context.setComponentTooltipForNextFrame(mc.font, description, mouseX + 3, mouseY + splitDescription.length * 3);
                 }
             }
 
-            context.drawText(mc.textRenderer, buttonText, modButton.x, modButton.y, modColor,true);
+            context.drawString(mc.font, buttonText, modButton.x, modButton.y, modColor,true);
         }
 
         for (OptionButton optionButton : optionButtons) {
@@ -345,10 +347,10 @@ public class ClickGUI extends Screen {
 
                 String sliderText = sliderOption.decimal ? Float.toString(sliderOption.value) : Integer.toString((int)sliderOption.value);
 
-                context.drawText(
-                        mc.textRenderer,
-                        Text.of(sliderText),
-                        (sliderButton.sliderX + (sliderButton.sliderWidth  / 2)) - (mc.textRenderer.getWidth(sliderText) / 2),
+                context.drawString(
+                        mc.font,
+                        Component.literal(sliderText),
+                        (sliderButton.sliderX + (sliderButton.sliderWidth  / 2)) - (mc.font.width(sliderText) / 2),
                         sliderButton.y,
                         ColorUtil.FOREGROUND_COLOR,
                         true
@@ -361,19 +363,19 @@ public class ClickGUI extends Screen {
                 optionColor = toggleOption.enabled ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
             }
 
-            context.drawText(mc.textRenderer, optionButtonText, optionButton.x, optionButton.y, optionColor, true);
+            context.drawString(mc.font, optionButtonText, optionButton.x, optionButton.y, optionColor, true);
         }
     }
 
     @Override
-    public boolean keyPressed(KeyInput input) {
-        if (input.key() == InputUtil.GLFW_KEY_ESCAPE) {
+    public boolean keyPressed(KeyEvent keyEvent) {
+        if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
             Settings.save();
-            this.close();
+            this.onClose();
         }
 
         if (keybindOptionToSet != null) {
-            keybindOptionToSet.keyCode = input.key();
+            keybindOptionToSet.keyCode = keyEvent.key();
             keybindOptionToSet = null;
         }
 
@@ -381,20 +383,20 @@ public class ClickGUI extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(Click click, boolean doubled) {
+    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubled) {
 
         if (keybindOptionToSet != null) {
-            keybindOptionToSet.keyCode = click.getKeycode();
+            keybindOptionToSet.keyCode = mouseButtonEvent.input();
             keybindOptionToSet = null;
 
             return true;
         }
 
-        if (click.getKeycode() != InputUtil.GLFW_MOUSE_BUTTON_LEFT)
+        if (mouseButtonEvent.input() != InputConstants.MOUSE_BUTTON_LEFT)
             return true;
 
-        double mouseX = click.x();
-        double mouseY = click.y();
+        double mouseX = mouseButtonEvent.x();
+        double mouseY = mouseButtonEvent.y();
 
         for (GUIButton guiButton : Stream.concat(Stream.concat(categoryButtons.stream(), modButtons.stream()), optionButtons.stream()).toList()) {
             if (!mouseOverButton(guiButton, mouseX, mouseY))
@@ -445,9 +447,9 @@ public class ClickGUI extends Screen {
     }
 
     @Override
-    public boolean mouseDragged(Click click, double offsetX, double offsetY) {
-        double mouseX = click.x();
-        double mouseY = click.y();
+    public boolean mouseDragged(MouseButtonEvent mouseButtonEvent, double offsetX, double offsetY) {
+        double mouseX = mouseButtonEvent.x();
+        double mouseY = mouseButtonEvent.y();
 
         for (OptionButton optionButton : optionButtons) {
             if (optionButton.modOption instanceof SliderOption sliderOption) {
@@ -465,21 +467,23 @@ public class ClickGUI extends Screen {
 
 
     @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
         if (blur) {
-            this.applyBlur(context);
-            this.renderDarkening(context);
+            this.renderBlurredBackground(context);
+            this.renderMenuBackground(context);
         }
 
-        if (mc.world == null) {
-            TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
-            TextureSetup textureSetup = TextureSetup.of(textureManager.getTexture(EndPortalBlockEntityRenderer.SKY_TEXTURE).getGlTextureView(), textureManager.getTexture(EndPortalBlockEntityRenderer.PORTAL_TEXTURE).getGlTextureView());
+        if (mc.level == null) {
+            TextureManager textureManager = Minecraft.getInstance().getTextureManager();
+            AbstractTexture endSkyTexture = textureManager.getTexture(AbstractEndPortalRenderer.END_SKY_LOCATION);
+            AbstractTexture endPortalTexture = textureManager.getTexture(AbstractEndPortalRenderer.END_PORTAL_LOCATION);
+            TextureSetup textureSetup = TextureSetup.doubleTexture(endSkyTexture.getTextureView(), endSkyTexture.getSampler(), endPortalTexture.getTextureView(), endPortalTexture.getSampler());
             context.fill(RenderPipelines.END_PORTAL, textureSetup, 0, 0, this.width, this.height);
         }
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         setGUISize();
         setGUIPos();
         getCategoryButtons();

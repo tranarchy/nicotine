@@ -1,11 +1,11 @@
 package nicotine.command.commands;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.world.entity.Entity;
 import nicotine.command.Command;
 import nicotine.command.CommandManager;
-import nicotine.events.ClientWorldTickEvent;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
 import nicotine.util.Settings;
@@ -24,10 +24,10 @@ public class Friend {
                 }
 
                 if (splitCommand[1].equals("add") || splitCommand[1].equals("remove")) {
-                    AbstractClientPlayerEntity friend = null;
+                    AbstractClientPlayer friend = null;
 
-                    for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-                        if (!(player instanceof OtherClientPlayerEntity))
+                    for (AbstractClientPlayer player : mc.level.players()) {
+                        if (!(player instanceof RemotePlayer))
                             continue;
 
                         if (player.getName().getString().equalsIgnoreCase(splitCommand[2])) {
@@ -42,11 +42,11 @@ public class Friend {
                     }
 
                     if (splitCommand[1].equals("add")) {
-                        friendList.add(friend.getUuid());
+                        friendList.add(friend.getUUID());
                         Message.sendInfo(String.format("Added %s to friend list!", friend.getName().getString()));
                     } else {
-                        if (friendList.contains(friend.getUuid())) {
-                            friendList.remove(friend.getUuid());
+                        if (friendList.contains(friend.getUUID())) {
+                            friendList.remove(friend.getUUID());
                             Message.sendWarning(String.format("Removed %s from friend list!", friend.getName().getString()));
                         } else {
                             Message.sendWarning("Player is not in friend list!");
@@ -63,24 +63,24 @@ public class Friend {
         };
         CommandManager.addCommand(friend);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
 
-            Entity targetedEntity = mc.targetedEntity;
+            Entity targetedEntity = mc.crosshairPickEntity;
 
             if (targetedEntity == null)
                 return true;
 
-            if (targetedEntity.isPlayer()) {
-                if (mc.options.pickItemKey.isPressed()) {
-                    if (friendList.contains(targetedEntity.getUuid())) {
-                        friendList.remove(targetedEntity.getUuid());
+            if (targetedEntity.isAlwaysTicking()) {
+                if (mc.options.keyPickItem.isDown()) {
+                    if (friendList.contains(targetedEntity.getUUID())) {
+                        friendList.remove(targetedEntity.getUUID());
                         Message.sendWarning(String.format("Removed %s from friend list!", targetedEntity.getName().getString()));
                     } else {
-                        friendList.add(targetedEntity.getUuid());
+                        friendList.add(targetedEntity.getUUID());
                         Message.sendInfo(String.format("Added %s to friend list!", targetedEntity.getName().getString()));
                     }
 
-                    mc.options.pickItemKey.setPressed(false);
+                    mc.options.keyPickItem.setDown(false);
                     Settings.save();
                 }
             }

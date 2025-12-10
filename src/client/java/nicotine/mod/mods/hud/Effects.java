@@ -1,11 +1,11 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.StringHelper;
-import net.minecraft.util.math.MathHelper;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
+import net.minecraft.world.effect.MobEffectInstance;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -23,31 +23,31 @@ public class Effects {
         effects.anchor = HUDMod.Anchor.BottomRight;
         ModManager.addMod(ModCategory.HUD, effects);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!effects.enabled)
                 return true;
 
-            Comparator<StatusEffectInstance> byAmplifier = Comparator.comparingInt(statusEffectInstance -> statusEffectInstance.getAmplifier());
-            List<StatusEffectInstance> statusEffects = new ArrayList<>(mc.player.getStatusEffects().stream().toList());
+            Comparator<MobEffectInstance> byAmplifier = Comparator.comparingInt(statusEffectInstance -> statusEffectInstance.getAmplifier());
+            List<MobEffectInstance> statusEffects = new ArrayList<>(mc.player.getActiveEffects().stream().toList());
 
             if (!statusEffects.isEmpty())
                 statusEffects.sort(byAmplifier);
 
             effects.texts.clear();
 
-            for (StatusEffectInstance statusEffectInstance : statusEffects) {
+            for (MobEffectInstance statusEffectInstance : statusEffects) {
 
-                String effect = Text.translatable(statusEffectInstance.getTranslationKey()).getString();
-                String strength = Text.translatable("enchantment.level." + (statusEffectInstance.getAmplifier() + 1)).getString();
+                String effect = Component.translatable(statusEffectInstance.getDescriptionId()).getString();
+                String strength = Component.translatable("enchantment.level." + (statusEffectInstance.getAmplifier() + 1)).getString();
 
-                int durationTicks = MathHelper.floor((float) statusEffectInstance.getDuration());
-                String duration = Text.literal(StringHelper.formatTicks(durationTicks, 20)).getString();
+                int durationTicks = Mth.floor((float) statusEffectInstance.getDuration());
+                String duration = Component.literal(StringUtil.formatTickDuration(durationTicks, 20)).getString();
 
                 if (duration.contains("-1")) {
                     duration = "∞";
                 }
 
-                String statusEffectText = String.format("%s%s %s [%s]", effect, Formatting.WHITE, strength, duration);
+                String statusEffectText = String.format("%s%s %s [%s]", effect, ChatFormatting.WHITE, strength, duration);
                 effects.texts.add(statusEffectText);
             }
 

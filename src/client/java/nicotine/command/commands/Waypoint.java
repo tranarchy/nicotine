@@ -1,7 +1,7 @@
 package nicotine.command.commands;
 
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import nicotine.command.Command;
 import nicotine.command.CommandManager;
 import nicotine.util.Message;
@@ -12,12 +12,12 @@ import static nicotine.util.Common.*;
 
 public class Waypoint {
     private static void addWaypoint(String waypoint, int x, int y, int z) {
-        allWaypoints.add(new WaypointInstance(waypoint, mc.world.getRegistryKey().getValue().toString(), currentServer.address, x, y, z));
+        allWaypoints.add(new WaypointInstance(waypoint, mc.level.dimension().identifier().toString(), currentServer.ip, x, y, z));
         Settings.save();
     }
 
     private static void addWaypoint(String waypoint) {
-        BlockPos pos = mc.player.getBlockPos();
+        BlockPos pos = mc.player.blockPosition();
         addWaypoint(waypoint, pos.getX(), pos.getY(), pos.getZ());
     }
 
@@ -25,7 +25,7 @@ public class Waypoint {
         boolean removed = false;
 
         for (WaypointInstance  waypointInstance : allWaypoints.stream().toList()) {
-            if (waypointInstance.name.equals(waypoint) && waypointInstance.server.equals(currentServer.address)) {
+            if (waypointInstance.name.equals(waypoint) && waypointInstance.server.equals(currentServer.ip)) {
                 allWaypoints.remove(waypointInstance);
                 removed = true;
                 break;
@@ -48,11 +48,11 @@ public class Waypoint {
             public void trigger(String[] splitCommand) {
                 if (splitCommand.length == 1) {
                     for (WaypointInstance waypointInstance : allWaypoints) {
-                        if (waypointInstance.server.equals(currentServer.address)) {
+                        if (waypointInstance.server.equals(currentServer.ip)) {
                             Message.send(String.format("%s%s -> %s[%d %d %d] [%s]",
-                                    Formatting.DARK_PURPLE,
+                                    ChatFormatting.DARK_PURPLE,
                                     waypointInstance.name,
-                                    Formatting.GRAY,
+                                    ChatFormatting.GRAY,
                                     waypointInstance.x,
                                     waypointInstance.y,
                                     waypointInstance.x,

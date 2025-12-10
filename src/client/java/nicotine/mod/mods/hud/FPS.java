@@ -1,7 +1,7 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.util.Formatting;
-import nicotine.events.ClientWorldTickEvent;
+import net.minecraft.ChatFormatting;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
@@ -17,11 +17,11 @@ public class FPS {
         fps.anchor = HUDMod.Anchor.TopLeft;
         ModManager.addMod(ModCategory.HUD, fps);
 
-        EventBus.register(ClientWorldTickEvent.class, event -> {
+        EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!fps.enabled)
                 return true;
 
-            String fpsText = String.format("fps %s%s %d", Formatting.WHITE, HUD.separator.value, mc.getCurrentFps());
+            String fpsText = String.format("fps %s%s %d", ChatFormatting.WHITE, HUD.separator.value, mc.getFps());
             fps.texts = List.of(fpsText);
 
             return true;

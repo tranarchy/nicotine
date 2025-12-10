@@ -1,20 +1,20 @@
 package nicotine.util;
 
-import net.minecraft.client.network.AbstractClientPlayerEntity;
-import net.minecraft.client.network.OtherClientPlayerEntity;
-import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.command.argument.EntityAnchorArgumentType;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerInputC2SPacket;
-import net.minecraft.util.Hand;
-import net.minecraft.util.PlayerInput;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec2f;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.RemotePlayer;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
+import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Input;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import nicotine.events.SendMovementPacketAfterEvent;
 import nicotine.events.SendMovementPacketBeforeEvent;
 
@@ -48,7 +48,7 @@ public class Player {
         public boolean delayAction = false;
         public boolean rotated = false;
 
-        public Vec3d lookAtPos = null;
+        public Vec3 lookAtPos = null;
 
         public Action(ActionType actionType, Entity entity, boolean revertRotation) {
             this.actionType = actionType;
@@ -70,7 +70,7 @@ public class Player {
 
     public static void init() {
         EventBus.register(SendMovementPacketBeforeEvent.class, event -> {
-            if (mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem())
+            if (mc.gameMode.isDestroying() || mc.player.isUsingItem())
                actions.clear();
 
             if (actions.isEmpty())
@@ -80,10 +80,10 @@ public class Player {
 
             if (!action.rotated) {
 
-                Vec2f rotation = getRotation(action);
+                Vec2 rotation = getRotation(action);
 
-                mc.player.setPitch(rotation.x);
-                mc.player.setYaw(rotation.y);
+                mc.player.setXRot(rotation.x);
+                mc.player.setYRot(rotation.y);
 
                 action.rotated = true;
             }
@@ -92,14 +92,14 @@ public class Player {
                 return true;
 
             if (action.actionType == ActionType.ATTACK) {
-                if (!mc.player.canInteractWithEntity(action.entity, 0)) {
+                if (!mc.player.isWithinEntityInteractionRange(action.entity, 0)) {
                     return true;
                 }
 
                 attack(action.entity);
                 swingHand();
             } else {
-                if (!mc.player.canInteractWithBlockAt(action.blockHitResult.getBlockPos(), 0)) {
+                if (!mc.player.isWithinBlockInteractionRange(action.blockHitResult.getBlockPos(), 0)) {
                     return true;
                 }
 
@@ -124,7 +124,7 @@ public class Player {
         });
 
         EventBus.register(SendMovementPacketAfterEvent.class, event -> {
-            if (mc.interactionManager.isBreakingBlock() || mc.player.isUsingItem())
+            if (mc.gameMode.isDestroying() || mc.player.isUsingItem())
                 actions.clear();
 
             if (actions.isEmpty())
@@ -133,8 +133,8 @@ public class Player {
             Action action = actions.getFirst();
 
             if (action.revertRotation) {
-                mc.player.setPitch(mc.player.lastPitch);
-                mc.player.setYaw(mc.player.lastYaw);
+                mc.player.setXRot(mc.player.xRotO);
+                mc.player.setYRot(mc.player.yRotO);
                 action.revertRotation = false;
             }
 
@@ -148,9 +148,9 @@ public class Player {
         });
     }
 
-    public static Vec2f getRotation(Action action) {
+    public static Vec2 getRotation(Action action) {
 
-        Vec3d target;
+        Vec3 target;
 
         if (action.actionType == ActionType.ATTACK) {
             target = action.entity.getBoundingBox().getCenter();
@@ -158,26 +158,26 @@ public class Player {
             if (action.lookAtPos != null)
                 target = action.lookAtPos;
             else
-                target = action.blockHitResult.getBlockPos().toCenterPos();
+                target = action.blockHitResult.getBlockPos().getCenter();
 
             if (action.selfCenter) {
                 selfCenter();
             }
         }
 
-        Vec3d vec3d = EntityAnchorArgumentType.EntityAnchor.EYES.positionAt(mc.player);
+        Vec3 vec3d = EntityAnchorArgument.Anchor.EYES.apply(mc.player);
 
         double d = target.x - vec3d.x;
         double e = target.y - vec3d.y;
         double f = target.z - vec3d.z;
         double g = Math.sqrt(d * d + f * f);
 
-        float pitch = MathHelper.wrapDegrees((float)(-(MathHelper.atan2(e, g) * 180.0F / (float)Math.PI)));
-        float yaw = MathHelper.wrapDegrees((float)(MathHelper.atan2(f, d) * 180.0F / (float)Math.PI) - 90.0F);
+        float pitch = Mth.wrapDegrees((float)(-(Mth.atan2(e, g) * 180.0F / (float)Math.PI)));
+        float yaw = Mth.wrapDegrees((float)(Mth.atan2(f, d) * 180.0F / (float)Math.PI) - 90.0F);
 
-        yaw = MathHelper.wrapDegrees(yaw - mc.player.getYaw()) + mc.player.getYaw();
+        yaw = Mth.wrapDegrees(yaw - mc.player.getYRot()) + mc.player.getYRot();
 
-        Vec2f rotation = new Vec2f(pitch, yaw);
+        Vec2 rotation = new Vec2(pitch, yaw);
 
         return rotation;
     }
@@ -187,7 +187,7 @@ public class Player {
         actions.add(action);
     }
 
-    public static void lookAndPlace(Vec3d lookAtPos, BlockHitResult blockHitResult, int targetSlot, boolean sneak, boolean center) {
+    public static void lookAndPlace(Vec3 lookAtPos, BlockHitResult blockHitResult, int targetSlot, boolean sneak, boolean center) {
         Action action = new Action(ActionType.PLACE, blockHitResult, true, targetSlot, sneak, center);
         action.lookAtPos = lookAtPos;
         actions.add(action);
@@ -206,31 +206,31 @@ public class Player {
     }
 
     public static void place(BlockHitResult blockHitResult) {
-        mc.interactionManager.interactBlock(mc.player, mc.player.getActiveHand(), blockHitResult);
+        mc.gameMode.useItemOn(mc.player, mc.player.getUsedItemHand(), blockHitResult);
     }
 
     public static void attack(Entity entity) {
-        mc.interactionManager.attackEntity(mc.player, entity);
+        mc.gameMode.attack(mc.player, entity);
     }
 
     public static void swingHand() {
-        mc.player.swingHand(Hand.MAIN_HAND);
+        mc.player.swing(InteractionHand.MAIN_HAND);
     }
 
     public static void toggleSneak() {
-        PlayerInput playerInput = mc.player.input.playerInput;
-        PlayerInput newPlayerInput = new PlayerInput(playerInput.forward(), playerInput.backward(), playerInput.left(), playerInput.right(), playerInput.jump(), packetSneak, playerInput.sprint());
-        PlayerInputC2SPacket playerInputC2SPacket = new PlayerInputC2SPacket(newPlayerInput);
-        mc.getNetworkHandler().sendPacket(playerInputC2SPacket);
+        Input playerInput = mc.player.input.keyPresses;
+        Input newPlayerInput = new Input(playerInput.forward(), playerInput.backward(), playerInput.left(), playerInput.right(), playerInput.jump(), packetSneak, playerInput.sprint());
+        ServerboundPlayerInputPacket playerInputC2SPacket = new ServerboundPlayerInputPacket(newPlayerInput);
+        mc.getConnection().send(playerInputC2SPacket);
         packetSneak = !packetSneak;
     }
 
     public static void startFlying() {
-        mc.getNetworkHandler().sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_FALL_FLYING));
+        mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_FALL_FLYING));
     }
 
     public static void selfCenter() {
-        Vec3d centerPos = mc.player.getBlockPos().toCenterPos();
+        Vec3 centerPos = mc.player.blockPosition().getCenter();
 
         if (centerPos.x == mc.player.getX() && centerPos.z == mc.player.getZ())
             return;
@@ -239,13 +239,13 @@ public class Player {
     }
 
     public static boolean isBusy() {
-        return !actions.isEmpty() && !mc.interactionManager.isBreakingBlock() && !mc.player.isUsingItem();
+        return !actions.isEmpty() && !mc.gameMode.isDestroying() && !mc.player.isUsingItem();
     }
 
-    public static int getPing(AbstractClientPlayerEntity player) {
+    public static int getPing(AbstractClientPlayer player) {
         int ping = -1;
 
-        for (PlayerListEntry playerListEntry : mc.getNetworkHandler().getListedPlayerListEntries()) {
+        for (PlayerInfo playerListEntry : mc.getConnection().getListedOnlinePlayers()) {
             if (playerListEntry.getProfile().name().equals(player.getGameProfile().name())) {
                 ping = playerListEntry.getLatency();
                 break;
@@ -258,25 +258,26 @@ public class Player {
     public static List<ItemStack> getArmorItems() {
         List<ItemStack> armorItems = new ArrayList<>();
 
-        for (int i = 36; i < 40; i++)
-            armorItems.add(mc.player.getInventory().getStack(i));
+        for (int i = 36; i < 40; i++) {
+            armorItems.add(mc.player.getInventory().getItem(i));
+        }
 
         return armorItems;
     }
 
 
-    public static AbstractClientPlayerEntity findNearestPlayer(boolean ignoreFriends) {
-        AbstractClientPlayerEntity nearestPlayer = null;
+    public static AbstractClientPlayer findNearestPlayer(boolean ignoreFriends) {
+        AbstractClientPlayer nearestPlayer = null;
         float nearestDistance = Float.MAX_VALUE;
 
-        for (AbstractClientPlayerEntity player : mc.world.getPlayers()) {
-            if (!(player instanceof OtherClientPlayerEntity))
+        for (AbstractClientPlayer player : mc.level.players()) {
+            if (!(player instanceof RemotePlayer))
                 continue;
 
-            if (player.isDead())
+            if (player.isDeadOrDying())
                 continue;
 
-            if (ignoreFriends && friendList.contains(player.getUuid()))
+            if (ignoreFriends && friendList.contains(player.getUUID()))
                 continue;
 
             float distance = player.distanceTo(mc.player);
@@ -289,8 +290,8 @@ public class Player {
         return nearestPlayer;
     }
 
-    public static boolean isPositionInRenderDistance(Vec3d position) {
-        if (position.distanceTo(mc.player.getEntityPos()) <= mc.options.getViewDistance().getValue() * 16) {
+    public static boolean isPositionInRenderDistance(Vec3 position) {
+        if (position.distanceTo(mc.player.position()) <= mc.options.renderDistance().get() * 16) {
             return true;
         }
 
@@ -304,10 +305,10 @@ public class Player {
     public static List<BlockPos> getSurroundBlocks(BlockPos initPos, int y) {
         List<BlockPos> surroundBlocks = new ArrayList<>();
 
-        surroundBlocks.add(initPos.add(1, y, 0));
-        surroundBlocks.add(initPos.add(0, y, 1));
-        surroundBlocks.add(initPos.add( -1, y ,0));
-        surroundBlocks.add(initPos.add(0, y, -1));
+        surroundBlocks.add(initPos.offset(1, y, 0));
+        surroundBlocks.add(initPos.offset(0, y, 1));
+        surroundBlocks.add(initPos.offset( -1, y ,0));
+        surroundBlocks.add(initPos.offset(0, y, -1));
 
         return surroundBlocks;
     }

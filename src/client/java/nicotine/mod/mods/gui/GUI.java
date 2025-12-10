@@ -1,7 +1,7 @@
 package nicotine.mod.mods.gui;
 
-import net.minecraft.client.gui.screen.TitleScreen;
-import net.minecraft.client.util.InputUtil;
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.gui.screens.TitleScreen;
 import nicotine.screens.clickgui.ClickGUI;
 import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
@@ -21,7 +21,7 @@ public class GUI {
         Mod gui = new Mod("GUI");
         gui.alwaysEnabled = true;
         RGBOption rgb = new RGBOption();
-        KeybindOption keybind = new KeybindOption(InputUtil.GLFW_KEY_RIGHT_SHIFT);
+        KeybindOption keybind = new KeybindOption(InputConstants.KEY_RSHIFT);
         gui.modOptions.addAll(Arrays.asList(rgb.red, rgb.green, rgb.blue, rgb.rainbow, keybind));
         ModManager.addMod(ModCategory.GUI, gui);
 
@@ -30,7 +30,7 @@ public class GUI {
         EventBus.register(ClientTickEvent.class, event -> {
             ColorUtil.ACTIVE_FOREGROUND_COLOR = rgb.getColor();
 
-            if (InputUtil.isKeyPressed(window, keybind.keyCode) && (mc.currentScreen == null || mc.currentScreen instanceof TitleScreen))
+            if (InputConstants.isKeyDown(window, keybind.keyCode) && (mc.screen == null || mc.screen instanceof TitleScreen))
                 mc.setScreen(clickGUI);
 
             return true;

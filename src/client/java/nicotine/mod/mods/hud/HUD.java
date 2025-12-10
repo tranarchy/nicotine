@@ -1,8 +1,8 @@
 package nicotine.mod.mods.hud;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.util.Formatting;
-import nicotine.events.InGameHudRenderAfterEvent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import nicotine.events.GuiRenderAfterEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -13,7 +13,6 @@ import nicotine.screens.HUDEditorScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.render.GUI;
-import org.joml.Vector2i;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -31,11 +30,11 @@ public class HUD {
     private static final ToggleOption italic = new ToggleOption("Italic");
 
 
-    public static void drawHUD(DrawContext context) {
-        final int width = mc.getWindow().getScaledWidth();
-        final int height = mc.getWindow().getScaledHeight();
+    public static void drawHUD(GuiGraphics context) {
+        final int width = mc.getWindow().getGuiScaledWidth();
+        final int height = mc.getWindow().getGuiScaledHeight();
 
-        final int fontHeight = mc.textRenderer.fontHeight + 4;
+        final int fontHeight = mc.font.lineHeight + 4;
 
         final int padding = 8;
 
@@ -46,9 +45,9 @@ public class HUD {
                 continue;
 
             int anchorIndex = anchorIndexes.getOrDefault(hudMod.anchor, 0);
-            String longestText = hudMod.texts.stream().max(Comparator.comparingInt(mc.textRenderer::getWidth)).get();
+            String longestText = hudMod.texts.stream().max(Comparator.comparingInt(mc.font::width)).get();
 
-            hudMod.size.x = mc.textRenderer.getWidth(longestText);
+            hudMod.size.x = mc.font.width(longestText);
             hudMod.size.y = (fontHeight * hudMod.texts.size()) - 4;
 
             int posX = 0;
@@ -62,11 +61,11 @@ public class HUD {
                 }
 
                 if (bold.enabled && !formattedText.isBlank()) {
-                    formattedText = Formatting.BOLD + formattedText;
+                    formattedText = ChatFormatting.BOLD + formattedText;
                 }
 
                 if (italic.enabled && !formattedText.isBlank()) {
-                    formattedText = Formatting.ITALIC + formattedText;
+                    formattedText = ChatFormatting.ITALIC + formattedText;
                 }
 
                 switch (hudMod.anchor) {
@@ -78,10 +77,10 @@ public class HUD {
                         posY = padding + (fontHeight * (anchorIndex + i));
                         break;
                     case TopRight:
-                        hudMod.pos.x = width - padding - mc.textRenderer.getWidth(longestText);
+                        hudMod.pos.x = width - padding - mc.font.width(longestText);
                         hudMod.pos.y = padding + (fontHeight * anchorIndex);
 
-                        posX = width - padding - mc.textRenderer.getWidth(formattedText);
+                        posX = width - padding - mc.font.width(formattedText);
                         posY = padding + (fontHeight  * (anchorIndex + i));
                         break;
                     case BottomLeft:
@@ -92,10 +91,10 @@ public class HUD {
                         posY = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size() - i));
                         break;
                     case BottomRight:
-                        hudMod.pos.x = width - padding - mc.textRenderer.getWidth(longestText);
+                        hudMod.pos.x = width - padding - mc.font.width(longestText);
                         hudMod.pos.y = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size()));
 
-                        posX = width - padding - mc.textRenderer.getWidth(formattedText);
+                        posX = width - padding - mc.font.width(formattedText);
                         posY = height - padding - (fontHeight * (anchorIndex + hudMod.texts.size() - i));
                         break;
                     case None:
@@ -108,13 +107,13 @@ public class HUD {
                 int borderX = posX - borderPadding - (borderPadding / 2);
                 int borderY = posY - borderPadding - (borderPadding / 2);
 
-                int borderWidth = mc.textRenderer.getWidth(formattedText) + 2 * borderPadding;
-                int borderHeight = mc.textRenderer.fontHeight + 2 * borderPadding;
+                int borderWidth = mc.font.width(formattedText) + 2 * borderPadding;
+                int borderHeight = mc.font.lineHeight + 2 * borderPadding;
 
                 context.fill(borderX, borderY, borderX + borderWidth, borderY + borderHeight, ColorUtil.BACKGROUND_COLOR);
                 GUI.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
 
-                context.drawText(mc.textRenderer, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
+                context.drawString(mc.font, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
             }
 
             anchorIndexes.put(hudMod.anchor, anchorIndex + hudMod.texts.size());
@@ -126,8 +125,8 @@ public class HUD {
         hud.modOptions.addAll(Arrays.asList(lowercase, bold, italic, separator));
         ModManager.addMod(ModCategory.HUD, hud);
 
-        EventBus.register(InGameHudRenderAfterEvent.class, event -> {
-            if (!hud.enabled || mc.getDebugHud().shouldShowDebugHud() || mc.currentScreen instanceof HUDEditorScreen)
+        EventBus.register(GuiRenderAfterEvent.class, event -> {
+            if (!hud.enabled || mc.getDebugOverlay().showDebugScreen() || mc.screen instanceof HUDEditorScreen)
                 return true;
 
             drawHUD(event.drawContext);
