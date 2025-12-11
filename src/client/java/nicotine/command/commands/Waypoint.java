@@ -55,7 +55,7 @@ public class Waypoint {
                                     ChatFormatting.GRAY,
                                     waypointInstance.x,
                                     waypointInstance.y,
-                                    waypointInstance.x,
+                                    waypointInstance.z,
                                     waypointInstance.dimension.split(":")[1]
                             ));
                         }
