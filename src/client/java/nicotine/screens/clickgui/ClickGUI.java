@@ -306,7 +306,7 @@ public class ClickGUI extends Screen {
                 }
             }
 
-            context.drawString(mc.font, buttonText, modButton.x, modButton.y, modColor,true);
+            context.drawString(mc.font, buttonText, modButton.x, modButton.y + 1, modColor,true);
         }
 
         for (OptionButton optionButton : optionButtons) {
