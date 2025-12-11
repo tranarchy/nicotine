@@ -9,11 +9,13 @@
 
 Not a fork! nicotine is a utility mod with its own click GUI, event system, command system and plenty of modules to enhance your gameplay
 
-nicotine doesn't depend on the [Fabric API](https://github.com/FabricMC/fabric)
+nicotine doesn't make direct OpenGL calls, making it compatible with mods that change the rendering system, such as [VulkanMod](https://modrinth.com/mod/vulkanmod)
+
+Despite being a Fabric mod, nicotine doesn't depend on the Fabric API and it uses the official Mojang mappings, making it easily portable to other mod loaders
 
 ## Preview
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/be9861ab-8983-4651-b35e-08f128627a84" />
+  <img src="./preview.gif" />
 </p>
 
 ## Usage
@@ -26,14 +28,13 @@ Since nicotine is a Fabric mod you will also need the [Fabric Loader](https://fa
 
 ## Building
 
+Linux, macOS and *BSD
 ```
-git clone https://github.com/tranarchy/nicotine
-cd nicotine
-
-# Linux, macOS and *BSD
 ./gradlew build
+```
 
-# Windows
+Windows
+```
 .\gradlew.bat build
 ```
 
@@ -45,6 +46,6 @@ The default keybind for the click GUI is **Right Shift**, you can change this an
 
 ## Other versions
 
-nicotine is currently made for version **1.21.10**
+nicotine is currently made for version **1.21.11**
 
 If you want to use nicotine on a server that runs on another version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod
