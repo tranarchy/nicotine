@@ -48,6 +48,10 @@ public class AutoArmor {
                 Item curItem = curStack.getItem();
                 if (curItem.components().has(DataComponents.EQUIPPABLE)) {
                     EquipmentSlot equipment = curItem.components().get(DataComponents.EQUIPPABLE).slot();
+
+                    if (equipment.getType() != EquipmentSlot.Type.HUMANOID_ARMOR)
+                        continue;
+
                     int equipmentSlot = equipment.getIndex() + 1;
                     int armorSlot = 35 + equipmentSlot;
 
