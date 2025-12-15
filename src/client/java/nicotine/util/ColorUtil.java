@@ -5,6 +5,7 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.animal.equine.AbstractChestedHorse;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.decoration.GlowItemFrame;
 import net.minecraft.world.entity.decoration.ItemFrame;
@@ -50,6 +51,11 @@ public class ColorUtil {
     }
 
     public static int getBlockColor(Entity entity) {
+        if (entity instanceof AbstractChestedHorse abstractChestedHorse) {
+            if (abstractChestedHorse.hasChest())
+                return GOLD;
+        }
+
         if (entity instanceof ChestBoat || entity instanceof MinecartChest)
             return GOLD;
         else if (entity instanceof ItemFrame || entity instanceof GlowItemFrame || entity instanceof ArmorStand)
