@@ -6,6 +6,7 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
+import nicotine.mod.option.SelectionOption;
 import nicotine.util.EventBus;
 import nicotine.util.Inventory;
 
@@ -17,9 +18,11 @@ import static nicotine.util.Common.mc;
 public class AutoEject {
     public static void init() {
         Mod autoEject = new Mod("AutoEject", "Throws away junk items from your inventory");
+        SelectionOption junk = new SelectionOption("Items");
+        autoEject.modOptions.add(junk);
         ModManager.addMod(ModCategory.Player, autoEject);
 
-        final List<Item> junkItems = Arrays.asList(
+        junk.items.addAll(Arrays.asList(
                 Items.DIRT,
                 Items.COBBLESTONE,
                 Items.COBBLED_DEEPSLATE,
@@ -28,14 +31,14 @@ public class AutoEject {
                 Items.DIORITE,
                 Items.GRANITE,
                 Items.ROTTEN_FLESH
-        );
+        ));
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!autoEject.enabled)
                 return true;
 
             for (int i = 0; i <= 35; i++) {
-                if (junkItems.contains(mc.player.getInventory().getItem(i).getItem())) {
+                if (junk.items.contains(mc.player.getInventory().getItem(i).getItem())) {
                     Inventory.throwAway(i < 9 ? 36 + i : i);
                 }
             }
