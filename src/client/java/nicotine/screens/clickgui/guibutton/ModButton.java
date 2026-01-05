@@ -10,10 +10,4 @@ public class ModButton extends GUIButton {
 
         this.mod = mod;
     }
-
-    public ModButton(ModButton modButton) {
-        super(modButton.x, modButton.y, modButton.width, modButton.height);
-
-        this.mod = modButton.mod;
-    }
 }

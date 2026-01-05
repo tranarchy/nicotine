@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.world.item.Item;
 import nicotine.command.CommandManager;
 import nicotine.command.commands.TouchBarCustom;
 import nicotine.mod.HUDMod;
@@ -98,6 +99,14 @@ public class Settings {
                            continue;
 
                        modDetails.addProperty(keybindOption.name, keybindOption.keyCode);
+                   } else if (modOption instanceof SelectionOption selectionOption) {
+                       JsonArray selection = new JsonArray();
+
+                       for (Item item : selectionOption.items) {
+                           selection.add(Item.getId(item));
+                       }
+
+                       modDetails.add(selectionOption.id, selection);
                    }
                 }
 
@@ -210,6 +219,13 @@ public class Settings {
                         toggleOption.enabled = modInfo.get(toggleOption.id).getAsBoolean();
                     } else if (modOption instanceof KeybindOption keybindOption) {
                         keybindOption.keyCode = modInfo.get(keybindOption.id).getAsInt();
+                    } else if (modOption instanceof SelectionOption selectionOption) {
+                        selectionOption.items.clear();
+
+                        JsonArray selection = (JsonArray) modInfo.get(selectionOption.id);
+                        for (JsonElement item : selection.asList()) {
+                            selectionOption.items.add(Item.byId(item.getAsInt()));
+                        }
                     }
                 }
             }

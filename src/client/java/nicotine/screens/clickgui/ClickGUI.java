@@ -9,7 +9,6 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
@@ -43,7 +42,7 @@ public class ClickGUI extends Screen {
     private static ModCategory selectedCategory = null;
 
     public static Vector2i pos = new Vector2i(0, 0);
-    private static Vector2i size = new Vector2i(0, 0);
+    public static Vector2i size = new Vector2i(0, 0);
 
     public static boolean showDescription = false;
     public static boolean blur = false;
@@ -107,11 +106,6 @@ public class ClickGUI extends Screen {
         size.x -= PADDING;
 
         size.y = (highestModCount + 1) * (mc.font.lineHeight + PADDING) + 2;
-    }
-
-    private static void setGUIPos() {
-        pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - (size.x / 2);
-        pos.y = (mc.getWindow().getGuiScaledHeight() / 2) - (size.y / 2);
     }
 
     private static void getCategoryButtons() {
@@ -437,6 +431,9 @@ public class ClickGUI extends Screen {
 
                     setSliderOption(sliderOption, sliderButton, mouseX);
 
+                    break;
+                } else if (optionButton.modOption instanceof SelectionOption selectionOption) {
+                    mc.setScreen(new SelectionScreen(selectionOption));
 
                     break;
                 }
@@ -485,7 +482,7 @@ public class ClickGUI extends Screen {
     @Override
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         setGUISize();
-        setGUIPos();
+        GUI.centerPosition(pos, size);
         getCategoryButtons();
         getModButtons();
         getOptionButtons();

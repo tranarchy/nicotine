@@ -7,6 +7,7 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
+import nicotine.screens.clickgui.SelectionScreen;
 import nicotine.util.EventBus;
 
 import static nicotine.util.Common.*;
@@ -26,7 +27,7 @@ public class FreeMove {
         };
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!freeMove.enabled || mc.screen == null || mc.screen instanceof ChatScreen)
+            if (!freeMove.enabled || mc.screen == null || mc.screen instanceof ChatScreen || mc.screen instanceof SelectionScreen)
                 return true;
 
             for (KeyMapping freeMoveKeybind : freeMoveKeybinds) {
