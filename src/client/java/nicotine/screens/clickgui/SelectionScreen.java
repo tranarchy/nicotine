@@ -39,7 +39,8 @@ public class SelectionScreen extends Screen {
         CreativeModeTab.ItemDisplayParameters itemDisplayParameters = new CreativeModeTab.ItemDisplayParameters(featureFlagSet, true, mc.level.registryAccess());
 
         for (CreativeModeTab itemGroup : CreativeModeTabs.allTabs()) {
-            itemGroup.buildContents(itemDisplayParameters);
+            if (itemGroup.getSearchTabDisplayItems().isEmpty())
+                itemGroup.buildContents(itemDisplayParameters);
         }
 
         this.selectionOption = selectionOption;
