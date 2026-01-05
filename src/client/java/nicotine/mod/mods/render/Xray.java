@@ -1,6 +1,8 @@
 package nicotine.mod.mods.render;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import nicotine.events.GetFaceOcclusionShapeEvent;
 import nicotine.events.GetRenderShapeEvent;
@@ -26,7 +28,12 @@ public class Xray {
                 mc.levelRenderer.allChanged();
             }
         };
-        SelectionOption blocks = new SelectionOption("Blocks");
+        SelectionOption blocks = new SelectionOption("Blocks") {
+            @Override
+            public boolean filter(Item item) {
+                return item instanceof BlockItem;
+            }
+        };
         KeybindOption keybind = new KeybindOption(InputConstants.KEY_X);
         xray.modOptions.addAll(Arrays.asList(blocks, keybind));
         ModManager.addMod(ModCategory.Render, xray);

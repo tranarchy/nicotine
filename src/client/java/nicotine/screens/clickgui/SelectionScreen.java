@@ -51,7 +51,7 @@ public class SelectionScreen extends Screen {
 
         for (CreativeModeTab itemGroup : CreativeModeTabs.allTabs()) {
             for (ItemStack itemStack : itemGroup.getSearchTabDisplayItems()) {
-                if (!items.contains(itemStack))
+                if (!items.contains(itemStack) && selectionOption.filter(itemStack.getItem()))
                     items.add(itemStack);
             }
         }

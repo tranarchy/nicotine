@@ -11,4 +11,8 @@ public class SelectionOption extends ModOption {
     public SelectionOption(String name) {
         super(name);
     }
+    
+    public boolean filter(Item item) {
+        return true;
+    }
 }
