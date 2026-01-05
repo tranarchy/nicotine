@@ -96,7 +96,7 @@ public class SelectionScreen extends Screen {
             this.onClose();
         } else if (keyEvent.key() == InputConstants.KEY_SPACE) {
             searchString += " ";
-        } else if (keyEvent.key() == InputConstants.KEY_BACKSPACE) {
+        } else if (keyEvent.key() == InputConstants.KEY_BACKSPACE && !searchString.isEmpty()) {
             searchString = searchString.substring(0, searchString.length() - 1);
         } else {
             String input = InputConstants.getKey(new KeyEvent(keyEvent.key(), 0, 0)).getDisplayName().getString().toLowerCase();
