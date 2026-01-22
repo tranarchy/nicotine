@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
@@ -23,7 +22,7 @@ import java.util.UUID;
 
 import static nicotine.util.Common.*;
 
-public class DiscordActivity {
+public class DiscordActivity extends Mod {
 
     private static final String APP_ID = "1395381592364421200";
 
@@ -32,9 +31,15 @@ public class DiscordActivity {
 
     private static int tickDelay = 0;
 
-    private static Mod discordActivity;
+    private final ToggleOption player = new ToggleOption("Player");
+    private final ToggleOption dimension = new ToggleOption("Dimension");
 
-    private static boolean socketOpen() {
+    public DiscordActivity() {
+        super(ModCategory.Misc, "DiscordActivity");
+        this.modOptions.addAll(Arrays.asList(player, dimension));
+    }
+
+    private boolean socketOpen() {
         if (System.getProperty("os.name").startsWith("Win")) {
             for (int i = 0; i < 10; i++) {
                 try {
@@ -75,7 +80,7 @@ public class DiscordActivity {
         return false;
     }
 
-    private static void socketClose() {
+    private void socketClose() {
         if (System.getProperty("os.name").startsWith("Win")) {
             if (randomAccessFile == null)
                 return;
@@ -97,14 +102,14 @@ public class DiscordActivity {
         }
     }
 
-    private static void socketWrite(ByteBuffer buffer) {
+    private void socketWrite(ByteBuffer buffer) {
         if (System.getProperty("os.name").startsWith("Win")) {
             try {
                 randomAccessFile.write(buffer.array());
             } catch (IOException e) {
                 if (mc.player != null)
                     Message.sendWarning("Can't connect to Discord!");
-                discordActivity.toggle();
+                this.toggle();
             }
         } else {
             try {
@@ -112,12 +117,12 @@ public class DiscordActivity {
             } catch (IOException e) {
                 if (mc.player != null)
                     Message.sendWarning("Can't connect to Discord!");
-                discordActivity.toggle();
+                this.toggle();
             }
         }
     }
 
-    private static void sendBuffer(int opcode, String jsonString) {
+    private void sendBuffer(int opcode, String jsonString) {
         byte[] jsonBytes = jsonString.getBytes(StandardCharsets.UTF_8);
 
         ByteBuffer buffer = ByteBuffer.allocate(jsonBytes.length + 8);
@@ -130,7 +135,7 @@ public class DiscordActivity {
         socketWrite(buffer);
     }
 
-    private static void setActivity(String state, String details) {
+    private void setActivity(String state, String details) {
         JsonObject activity = new JsonObject();
         if (!state.isBlank())
             activity.addProperty("state", state);
@@ -150,7 +155,7 @@ public class DiscordActivity {
         sendBuffer(1, jsonString);
     }
 
-    private static void handShake() {
+    private void handShake() {
         JsonObject handshake = new JsonObject();
         handshake.addProperty("v", 1);
         handshake.addProperty("client_id", APP_ID);
@@ -158,33 +163,28 @@ public class DiscordActivity {
         sendBuffer(0, handshake.toString());
     }
 
-    public static void init() {
-        discordActivity = new Mod("DiscordActivity") {
-            @Override
-            public void toggle() {
-                this.enabled = !this.enabled;
+    @Override
+    public void toggle() {
+        this.enabled = !this.enabled;
 
-                if (!this.enabled) {
-                    socketClose();
-                } else {
-                    if (!socketOpen()) {
-                        if (mc.player != null)
-                            Message.sendWarning("Can't connect to Discord!");
-                        toggle();
-                        return;
-                    }
-
-                    handShake();
-                }
+        if (!this.enabled) {
+            socketClose();
+        } else {
+            if (!socketOpen()) {
+                if (mc.player != null)
+                    Message.sendWarning("Can't connect to Discord!");
+                toggle();
+                return;
             }
-        };
-        ToggleOption player = new ToggleOption("Player");
-        ToggleOption dimension = new ToggleOption("Dimension");
-        discordActivity.modOptions.addAll(Arrays.asList(player, dimension));
-        ModManager.addMod(ModCategory.Misc, discordActivity);
 
+            handShake();
+        }
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientTickEvent.class, event -> {
-            if (!discordActivity.enabled)
+            if (!this.enabled)
                 return true;
 
             if (tickDelay <= 0) {

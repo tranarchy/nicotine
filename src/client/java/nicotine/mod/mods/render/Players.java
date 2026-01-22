@@ -5,10 +5,8 @@ import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderArmorEvent;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
@@ -19,69 +17,72 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
-public class Players {
+public class Players extends Mod {
 
-     public static void init() {
-         Mod players = new Mod("Players");
-         ToggleOption noArmor = new ToggleOption("NoArmor");
-         ToggleOption esp = new ToggleOption("ESP");
+    private final ToggleOption noArmor = new ToggleOption("NoArmor");
+    ToggleOption esp = new ToggleOption("ESP");
 
-         SwitchOption espRender = new SwitchOption(
-                 "Render",
-                 new String[]{"Box", "Filled", "Fade"}
-         );
-         espRender.subOption = true;
+    private final SwitchOption espRender = new SwitchOption(
+            "Render",
+            new String[]{"Box", "Filled", "Fade"}
+    );
 
-         SliderOption espScale = new SliderOption(
-                 "Scale",
-                 1.0f,
-                 0.9f,
-                 1.3f,
-                 true
-         );
-         espScale.subOption = true;
+    private final SliderOption espScale = new SliderOption(
+            "Scale",
+            1.0f,
+            0.9f,
+            1.3f,
+            true
+    );
 
-         RGBOption espRgb = new RGBOption();
-         espRgb.red.id = "ESPRed";
-         espRgb.red.subOption = true;
+    private final RGBOption espRgb = new RGBOption();
+    private final ToggleOption tracer = new ToggleOption("Tracer");
+    private final RGBOption tracerRgb = new RGBOption();
+    private final SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
 
-         espRgb.green.id = "ESPGreen";
-         espRgb.green.subOption = true;
+    public Players() {
+        super(ModCategory.Render, "Players");
 
-         espRgb.blue.id = "ESPBlue";
-         espRgb.blue.subOption = true;
+        espRender.subOption = true;
+        espScale.subOption = true;
 
-         espRgb.rainbow.id = "ESPRainbow";
-         espRgb.rainbow.subOption = true;
+        espRgb.red.id = "ESPRed";
+        espRgb.red.subOption = true;
 
-         ToggleOption tracer = new ToggleOption("Tracer");
+        espRgb.green.id = "ESPGreen";
+        espRgb.green.subOption = true;
 
-         RGBOption tracerRgb = new RGBOption();
-         tracerRgb.red.id = "TracerRed";
-         tracerRgb.red.subOption = true;
+        espRgb.blue.id = "ESPBlue";
+        espRgb.blue.subOption = true;
 
-         tracerRgb.green.id = "TracerGreen";
-         tracerRgb.green.subOption = true;
+        espRgb.rainbow.id = "ESPRainbow";
+        espRgb.rainbow.subOption = true;
 
-         tracerRgb.blue.id = "TracerBlue";
-         tracerRgb.blue.subOption = true;
+        tracerRgb.red.id = "TracerRed";
+        tracerRgb.red.subOption = true;
 
-         tracerRgb.rainbow.id = "TracerRainbow";
-         tracerRgb.rainbow.subOption = true;
+        tracerRgb.green.id = "TracerGreen";
+        tracerRgb.green.subOption = true;
 
-         SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
-         tracerAlpha.subOption = true;
+        tracerRgb.blue.id = "TracerBlue";
+        tracerRgb.blue.subOption = true;
 
-         players.modOptions.addAll(Arrays.asList(
-                 esp, espRender, espScale, espRgb.red, espRgb.green, espRgb.blue, espRgb.rainbow,
-                 tracer, tracerRgb.red, tracerRgb.green, tracerRgb.blue, tracerAlpha, tracerRgb.rainbow, noArmor
-         ));
+        tracerRgb.rainbow.id = "TracerRainbow";
+        tracerRgb.rainbow.subOption = true;
 
-         ModManager.addMod(ModCategory.Render, players);
+        tracerAlpha.subOption = true;
 
+        this.modOptions.addAll(Arrays.asList(
+                esp, espRender, espScale, espRgb.red, espRgb.green, espRgb.blue, espRgb.rainbow,
+                tracer, tracerRgb.red, tracerRgb.green, tracerRgb.blue, tracerAlpha, tracerRgb.rainbow, noArmor
+        ));
+    }
+
+    @Override
+    protected void init() {
          EventBus.register(RenderBeforeEvent.class, event -> {
 
-            if (!players.enabled)
+            if (!this.enabled)
                 return true;
 
             for (AbstractClientPlayer player : mc.level.players()) {
@@ -113,7 +114,7 @@ public class Players {
         });
 
          EventBus.register(RenderArmorEvent.class, event -> {
-             if (!players.enabled || !noArmor.enabled)
+             if (!this.enabled || !noArmor.enabled)
                  return true;
 
              return false;

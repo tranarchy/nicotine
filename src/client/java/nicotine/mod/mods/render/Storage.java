@@ -4,10 +4,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.SwitchOption;
 import nicotine.mod.option.ToggleOption;
@@ -23,26 +21,32 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
-public class Storage {
-    public static void init() {
-        Mod storage = new Mod("Storage");
-        ToggleOption esp = new ToggleOption("ESP");
-        SwitchOption espRender = new SwitchOption(
-                "Render",
-                new String[]{"Box", "Filled", "Fade"}
-        );
-        espRender.subOption = true;
-        ToggleOption tracer = new ToggleOption("Tracer");
-        SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
-        tracerAlpha.subOption = true;
-        ToggleOption optimizeRender = new ToggleOption("OptimizeRender", false);
-        storage.modOptions.addAll(Arrays.asList(esp, espRender, tracer, tracerAlpha, optimizeRender));
-        ModManager.addMod(ModCategory.Render, storage);
+public class Storage extends Mod {
 
+    private final ToggleOption esp = new ToggleOption("ESP");
+
+    private final SwitchOption espRender = new SwitchOption(
+            "Render",
+            new String[]{"Box", "Filled", "Fade"}
+    );
+
+    private final ToggleOption tracer = new ToggleOption("Tracer");
+    private final SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
+    private final ToggleOption optimizeRender = new ToggleOption("OptimizeRender", false);
+
+    public Storage() {
+        super(ModCategory.Render, "Storage");
+        espRender.subOption = true;
+        tracerAlpha.subOption = true;
+        this.modOptions.addAll(Arrays.asList(esp, espRender, tracer, tracerAlpha, optimizeRender));
+    }
+
+    @Override
+    protected void init() {
         ArrayList<BlockEntity> allSurroundingBlockEntities = new ArrayList<>();
 
         EventBus.register(RenderBeforeEvent.class, event -> {
-            if (!storage.enabled)
+            if (!this.enabled)
                 return true;
 
             int blockColor;

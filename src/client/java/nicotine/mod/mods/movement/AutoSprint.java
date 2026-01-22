@@ -8,22 +8,25 @@ import nicotine.util.EventBus;
 
 import static nicotine.util.Common.mc;
 
-public class AutoSprint {
-    public static void init() {
-        Mod autoSprint = new Mod("AutoSprint") {
-            @Override
-            public void toggle() {
-                this.enabled = !this.enabled;
+public class AutoSprint extends Mod {
 
-                if (!this.enabled) {
-                    mc.options.keySprint.setDown(false);
-                }
-            }
-        };
-        ModManager.addMod(ModCategory.Movement, autoSprint);
+    public AutoSprint() {
+        super(ModCategory.Movement, "AutoSprint");
+    }
 
+    @Override
+    public void toggle() {
+        this.enabled = !this.enabled;
+
+        if (!this.enabled) {
+            mc.options.keySprint.setDown(false);
+        }
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!autoSprint.enabled)
+            if (!this.enabled)
                 return true;
 
             mc.options.keySprint.setDown(true);

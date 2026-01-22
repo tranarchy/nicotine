@@ -1,26 +1,23 @@
 package nicotine.mod.mods.player;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.SelectionOption;
 import nicotine.util.EventBus;
 import nicotine.util.Inventory;
 
 import java.util.Arrays;
-import java.util.List;
 
 import static nicotine.util.Common.mc;
 
-public class AutoEject {
-    public static void init() {
-        Mod autoEject = new Mod("AutoEject", "Throws away junk items from your inventory");
-        SelectionOption junk = new SelectionOption("Items");
-        autoEject.modOptions.add(junk);
-        ModManager.addMod(ModCategory.Player, autoEject);
+public class AutoEject extends Mod {
+
+    private final SelectionOption junk = new SelectionOption("Items");
+
+    public AutoEject() {
+        super(ModCategory.Player, "AutoEject", "Throws away junk items from your inventory");
 
         junk.items.addAll(Arrays.asList(
                 Items.DIRT,
@@ -33,8 +30,13 @@ public class AutoEject {
                 Items.ROTTEN_FLESH
         ));
 
+        this.modOptions.add(junk);
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!autoEject.enabled)
+            if (!this.enabled)
                 return true;
 
             for (int i = 0; i <= 35; i++) {

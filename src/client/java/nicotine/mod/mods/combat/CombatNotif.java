@@ -23,24 +23,27 @@ import java.util.List;
 import static nicotine.util.Common.mc;
 import static nicotine.util.Common.totemPopCounter;
 
-public class CombatNotif {
+public class CombatNotif extends Mod {
 
-    private static List<AbstractClientPlayer> prevPlayers = new ArrayList<>();
+    private List<AbstractClientPlayer> prevPlayers = new ArrayList<>();
 
-    public static void init() {
-        Mod combatNotif = new Mod("CombatNotif");
-        ToggleOption poppedTotems = new ToggleOption("PoppedTotems", true);
-        ToggleOption enterDistance = new ToggleOption("EnterDistance", true);
-        ToggleOption toastNotif = new ToggleOption("ToastNotif");
-        ToggleOption playSound = new ToggleOption("PlaySound");
-        combatNotif.modOptions.addAll(Arrays.asList(poppedTotems, enterDistance, toastNotif, playSound));
-        ModManager.addMod(ModCategory.Combat, combatNotif);
+    private final ToggleOption poppedTotems = new ToggleOption("PoppedTotems", true);
+    private final ToggleOption enterDistance = new ToggleOption("EnterDistance", true);
+    private final ToggleOption toastNotif = new ToggleOption("ToastNotif");
+    private final ToggleOption playSound = new ToggleOption("PlaySound");
 
+    public CombatNotif() {
+        super(ModCategory.Combat, "CombatNotif");
+        this.modOptions.addAll(Arrays.asList(poppedTotems, enterDistance, toastNotif, playSound));
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(TotemPopEvent.class, event -> {
             int totemCount = totemPopCounter.getOrDefault(event.player, 0) + 1;
             totemPopCounter.put(event.player, totemCount);
 
-            if (!combatNotif.enabled || !poppedTotems.enabled)
+            if (!this.enabled || !poppedTotems.enabled)
                 return true;
 
 
@@ -59,7 +62,7 @@ public class CombatNotif {
         });
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (combatNotif.enabled && enterDistance.enabled) {
+            if (this.enabled && enterDistance.enabled) {
                 for (AbstractClientPlayer player : mc.level.players()) {
                     if (mc.player == player)
                         continue;

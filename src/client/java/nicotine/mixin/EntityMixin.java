@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.KnockbackEvent;
 import nicotine.events.PushEvent;
+import nicotine.mod.ModManager;
 import nicotine.mod.mods.render.Chams;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
@@ -43,7 +44,7 @@ public class EntityMixin {
 
     @Inject(at = @At("HEAD"), method = "isCurrentlyGlowing", cancellable = true)
     public void isCurrentlyGlowing(CallbackInfoReturnable<Boolean> info) {
-        if (Chams.chams.enabled && Chams.outline.enabled && mc.level != null && mc.level.getEntity(id) instanceof RemotePlayer) {
+        if (ModManager.getMod("Chams").enabled && Chams.outline.enabled && mc.level != null && mc.level.getEntity(id) instanceof RemotePlayer) {
             info.setReturnValue(true);
         }
     }

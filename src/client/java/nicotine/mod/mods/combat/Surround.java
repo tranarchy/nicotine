@@ -12,7 +12,6 @@ import net.minecraft.world.phys.Vec3;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.*;
@@ -25,20 +24,23 @@ import java.util.List;
 
 import static nicotine.util.Common.*;
 
-public class Surround {
+public class Surround extends Mod {
 
-    public static void init() {
-        Mod surround = new Mod("Surround", "Surrounds you with obsidian");
-        ToggleOption constant = new ToggleOption("Constant");
-        ToggleOption doublePlace = new ToggleOption("Double");
-        ToggleOption selfCenter = new ToggleOption("SelfCenter");
-        ToggleOption inAir = new ToggleOption("InAir");
-        KeybindOption keybind = new KeybindOption(InputConstants.KEY_B);
-        surround.modOptions.addAll(Arrays.asList(constant, doublePlace, selfCenter, inAir, keybind));
-        ModManager.addMod(ModCategory.Combat, surround);
+    private final ToggleOption constant = new ToggleOption("Constant");
+    private final ToggleOption doublePlace = new ToggleOption("Double");
+    private final ToggleOption selfCenter = new ToggleOption("SelfCenter");
+    private final ToggleOption inAir = new ToggleOption("InAir");
+    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_B);
 
+    public Surround() {
+        super(ModCategory.Combat, "Surround", "Surrounds you with obsidian");
+        this.modOptions.addAll(Arrays.asList(constant, doublePlace, selfCenter, inAir, keybind));
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!surround.enabled || (!mc.player.onGround() && !inAir.enabled) || Player.isBusy())
+            if (!this.enabled || (!mc.player.onGround() && !inAir.enabled) || Player.isBusy())
                 return true;
 
             List<BlockPos> surroundBlocks = Player.getSurroundBlocks(mc.player.blockPosition());
@@ -61,7 +63,7 @@ public class Surround {
 
             if (alreadySurrounded) {
                 if (!constant.enabled)
-                    surround.toggle();
+                    this.toggle();
                 return true;
             }
 
@@ -77,7 +79,7 @@ public class Surround {
 
                 if (targetSlot == -1) {
                     Message.sendWarning("No obsidian in hotbar!");
-                    surround.toggle();
+                    this.toggle();
                     return true;
                 }
             } else {
@@ -129,7 +131,7 @@ public class Surround {
             }
 
             if (!constant.enabled) {
-                surround.toggle();
+                this.toggle();
             }
 
             return true;

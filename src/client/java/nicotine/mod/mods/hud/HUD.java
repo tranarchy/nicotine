@@ -20,8 +20,8 @@ import java.util.HashMap;
 
 import static nicotine.util.Common.mc;
 
-public class HUD {
-    public static  final SwitchOption separator = new SwitchOption(
+public class HUD extends Mod {
+    public static final SwitchOption separator = new SwitchOption(
             "Separator",
             new String[]{"->", ">", "<", "=", ":", ""}
     );
@@ -29,6 +29,10 @@ public class HUD {
     private static final ToggleOption bold = new ToggleOption("Bold");
     private static final ToggleOption italic = new ToggleOption("Italic");
 
+    public HUD() {
+        super(ModCategory.HUD, "HUD");
+        this.modOptions.addAll(Arrays.asList(lowercase, bold, italic, separator));
+    }
 
     public static void drawHUD(GuiGraphics context) {
         final int width = mc.getWindow().getGuiScaledWidth();
@@ -120,13 +124,10 @@ public class HUD {
         }
     }
 
-    public static void init() {
-        Mod hud = new Mod("HUD");
-        hud.modOptions.addAll(Arrays.asList(lowercase, bold, italic, separator));
-        ModManager.addMod(ModCategory.HUD, hud);
-
+    @Override
+    protected void init() {
         EventBus.register(GuiRenderAfterEvent.class, event -> {
-            if (!hud.enabled || mc.getDebugOverlay().showDebugScreen() || mc.screen instanceof HUDEditorScreen)
+            if (!this.enabled || mc.getDebugOverlay().showDebugScreen() || mc.screen instanceof HUDEditorScreen)
                 return true;
 
             drawHUD(event.drawContext);

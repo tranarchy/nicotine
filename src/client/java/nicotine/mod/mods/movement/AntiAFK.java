@@ -14,29 +14,32 @@ import java.util.Random;
 
 import static nicotine.util.Common.mc;
 
-public class AntiAFK {
-    private static int ticks = 0;
-    private static KeyMapping randomMovementKeybind = null;
+public class AntiAFK extends Mod {
+    private int ticks = 0;
+    private KeyMapping randomMovementKeybind = null;
 
-    public static void init() {
-        Mod antiAFK = new Mod("AntiAFK") {
-            @Override
-            public void toggle() {
-                this.enabled = !this.enabled;
+    private final ToggleOption move = new ToggleOption("Move");
+    private final ToggleOption jump = new ToggleOption("Jump");
+    private final ToggleOption look = new ToggleOption("Look");
+    private final ToggleOption swing = new ToggleOption("Swing");
 
-                if (!this.enabled && randomMovementKeybind != null) {
-                    randomMovementKeybind.setDown(false);
-                    ticks = 0;
-                }
-            }
-        };
-        ToggleOption move = new ToggleOption("Move");
-        ToggleOption jump = new ToggleOption("Jump");
-        ToggleOption look = new ToggleOption("Look");
-        ToggleOption swing = new ToggleOption("Swing");
-        antiAFK.modOptions.addAll(Arrays.asList(move, jump, look, swing));
-        ModManager.addMod(ModCategory.Movement, antiAFK);
+    public AntiAFK() {
+        super(ModCategory.Movement, "AntiAFK");
+        this.modOptions.addAll(Arrays.asList(move, jump, look, swing));
+    }
 
+    @Override
+    public void toggle() {
+        this.enabled = !this.enabled;
+
+        if (!this.enabled && randomMovementKeybind != null) {
+            randomMovementKeybind.setDown(false);
+            ticks = 0;
+        }
+    }
+
+    @Override
+    protected void init() {
         final KeyMapping[] movementKeybinds =  new KeyMapping[]{
                 mc.options.keyUp,
                 mc.options.keyDown,
@@ -45,7 +48,7 @@ public class AntiAFK {
         };
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!antiAFK.enabled)
+            if (!this.enabled)
                 return true;
 
             if (ticks == 0) {

@@ -6,7 +6,6 @@ import nicotine.screens.clickgui.ClickGUI;
 import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.RGBOption;
 import nicotine.util.ColorUtil;
@@ -16,15 +15,19 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.*;
 
-public class GUI {
-    public static void init() {
-        Mod gui = new Mod("GUI");
-        gui.alwaysEnabled = true;
-        RGBOption rgb = new RGBOption();
-        KeybindOption keybind = new KeybindOption(InputConstants.KEY_RSHIFT);
-        gui.modOptions.addAll(Arrays.asList(rgb.red, rgb.green, rgb.blue, rgb.rainbow, keybind));
-        ModManager.addMod(ModCategory.GUI, gui);
+public class GUI extends Mod {
 
+    private final RGBOption rgb = new RGBOption();
+    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_RSHIFT);
+
+    public GUI() {
+        super(ModCategory.GUI, "GUI");
+        this.alwaysEnabled = true;
+        this.modOptions.addAll(Arrays.asList(rgb.red, rgb.green, rgb.blue, rgb.rainbow, keybind));
+    }
+
+    @Override
+    protected void init() {
         final ClickGUI clickGUI = new ClickGUI();
 
         EventBus.register(ClientTickEvent.class, event -> {

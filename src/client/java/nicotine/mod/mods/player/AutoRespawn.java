@@ -4,19 +4,21 @@ import net.minecraft.network.protocol.game.ServerboundClientCommandPacket;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 
 import static nicotine.util.Common.loadedChunks;
 import static nicotine.util.Common.mc;
 
-public class AutoRespawn {
-    public static void init() {
-        Mod autoRespawn = new Mod("AutoRespawn");
-        ModManager.addMod(ModCategory.Player, autoRespawn);
+public class AutoRespawn extends Mod {
 
+    public AutoRespawn() {
+        super(ModCategory.Player, "AutoRespawn");
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!autoRespawn.enabled)
+            if (!this.enabled)
                 return true;
 
             if (mc.player.isDeadOrDying()) {

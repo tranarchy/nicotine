@@ -6,10 +6,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
@@ -22,13 +20,32 @@ import java.util.List;
 
 import static nicotine.util.Common.*;
 
-public class HoleESP {
+public class HoleESP extends Mod {
 
-    public static List<BlockPos> holeSpots = new ArrayList<>();
+    public List<BlockPos> holeSpots = new ArrayList<>();
 
-    private static final List<Block> validBlocks =  Arrays.asList(Blocks.OBSIDIAN, Blocks.BEDROCK);
+    private final List<Block> validBlocks =  Arrays.asList(Blocks.OBSIDIAN, Blocks.BEDROCK);
 
-    private static List<BlockPos> getHoleSpots(int horizontal, int vertical) {
+    private final SliderOption width = new SliderOption(
+            "Width",
+            6,
+            5,
+            35
+    );
+
+    private final SliderOption height = new SliderOption(
+            "Height",
+            10,
+            5,
+            35
+    );
+
+    public HoleESP() {
+        super(ModCategory.Render,"HoleESP", "Shows safe spots against end crystals");
+        this.modOptions.addAll(Arrays.asList(width, height));
+    }
+
+    private List<BlockPos> getHoleSpots(int horizontal, int vertical) {
         BlockPos initPos = mc.player.blockPosition();
 
         for (int x = -horizontal; x <= horizontal; x++) {
@@ -65,26 +82,10 @@ public class HoleESP {
         return holeSpots;
     }
 
-
-   public static void init() {
-        Mod holeESP = new Mod("HoleESP", "Shows safe spots against end crystals");
-        SliderOption width = new SliderOption(
-                "Width",
-                6,
-                5,
-                35
-        );
-       SliderOption height = new SliderOption(
-               "Height",
-               10,
-               5,
-               35
-       );
-        holeESP.modOptions.addAll(Arrays.asList(width, height));
-        ModManager.addMod(ModCategory.Render, holeESP);
-
+    @Override
+    protected void init() {
         EventBus.register(RenderBeforeEvent.class, event -> {
-            if (!holeESP.enabled)
+            if (!this.enabled)
                 return true;
 
             for (BlockPos holeSpot : holeSpots) {

@@ -5,7 +5,6 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.AbstractClientPlayer;
 import nicotine.events.GuiRenderBeforeEvent;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.HUDMod;
 import nicotine.mod.option.ToggleOption;
 import nicotine.screens.HUDEditorScreen;
@@ -20,7 +19,7 @@ import java.util.List;
 
 import static nicotine.util.Common.*;
 
-public class Combat {
+public class Combat extends HUDMod {
     private static final ToggleOption distance = new ToggleOption("Distance", true);
     private static final ToggleOption totemCount = new ToggleOption("TotemCount", true);
     private static final ToggleOption otherPlayers = new ToggleOption("OtherPlayers", true);
@@ -30,13 +29,15 @@ public class Combat {
     private static final int WINDOW_HEIGHT = 70;
     private static final int PADDING = 10;
 
-    public static void init() {
-        HUDMod combat = new HUDMod("Combat", "Shows the nearest player around you in a nice HUD");
-        combat.modOptions.addAll(Arrays.asList(distance, totemCount, otherPlayers));
-        ModManager.addMod(ModCategory.HUD, combat);
+    public Combat() {
+        super(ModCategory.HUD, "Combat", "Shows the nearest player around you in a nice HUD");
+        this.modOptions.addAll(Arrays.asList(distance, totemCount, otherPlayers));
+    }
 
+    @Override
+    protected void init() {
         EventBus.register(GuiRenderBeforeEvent.class, event -> {
-            if (!combat.enabled || mc.getDebugOverlay().showDebugScreen())
+            if (!this.enabled || mc.getDebugOverlay().showDebugScreen())
                 return true;
 
             AbstractClientPlayer nearestPlayer = Player.findNearestPlayer(false);
@@ -49,16 +50,16 @@ public class Combat {
 
             final int CENTER_WIDTH = mc.getWindow().getGuiScaledWidth() / 2;
 
-            combat.pos.x = CENTER_WIDTH - (WINDOW_WIDTH / 2);
-            combat.pos.y = 10;
+            this.pos.x = CENTER_WIDTH - (WINDOW_WIDTH / 2);
+            this.pos.y = 10;
 
-            event.drawContext.fill(combat.pos.x, combat.pos.y, combat.pos.x + WINDOW_WIDTH, combat.pos.y + WINDOW_HEIGHT, ColorUtil.BACKGROUND_COLOR);
-            GUI.drawBorder(event.drawContext, combat.pos.x, combat.pos.y, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
+            event.drawContext.fill(this.pos.x, this.pos.y, this.pos.x + WINDOW_WIDTH, this.pos.y + WINDOW_HEIGHT, ColorUtil.BACKGROUND_COLOR);
+            GUI.drawBorder(event.drawContext, this.pos.x, this.pos.y, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
 
-            int modelX1 = combat.pos.x;
-            int modelY1 = combat.pos.y;
-            int modelX2 = combat.pos.x + (PADDING + 5) + PLAYER_MODEL_SIZE;
-            int modelY2 = combat.pos.y + PADDING + (PLAYER_MODEL_SIZE * 2);
+            int modelX1 = this.pos.x;
+            int modelY1 = this.pos.y;
+            int modelX2 = this.pos.x + (PADDING + 5) + PLAYER_MODEL_SIZE;
+            int modelY2 = this.pos.y + PADDING + (PLAYER_MODEL_SIZE * 2);
 
             InventoryScreen.renderEntityInInventoryFollowsMouse(event.drawContext,
                     modelX1,
@@ -98,8 +99,8 @@ public class Combat {
             for (int i = 0; i < playerInfo.size(); i++) {
                 event.drawContext.drawString(mc.font,
                         playerInfo.get(i),
-                        combat.pos.x + (WINDOW_WIDTH / 2) - (mc.font.width(playerInfo.get(i)) / 2),
-                        combat.pos.y + PADDING + (mc.font.lineHeight * i),
+                        this.pos.x + (WINDOW_WIDTH / 2) - (mc.font.width(playerInfo.get(i)) / 2),
+                        this.pos.y + PADDING + (mc.font.lineHeight * i),
                         ColorUtil.ACTIVE_FOREGROUND_COLOR,
                         true);
             }

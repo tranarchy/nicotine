@@ -9,23 +9,24 @@ import nicotine.util.EventBus;
 
 import static nicotine.util.Common.mc;
 
-public class Totem {
+public class Totem extends HUDMod {
 
-    public static HUDMod totem = new HUDMod("Totem");;
+    public Totem() {
+        super(ModCategory.HUD, "Totem");
+    }
 
-    public static void init() {
-        ModManager.addMod(ModCategory.HUD, totem);
-
+    @Override
+    protected void init() {
         EventBus.register(GuiRenderAfterEvent.class, event -> {
-            if (!totem.enabled)
+            if (!this.enabled)
                 return true;
 
-            totem.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - 8;
+            this.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - 8;
 
-            if (ECrystal.eCrystal.enabled)
-                totem.pos.x = mc.getWindow().getGuiScaledWidth() / 2;
+            if (ModManager.getMod("ECrystal").enabled)
+                this.pos.x = mc.getWindow().getGuiScaledWidth() / 2;
 
-            totem.pos.y = mc.getWindow().getGuiScaledHeight() - 80;
+            this.pos.y = mc.getWindow().getGuiScaledHeight() - 80;
 
             int totemCount = 0;
 
@@ -35,8 +36,8 @@ public class Totem {
                 }
             }
 
-            event.drawContext.renderItem(Items.TOTEM_OF_UNDYING.getDefaultInstance(), totem.pos.x, totem.pos.y);
-            event.drawContext.renderItemDecorations(mc.font, Items.TOTEM_OF_UNDYING.getDefaultInstance(), totem.pos.x, totem.pos.y, String.valueOf(totemCount));
+            event.drawContext.renderItem(Items.TOTEM_OF_UNDYING.getDefaultInstance(), this.pos.x, this.pos.y);
+            event.drawContext.renderItemDecorations(mc.font, Items.TOTEM_OF_UNDYING.getDefaultInstance(), this.pos.x, this.pos.y, String.valueOf(totemCount));
 
             return true;
         });

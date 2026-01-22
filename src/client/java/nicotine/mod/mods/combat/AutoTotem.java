@@ -4,19 +4,22 @@ import net.minecraft.world.item.Items;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 import nicotine.util.Inventory;
 
+
 import static nicotine.util.Common.mc;
 
-public class AutoTotem {
-    public static void init() {
-        Mod autoTotem = new Mod("AutoTotem");
-        ModManager.addMod(ModCategory.Combat, autoTotem);
+public class AutoTotem extends Mod {
 
+    public AutoTotem() {
+        super(ModCategory.Combat,"AutoTotem");
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!autoTotem.enabled || !mc.player.getOffhandItem().isEmpty() || Inventory.isContainerOpen())
+            if (!this.enabled || !mc.player.getOffhandItem().isEmpty() || Inventory.isContainerOpen())
                 return true;
 
             for (int i = 0; i <= 35; i++) {

@@ -8,7 +8,6 @@ import nicotine.events.GetFaceOcclusionShapeEvent;
 import nicotine.events.GetRenderShapeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.SelectionOption;
 import nicotine.util.EventBus;
@@ -17,51 +16,56 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
-public class Xray {
+public class Xray extends Mod {
 
-    public static void init() {
-        Mod xray = new Mod("Xray") {
-            @Override
-            public void toggle() {
-                this.enabled = !this.enabled;
-                mc.smartCull = !this.enabled;
-                mc.levelRenderer.allChanged();
-            }
-        };
-        SelectionOption blocks = new SelectionOption("Blocks") {
-            @Override
-            public boolean filter(Item item) {
-                return item instanceof BlockItem;
-            }
-        };
-        KeybindOption keybind = new KeybindOption(InputConstants.KEY_X);
-        xray.modOptions.addAll(Arrays.asList(blocks, keybind));
-        ModManager.addMod(ModCategory.Render, xray);
+    private final SelectionOption blocks = new SelectionOption("Blocks") {
+        @Override
+        public boolean filter(Item item) {
+            return item instanceof BlockItem;
+        }
+    };
+
+    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_X);
+
+    public Xray() {
+        super(ModCategory.Render, "Xray");
 
         blocks.items.addAll(Arrays.asList(
-                    Blocks.IRON_ORE.asItem(),
-                    Blocks.LAPIS_ORE.asItem(),
-                    Blocks.REDSTONE_ORE.asItem(),
-                    Blocks.EMERALD_ORE.asItem(),
-                    Blocks.DIAMOND_ORE.asItem(),
+                Blocks.IRON_ORE.asItem(),
+                Blocks.LAPIS_ORE.asItem(),
+                Blocks.REDSTONE_ORE.asItem(),
+                Blocks.EMERALD_ORE.asItem(),
+                Blocks.DIAMOND_ORE.asItem(),
 
-                    Blocks.DEEPSLATE_IRON_ORE.asItem(),
-                    Blocks.DEEPSLATE_LAPIS_ORE.asItem(),
-                    Blocks.DEEPSLATE_REDSTONE_ORE.asItem(),
-                    Blocks.DEEPSLATE_EMERALD_ORE.asItem(),
-                    Blocks.DEEPSLATE_DIAMOND_ORE.asItem(),
+                Blocks.DEEPSLATE_IRON_ORE.asItem(),
+                Blocks.DEEPSLATE_LAPIS_ORE.asItem(),
+                Blocks.DEEPSLATE_REDSTONE_ORE.asItem(),
+                Blocks.DEEPSLATE_EMERALD_ORE.asItem(),
+                Blocks.DEEPSLATE_DIAMOND_ORE.asItem(),
 
-                    Blocks.NETHER_QUARTZ_ORE.asItem(),
-                    Blocks.ANCIENT_DEBRIS.asItem(),
+                Blocks.NETHER_QUARTZ_ORE.asItem(),
+                Blocks.ANCIENT_DEBRIS.asItem(),
 
-                    Blocks.NETHER_PORTAL.asItem(),
+                Blocks.NETHER_PORTAL.asItem(),
 
-                    Blocks.END_PORTAL.asItem(),
-                    Blocks.END_PORTAL_FRAME.asItem()
+                Blocks.END_PORTAL.asItem(),
+                Blocks.END_PORTAL_FRAME.asItem()
         ));
 
+        this.modOptions.addAll(Arrays.asList(blocks, keybind));
+    }
+
+    @Override
+    public void toggle() {
+        this.enabled = !this.enabled;
+        mc.smartCull = !this.enabled;
+        mc.levelRenderer.allChanged();
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(GetRenderShapeEvent.class, event -> {
-            if (!xray.enabled || mc.player == null) {
+            if (!this.enabled || mc.player == null) {
                 return true;
             }
 
@@ -72,7 +76,7 @@ public class Xray {
         });
 
         EventBus.register(GetFaceOcclusionShapeEvent.class, event -> {
-            if (!xray.enabled || mc.player == null)
+            if (!this.enabled || mc.player == null)
                 return true;
 
             if (blocks.items.contains(event.block.asItem()))

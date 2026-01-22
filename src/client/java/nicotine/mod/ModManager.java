@@ -13,8 +13,8 @@ import java.util.*;
 public class ModManager {
     public static LinkedHashMap<ModCategory, List<Mod>> modules = new LinkedHashMap<>();
 
-    public static void addMod(ModCategory modCategory, Mod mod) {
-        modules.get(modCategory).add(mod);
+    public static void add(Mod mod) {
+        modules.get(mod.modCategory).add(mod);
     }
 
     public static Mod getMod(String name) {
@@ -36,84 +36,84 @@ public class ModManager {
             modules.put(category, new ArrayList<>());
         }
 
-        Players.init();
-        Chams.init();
-        Storage.init();
-        Item.init();
-        LogoutESP.init();
-        HoleESP.init();
-        NameTag.init();
-        FullBright.init();
-        NoRender.init();
-        NoFog.init();
-        ActiveSpawner.init();
-        BlockBreaking.init();
-        BlockOutline.init();
-        EntityOwner.init();
-        Waypoints.init();
-        Xray.init();
-        Peek.init();
-        Zoom.init();
-        HandFOV.init();
-        Crosshair.init();
+        add(new Players());
+        add(new Chams());
+        add(new Storage());
+        add(new Item());
+        add(new LogoutESP());
+        add(new HoleESP());
+        add(new NameTag());
+        add(new FullBright());
+        add(new NoRender());
+        add(new NoFog());
+        add(new ActiveSpawner());
+        add(new BlockBreaking());
+        add(new BlockOutline());
+        add(new EntityOwner());
+        add(new Waypoints());
+        add(new Xray());
+        add(new Peek());
+        add(new Zoom());
+        add(new HandFOV());;
+        add(new Crosshair());
 
-        PortalScreen.init();
-        AlphaInventory.init();
-        ExtraRange.init();
-        AutoRespawn.init();
-        AutoEject.init();
-        AutoRefill.init();
-        AutoTool.init();
-        AutoFish.init();
-        AutoEat.init();
-        Scaffold.init();
-        NoPush.init();
-        FastXP.init();
+        add(new PortalScreen());
+        add(new AlphaInventory());
+        add(new ExtraRange());
+        add(new AutoRespawn());
+        add(new AutoEject());
+        add(new AutoRefill());
+        add(new AutoTool());
+        add(new AutoFish());
+        add(new AutoEat());
+        add(new Scaffold());
+        add(new NoPush());
+        add(new FastXP());
 
-        AutoWalk.init();
-        AutoSprint.init();
-        AntiAFK.init();
-        ElytraBounce.init();
-        Pitch40.init();
-        FreeMove.init();
+        add(new AutoWalk());
+        add(new AutoSprint());
+        add(new AntiAFK());
+        add(new ElytraBounce());
+        add(new Pitch40());
+        add(new FreeMove());
 
-        AutoTotem.init();
-        AutoArmor.init();
-        AutoTrap.init();
-        AutoCrystal.init();
-        KillAura.init();
-        NoKnockback.init();
-        Surround.init();
-        CombatNotif.init();
+        add(new AutoTotem());
+        add(new AutoArmor());
+        add(new AutoTrap());
+        add(new AutoCrystal());
+        add(new KillAura());
+        add(new NoKnockback());
+        add(new Surround());
+        add(new CombatNotif());
 
-        NoTelemetry.init();
-        SmartFocus.init();
-        AutoReconnect.init();
-        ExtraTab.init();
-        DiscordActivity.init();
+        add(new NoTelemetry());
+        add(new SmartFocus());
+        add(new AutoReconnect());
+        add(new ExtraTab());
+        add(new DiscordActivity());
 
         if (System.getProperty("os.name").startsWith("Mac"))
-            TouchBar.init();
+            add(new TouchBar());
 
-        HUD.init();
-        HUDEditor.init();
-        Watermark.init();
-        Modules.init();
-        Cords.init();
-        FPS.init();
-        Ping.init();
-        Memory.init();
-        Speed.init();
-        Effects.init();
-        Player.init();
-        Server.init();
-        Armor.init();
-        Totem.init();
-        ECrystal.init();
-        Combat.init();
+        add(new HUD());
+        add(new HUDEditor());
+        add(new Watermark());
+        add(new Modules());
+        add(new Cords());
+        add(new FPS());
+        add(new Ping());
+        add(new Memory());
+        add(new Speed());
+        add(new Effects());
+        add(new Player());
+        add(new Server());
+        add(new Armor());
+        add(new Totem());
+        add(new ECrystal());
+        add(new Combat());
 
-        GUI.init();
-        Tooltip.init();
-        Blur.init();
+        add(new GUI());
+        add(new Tooltip());
+        add(new Blur());
     }
 }

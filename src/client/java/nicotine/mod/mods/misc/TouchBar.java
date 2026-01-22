@@ -32,7 +32,7 @@ import java.util.*;
 
 import static nicotine.util.Common.*;
 
-public class TouchBar {
+public class TouchBar extends Mod {
 
     public static class TouchBarButton {
         public String identifier;
@@ -54,6 +54,19 @@ public class TouchBar {
     private static long customSize = 0;
 
     private static long elapsedTime = System.currentTimeMillis();
+
+    private final SliderOption refresh = new SliderOption("Refresh", 5, 1, 20, false);
+    private final ToggleOption coords = new ToggleOption("Coords");
+    private final ToggleOption totem = new ToggleOption("Totem");
+    private final ToggleOption eCrystal = new ToggleOption("ECrystal");
+    private final ToggleOption server = new ToggleOption("Server");
+    private final ToggleOption customGIF = new ToggleOption("CustomGIF");
+    private final ToggleOption customButtons = new ToggleOption("CustomButtons");
+
+    public TouchBar() {
+        super(ModCategory.Misc, "TouchBar", "Touch bar for Macbook Pro devices");
+        this.modOptions.addAll(Arrays.asList(refresh, coords, totem, eCrystal, server, customGIF, customButtons));
+    }
 
     private static class ButtonClickHandler extends NSObject {
         String executeString;
@@ -341,34 +354,24 @@ public class TouchBar {
         }
     }
 
-    public static void init() {
-        Mod touchBar = new Mod("TouchBar", "Touch bar for Macbook Pro devices")  {
-            @Override
-            public void toggle() {
-                this.enabled = !this.enabled;
+    @Override
+    public void toggle() {
+        this.enabled = !this.enabled;
 
-                if (!this.enabled) {
-                    buttons.clear();
-                    setTouchBar();
-                }
-            }
-        };
-        SliderOption refresh = new SliderOption("Refresh", 5, 1, 20, false);
-        ToggleOption coords = new ToggleOption("Coords");
-        ToggleOption totem = new ToggleOption("Totem");
-        ToggleOption eCrystal = new ToggleOption("ECrystal");
-        ToggleOption server = new ToggleOption("Server");
-        ToggleOption customGIF = new ToggleOption("CustomGIF");
-        ToggleOption customButtons = new ToggleOption("CustomButtons");
-        touchBar.modOptions.addAll(Arrays.asList(refresh, coords, totem, eCrystal, server, customGIF, customButtons));
-        ModManager.addMod(ModCategory.Misc, touchBar);
+        if (!this.enabled) {
+            buttons.clear();
+            setTouchBar();
+        }
+    }
 
+    @Override
+    protected void init() {
         extractTouchBarImagesBytes();
 
         File customFile = new File("nicotine/custom.gif");
 
         EventBus.register(ClientTickEvent.class, event -> {
-           if (!touchBar.enabled)
+           if (!this.enabled)
                return true;
 
            long curTime = System.currentTimeMillis();

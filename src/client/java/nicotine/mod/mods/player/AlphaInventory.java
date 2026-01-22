@@ -5,18 +5,20 @@ import net.minecraft.network.protocol.game.ServerboundContainerClosePacket;
 import nicotine.events.PacketOutEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 
 import static nicotine.util.Common.mc;
 
-public class AlphaInventory {
-    public static void init() {
-        Mod alphaInventory = new Mod("AlphaInventory", "Let's you store items in the crafting grid");
-        ModManager.addMod(ModCategory.Player, alphaInventory);
+public class AlphaInventory extends Mod {
 
+    public AlphaInventory() {
+        super(ModCategory.Player, "AlphaInventory", "Let's you store items in the crafting grid");
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(PacketOutEvent.class, event -> {
-            if (!alphaInventory.enabled)
+            if (!this.enabled)
                 return true;
 
             if (event.packet instanceof ServerboundContainerClosePacket && mc.screen instanceof InventoryScreen) {

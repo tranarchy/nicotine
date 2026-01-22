@@ -4,10 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SwitchOption;
 import nicotine.util.EventBus;
@@ -19,25 +17,30 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
-public class BlockOutline {
-     public static void init() {
-        Mod blockOutline = new Mod("BlockOutline") {
-            @Override
-            public void toggle() {
-                this.enabled = !this.enabled;
-                mc.gameRenderer.setRenderBlockOutline(!enabled);
-            }
-        };
-        SwitchOption render = new SwitchOption(
-                 "Render",
-                 new String[]{"Box", "Filled", "Fade"}
-        );
-        RGBOption rgb = new RGBOption();
-        blockOutline.modOptions.addAll(Arrays.asList(render, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
-        ModManager.addMod(ModCategory.Render, blockOutline);
+public class BlockOutline extends Mod {
 
+    private final SwitchOption render = new SwitchOption(
+            "Render",
+            new String[]{"Box", "Filled", "Fade"}
+    );
+
+    private final RGBOption rgb = new RGBOption();
+
+    public BlockOutline() {
+        super(ModCategory.Render, "BlockOutline");
+        this.modOptions.addAll(Arrays.asList(render, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+    }
+
+    @Override
+    public void toggle() {
+        this.enabled = !this.enabled;
+        mc.gameRenderer.setRenderBlockOutline(!enabled);
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(RenderBeforeEvent.class, event -> {
-            if (!blockOutline.enabled)
+            if (!this.enabled)
                 return true;
 
             HitResult crosshairTarget = mc.hitResult;

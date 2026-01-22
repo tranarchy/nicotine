@@ -3,12 +3,10 @@ package nicotine.mod.mods.render;
 import net.minecraft.client.renderer.state.BlockBreakingRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
-import nicotine.events.RenderBeforeEvent;
 import nicotine.events.RenderBlockDamageEvent;
 import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
@@ -20,16 +18,20 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
-public class BlockBreaking {
-    public static void init() {
-        Mod blockBreaking = new Mod("BlockBreaking");
-        RGBOption rgb = new RGBOption();
-        ToggleOption noAnimation = new ToggleOption("NoAnimation");
-        blockBreaking.modOptions.addAll(Arrays.asList(rgb.red, rgb.green, rgb.blue, rgb.rainbow, noAnimation));
-        ModManager.addMod(ModCategory.Render, blockBreaking);
+public class BlockBreaking extends Mod {
 
+    private final RGBOption rgb = new RGBOption();
+    private final ToggleOption noAnimation = new ToggleOption("NoAnimation");
+
+    public BlockBreaking() {
+        super(ModCategory.Render, "BlockBreaking");
+        this.modOptions.addAll(Arrays.asList(rgb.red, rgb.green, rgb.blue, rgb.rainbow, noAnimation));
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(RenderEvent.class, event -> {
-            if (!blockBreaking.enabled)
+            if (!this.enabled)
                 return true;
 
             for (BlockBreakingRenderState breakingBlockRenderState : mc.gameRenderer.getLevelRenderState().blockBreakingRenderStates) {
@@ -45,7 +47,7 @@ public class BlockBreaking {
         });
 
         EventBus.register(RenderBlockDamageEvent.class, event -> {
-            if (!blockBreaking.enabled || !noAnimation.enabled)
+            if (!this.enabled || !noAnimation.enabled)
                 return true;
 
             return false;

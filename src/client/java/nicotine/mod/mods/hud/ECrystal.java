@@ -10,23 +10,24 @@ import nicotine.util.EventBus;
 
 import static nicotine.util.Common.mc;
 
-public class ECrystal {
+public class ECrystal extends HUDMod {
 
-    public static HUDMod eCrystal = new HUDMod("ECrystal");
+    public ECrystal() {
+        super(ModCategory.HUD, "ECrystal");
+    }
 
-    public static void init() {
-        ModManager.addMod(ModCategory.HUD, eCrystal);
-
+    @Override
+    protected void init() {
         EventBus.register(GuiRenderAfterEvent.class, event -> {
-            if (!eCrystal.enabled)
+            if (!this.enabled)
                 return true;
 
-            eCrystal.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - 8;
+            this.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - 8;
 
-            if (Totem.totem.enabled)
-                eCrystal.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - 18;
+            if (ModManager.getMod("Totem").enabled)
+                this.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - 18;
 
-            eCrystal.pos.y = mc.getWindow().getGuiScaledHeight() - 80;
+            this.pos.y = mc.getWindow().getGuiScaledHeight() - 80;
 
             int eCrystalCount = 0;
 
@@ -37,8 +38,8 @@ public class ECrystal {
                 }
             }
 
-            event.drawContext.renderItem(Items.END_CRYSTAL.getDefaultInstance(), eCrystal.pos.x, eCrystal.pos.y);
-            event.drawContext.renderItemDecorations(mc.font, Items.END_CRYSTAL.getDefaultInstance(), eCrystal.pos.x, eCrystal.pos.y, String.valueOf(eCrystalCount));
+            event.drawContext.renderItem(Items.END_CRYSTAL.getDefaultInstance(), this.pos.x, this.pos.y);
+            event.drawContext.renderItemDecorations(mc.font, Items.END_CRYSTAL.getDefaultInstance(), this.pos.x, this.pos.y, String.valueOf(eCrystalCount));
 
             return true;
         });

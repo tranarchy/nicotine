@@ -10,7 +10,6 @@ import net.minecraft.world.phys.Vec3;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
@@ -22,21 +21,23 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
-public class Scaffold {
+public class Scaffold extends Mod {
 
-    public static void init() {
+    private final ToggleOption selectBlock = new ToggleOption("SelectBlock");
+    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_N);
 
-        Mod scaffold = new Mod("Scaffold", "Places blocks below you as you move");
-        ToggleOption selectBlock = new ToggleOption("SelectBlock");
-        KeybindOption keybind = new KeybindOption(InputConstants.KEY_N);
-        scaffold.modOptions.addAll(Arrays.asList(selectBlock, keybind));
-        ModManager.addMod(ModCategory.Player, scaffold);
+    public Scaffold() {
+        super(ModCategory.Player, "Scaffold", "Places blocks below you as you move");
+        this.modOptions.addAll(Arrays.asList(selectBlock, keybind));
+    }
 
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (Keybind.keyReleased(scaffold, keybind.keyCode))
-                scaffold.toggle();
+            if (Keybind.keyReleased(this, keybind.keyCode))
+                this.toggle();
 
-            if (!scaffold.enabled || (!(mc.player.getMainHandItem().getItem() instanceof BlockItem) && !selectBlock.enabled) || Player.isBusy())
+            if (!this.enabled || (!(mc.player.getMainHandItem().getItem() instanceof BlockItem) && !selectBlock.enabled) || Player.isBusy())
                 return true;
 
             BlockPos initPos = mc.player.blockPosition();

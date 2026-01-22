@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Mod {
+    public ModCategory modCategory;
     public String name;
     public String description = "";
 
@@ -14,14 +15,22 @@ public class Mod {
 
     public List<ModOption> modOptions = new ArrayList<>();
 
-    public Mod(String name) {
-        this.name = name;
-    }
-
-    public Mod(String name, String description) {
+    public Mod(ModCategory modCategory, String name, String description) {
+        this.modCategory = modCategory;
         this.name = name;
         this.description = description;
+
+        this.init();
     }
+
+    public Mod(ModCategory modCategory, String name) {
+        this.modCategory = modCategory;
+        this.name = name;
+
+        this.init();
+    }
+
+    protected void init() {}
 
     public void toggle() {
         this.enabled = !this.enabled;

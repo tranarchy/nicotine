@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import nicotine.events.RenderHandEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
 import org.joml.Matrix4f;
@@ -14,27 +13,32 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
-public class HandFOV {
-    public static void init() {
-        Mod handFOV = new Mod("HandFOV");
-        SliderOption fov = new SliderOption(
-                "FOV",
-                50,
-                50,
-                180
-        );
-        SliderOption aspect = new SliderOption(
-                "Aspect",
-                1.0f,
-                0.1f,
-                1.5f,
-                true
-        );
-        handFOV.modOptions.addAll(Arrays.asList(fov, aspect));
-        ModManager.addMod(ModCategory.Render, handFOV);
+public class HandFOV extends Mod {
 
+    private final SliderOption fov = new SliderOption(
+            "FOV",
+            50,
+            50,
+            180
+    );
+
+    private final SliderOption aspect = new SliderOption(
+            "Aspect",
+            1.0f,
+            0.1f,
+            1.5f,
+            true
+    );
+
+    public HandFOV() {
+        super(ModCategory.Render,"HandFOV");
+        this.modOptions.addAll(Arrays.asList(fov, aspect));
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(RenderHandEvent.class, event -> {
-            if (!handFOV.enabled)
+            if (!this.enabled)
                 return true;
 
              Matrix4f matrix4f = new Matrix4f();

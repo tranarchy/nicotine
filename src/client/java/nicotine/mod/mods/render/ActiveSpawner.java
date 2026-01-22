@@ -22,19 +22,22 @@ import nicotine.util.render.Render;
 import nicotine.util.math.BoxUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static nicotine.util.Common.*;
 
-public class ActiveSpawner {
+public class ActiveSpawner extends Mod {
     public static List<BlockPos> activeSpawners = new ArrayList<>();
-    
-    public static void init() {
-        Mod activeSpawner = new Mod("ActiveSpawner", "Shows active spawners for stash hunting");
-        ModManager.addMod(ModCategory.Render, activeSpawner);
 
+    public ActiveSpawner() {
+        super(ModCategory.Render, "ActiveSpawner", "Shows active spawners for stash hunting");
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!activeSpawner.enabled)
+            if (!this.enabled)
                 return true;
 
             for (BlockEntity blockEntity : BlockEntityUtil.getBlockEntities()) {
@@ -56,7 +59,7 @@ public class ActiveSpawner {
         });
         
         EventBus.register(RenderBeforeEvent.class, event -> {
-            if (!activeSpawner.enabled)
+            if (!this.enabled)
                 return true;
             
             for (BlockPos blockPos : activeSpawners) {

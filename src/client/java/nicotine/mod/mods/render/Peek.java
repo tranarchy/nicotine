@@ -13,7 +13,6 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderTooltipEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.screens.PeekScreen;
@@ -28,23 +27,26 @@ import java.util.List;
 
 import static nicotine.util.Common.mc;
 
-public class Peek {
+public class Peek extends Mod {
     public static boolean echestWasOpened = false;
     public static List<ItemStack> enderChestItems = new ArrayList<>();
 
-    public static void init() {
-        Mod peek = new Mod("Peek", "Lets you see inside shulkers and echets without opening them");
-        ToggleOption shulker = new ToggleOption("Shulker", true);
-        ToggleOption enderChest = new ToggleOption("EnderChest");
-        KeybindOption keybindOption = new KeybindOption("InspectKey", InputConstants.KEY_LALT);
-        peek.modOptions.addAll(Arrays.asList(shulker, enderChest, keybindOption));
-        ModManager.addMod(ModCategory.Render, peek);
+    private final ToggleOption shulker = new ToggleOption("Shulker", true);
+    private final ToggleOption enderChest = new ToggleOption("EnderChest");
+    private final KeybindOption keybindOption = new KeybindOption("InspectKey", InputConstants.KEY_LALT);
 
+    public Peek() {
+        super(ModCategory.Render, "Peek", "Lets you see inside shulkers and echets without opening them");
+        this.modOptions.addAll(Arrays.asList(shulker, enderChest, keybindOption));
+    }
+
+    @Override
+    protected void init() {
         final int SLOT_WIDTH = 18;
         final int MAX_WIDTH = SLOT_WIDTH * 9;
 
         EventBus.register(RenderTooltipEvent.class, event -> {
-            if (!peek.enabled)
+            if (!this.enabled)
                 return true;
 
             if (event.focusedSlot != null) {

@@ -5,7 +5,6 @@ import net.minecraft.client.CameraType;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
@@ -14,36 +13,39 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
-public class Pitch40 {
+public class Pitch40 extends Mod {
 
-    private static boolean start = false;
-    private static boolean constantPitch = true;
-    private static boolean lookUp = false;
-    private static float prevYaw = -1;
-    private static float pitchToAdjust = 0;
-    private static int tickDelay = 0;
+    private boolean start = false;
+    private boolean constantPitch = true;
+    private boolean lookUp = false;
+    private float prevYaw = -1;
+    private float pitchToAdjust = 0;
+    private int tickDelay = 0;
 
-    public static void init() {
-        Mod pitch40 = new Mod("Pitch40", "If you start from a high enough position\nIt let's you efly forever without fireworks") {
-            @Override
-            public void toggle() {
-                this.enabled = !this.enabled;
+    private final KeybindOption keyBind = new KeybindOption(InputConstants.KEY_I);
+    private final ToggleOption yawLock = new ToggleOption("YawLock");
+    private final ToggleOption thirdPerson = new ToggleOption("ThirdPerson");
 
-                start = false;
+    public Pitch40() {
+        super(ModCategory.Movement, "Pitch40", "If you start from a high enough position\nIt let's you efly forever without fireworks");
+        this.modOptions.addAll(Arrays.asList(yawLock, thirdPerson, keyBind));
+    }
 
-                if (!this.enabled) {
-                    mc.options.setCameraType(CameraType.FIRST_PERSON);
-                }
-            }
-        };
-        KeybindOption keyBind = new KeybindOption(InputConstants.KEY_I);
-        ToggleOption yawLock = new ToggleOption("YawLock");
-        ToggleOption thirdPerson = new ToggleOption("ThirdPerson");
-        pitch40.modOptions.addAll(Arrays.asList(yawLock, thirdPerson, keyBind));
-        ModManager.addMod(ModCategory.Movement, pitch40);
+    @Override
+    public void toggle() {
+        this.enabled = !this.enabled;
 
+        start = false;
+
+        if (!this.enabled) {
+            mc.options.setCameraType(CameraType.FIRST_PERSON);
+        }
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!pitch40.enabled)
+            if (!this.enabled)
                 return true;
 
             if (mc.player.isFallFlying() && !mc.player.isInLiquid()) {

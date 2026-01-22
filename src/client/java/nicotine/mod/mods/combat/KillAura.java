@@ -13,7 +13,6 @@ import net.minecraft.world.item.TridentItem;
 import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.SwitchOption;
@@ -27,35 +26,38 @@ import java.util.Arrays;
 import static nicotine.util.Common.friendList;
 import static nicotine.util.Common.mc;
 
-public class KillAura {
+public class KillAura extends Mod {
 
-    private static float delayLeft = 0.0f;
+    private float delayLeft = 0.0f;
+
+    private final ToggleOption combatUpdate = new ToggleOption("CombatUpdate", true);
+    private final ToggleOption selectWeapon = new ToggleOption("SelectWeapon", false);
+    private final ToggleOption players = new ToggleOption("Players", true);
+    private final ToggleOption hostile = new ToggleOption("Hostile", true);
+    private final ToggleOption angerable = new ToggleOption("Neutral");
+    private final ToggleOption passive = new ToggleOption("Passive");
+    private final SliderOption delay = new SliderOption(
+            "PlusDelay",
+            0,
+            0,
+            20
+    );
+    private final SwitchOption rotation = new SwitchOption("Look", new String[]{"Revert", "Stay", "Target", "None"});
+    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_K);
 
     private static boolean isWeapon(ItemStack itemStack) {
         return itemStack.is(ItemTags.SWORDS) || itemStack.is(ItemTags.AXES) || itemStack.is(ItemTags.SPEARS) || itemStack.getItem() instanceof MaceItem || itemStack.getItem() instanceof TridentItem;
     }
 
-    public static void init() {
-        Mod killAura = new Mod("KillAura");
-        ToggleOption combatUpdate = new ToggleOption("CombatUpdate", true);
-        ToggleOption selectWeapon = new ToggleOption("SelectWeapon", false);
-        ToggleOption players = new ToggleOption("Players", true);
-        ToggleOption hostile = new ToggleOption("Hostile", true);
-        ToggleOption angerable = new ToggleOption("Neutral");
-        ToggleOption passive = new ToggleOption("Passive");
-        SliderOption delay = new SliderOption(
-                "PlusDelay",
-                0,
-                0,
-                20
-        );
-        SwitchOption rotation = new SwitchOption("Look", new String[]{"Revert", "Stay", "Target", "None"});
-        KeybindOption keybind = new KeybindOption(InputConstants.KEY_K);
-        killAura.modOptions.addAll(Arrays.asList(combatUpdate, selectWeapon, players, hostile, angerable, passive, rotation, delay, keybind));
-        ModManager.addMod(ModCategory.Combat, killAura);
+    public KillAura() {
+        super(ModCategory.Combat, "KillAura");
+        this.modOptions.addAll(Arrays.asList(combatUpdate, selectWeapon, players, hostile, angerable, passive, rotation, delay, keybind));
+    }
 
+    @Override
+    protected void init() {
         EventBus.register(ClientTickEvent.class, event -> {
-            if (!killAura.enabled || mc.level == null)
+            if (!this.enabled || mc.level == null)
                 return true;
 
             for (Entity entity : mc.level.entitiesForRendering()) {

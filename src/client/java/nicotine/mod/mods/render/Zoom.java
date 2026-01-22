@@ -7,7 +7,6 @@ import nicotine.screens.clickgui.ClickGUI;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
@@ -17,25 +16,29 @@ import java.util.Arrays;
 import static nicotine.util.Common.mc;
 import static nicotine.util.Common.window;
 
-public class Zoom {
-    private static int defaultFov = 0;
+public class Zoom extends Mod  {
+    private int defaultFov = 0;
 
-    public static void init() {
-        Mod zoom = new Mod("Zoom");
-        SliderOption zoomFov = new SliderOption(
-                "FOV",
-                10,
-                5,
-                30
-        );
-        KeybindOption keybind = new KeybindOption(InputConstants.KEY_C);
-        zoom.modOptions.addAll(Arrays.asList(zoomFov, keybind));
-        ModManager.addMod(ModCategory.Render, zoom);
+    private final SliderOption zoomFov = new SliderOption(
+            "FOV",
+            10,
+            5,
+            30
+    );
 
+    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_C);
+
+    public Zoom() {
+        super(ModCategory.Render, "Zoom");
+        this.modOptions.addAll(Arrays.asList(zoomFov, keybind));
+    }
+
+    @Override
+    protected void init() {
         OptionInstance<Integer> fovOption = mc.options.fov();
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!zoom.enabled || !InputConstants.isKeyDown(window, keybind.keyCode) ||
+            if (!this.enabled || !InputConstants.isKeyDown(window, keybind.keyCode) ||
                     mc.screen instanceof ChatScreen || mc.screen instanceof ClickGUI) {
                 int fov =  fovOption.get();
                 if (fov == zoomFov.value)
@@ -49,7 +52,5 @@ public class Zoom {
 
             return true;
         });
-
-
     }
 }

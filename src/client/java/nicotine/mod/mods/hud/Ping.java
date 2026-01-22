@@ -7,7 +7,6 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.PacketInEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.SwitchOption;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
@@ -16,22 +15,25 @@ import java.util.List;
 
 import static nicotine.util.Common.mc;
 
-public class Ping {
-    private static int tick = 0;
-    private static int pingVal = 0;
+public class Ping extends HUDMod {
+    private int tick = 0;
+    private int pingVal = 0;
 
-    public static void init() {
-        HUDMod ping = new HUDMod("Ping");
-        ping.anchor = HUDMod.Anchor.TopLeft;
-        SwitchOption source = new SwitchOption(
-                "Source",
-                new String[]{"Tab", "QueryPingPacket"}
-        );
-        ping.modOptions.add(source);
-        ModManager.addMod(ModCategory.HUD, ping);
+    private final SwitchOption source = new SwitchOption(
+            "Source",
+            new String[]{"Tab", "QueryPingPacket"}
+    );
 
+    public Ping() {
+        super(ModCategory.HUD, "Ping");
+        this.anchor = HUDMod.Anchor.TopLeft;
+        this.modOptions.add(source);
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!ping.enabled || mc.isSingleplayer())
+            if (!this.enabled || mc.isSingleplayer())
                 return true;
 
             if (source.value.equals("Tab"))
@@ -46,13 +48,13 @@ public class Ping {
             }
 
             String pingText = String.format("ping %s%s %dms", ChatFormatting.WHITE, HUD.separator.value, pingVal);
-            ping.texts = List.of(pingText);
+            this.texts = List.of(pingText);
 
             return true;
         });
 
         EventBus.register(PacketInEvent.class, event -> {
-            if (!ping.enabled || source.value.equals("Tab") || mc.isSingleplayer())
+            if (!this.enabled || source.value.equals("Tab") || mc.isSingleplayer())
                 return true;
 
             if (event.packet instanceof ClientboundPongResponsePacket ClientboundPongResponsePacket && mc.player != null) {

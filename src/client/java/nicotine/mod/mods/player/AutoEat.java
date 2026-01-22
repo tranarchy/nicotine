@@ -6,29 +6,31 @@ import net.minecraft.world.item.Item;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
 import nicotine.util.Inventory;
 
 import static nicotine.util.Common.mc;
 
-public class AutoEat {
-    private static boolean eating = false;
+public class AutoEat extends Mod {
+    private boolean eating = false;
 
-    public static void init() {
-        Mod autoEat = new Mod("AutoEat");
-        SliderOption hunger = new SliderOption(
-                "Hunger",
-                15,
-                0,
-                19
-        );
-        autoEat.modOptions.add(hunger);
-        ModManager.addMod(ModCategory.Player, autoEat);
+    private final SliderOption hunger = new SliderOption(
+            "Hunger",
+            15,
+            0,
+            19
+    );
 
+    public AutoEat() {
+        super(ModCategory.Player, "AutoEat");
+        this.modOptions.add(hunger);
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!autoEat.enabled)
+            if (!this.enabled)
                 return true;
 
             if (eating && !mc.player.isUsingItem()) {

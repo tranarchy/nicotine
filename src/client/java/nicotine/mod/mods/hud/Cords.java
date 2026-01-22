@@ -5,7 +5,6 @@ import net.minecraft.world.level.Level;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import org.apache.commons.lang3.StringUtils;
@@ -13,16 +12,20 @@ import org.joml.Vector2d;
 
 import static nicotine.util.Common.mc;
 
-public class Cords {
-    public static void init() {
-        HUDMod cords = new HUDMod("Cords");
-        cords.anchor = HUDMod.Anchor.BottomLeft;
-        ToggleOption showDirection = new ToggleOption("ShowDirection", true);
-        cords.modOptions.add(showDirection);
-        ModManager.addMod(ModCategory.HUD, cords);
+public class Cords extends HUDMod {
 
+    private final ToggleOption showDirection = new ToggleOption("ShowDirection", true);
+
+    public Cords() {
+        super(ModCategory.HUD, "Cords");
+        this.anchor = HUDMod.Anchor.BottomLeft;
+        this.modOptions.add(showDirection);
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!cords.enabled)
+            if (!this.enabled)
                 return true;
 
             String direction =  StringUtils.capitalize(mc.player.getMotionDirection().getName());
@@ -53,12 +56,12 @@ public class Cords {
                 cordsText = cordsText.concat(String.format(" %s[%s%.1f %.1f%s]", ChatFormatting.RESET, ChatFormatting.WHITE, otherWorld.x, otherWorld.y, ChatFormatting.RESET));
             }
 
-            cords.texts.clear();
+            this.texts.clear();
 
             if (showDirection.enabled)
-                cords.texts.add(directionText);
+                this.texts.add(directionText);
 
-            cords.texts.add(cordsText);
+            this.texts.add(cordsText);
 
             return true;
         });

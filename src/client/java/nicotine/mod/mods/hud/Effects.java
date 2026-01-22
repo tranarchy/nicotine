@@ -8,7 +8,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 
 import java.util.ArrayList;
@@ -17,14 +16,17 @@ import java.util.List;
 
 import static nicotine.util.Common.mc;
 
-public class Effects {
-    public static void init() {
-        HUDMod effects = new HUDMod("Effects");
-        effects.anchor = HUDMod.Anchor.BottomRight;
-        ModManager.addMod(ModCategory.HUD, effects);
+public class Effects extends HUDMod {
 
+    public Effects() {
+        super(ModCategory.HUD, "Effects");
+        this.anchor = HUDMod.Anchor.BottomRight;
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!effects.enabled)
+            if (!this.enabled)
                 return true;
 
             Comparator<MobEffectInstance> byAmplifier = Comparator.comparingInt(statusEffectInstance -> statusEffectInstance.getAmplifier());
@@ -33,7 +35,7 @@ public class Effects {
             if (!statusEffects.isEmpty())
                 statusEffects.sort(byAmplifier);
 
-            effects.texts.clear();
+            this.texts.clear();
 
             for (MobEffectInstance statusEffectInstance : statusEffects) {
 
@@ -48,7 +50,7 @@ public class Effects {
                 }
 
                 String statusEffectText = String.format("%s%s %s [%s]", effect, ChatFormatting.WHITE, strength, duration);
-                effects.texts.add(statusEffectText);
+                this.texts.add(statusEffectText);
             }
 
             return true;

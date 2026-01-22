@@ -4,11 +4,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.events.SubmitNameTagEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
@@ -20,25 +18,28 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.*;
 
-public class NameTag {
+public class NameTag extends Mod {
 
-    public static void init() {
-        Mod nameTag = new Mod("NameTag");
-        ToggleOption health = new ToggleOption("Health");
-        ToggleOption armor = new ToggleOption("Armor");
-        ToggleOption poppedTotem = new ToggleOption("PoppedTotem");
-        ToggleOption ping = new ToggleOption("Ping");
-        SliderOption scale = new SliderOption("Scale", 1, 0.5f, 3.0f, true);
-        RGBOption rgb = new RGBOption();
-        nameTag.modOptions.addAll(Arrays.asList(health, armor, poppedTotem, ping, scale, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
-        ModManager.addMod(ModCategory.Render, nameTag);
+    private final ToggleOption health = new ToggleOption("Health");
+    private final ToggleOption armor = new ToggleOption("Armor");
+    private final ToggleOption poppedTotem = new ToggleOption("PoppedTotem");
+    private final ToggleOption ping = new ToggleOption("Ping");
+    private final SliderOption scale = new SliderOption("Scale", 1, 0.5f, 3.0f, true);
+    private final RGBOption rgb = new RGBOption();
 
+    public NameTag() {
+        super(ModCategory.Render, "NameTag");
+        this.modOptions.addAll(Arrays.asList(health, armor, poppedTotem, ping, scale, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(SubmitNameTagEvent.class, event -> {
-            return !nameTag.enabled;
+            return !this.enabled;
         });
 
         EventBus.register(RenderBeforeEvent.class, event -> {
-            if (!nameTag.enabled)
+            if (!this.enabled)
                 return true;
 
             for (AbstractClientPlayer player : mc.level.players()) {

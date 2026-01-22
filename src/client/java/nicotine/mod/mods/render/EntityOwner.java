@@ -12,15 +12,20 @@ import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 import nicotine.util.render.Render;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
 import static nicotine.util.Common.mc;
 
-public class EntityOwner {
+public class EntityOwner extends Mod {
 
     private static  HashMap<UUID, String> owners = new HashMap<>();
     private static boolean runningFetch = false;
+
+    public EntityOwner() {
+        super(ModCategory.Render,"EntityOwner", "Shows the owner of tamed entities");
+    }
 
     private static class RunnableFetchProfile implements Runnable {
 
@@ -41,13 +46,10 @@ public class EntityOwner {
         }
     }
 
-    public static void init() {
-        Mod entityOwner = new Mod("EntityOwner", "Shows the owner of tamed entities");
-        ModManager.addMod(ModCategory.Render, entityOwner);
-
-
+    @Override
+    protected void init() {
         EventBus.register(RenderBeforeEvent.class, event -> {
-            if (!entityOwner.enabled)
+            if (!this.enabled)
                 return true;
 
             for (Entity entity : mc.level.entitiesForRendering()) {

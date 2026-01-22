@@ -15,37 +15,40 @@ import java.util.stream.Collectors;
 
 import static nicotine.util.Common.mc;
 
-public class Modules {
-    public static void init() {
-        HUDMod modules = new HUDMod("Modules");
-        modules.anchor = HUDMod.Anchor.TopRight;
-        SwitchOption sorted = new SwitchOption(
-                "Sort",
-                new String[]{"No", "Yes", "Reverse"}
-        );
-        modules.modOptions.add(sorted);
+public class Modules extends HUDMod {
+
+    private final SwitchOption sorted = new SwitchOption(
+            "Sort",
+            new String[]{"No", "Yes", "Reverse"}
+    );
+
+    public Modules() {
+        super(ModCategory.HUD, "Modules");
+        this.anchor = HUDMod.Anchor.TopRight;
+        this.modOptions.add(sorted);
+    }
+
+    @Override
+    protected void init() {
         for (int i = 0; i < ModCategory.values().length - 2; i ++) {
-            modules.modOptions.add(new ToggleOption(ModCategory.values()[i].name(), true));
+            this.modOptions.add(new ToggleOption(ModCategory.values()[i].name(), true));
         }
 
-        ModManager.addMod(ModCategory.HUD, modules);
-
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!modules.enabled)
+            if (!this.enabled)
                 return true;
 
             List<Mod> mods = ModManager.modules.values().stream().flatMap(List::stream).collect(Collectors.toList());
             mods.removeAll(ModManager.modules.get(ModCategory.HUD));
             mods.removeAll(ModManager.modules.get(ModCategory.GUI));
 
-            for (int i = 1; i < modules.modOptions.size(); i++) {
-                if (modules.modOptions.get(i) instanceof ToggleOption toggleOption) {
+            for (int i = 0; i < this.modOptions.size(); i++) {
+                if (this.modOptions.get(i) instanceof ToggleOption toggleOption) {
                     if (!toggleOption.enabled) {
-                        mods.removeAll(ModManager.modules.get(ModCategory.values()[i - 1]));
+                        mods.removeAll(ModManager.modules.get(ModCategory.values()[i]));
                     }
                 }
             }
-
 
             Comparator<Mod> byNameLength = Comparator.comparingInt(mod -> mc.font.width(mod.name));
 
@@ -55,11 +58,11 @@ public class Modules {
                 mods.sort(byNameLength.reversed());
             }
 
-            modules.texts.clear();
+            this.texts.clear();
 
             for (Mod mod : mods) {
                 if (mod.enabled) {
-                    modules.texts.add(mod.name);
+                    this.texts.add(mod.name);
                 }
             }
 

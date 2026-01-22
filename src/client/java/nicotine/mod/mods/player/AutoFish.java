@@ -3,18 +3,20 @@ package nicotine.mod.mods.player;
 import nicotine.events.CaughtFishEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 
 import static nicotine.util.Common.mc;
 
-public class AutoFish {
-    public static void init() {
-        Mod autoFish = new Mod("AutoFish");
-        ModManager.addMod(ModCategory.Player, autoFish);
+public class AutoFish extends Mod {
 
+    public AutoFish() {
+        super(ModCategory.Player, "AutoFish");
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(CaughtFishEvent.class, event -> {
-            if (!autoFish.enabled)
+            if (!this.enabled)
                 return true;
 
             mc.gameMode.useItem(mc.player, mc.player.getUsedItemHand());

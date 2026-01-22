@@ -4,29 +4,31 @@ import net.minecraft.client.OptionInstance;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
 
 import static nicotine.util.Common.mc;
 
-public class SmartFocus {
+public class SmartFocus extends Mod {
 
-    public static void init() {
-        Mod smartFocus = new Mod("SmartFocus", "When the game is not in focus limits your FPS");
-        SliderOption fps = new SliderOption(
-                "FPS",
-                5,
-                1,
-                30
-        );
-        smartFocus.modOptions.add(fps);
-        ModManager.addMod(ModCategory.Misc, smartFocus);
+    private final SliderOption fps = new SliderOption(
+            "FPS",
+            5,
+            1,
+            30
+    );
 
+    public SmartFocus() {
+        super(ModCategory.Misc, "SmartFocus", "When the game is not in focus limits your FPS");
+        this.modOptions.add(fps);
+    }
+
+    @Override
+    protected void init() {
         OptionInstance<Integer> maxFps = mc.options.framerateLimit();
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!smartFocus.enabled)
+            if (!this.enabled)
                 return true;
 
             if (mc.isWindowActive()) {

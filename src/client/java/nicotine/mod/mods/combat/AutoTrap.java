@@ -13,7 +13,6 @@ import net.minecraft.world.phys.Vec3;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.mods.render.LogoutESP;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
@@ -28,17 +27,20 @@ import java.util.List;
 
 import static nicotine.util.Common.mc;
 
-public class AutoTrap {
+public class AutoTrap extends Mod {
 
-    public static void init() {
-        Mod autoTrap = new Mod("AutoTrap", "Traps the closest player with obsidian");
-        ToggleOption logoutSpot = new ToggleOption("LogoutSpot");
-        KeybindOption keybind = new KeybindOption(InputConstants.KEY_Y);
-        autoTrap.modOptions.addAll(Arrays.asList(logoutSpot, keybind));
-        ModManager.addMod(ModCategory.Combat, autoTrap);
+    private final ToggleOption logoutSpot = new ToggleOption("LogoutSpot");
+    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_Y);
 
+    public AutoTrap() {
+        super(ModCategory.Combat,"AutoTrap", "Traps the closest player with obsidian");
+        this.modOptions.addAll(Arrays.asList(logoutSpot, keybind));
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!autoTrap.enabled || Player.isBusy())
+            if (!this.enabled || Player.isBusy())
                 return true;
 
             final double blockInteractionRange = mc.player.blockInteractionRange();
@@ -69,7 +71,7 @@ public class AutoTrap {
                 }
 
                 if (alreadySurrounded) {
-                    autoTrap.toggle();
+                    this.toggle();
                     return true;
                 }
 
@@ -85,7 +87,7 @@ public class AutoTrap {
 
                     if (targetSlot == -1) {
                         Message.sendWarning("No obsidian in hotbar!");
-                        autoTrap.toggle();
+                        this.toggle();
                         return true;
                     }
                 } else {
@@ -133,7 +135,7 @@ public class AutoTrap {
                     Player.lookAndPlace(blockHitResult, targetSlot, true, false);
                 }
 
-                autoTrap.toggle();
+                this.toggle();
             }
 
             return true;

@@ -3,19 +3,16 @@ package nicotine.mod.mods.render;
 import net.minecraft.client.renderer.fog.FogRenderer;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 
-public class NoFog {
-    public static void init() {
-        Mod noFog = new Mod("NoFog") {
-            @Override
-            public void toggle() {
-                this.enabled = !this.enabled;
-                FogRenderer.toggleFog();
-            }
-        };
+public class NoFog extends Mod {
 
-        ModManager.addMod(ModCategory.Render, noFog);
+    public NoFog() {
+        super(ModCategory.Render, "NoFog");
     }
 
+    @Override
+    public void toggle() {
+        this.enabled = !this.enabled;
+        FogRenderer.toggleFog();
+    }
 }

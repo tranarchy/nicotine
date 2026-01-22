@@ -18,11 +18,11 @@ public class HUDMod extends Mod {
 
     public List<String> texts = new ArrayList<>();
 
-    public HUDMod(String name) {
-        super(name);
+    public HUDMod(ModCategory modCategory, String name) {
+        super(modCategory, name);
     }
 
-    public HUDMod(String name, String description) {
-        super(name, description);
+    public HUDMod(ModCategory modCategory, String name, String description) {
+        super(modCategory, name, description);
     }
 }

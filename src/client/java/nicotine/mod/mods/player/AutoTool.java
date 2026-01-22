@@ -6,19 +6,21 @@ import net.minecraft.world.phys.HitResult;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 import nicotine.util.Inventory;
 
 import static nicotine.util.Common.mc;
 
-public class AutoTool {
-    public static void init() {
-        Mod autoTool = new Mod("AutoTool", "Selects the right tool when breaking a block");
-        ModManager.addMod(ModCategory.Player, autoTool);
+public class AutoTool extends Mod {
 
+    public AutoTool() {
+        super(ModCategory.Player, "AutoTool", "Selects the right tool when breaking a block");
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!autoTool.enabled)
+            if (!this.enabled)
                 return true;
 
             if (mc.hitResult.getType() != HitResult.Type.BLOCK || !mc.gameMode.isDestroying())

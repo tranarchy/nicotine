@@ -4,10 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.*;
@@ -18,7 +16,22 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.*;
 
-public class Waypoints {
+public class Waypoints extends Mod {
+
+    private final SliderOption scale = new SliderOption(
+            "Scale",
+            1,
+            0.5f,
+            3.0f,
+            true
+    );
+
+    private final RGBOption rgb = new RGBOption();
+
+    public Waypoints() {
+        super(ModCategory.Render, "Waypoints", "Waypoint system (see .help)");
+        this.modOptions.addAll(Arrays.asList(scale, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+    }
 
     private static Vec3 getAdjustedPosition(BlockPos pos) {
         Vec3 adjustedPosition = new Vec3(pos.getX(), pos.getY() + 3, pos.getZ());
@@ -30,15 +43,10 @@ public class Waypoints {
         return adjustedPosition;
     }
 
-    public static void init() {
-        Mod waypoints = new Mod("Waypoints", "Waypoint system (see .help)");
-        SliderOption scale = new SliderOption("Scale", 1, 0.5f, 3.0f, true);
-        RGBOption rgb = new RGBOption();
-        waypoints.modOptions.addAll(Arrays.asList(scale, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
-        ModManager.addMod(ModCategory.Render, waypoints);
-
+    @Override
+    protected void init() {
         EventBus.register(RenderBeforeEvent.class, event -> {
-            if (!waypoints.enabled || mc.isSingleplayer())
+            if (!this.enabled || mc.isSingleplayer())
                 return true;
 
             for (WaypointInstance waypointInstance : allWaypoints) {

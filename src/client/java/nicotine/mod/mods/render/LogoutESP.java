@@ -7,10 +7,8 @@ import net.minecraft.world.phys.Vec3;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.ConnectEvent;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.*;
@@ -21,22 +19,25 @@ import java.util.*;
 
 import static nicotine.util.Common.*;
 
-public class LogoutESP {
+public class LogoutESP extends Mod {
 
     public static HashMap<AbstractClientPlayer, Long> loggedPlayers = new HashMap<>();
 
-    public static void init() {
-        Mod logoutESP = new Mod("LogoutESP", "Shows where a player logged out");
-        ToggleOption showPlayer = new ToggleOption("ShowPlayer");
-        ToggleOption showElapsed = new ToggleOption("ElapsedTime");
-        RGBOption rgb = new RGBOption();
-        logoutESP.modOptions.addAll(Arrays.asList(showPlayer, showElapsed, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
-        ModManager.addMod(ModCategory.Render, logoutESP);
+    private final ToggleOption showPlayer = new ToggleOption("ShowPlayer");
+    private final ToggleOption showElapsed = new ToggleOption("ElapsedTime");
+    private final RGBOption rgb = new RGBOption();
 
+    public LogoutESP() {
+        super(ModCategory.Render, "LogoutESP", "Shows where a player logged out");
+        this.modOptions.addAll(Arrays.asList(showPlayer, showElapsed, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+    }
+
+    @Override
+    protected void init() {
         List<AbstractClientPlayer> prevPlayers = new ArrayList<>();
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!logoutESP.enabled)
+            if (!this.enabled)
                 return true;
 
             Collection<PlayerInfo> onlinePLayers = new ArrayList<>();
@@ -69,7 +70,7 @@ public class LogoutESP {
         });
 
         EventBus.register(RenderBeforeEvent.class, event -> {
-            if (!logoutESP.enabled)
+            if (!this.enabled)
                 return true;
 
             for (AbstractClientPlayer player : loggedPlayers.keySet()) {

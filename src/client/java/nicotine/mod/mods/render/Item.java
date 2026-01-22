@@ -6,10 +6,8 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.SwitchOption;
 import nicotine.mod.option.ToggleOption;
@@ -22,25 +20,30 @@ import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
-public class Item {
-    public static void init() {
-        Mod item = new Mod("Item");
-        ToggleOption text = new ToggleOption("Text");
-        ToggleOption esp = new ToggleOption("ESP");
-        SwitchOption espRender = new SwitchOption(
-                "Render",
-                new String[]{"Box", "Filled", "Fade"}
-        );
-        espRender.subOption = true;
-        ToggleOption tracer = new ToggleOption("Tracer");
-        SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
-        tracerAlpha.subOption = true;
-        item.modOptions.addAll(Arrays.asList(text, esp, espRender, tracer, tracerAlpha));
-        ModManager.addMod(ModCategory.Render, item);
+public class Item extends Mod {
 
+    private final ToggleOption text = new ToggleOption("Text");
+    private final ToggleOption esp = new ToggleOption("ESP");
+    private final SwitchOption espRender = new SwitchOption(
+            "Render",
+            new String[]{"Box", "Filled", "Fade"}
+    );
+
+    private final ToggleOption tracer = new ToggleOption("Tracer");
+    private final SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
+
+    public Item() {
+        super(ModCategory.Render, "Item");
+        espRender.subOption = true;
+        tracerAlpha.subOption = true;
+        this.modOptions.addAll(Arrays.asList(text, esp, espRender, tracer, tracerAlpha));
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(RenderBeforeEvent.class, event -> {
 
-            if (!item.enabled)
+            if (!this.enabled)
                 return true;
 
             for (Entity entity : mc.level.entitiesForRendering()) {

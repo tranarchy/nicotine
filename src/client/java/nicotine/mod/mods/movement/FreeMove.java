@@ -6,17 +6,19 @@ import net.minecraft.client.gui.screens.ChatScreen;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.screens.clickgui.SelectionScreen;
 import nicotine.util.EventBus;
 
 import static nicotine.util.Common.*;
 
-public class FreeMove {
-    public static void init() {
-        Mod freeMove = new Mod("FreeMove", "Lets you move while a container, game menu etc. is open");
-        ModManager.addMod(ModCategory.Movement, freeMove);
+public class FreeMove extends Mod {
 
+    public FreeMove() {
+        super(ModCategory.Movement, "FreeMove", "Lets you move while a container, game menu etc. is open");
+    }
+
+    @Override
+    protected void init() {
         final KeyMapping[] freeMoveKeybinds =  new KeyMapping[]{
                 mc.options.keyUp,
                 mc.options.keyDown,
@@ -27,7 +29,7 @@ public class FreeMove {
         };
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!freeMove.enabled || mc.screen == null || mc.screen instanceof ChatScreen || mc.screen instanceof SelectionScreen)
+            if (!this.enabled || mc.screen == null || mc.screen instanceof ChatScreen || mc.screen instanceof SelectionScreen)
                 return true;
 
             for (KeyMapping freeMoveKeybind : freeMoveKeybinds) {

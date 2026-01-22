@@ -3,16 +3,18 @@ package nicotine.mod.mods.misc;
 import nicotine.events.CollectPlayerEntriesEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 
-public class ExtraTab {
-    public static void init() {
-        Mod extraTab = new Mod("ExtraTab", "Tab now lists all players");
-        ModManager.addMod(ModCategory.Misc, extraTab);
+public class ExtraTab extends Mod {
 
+    public ExtraTab() {
+        super(ModCategory.Misc, "ExtraTab", "Tab now lists all players");
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(CollectPlayerEntriesEvent.class, event -> {
-            if (!extraTab.enabled)
+            if (!this.enabled)
                 return true;
 
             return false;

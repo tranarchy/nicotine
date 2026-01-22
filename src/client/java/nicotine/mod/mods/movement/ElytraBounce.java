@@ -9,7 +9,6 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.PacketInEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
@@ -21,38 +20,38 @@ import java.util.List;
 
 import static nicotine.util.Common.mc;
 
-public class ElytraBounce {
-    private static int antiCheatDelay = 7;
-    private static boolean antiCheatTrigger = false;
-    private static float prevYaw = -1;
+public class ElytraBounce extends Mod {
+    private int antiCheatDelay = 7;
+    private boolean antiCheatTrigger = false;
+    private float prevYaw = -1;
 
-    public static Mod elytraBounce;
+    private final SliderOption pitch = new SliderOption("Pitch", 85, 45, 180, true);
+    private final SliderOption acDelay = new SliderOption("ACDelay", 7, 0, 20);
+    private final ToggleOption yawLock = new ToggleOption("YawLock");
+    private final ToggleOption thirdPerson = new ToggleOption("ThirdPerson");
+    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_V);
 
-    public static void init() {
-        elytraBounce = new Mod("ElytraBounce") {
-            @Override
-            public void toggle() {
-                this.enabled = !this.enabled;
+    public ElytraBounce() {
+        super(ModCategory.Movement, "ElytraBounce");
+        this.modOptions.addAll(Arrays.asList(pitch, acDelay, yawLock, thirdPerson, keybind));
+    }
 
-                if (!this.enabled) {
-                    antiCheatTrigger = false;
-                    mc.options.keyJump.setDown(false);
-                    mc.options.setCameraType(CameraType.FIRST_PERSON);
-                    prevYaw = -1;
-                }
-            }
-        };
+    @Override
+    public void toggle() {
+        this.enabled = !this.enabled;
 
-        SliderOption pitch = new SliderOption("Pitch", 85, 45, 180, true);
-        SliderOption acDelay = new SliderOption("ACDelay", 7, 0, 20);
-        ToggleOption yawLock = new ToggleOption("YawLock");
-        ToggleOption thirdPerson = new ToggleOption("ThirdPerson");
-        KeybindOption keybind = new KeybindOption(InputConstants.KEY_V);
-        elytraBounce.modOptions.addAll(Arrays.asList(pitch, acDelay, yawLock, thirdPerson, keybind));
-        ModManager.addMod(ModCategory.Movement, elytraBounce);
+        if (!this.enabled) {
+            antiCheatTrigger = false;
+            mc.options.keyJump.setDown(false);
+            mc.options.setCameraType(CameraType.FIRST_PERSON);
+            prevYaw = -1;
+        }
+    }
 
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!elytraBounce.enabled)
+            if (!this.enabled)
                 return true;
 
             List<ItemStack> armorItems = Player.getArmorItems();
@@ -96,7 +95,7 @@ public class ElytraBounce {
         });
 
         EventBus.register(PacketInEvent.class, event -> {
-            if (!elytraBounce.enabled || mc.player == null)
+            if (!this.enabled || mc.player == null)
                 return true;
 
             if (event.packet instanceof ClientboundPlayerPositionPacket) {

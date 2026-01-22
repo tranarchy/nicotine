@@ -36,7 +36,7 @@ import java.util.List;
 
 import static nicotine.util.Common.mc;
 
-public class AutoCrystal {
+public class AutoCrystal extends Mod {
 
     private static float delayLeft = 0;
     private static float placeDelayLeft = 0;
@@ -44,6 +44,39 @@ public class AutoCrystal {
     private static BlockPos placementPositionToRender = null;
 
     private static final List<Block> validBlocks =  Arrays.asList(Blocks.OBSIDIAN, Blocks.BEDROCK);
+
+    private final SliderOption delay = new SliderOption(
+            "Delay",
+            8,
+            0,
+            20
+    );
+    private final SliderOption placeDelay = new SliderOption(
+            "PDelay",
+            10,
+            0,
+            20
+    );
+    private final SliderOption minDamage = new SliderOption(
+            "MinDMG",
+            20,
+            1,
+            75
+    );
+    private final SliderOption selfDamage = new SliderOption(
+            "SelfDMG",
+            10,
+            1,
+            75
+    );
+    private final ToggleOption manualPlace = new ToggleOption("ManualPlace");
+    private final ToggleOption renderPosition = new ToggleOption("RenderPosition", true);
+    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_R);
+
+    public AutoCrystal() {
+        super(ModCategory.Combat,"AutoCrystal", "Places and blows up end crystals around players");
+        this.modOptions.addAll(Arrays.asList(delay, placeDelay, minDamage, selfDamage, manualPlace, renderPosition, keybind));
+    }
 
     private static float calculateExplosionDamage(Vec3 explosionPos, Entity entity) {
         final float power = 12.0F;
@@ -129,40 +162,10 @@ public class AutoCrystal {
         return placementDir;
     }
 
-    public static void init() {
-        Mod autoCrystal = new Mod("AutoCrystal", "Places and blows up end crystals around players");
-        SliderOption delay = new SliderOption(
-                "Delay",
-                8,
-                0,
-                20
-        );
-        SliderOption placeDelay = new SliderOption(
-                "PDelay",
-                10,
-                0,
-                20
-        );
-        SliderOption minDamage = new SliderOption(
-                "MinDMG",
-                20,
-                1,
-                75
-        );
-        SliderOption selfDamage = new SliderOption(
-                "SelfDMG",
-                10,
-                1,
-                75
-        );
-        ToggleOption manualPlace = new ToggleOption("ManualPlace");
-        ToggleOption renderPosition = new ToggleOption("RenderPosition", true);
-        KeybindOption keybind = new KeybindOption(InputConstants.KEY_R);
-        autoCrystal.modOptions.addAll(Arrays.asList(delay, placeDelay, minDamage, selfDamage, manualPlace, renderPosition, keybind));
-        ModManager.addMod(ModCategory.Combat, autoCrystal);
-
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!autoCrystal.enabled)
+            if (!this.enabled)
                 return true;
 
             AbstractClientPlayer nearestPlayer = Player.findNearestPlayer(true);
@@ -272,7 +275,7 @@ public class AutoCrystal {
         });
 
         EventBus.register(RenderBeforeEvent.class, event -> {
-            if (!autoCrystal.enabled || !renderPosition.enabled || placementPositionToRender == null)
+            if (!this.enabled || !renderPosition.enabled || placementPositionToRender == null)
                 return true;
 
             Boxf boundingBox = BoxUtil.getBlockBoundingBoxf(placementPositionToRender);

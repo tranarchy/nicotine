@@ -4,20 +4,22 @@ import net.minecraft.ChatFormatting;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
 
 import java.util.List;
 
 
-public class Memory {
-    public static void init() {
-        HUDMod memory = new HUDMod("Memory");
-        memory.anchor = HUDMod.Anchor.TopLeft;
-        ModManager.addMod(ModCategory.HUD, memory);
+public class Memory extends HUDMod {
 
+    public Memory() {
+        super(ModCategory.HUD, "Memory");
+        this.anchor = HUDMod.Anchor.TopLeft;
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!memory.enabled)
+            if (!this.enabled)
                 return true;
 
             long totalMemory = Runtime.getRuntime().totalMemory();
@@ -25,7 +27,7 @@ public class Memory {
             long usedMemory = (totalMemory - freeMemory) / 1024L / 1024L;
 
             String memoryText = String.format("memory %s%s %03dMB", ChatFormatting.WHITE, HUD.separator.value, usedMemory);
-            memory.texts = List.of(memoryText);
+            this.texts = List.of(memoryText);
 
             return true;
         });

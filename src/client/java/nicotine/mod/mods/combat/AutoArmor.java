@@ -9,7 +9,6 @@ import net.minecraft.world.item.Items;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
@@ -22,17 +21,20 @@ import java.util.List;
 
 import static nicotine.util.Common.mc;
 
-public class AutoArmor {
+public class AutoArmor extends Mod {
 
-    public static void init() {
-        Mod autoArmor = new Mod("AutoArmor");
-        ToggleOption elytraSwap = new ToggleOption("ElytraSwap");
-        KeybindOption elytraSwapKeybind = new KeybindOption("SwapKey", InputConstants.KEY_Z);
-        autoArmor.modOptions.addAll(Arrays.asList(elytraSwap, elytraSwapKeybind));
-        ModManager.addMod(ModCategory.Combat, autoArmor);
+    private final ToggleOption elytraSwap = new ToggleOption("ElytraSwap");
+    private final KeybindOption elytraSwapKeybind = new KeybindOption("SwapKey", InputConstants.KEY_Z);
 
+    public AutoArmor() {
+        super(ModCategory.Combat,"AutoArmor");
+        this.modOptions.addAll(Arrays.asList(elytraSwap, elytraSwapKeybind));
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!autoArmor.enabled || Inventory.isContainerOpen())
+            if (!this.enabled || Inventory.isContainerOpen())
                 return true;
 
             if (Keybind.keyReleased(elytraSwap.name, elytraSwap.enabled, elytraSwapKeybind.keyCode))
