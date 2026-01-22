@@ -7,7 +7,11 @@ public class Command {
     public Command(String name, String description) {
         this.name = name;
         this.description = description;
+
+        this.init();
     }
 
     public void trigger(String[] splitCommand) {}
+
+    protected void init() {}
 }

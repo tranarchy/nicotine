@@ -4,7 +4,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import nicotine.command.Command;
-import nicotine.command.CommandManager;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.mods.render.Peek;
 import nicotine.screens.PeekScreen;
@@ -15,21 +14,23 @@ import java.util.List;
 
 import static nicotine.util.Common.*;
 
-public class Echest {
-    private static boolean openScreen = false;
+public class Echest extends Command {
+    private boolean openScreen = false;
 
-    public static void init() {
-        Command echest = new Command("echest", "Shows your ender chest if you have opened it before") {
-            @Override
-            public void trigger(String[] splitCommand) {
-              if (mc.player == null)
-                  return;
+    public Echest() {
+        super("echest", "Shows your ender chest if you have opened it before");
+    }
 
-                openScreen = true;
-            }
-        };
-        CommandManager.addCommand(echest);
+    @Override
+    public void trigger(String[] splitCommand) {
+        if (mc.player == null)
+            return;
 
+        openScreen = true;
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
             if (mc.screen == null && openScreen) {
                 openScreen = false;

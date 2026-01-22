@@ -4,7 +4,6 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.entity.Entity;
 import nicotine.command.Command;
-import nicotine.command.CommandManager;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
@@ -13,56 +12,59 @@ import nicotine.util.Settings;
 import static nicotine.util.Common.friendList;
 import static nicotine.util.Common.mc;
 
-public class Friend {
-    public static void init() {
-        Command friend = new Command("friend", "Manage your friend list (.friend <add/remove> <name>)") {
-            @Override
-            public void trigger(String[] splitCommand) {
-                if (splitCommand.length != 3) {
-                    Message.sendWarning("Wrong argument count! (.help)");
-                    return;
-                }
+public class Friend extends Command {
 
-                if (splitCommand[1].equals("add") || splitCommand[1].equals("remove")) {
-                    AbstractClientPlayer friend = null;
+    public Friend() {
+        super("friend", "Manage your friend list (.friend <add/remove> <name>)");
+    }
 
-                    for (AbstractClientPlayer player : mc.level.players()) {
-                        if (!(player instanceof RemotePlayer))
-                            continue;
+    @Override
+    public void trigger(String[] splitCommand) {
+        if (splitCommand.length != 3) {
+            Message.sendWarning("Wrong argument count! (.help)");
+            return;
+        }
 
-                        if (player.getName().getString().equalsIgnoreCase(splitCommand[2])) {
-                            friend = player;
-                            break;
-                        }
-                    }
+        if (splitCommand[1].equals("add") || splitCommand[1].equals("remove")) {
+            AbstractClientPlayer friend = null;
 
-                    if (friend == null) {
-                        Message.sendWarning("Player is not online!");
-                        return;
-                    }
+            for (AbstractClientPlayer player : mc.level.players()) {
+                if (!(player instanceof RemotePlayer))
+                    continue;
 
-                    if (splitCommand[1].equals("add")) {
-                        friendList.add(friend.getUUID());
-                        Message.sendInfo(String.format("Added %s to friend list!", friend.getName().getString()));
-                    } else {
-                        if (friendList.contains(friend.getUUID())) {
-                            friendList.remove(friend.getUUID());
-                            Message.sendWarning(String.format("Removed %s from friend list!", friend.getName().getString()));
-                        } else {
-                            Message.sendWarning("Player is not in friend list!");
-                            return;
-                        }
-                    }
-
-                    Settings.save();
-                }
-                else {
-                    Message.sendWarning("Invalid syntax!");
+                if (player.getName().getString().equalsIgnoreCase(splitCommand[2])) {
+                    friend = player;
+                    break;
                 }
             }
-        };
-        CommandManager.addCommand(friend);
 
+            if (friend == null) {
+                Message.sendWarning("Player is not online!");
+                return;
+            }
+
+            if (splitCommand[1].equals("add")) {
+                friendList.add(friend.getUUID());
+                Message.sendInfo(String.format("Added %s to friend list!", friend.getName().getString()));
+            } else {
+                if (friendList.contains(friend.getUUID())) {
+                    friendList.remove(friend.getUUID());
+                    Message.sendWarning(String.format("Removed %s from friend list!", friend.getName().getString()));
+                } else {
+                    Message.sendWarning("Player is not in friend list!");
+                    return;
+                }
+            }
+
+            Settings.save();
+        }
+        else {
+            Message.sendWarning("Invalid syntax!");
+        }
+    }
+
+    @Override
+    protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
 
             Entity targetedEntity = mc.crosshairPickEntity;

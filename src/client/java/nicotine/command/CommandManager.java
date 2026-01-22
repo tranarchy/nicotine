@@ -13,22 +13,22 @@ public class CommandManager {
     public static final List<Command> commands = new ArrayList<>();
     public static String prefix = ".";
 
-    public static void addCommand(Command command) {
+    public static void add(Command command) {
         commands.add(command);
     }
 
     public static void init() {
-        Help.init();
-        Prefix.init();
-        Mods.init();
-        Set.init();
-        Connect.init();
-        Echest.init();
-        Waypoint.init();
-        Friend.init();
+        add(new Help());
+        add(new Prefix());
+        add(new Mods());
+        add(new Set());
+        add(new Connect());
+        add(new Echest());
+        add(new Waypoint());
+        add(new Friend());
 
         if (System.getProperty("os.name").startsWith("Mac"))
-            TouchBarCustom.init();
+            add(new TouchBarCustom());
 
         EventBus.register(SendMessageEvent.class, event -> {
             if (!event.content.startsWith(prefix))
