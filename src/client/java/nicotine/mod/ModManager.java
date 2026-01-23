@@ -51,6 +51,7 @@ public class ModManager {
         add(new BlockOutline());
         add(new EntityOwner());
         add(new Waypoints());
+        add(new FreeCam());
         add(new Xray());
         add(new Peek());
         add(new Zoom());
