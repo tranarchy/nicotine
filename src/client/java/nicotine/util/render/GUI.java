@@ -45,9 +45,4 @@ public class GUI {
 
         return pos;
     }
-
-    public static void centerPosition(Vector2i pos, Vector2i size) {
-        pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - (size.x / 2);
-        pos.y = (mc.getWindow().getGuiScaledHeight() / 2) - (size.y / 2);
-    }
 }

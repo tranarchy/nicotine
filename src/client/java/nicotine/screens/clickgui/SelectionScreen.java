@@ -10,14 +10,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import nicotine.mod.option.SelectionOption;
-import nicotine.screens.clickgui.guibutton.ItemButton;
+import nicotine.screens.clickgui.element.Element;
+import nicotine.screens.clickgui.element.Window;
+import nicotine.screens.clickgui.element.button.ItemButton;
 import nicotine.util.ColorUtil;
 import nicotine.util.Settings;
 import nicotine.util.render.GUI;
-import org.joml.Vector2i;
 
 import java.util.*;
 
@@ -27,10 +27,7 @@ public class SelectionScreen extends Screen {
     private SelectionOption selectionOption;
     private String searchString = "";
 
-    private static final int PADDING = 5;
-
-    private static Vector2i pos = new Vector2i(0, 0);
-    private static Vector2i size = new Vector2i(0, 0);
+    private Window window;
 
     public SelectionScreen(SelectionOption selectionOption) {
         super(Component.literal("Selection screen"));
@@ -44,7 +41,9 @@ public class SelectionScreen extends Screen {
         }
 
         this.selectionOption = selectionOption;
-        size = ClickGUI.size;
+        window = new Window(0, 0, 0, 0);
+        window.width = ClickGUI.window.width;
+        window.height = ClickGUI.window.height;
     }
 
     public List<ItemStack> getAllItems() {
@@ -60,11 +59,9 @@ public class SelectionScreen extends Screen {
         return items;
     }
 
-    public List<ItemButton> getItemButtons() {
-        List<ItemButton> itemButtons = new ArrayList<>();
-
-        int itemPosX = pos.x + 5;
-        int itemPosY = pos.y + 5;
+    public void addItemButtons() {
+        int itemPosX = window.x + 5;
+        int itemPosY = window.y + 5;
 
         itemPosY += 16;
 
@@ -72,22 +69,20 @@ public class SelectionScreen extends Screen {
             if (!itemStack.getHoverName().getString().toLowerCase().contains(searchString))
                 continue;
 
-            if (itemPosX + 16 > pos.x + size.x) {
-                itemPosX = pos.x + 5;
+            if (itemPosX + 16 > window.x + window.width) {
+                itemPosX = window.x + 5;
                 itemPosY += 16;
             }
 
-            if (itemPosY + 16 > pos.y + size.y) {
+            if (itemPosY + 16 > window.y + window.height) {
                 break;
             }
 
-            ItemButton itemButton = new ItemButton(itemPosX, itemPosY, 16, 16, itemStack);
-            itemButtons.add(itemButton);
+            ItemButton itemButton = new ItemButton(itemStack, selectionOption, itemPosX, itemPosY);
+            window.add(itemButton);
 
             itemPosX += 16;
         }
-
-        return itemButtons;
     }
 
     @Override
@@ -102,7 +97,7 @@ public class SelectionScreen extends Screen {
         } else {
             String input = InputConstants.getKey(new KeyEvent(keyEvent.key(), 0, 0)).getDisplayName().getString().toLowerCase();
 
-            if (input.length() < 2 && mc.font.width(searchString + input + "_") < size.x) {
+            if (input.length() < 2 && mc.font.width(searchString + input + "_") < window.width) {
                 searchString += input;
             }
         }
@@ -118,16 +113,9 @@ public class SelectionScreen extends Screen {
         double mouseX = mouseButtonEvent.x();
         double mouseY = mouseButtonEvent.y();
 
-        for (ItemButton itemButton : getItemButtons()) {
-            if (GUI.mouseOver(itemButton.x, itemButton.y, itemButton.width, itemButton.height, mouseX, mouseY)) {
-                Item item = itemButton.itemStack.getItem();
-
-                if (selectionOption.items.contains(item)) {
-                    System.out.println("contains");
-                    selectionOption.items.remove(item);
-                } else {
-                    selectionOption.items.add(item);
-                }
+        for (Element element : window.elements) {
+            if (element instanceof ItemButton itemButton && GUI.mouseOver(element.x, element.y, element.width, element.height, mouseX, mouseY)) {
+                itemButton.click(mouseX, mouseY);
             }
         }
 
@@ -144,30 +132,23 @@ public class SelectionScreen extends Screen {
 
     @Override
     public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        GUI.centerPosition(pos, size);
+        window.centerPosition();
+        window.elements.clear();
 
-        int posX = pos.x + 5;
-        int posY = pos.y + 4;
+        addItemButtons();
+
+        window.draw(context, mouseX, mouseY);
+
+        int posX = window.x + 5;
+        int posY = window.y + 4;
 
         int dividerLinePosY = posY + mc.font.lineHeight + 2;
 
         int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
-        context.fill(pos.x, pos.y, pos.x + size.x, pos.y + size.y, ColorUtil.BACKGROUND_COLOR);
-        GUI.drawBorder(context, pos.x, pos.y, size.x, size.y, dynamicColor);
-        context.hLine(pos.x, pos.x + size.x, dividerLinePosY, dynamicColor);
+        context.hLine(window.x, window.x + window.width, dividerLinePosY, dynamicColor);
 
         context.drawString(mc.font, searchString + "_", posX, posY, ColorUtil.FOREGROUND_COLOR, true);
-
-        for (ItemButton itemButton : getItemButtons()) {
-            if (selectionOption.items.contains(itemButton.itemStack.getItem()))
-                context.fill(itemButton.x, itemButton.y, itemButton.x + itemButton.width, itemButton.y + itemButton.height, ColorUtil.FOREGROUND_COLOR);
-
-            if (GUI.mouseOver(itemButton.x, itemButton.y, itemButton.width, itemButton.height, mouseX, mouseY))
-               GUI.drawBorder(context, itemButton.x, itemButton.y, itemButton.width, itemButton.height, ColorUtil.ACTIVE_FOREGROUND_COLOR);
-
-            context.renderFakeItem(itemButton.itemStack, itemButton.x, itemButton.y);
-        }
     }
 
 }

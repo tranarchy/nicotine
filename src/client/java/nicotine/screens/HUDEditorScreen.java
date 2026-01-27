@@ -12,7 +12,7 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.mods.hud.*;
-import nicotine.util.ColorUtil;
+import nicotine.screens.clickgui.element.Window;
 import nicotine.util.Settings;
 import nicotine.util.render.GUI;
 import org.joml.Vector2i;
@@ -30,13 +30,11 @@ public class HUDEditorScreen extends Screen {
     private static HUDMod selectedHudMod = null;
 
     private static class AnchorArea {
-        public Vector2i pos;
-        public Vector2i size;
+        public Window window;
         public HUDMod.Anchor anchor;
 
-        public AnchorArea(Vector2i pos, Vector2i size, HUDMod.Anchor anchor) {
-            this.pos = pos;
-            this.size = size;
+        public AnchorArea(Window window, HUDMod.Anchor anchor) {
+            this.window = window;
             this.anchor = anchor;
         }
     }
@@ -57,7 +55,7 @@ public class HUDEditorScreen extends Screen {
             dragOffset.y = -1;
 
            for (AnchorArea anchorArea : anchorAreas) {
-               if (GUI.mouseOver(anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, mouseX, mouseY)) {
+               if (GUI.mouseOver(anchorArea.window.x, anchorArea.window.y, anchorArea.window.width, anchorArea.window.height, mouseX, mouseY)) {
                    selectedHudMod.anchor = anchorArea.anchor;
                    break;
                }
@@ -124,18 +122,15 @@ public class HUDEditorScreen extends Screen {
         int windowAreaX = windowWidth / 4;
         int windowAreaY = windowHeight / 4;
 
-        int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
-
         anchorAreas = Arrays.asList(
-                new AnchorArea(new Vector2i(0, 0), new Vector2i(windowAreaX, windowAreaY), HUDMod.Anchor.TopLeft),
-                new AnchorArea(new Vector2i(windowWidth - windowAreaX - 1, 0), new Vector2i(windowAreaX, windowAreaY), HUDMod.Anchor.TopRight),
-                new AnchorArea(new Vector2i(0, windowHeight - windowAreaY - 1), new Vector2i(windowAreaX, windowAreaY), HUDMod.Anchor.BottomLeft),
-                new AnchorArea(new Vector2i(windowWidth - windowAreaX - 1, windowHeight - windowAreaY - 1), new Vector2i(windowAreaX, windowAreaY), HUDMod.Anchor.BottomRight)
+                new AnchorArea(new Window(0, 0, windowAreaX, windowAreaY), HUDMod.Anchor.TopLeft),
+                new AnchorArea(new Window(windowWidth - windowAreaX - 1, 0, windowAreaX, windowAreaY), HUDMod.Anchor.TopRight),
+                new AnchorArea(new Window(0, windowHeight - windowAreaY - 1, windowAreaX, windowAreaY), HUDMod.Anchor.BottomLeft),
+                new AnchorArea(new Window(windowWidth - windowAreaX - 1, windowHeight - windowAreaY - 1, windowAreaX, windowAreaY), HUDMod.Anchor.BottomRight)
         );
 
         for (AnchorArea anchorArea : anchorAreas) {
-            context.fill(anchorArea.pos.x, anchorArea.pos.y, anchorArea.pos.x + anchorArea.size.x, anchorArea.pos.y + anchorArea.size.y, ColorUtil.BACKGROUND_COLOR);
-            GUI.drawBorder(context, anchorArea.pos.x, anchorArea.pos.y, anchorArea.size.x, anchorArea.size.y, dynamicColor);
+            anchorArea.window.draw(context, mouseX, mouseY);
         }
 
         HUD.drawHUD(context);
