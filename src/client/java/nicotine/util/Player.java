@@ -5,8 +5,10 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -210,7 +212,12 @@ public class Player {
     }
 
     public static void attack(Entity entity) {
-        mc.gameMode.attack(mc.player, entity);
+        ItemStack selectedItem = mc.player.getInventory().getSelectedItem();
+
+        if (selectedItem.is(ItemTags.SPEARS))
+            mc.gameMode.piercingAttack(selectedItem.getComponents().get(DataComponents.PIERCING_WEAPON));
+        else
+            mc.gameMode.attack(mc.player, entity);
     }
 
     public static void swingHand() {
