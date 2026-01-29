@@ -32,6 +32,7 @@ public class KillAura extends Mod {
 
     private final ToggleOption combatUpdate = new ToggleOption("CombatUpdate", true);
     private final ToggleOption selectWeapon = new ToggleOption("SelectWeapon", false);
+    private final ToggleOption inAirOnly = new ToggleOption("InAirOnly");
     private final ToggleOption players = new ToggleOption("Players", true);
     private final ToggleOption hostile = new ToggleOption("Hostile", true);
     private final ToggleOption angerable = new ToggleOption("Neutral");
@@ -51,7 +52,7 @@ public class KillAura extends Mod {
 
     public KillAura() {
         super(ModCategory.Combat, "KillAura");
-        this.modOptions.addAll(Arrays.asList(combatUpdate, selectWeapon, players, hostile, angerable, passive, rotation, delay, keybind));
+        this.modOptions.addAll(Arrays.asList(combatUpdate, selectWeapon, inAirOnly, players, hostile, angerable, passive, rotation, delay, keybind));
     }
 
     @Override
@@ -69,11 +70,14 @@ public class KillAura extends Mod {
                 ) {
                     if (mc.player.isWithinEntityInteractionRange(entity, 0) && entity.isAlive() && delayLeft <= 0 && !Player.isBusy() && !entity.isInvulnerable() && !friendList.contains(entity.getUUID())) {
 
+                        if (mc.player.onGround() && inAirOnly.enabled)
+                            return true;
+
                         if (selectWeapon.enabled && !isWeapon(mc.player.getInventory().getSelectedItem())) {
                             for (int i = 0; i < 9; i++) {
                                  if (isWeapon(mc.player.getInventory().getItem(i))) {
                                      Inventory.selectSlot(i);
-                                     break;
+                                     return true;
                                  }
                             }
                         }
