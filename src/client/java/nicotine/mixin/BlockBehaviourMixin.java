@@ -19,15 +19,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(BlockBehaviour.class)
 public class BlockBehaviourMixin {
 
-    @Inject(at = @At("TAIL"), method = "Lnet/minecraft/world/level/block/state/BlockBehaviour;getRenderShape(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/level/block/RenderShape;")
-    public RenderShape getRenderShape(BlockState blockState, CallbackInfoReturnable<RenderShape> info) {
+    @Inject(at = @At("RETURN"), method = "Lnet/minecraft/world/level/block/state/BlockBehaviour;getRenderShape(Lnet/minecraft/world/level/block/state/BlockState;)Lnet/minecraft/world/level/block/RenderShape;", cancellable = true)
+    public void getRenderShape(BlockState blockState, CallbackInfoReturnable<RenderShape> info) {
         boolean result = EventBus.post(new GetRenderShapeEvent(blockState));
 
         if(!result) {
-            return RenderShape.INVISIBLE;
+            info.setReturnValue(RenderShape.INVISIBLE);
         }
-
-        return info.getReturnValue();
     }
 
     @Inject(at = @At("TAIL"), method = "getCollisionShape", cancellable = true)

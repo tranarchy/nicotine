@@ -18,14 +18,12 @@ public abstract class BlockStateBaseMixin {
     @Shadow
     public abstract Block getBlock();
 
-    @Inject(at = @At("TAIL"), method = "Lnet/minecraft/world/level/block/state/BlockBehaviour$BlockStateBase;getFaceOcclusionShape(Lnet/minecraft/core/Direction;)Lnet/minecraft/world/phys/shapes/VoxelShape;")
-    public VoxelShape getFaceOcclusionShape(Direction direction, CallbackInfoReturnable<VoxelShape> info) {
+    @Inject(at = @At("RETURN"), method = "Lnet/minecraft/world/level/block/state/BlockBehaviour$BlockStateBase;getFaceOcclusionShape(Lnet/minecraft/core/Direction;)Lnet/minecraft/world/phys/shapes/VoxelShape;", cancellable = true)
+    public void getFaceOcclusionShape(Direction direction, CallbackInfoReturnable<VoxelShape> info) {
         boolean result = EventBus.post(new GetFaceOcclusionShapeEvent(getBlock()));
 
         if(!result) {
-            return Shapes.empty();
+            info.setReturnValue(Shapes.empty());
         }
-
-       return info.getReturnValue();
     }
 }

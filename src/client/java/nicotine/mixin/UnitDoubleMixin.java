@@ -11,8 +11,8 @@ import java.util.Optional;
 @Mixin(OptionInstance.UnitDouble.class)
 public class UnitDoubleMixin {
 
-    @Inject(at = @At(value = "TAIL"), method = "validateValue")
-    public Optional<Double> validateValue(Double double_, CallbackInfoReturnable<Double> info) {
-        return Optional.of(double_);
+    @Inject(at = @At(value = "RETURN"), method = "validateValue", cancellable = true)
+    public void validateValue(Double double_, CallbackInfoReturnable<Optional<Double>> info) {
+        info.setReturnValue(Optional.of(double_));
     }
 }

@@ -11,8 +11,8 @@ import java.util.Optional;
 @Mixin(OptionInstance.IntRange.class)
 public class IntRangeMixin {
 
-    @Inject(at = @At(value = "TAIL"), method = "validateValue")
-    public Optional<Integer> validateValue(Integer integer, CallbackInfoReturnable<Integer> info) {
-        return Optional.of(integer);
+    @Inject(at = @At(value = "RETURN"), method = "validateValue", cancellable = true)
+    public void validateValue(Integer integer, CallbackInfoReturnable<Optional<Integer>> info) {
+        info.setReturnValue(Optional.of(integer));
     }
 }

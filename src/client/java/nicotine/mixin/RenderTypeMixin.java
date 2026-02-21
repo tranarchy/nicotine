@@ -12,13 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class RenderTypeMixin {
 
     @Inject(at = @At("TAIL"), method = "affectsCrumbling", cancellable = true)
-    public boolean affectsCrumbling(CallbackInfoReturnable<Boolean> info) {
+    public void affectsCrumbling(CallbackInfoReturnable<Boolean> info) {
         boolean result = EventBus.post(new RenderBlockDamageEvent());
-
-        if (!result) {
-            info.setReturnValue(false);
-        }
-
-        return info.getReturnValue();
+        info.setReturnValue(result);
     }
 }

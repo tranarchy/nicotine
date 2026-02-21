@@ -17,14 +17,14 @@ public class LivingEntityMixin {
     @Unique
     private boolean wasGlidin = false;
 
-    @Inject(at = @At("TAIL"), method = "isFallFlying")
-    public boolean isFallFlying(CallbackInfoReturnable<Boolean> info) {
+    @Inject(at = @At("TAIL"), method = "isFallFlying", cancellable = true)
+    public void isFallFlying(CallbackInfoReturnable<Boolean> info) {
         if (wasGlidin && !info.getReturnValue() && ModManager.getMod("ElytraBounce").enabled) {
             Player.startFlying();
             mc.player.startFallFlying();
         }
 
         wasGlidin = info.getReturnValue();
-        return wasGlidin;
+        info.setReturnValue(wasGlidin);
     }
 }

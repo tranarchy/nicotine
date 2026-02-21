@@ -31,13 +31,9 @@ public class MinecraftMixin {
         EventBus.post(new ClientTickEvent());
     }
 
-    @Inject(at = @At("TAIL"), method = "allowsTelemetry")
-    public boolean allowsTelemetry(CallbackInfoReturnable<Boolean> info) {
+    @Inject(at = @At("RETURN"), method = "allowsTelemetry", cancellable = true)
+    public void allowsTelemetry(CallbackInfoReturnable<Boolean> info) {
         boolean result = EventBus.post(new AllowsTelemetryEvent());
-
-        if (!result)
-            return false;
-
-        return info.getReturnValue();
+        info.setReturnValue(result);
     }
 }
