@@ -32,7 +32,8 @@
         "ScreenEffectRendererMixin",
         "ClientSuggestionProviderMixin",
         "ToastManagerMixin",
-        "UnitDoubleMixin"
+        "UnitDoubleMixin",
+        "CameraMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,
