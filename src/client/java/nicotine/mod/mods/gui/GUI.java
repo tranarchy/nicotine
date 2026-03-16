@@ -17,13 +17,13 @@ import static nicotine.util.Common.*;
 
 public class GUI extends Mod {
 
-    private final RGBOption rgb = new RGBOption();
+    private final RGBOption rgb = new RGBOption("RGB");
     private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_RSHIFT);
 
     public GUI() {
         super(ModCategory.GUI, "GUI");
         this.alwaysEnabled = true;
-        this.modOptions.addAll(Arrays.asList(rgb.red, rgb.green, rgb.blue, rgb.rainbow, keybind));
+        this.modOptions.addAll(Arrays.asList(rgb, keybind));
     }
 
     @Override

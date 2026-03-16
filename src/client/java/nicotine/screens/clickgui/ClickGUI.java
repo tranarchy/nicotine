@@ -147,6 +147,9 @@ public class ClickGUI extends Screen {
             } else if (modOption instanceof SelectionOption selectionOption) {
                 SelectionButton selectionButton = new SelectionButton(selectionOption, element.x, element.y);
                 window.add(selectionButton);
+            } else if (modOption instanceof RGBOption rgbOption) {
+                RGBButton rgbButton = new RGBButton(rgbOption, element.x, element.y);
+                window.add(rgbButton);
             }
 
             posY += mc.font.lineHeight + 5;

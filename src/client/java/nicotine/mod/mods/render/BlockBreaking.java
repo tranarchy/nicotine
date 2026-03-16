@@ -20,12 +20,12 @@ import static nicotine.util.Common.mc;
 
 public class BlockBreaking extends Mod {
 
-    private final RGBOption rgb = new RGBOption();
+    private final RGBOption rgb = new RGBOption("RGB");
     private final ToggleOption noAnimation = new ToggleOption("NoAnimation");
 
     public BlockBreaking() {
         super(ModCategory.Render, "BlockBreaking");
-        this.modOptions.addAll(Arrays.asList(rgb.red, rgb.green, rgb.blue, rgb.rainbow, noAnimation));
+        this.modOptions.addAll(Arrays.asList(rgb, noAnimation));
     }
 
     @Override

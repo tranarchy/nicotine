@@ -107,6 +107,15 @@ public class Settings {
                        }
 
                        modDetails.add(selectionOption.id, selection);
+                   } else if (modOption instanceof RGBOption rgbOption) {
+                       JsonArray color = new JsonArray();
+
+                       color.add(rgbOption.red.value);
+                       color.add(rgbOption.green.value);
+                       color.add(rgbOption.blue.value);
+                       color.add(rgbOption.rainbow.enabled);
+
+                       modDetails.add(rgbOption.id, color);
                    }
                 }
 
@@ -226,6 +235,12 @@ public class Settings {
                         for (JsonElement item : selection.asList()) {
                             selectionOption.items.add(Item.byId(item.getAsInt()));
                         }
+                    } else if (modOption instanceof RGBOption rgbOption) {
+                        JsonArray colors = (JsonArray) modInfo.get(rgbOption.id);
+                        rgbOption.red.value = colors.get(0).getAsFloat();
+                        rgbOption.green.value = colors.get(1).getAsFloat();
+                        rgbOption.blue.value = colors.get(2).getAsFloat();
+                        rgbOption.rainbow.enabled = colors.get(3).getAsBoolean();
                     }
                 }
             }

@@ -25,11 +25,11 @@ public class NameTag extends Mod {
     private final ToggleOption poppedTotem = new ToggleOption("PoppedTotem");
     private final ToggleOption ping = new ToggleOption("Ping");
     private final SliderOption scale = new SliderOption("Scale", 1, 0.5f, 3.0f, true);
-    private final RGBOption rgb = new RGBOption();
+    private final RGBOption rgb = new RGBOption("RGB");
 
     public NameTag() {
         super(ModCategory.Render, "NameTag");
-        this.modOptions.addAll(Arrays.asList(health, armor, poppedTotem, ping, scale, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+        this.modOptions.addAll(Arrays.asList(health, armor, poppedTotem, ping, scale, rgb));
     }
 
     @Override

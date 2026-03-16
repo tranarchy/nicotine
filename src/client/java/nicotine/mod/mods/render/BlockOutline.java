@@ -24,11 +24,11 @@ public class BlockOutline extends Mod {
             new String[]{"Box", "Filled", "Fade"}
     );
 
-    private final RGBOption rgb = new RGBOption();
+    private final RGBOption rgb = new RGBOption("RGB");
 
     public BlockOutline() {
         super(ModCategory.Render, "BlockOutline");
-        this.modOptions.addAll(Arrays.asList(render, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+        this.modOptions.addAll(Arrays.asList(render, rgb));
     }
 
     @Override

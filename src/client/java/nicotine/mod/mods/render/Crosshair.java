@@ -22,12 +22,12 @@ public class Crosshair extends Mod {
             30
     );
 
-    private final RGBOption rgb = new RGBOption();
+    private final RGBOption rgb = new RGBOption("RGB");
     private final ToggleOption noCrosshair = new ToggleOption("NoCrosshair");
 
     public Crosshair() {
         super(ModCategory.Render,"Crosshair");
-        this.modOptions.addAll(Arrays.asList(width, rgb.red, rgb.green, rgb.blue, rgb.rainbow, noCrosshair));
+        this.modOptions.addAll(Arrays.asList(width, rgb, noCrosshair));
     }
 
     @Override

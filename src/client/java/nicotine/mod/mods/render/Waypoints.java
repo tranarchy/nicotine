@@ -26,11 +26,11 @@ public class Waypoints extends Mod {
             true
     );
 
-    private final RGBOption rgb = new RGBOption();
+    private final RGBOption rgb = new RGBOption("RGB");
 
     public Waypoints() {
         super(ModCategory.Render, "Waypoints", "Waypoint system (see .help)");
-        this.modOptions.addAll(Arrays.asList(scale, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+        this.modOptions.addAll(Arrays.asList(scale, rgb));
     }
 
     private static Vec3 getAdjustedPosition(BlockPos pos) {

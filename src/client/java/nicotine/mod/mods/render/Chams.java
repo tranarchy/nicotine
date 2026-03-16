@@ -13,11 +13,11 @@ import static nicotine.util.Common.*;
 
 public class Chams extends Mod {
     public static ToggleOption outline = new ToggleOption("Outline");
-    private final RGBOption rgb = new RGBOption();
+    private final RGBOption rgb = new RGBOption("RGB");
 
     public Chams() {
         super(ModCategory.Render,"Chams");
-        this.modOptions.addAll(Arrays.asList(outline, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+        this.modOptions.addAll(Arrays.asList(outline, rgb));
     }
 
     @Override

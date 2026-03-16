@@ -4,13 +4,15 @@ import nicotine.util.ColorUtil;
 
 import java.awt.*;
 
-public class RGBOption  {
+public class RGBOption extends ModOption  {
     public SliderOption red;
     public SliderOption green;
     public SliderOption blue;
     public ToggleOption rainbow;
 
-    public RGBOption() {
+    public RGBOption(String name) {
+        super(name);
+
         this.red = new SliderOption(
                 "Red",
                 152,

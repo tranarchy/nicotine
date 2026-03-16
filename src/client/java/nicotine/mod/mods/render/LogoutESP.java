@@ -25,11 +25,11 @@ public class LogoutESP extends Mod {
 
     private final ToggleOption showPlayer = new ToggleOption("ShowPlayer");
     private final ToggleOption showElapsed = new ToggleOption("ElapsedTime");
-    private final RGBOption rgb = new RGBOption();
+    private final RGBOption rgb = new RGBOption("RGB");
 
     public LogoutESP() {
         super(ModCategory.Render, "LogoutESP", "Shows where a player logged out");
-        this.modOptions.addAll(Arrays.asList(showPlayer, showElapsed, rgb.red, rgb.green, rgb.blue, rgb.rainbow));
+        this.modOptions.addAll(Arrays.asList(showPlayer, showElapsed, rgb));
     }
 
     @Override

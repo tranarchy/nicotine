@@ -35,9 +35,9 @@ public class Players extends Mod {
             true
     );
 
-    private final RGBOption espRgb = new RGBOption();
+    private final RGBOption espRgb = new RGBOption("RGB");
     private final ToggleOption tracer = new ToggleOption("Tracer");
-    private final RGBOption tracerRgb = new RGBOption();
+    private final RGBOption tracerRgb = new RGBOption("RGB");
     private final SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
 
     public Players() {
@@ -46,35 +46,17 @@ public class Players extends Mod {
         espRender.subOption = true;
         espScale.subOption = true;
 
-        espRgb.red.id = "ESPRed";
-        espRgb.red.subOption = true;
+        espRgb.id = "ESPRGB";
+        espRgb.subOption = true;
 
-        espRgb.green.id = "ESPGreen";
-        espRgb.green.subOption = true;
-
-        espRgb.blue.id = "ESPBlue";
-        espRgb.blue.subOption = true;
-
-        espRgb.rainbow.id = "ESPRainbow";
-        espRgb.rainbow.subOption = true;
-
-        tracerRgb.red.id = "TracerRed";
-        tracerRgb.red.subOption = true;
-
-        tracerRgb.green.id = "TracerGreen";
-        tracerRgb.green.subOption = true;
-
-        tracerRgb.blue.id = "TracerBlue";
-        tracerRgb.blue.subOption = true;
-
-        tracerRgb.rainbow.id = "TracerRainbow";
-        tracerRgb.rainbow.subOption = true;
+        tracerRgb.id = "TracerRGB";
+        tracerRgb.subOption = true;
 
         tracerAlpha.subOption = true;
 
         this.modOptions.addAll(Arrays.asList(
-                esp, espRender, espScale, espRgb.red, espRgb.green, espRgb.blue, espRgb.rainbow,
-                tracer, tracerRgb.red, tracerRgb.green, tracerRgb.blue, tracerAlpha, tracerRgb.rainbow, noArmor
+                esp, espRender, espScale, espRgb,
+                tracer, tracerRgb, tracerAlpha, noArmor
         ));
     }
 
