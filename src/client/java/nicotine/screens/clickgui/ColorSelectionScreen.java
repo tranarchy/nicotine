@@ -102,7 +102,7 @@ public class ColorSelectionScreen extends Screen {
         double mouseY = mouseButtonEvent.y();
 
         for (Element element : window.elements) {
-           if (element instanceof ToggleButton toggleButton && GUI.mouseOver(element.x, element.y, element.width, element.height, mouseX, mouseY)) {
+           if (element instanceof ToggleButton toggleButton && toggleButton.mouseOverButton(mouseX, mouseY)) {
                toggleButton.click(mouseX, mouseY);
           }
         }

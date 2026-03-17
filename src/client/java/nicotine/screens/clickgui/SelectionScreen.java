@@ -17,7 +17,6 @@ import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.ItemButton;
 import nicotine.util.ColorUtil;
 import nicotine.util.Settings;
-import nicotine.util.render.GUI;
 
 import java.util.*;
 
@@ -114,7 +113,7 @@ public class SelectionScreen extends Screen {
         double mouseY = mouseButtonEvent.y();
 
         for (Element element : window.elements) {
-            if (element instanceof ItemButton itemButton && GUI.mouseOver(element.x, element.y, element.width, element.height, mouseX, mouseY)) {
+            if (element instanceof ItemButton itemButton && itemButton.mouseOverButton(mouseX, mouseY)) {
                 itemButton.click(mouseX, mouseY);
             }
         }
