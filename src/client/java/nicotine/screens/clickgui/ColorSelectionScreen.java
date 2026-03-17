@@ -1,10 +1,16 @@
 package nicotine.screens.clickgui;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import nicotine.mod.mods.gui.GUI;
 import nicotine.mod.option.RGBOption;
@@ -114,6 +120,14 @@ public class ColorSelectionScreen extends Screen {
         if (ClickGUI.blur) {
             this.renderBlurredBackground(context);
             this.renderMenuBackground(context);
+        }
+
+        if (mc.level == null) {
+            TextureManager textureManager = Minecraft.getInstance().getTextureManager();
+            AbstractTexture endSkyTexture = textureManager.getTexture(AbstractEndPortalRenderer.END_SKY_LOCATION);
+            AbstractTexture endPortalTexture = textureManager.getTexture(AbstractEndPortalRenderer.END_PORTAL_LOCATION);
+            TextureSetup textureSetup = TextureSetup.doubleTexture(endSkyTexture.getTextureView(), endSkyTexture.getSampler(), endPortalTexture.getTextureView(), endPortalTexture.getSampler());
+            context.fill(RenderPipelines.END_PORTAL, textureSetup, 0, 0, this.width, this.height);
         }
     }
 
