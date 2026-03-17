@@ -4,7 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.ColorUtil;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 
 import static nicotine.util.Common.mc;
 
@@ -49,7 +49,7 @@ public class SliderButton extends GUIButton {
                 ColorUtil.SELECTED_BACKGROUND_COLOR
         );
 
-        GUI.drawBorder(
+        Render2D.drawBorder(
                 context,
                 this.sliderX,
                 this.sliderY,
@@ -66,7 +66,7 @@ public class SliderButton extends GUIButton {
         }
 
         context.fill(sliderPosX, this.sliderY, sliderPosX + 3, this.sliderY + this.height - 1, ColorUtil.ACTIVE_FOREGROUND_COLOR);
-        GUI.drawBorder(context, sliderPosX, this.sliderY, 3, this.height - 2, ColorUtil.BORDER_COLOR);
+        Render2D.drawBorder(context, sliderPosX, this.sliderY, 3, this.height - 2, ColorUtil.BORDER_COLOR);
 
         String sliderText = sliderOption.decimal ? Float.toString(sliderOption.value) : Integer.toString((int)sliderOption.value);
 

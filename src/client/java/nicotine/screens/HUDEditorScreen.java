@@ -14,7 +14,7 @@ import nicotine.mod.ModManager;
 import nicotine.mod.mods.hud.*;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.util.Settings;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class HUDEditorScreen extends Screen {
             dragOffset.y = -1;
 
            for (AnchorArea anchorArea : anchorAreas) {
-               if (GUI.mouseOver(anchorArea.window.x, anchorArea.window.y, anchorArea.window.width, anchorArea.window.height, mouseX, mouseY)) {
+               if (Render2D.mouseOver(anchorArea.window.x, anchorArea.window.y, anchorArea.window.width, anchorArea.window.height, mouseX, mouseY)) {
                    selectedHudMod.anchor = anchorArea.anchor;
                    break;
                }
@@ -78,7 +78,7 @@ public class HUDEditorScreen extends Screen {
         if (dragOffset.x != -1 && dragOffset.y != -1) {
 
             Vector2i size = selectedHudMod.size;
-            Vector2i dragPos = GUI.mouseDragInBounds(mouseX, mouseY, dragOffset, size);
+            Vector2i dragPos = Render2D.mouseDragInBounds(mouseX, mouseY, dragOffset, size);
 
             selectedHudMod.pos = new Vector2i(dragPos.x, dragPos.y);
             return true;
@@ -90,7 +90,7 @@ public class HUDEditorScreen extends Screen {
 
             Vector2i size = hudMod.size;
 
-            if (GUI.mouseOver(hudMod.pos.x, hudMod.pos.y, size.x, size.y, mouseX, mouseY)) {
+            if (Render2D.mouseOver(hudMod.pos.x, hudMod.pos.y, size.x, size.y, mouseX, mouseY)) {
                 selectedHudMod = hudMod;
                 prevAnchor = selectedHudMod.anchor;
                 selectedHudMod.anchor = HUDMod.Anchor.None;

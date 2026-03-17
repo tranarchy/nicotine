@@ -5,7 +5,7 @@ import net.minecraft.network.chat.Component;
 import nicotine.mod.Mod;
 import nicotine.screens.clickgui.ClickGUI;
 import nicotine.util.ColorUtil;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class ModButton extends GUIButton {
                     ColorUtil.SELECTED_BACKGROUND_COLOR
             );
 
-            GUI.drawBorderHorizontal(
+            Render2D.drawBorderHorizontal(
                     context,
                     this.x - PADDING + 1,
                     this.y - 3,

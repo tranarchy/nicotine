@@ -1,6 +1,7 @@
 package nicotine.mod.mods.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import nicotine.screens.clickgui.ClickGUI;
 import nicotine.events.ClientTickEvent;
@@ -19,6 +20,7 @@ public class GUI extends Mod {
 
     private final RGBOption rgb = new RGBOption("RGB");
     private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_RSHIFT);
+    public static Screen screen;
 
     public GUI() {
         super(ModCategory.GUI, "GUI");
@@ -28,13 +30,13 @@ public class GUI extends Mod {
 
     @Override
     protected void init() {
-        final ClickGUI clickGUI = new ClickGUI();
+        screen = new ClickGUI();
 
         EventBus.register(ClientTickEvent.class, event -> {
             ColorUtil.ACTIVE_FOREGROUND_COLOR = rgb.getColor();
 
             if (InputConstants.isKeyDown(window, keybind.keyCode) && (mc.screen == null || mc.screen instanceof TitleScreen))
-                mc.setScreen(clickGUI);
+                mc.setScreen(screen);
 
             return true;
         });

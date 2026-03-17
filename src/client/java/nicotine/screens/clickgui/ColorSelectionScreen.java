@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import nicotine.mod.mods.gui.GUI;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.screens.clickgui.element.Element;
@@ -13,8 +14,7 @@ import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.SliderButton;
 import nicotine.screens.clickgui.element.button.ToggleButton;
 import nicotine.screens.clickgui.element.misc.Square;
-import nicotine.util.Settings;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 
 import java.util.Arrays;
 
@@ -69,8 +69,7 @@ public class ColorSelectionScreen extends Screen {
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
-            Settings.save();
-            this.onClose();
+           mc.setScreen(GUI.screen);
         }
 
         return true;
@@ -83,7 +82,7 @@ public class ColorSelectionScreen extends Screen {
 
         for (Element element : window.elements) {
             if (element instanceof SliderButton sliderButton) {
-                if (GUI.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY))  {
+                if (Render2D.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY))  {
                     sliderButton.click(mouseX, mouseY);
                     return true;
                 }

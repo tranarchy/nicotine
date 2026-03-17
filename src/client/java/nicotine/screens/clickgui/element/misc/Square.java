@@ -3,7 +3,7 @@ package nicotine.screens.clickgui.element.misc;
 import net.minecraft.client.gui.GuiGraphics;
 import nicotine.screens.clickgui.element.Element;
 import nicotine.util.ColorUtil;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 
 public class Square extends Element {
 
@@ -18,6 +18,6 @@ public class Square extends Element {
     @Override
     public void draw(GuiGraphics context, double mouseX, double mouseY) {
         context.fill(x, y, x + width, y + height, color);
-        GUI.drawBorder(context, x, y, width, height, ColorUtil.FOREGROUND_COLOR);
+        Render2D.drawBorder(context, x, y, width, height, ColorUtil.FOREGROUND_COLOR);
     }
 }

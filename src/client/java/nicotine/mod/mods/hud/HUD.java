@@ -12,7 +12,7 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.screens.HUDEditorScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -115,7 +115,7 @@ public class HUD extends Mod {
                 int borderHeight = mc.font.lineHeight + 2 * borderPadding;
 
                 context.fill(borderX, borderY, borderX + borderWidth, borderY + borderHeight, ColorUtil.BACKGROUND_COLOR);
-                GUI.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
+                Render2D.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
 
                 context.drawString(mc.font, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
             }

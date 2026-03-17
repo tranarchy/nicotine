@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import nicotine.mod.option.SelectionOption;
 import nicotine.util.ColorUtil;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 
 import static nicotine.util.Common.mc;
 
@@ -28,7 +28,7 @@ public class ItemButton extends GUIButton {
             context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.FOREGROUND_COLOR);
 
         if (mouseOverButton(mouseX, mouseY))
-            GUI.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+            Render2D.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.ACTIVE_FOREGROUND_COLOR);
 
         context.renderFakeItem(this.itemStack, this.x, this.y);
 

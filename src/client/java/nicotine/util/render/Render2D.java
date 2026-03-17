@@ -5,7 +5,7 @@ import org.joml.Vector2i;
 
 import static nicotine.util.Common.*;
 
-public class GUI {
+public class Render2D {
     public static void drawBorder(GuiGraphics drawContext, int x, int y, int width, int height, int color) {
         drawBorderVertical(drawContext, x, y, width, height, color);
         drawBorderHorizontal(drawContext, x, y, width, height, color);

@@ -21,7 +21,7 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
 import nicotine.util.ColorUtil;
 import nicotine.util.Settings;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 
 import static nicotine.util.Common.*;
 
@@ -229,7 +229,7 @@ public class ClickGUI extends Screen {
 
         for (Element element : window.elements) {
             if (element instanceof SliderButton sliderButton) {
-                if (GUI.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY))  {
+                if (Render2D.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY))  {
                     sliderButton.click(mouseX, mouseY);
                     return true;
                 }

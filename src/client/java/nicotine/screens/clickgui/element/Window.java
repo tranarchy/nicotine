@@ -2,7 +2,7 @@ package nicotine.screens.clickgui.element;
 
 import net.minecraft.client.gui.GuiGraphics;
 import nicotine.util.ColorUtil;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +21,7 @@ public class Window extends Element {
         int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
         context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR);
-        GUI.drawBorder(context, this.x, this.y, this.width, this.height, dynamicColor);
+        Render2D.drawBorder(context, this.x, this.y, this.width, this.height, dynamicColor);
 
         for (Element element : elements) {
             element.draw(context, mouseX, mouseY);

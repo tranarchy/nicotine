@@ -18,7 +18,7 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.screens.PeekScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.render.GUI;
+import nicotine.util.render.Render2D;
 import org.joml.Matrix3x2fStack;
 
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class Peek extends Mod {
                     event.drawContext.pose().translate(0.0F, 0.0F, matrix3fStack.identity());
 
                     event.drawContext.fill(posX, posY, posX + MAX_WIDTH, posY + textRenderer.lineHeight + 4, ColorUtil.BACKGROUND_COLOR);
-                    GUI.drawBorder(event.drawContext, posX, posY, MAX_WIDTH, textRenderer.lineHeight + 4, ColorUtil.BORDER_COLOR);
+                    Render2D.drawBorder(event.drawContext, posX, posY, MAX_WIDTH, textRenderer.lineHeight + 4, ColorUtil.BORDER_COLOR);
                     event.drawContext.drawString(textRenderer, focusedStack.getHoverName(), posX + 3, posY + 3, ColorUtil.FOREGROUND_COLOR, true);
 
                     posY += textRenderer.lineHeight + 4;
@@ -98,7 +98,7 @@ public class Peek extends Mod {
                             int stackCount = shulkerItem.getCount();
 
                             event.drawContext.fill(posX, posY, posX + SLOT_WIDTH, posY + SLOT_WIDTH, ColorUtil.BACKGROUND_COLOR);
-                            GUI.drawBorder(event.drawContext, posX, posY, SLOT_WIDTH, SLOT_WIDTH, ColorUtil.BORDER_COLOR);
+                            Render2D.drawBorder(event.drawContext, posX, posY, SLOT_WIDTH, SLOT_WIDTH, ColorUtil.BORDER_COLOR);
 
                             event.drawContext.renderItem(shulkerItem, posX + 1, posY + 1);
                             event.drawContext.renderItemDecorations(textRenderer, shulkerItem, posX + 1, posY + 1, stackCount > 1 ? String.valueOf(stackCount) : "");

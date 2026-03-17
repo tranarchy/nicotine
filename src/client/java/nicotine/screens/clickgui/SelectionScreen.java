@@ -11,6 +11,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
+import nicotine.mod.mods.gui.GUI;
 import nicotine.mod.option.SelectionOption;
 import nicotine.screens.clickgui.element.Element;
 import nicotine.screens.clickgui.element.Window;
@@ -87,8 +88,7 @@ public class SelectionScreen extends Screen {
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
-            Settings.save();
-            this.onClose();
+            mc.setScreen(GUI.screen);
         } else if (keyEvent.key() == InputConstants.KEY_SPACE) {
             searchString += " ";
         } else if (keyEvent.key() == InputConstants.KEY_BACKSPACE && !searchString.isEmpty()) {
