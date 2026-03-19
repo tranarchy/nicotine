@@ -2,35 +2,29 @@ package nicotine.screens.clickgui;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import nicotine.mod.mods.gui.GUI;
 import nicotine.mod.option.SelectionOption;
-import nicotine.screens.clickgui.element.Element;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.ItemButton;
 import nicotine.util.ColorUtil;
-import nicotine.util.Settings;
 
 import java.util.*;
 
 import static nicotine.util.Common.*;
 
-public class SelectionScreen extends Screen {
+public class SelectionScreen extends BaseScreen {
     private SelectionOption selectionOption;
     private String searchString = "";
 
-    private Window window;
 
     public SelectionScreen(SelectionOption selectionOption) {
-        super(Component.literal("Selection screen"));
+        super("Item selection screen", new Window(0, 0, 0, 0));
 
         FeatureFlagSet featureFlagSet = Optional.ofNullable(mc.player).map(x -> x.connection).map(ClientPacketListener::enabledFeatures).orElse(FeatureFlagSet.of());
         CreativeModeTab.ItemDisplayParameters itemDisplayParameters = new CreativeModeTab.ItemDisplayParameters(featureFlagSet, true, mc.level.registryAccess());
@@ -41,9 +35,8 @@ public class SelectionScreen extends Screen {
         }
 
         this.selectionOption = selectionOption;
-        window = new Window(0, 0, 0, 0);
-        window.width = ClickGUI.window.width;
-        window.height = ClickGUI.window.height;
+        window.width = GUI.screen.window.width;
+        window.height = GUI.screen.window.height;
     }
 
     public List<ItemStack> getAllItems() {
@@ -102,31 +95,6 @@ public class SelectionScreen extends Screen {
         }
 
         return true;
-    }
-
-    @Override
-    public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubled) {
-        if (mouseButtonEvent.input() != InputConstants.MOUSE_BUTTON_LEFT)
-            return true;
-
-        double mouseX = mouseButtonEvent.x();
-        double mouseY = mouseButtonEvent.y();
-
-        for (Element element : window.elements) {
-            if (element instanceof ItemButton itemButton && itemButton.mouseOverButton(mouseX, mouseY)) {
-                itemButton.click(mouseX, mouseY);
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        if (ClickGUI.blur) {
-            this.renderBlurredBackground(context);
-            this.renderMenuBackground(context);
-        }
     }
 
     @Override

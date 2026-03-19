@@ -1,8 +1,8 @@
 package nicotine.mod.mods.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import nicotine.screens.clickgui.BaseScreen;
 import nicotine.screens.clickgui.ClickGUI;
 import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
@@ -20,7 +20,7 @@ public class GUI extends Mod {
 
     private final RGBOption rgb = new RGBOption("RGB");
     private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_RSHIFT);
-    public static Screen screen;
+    public static BaseScreen screen;
 
     public GUI() {
         super(ModCategory.GUI, "GUI");
