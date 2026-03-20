@@ -27,7 +27,8 @@ public class ColorSelectionScreen extends BaseScreen {
         window.height = GUI.screen.window.height / 2 - 70;
     }
 
-    public void addDrawable() {
+    @Override
+    protected void addDrawables() {
         int elementPosX = window.x + 5;
         int elementPosY = window.y + 10;
 
@@ -65,15 +66,5 @@ public class ColorSelectionScreen extends BaseScreen {
         }
 
         return true;
-    }
-
-    @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        window.centerPosition();
-        window.elements.clear();
-
-        addDrawable();
-
-        window.draw(context, mouseX, mouseY);
     }
 }

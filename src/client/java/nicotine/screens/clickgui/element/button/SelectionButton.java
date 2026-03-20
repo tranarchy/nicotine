@@ -17,6 +17,7 @@ public class SelectionButton extends GUIButton {
 
     @Override
     public void click(double mouseX, double mouseY) {
-       mc.setScreen(new SelectionScreen(selectionOption));
+        if (mc.level != null)
+            mc.setScreen(new SelectionScreen(selectionOption));
     }
 }

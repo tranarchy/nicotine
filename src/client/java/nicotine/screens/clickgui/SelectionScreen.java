@@ -11,7 +11,9 @@ import net.minecraft.world.item.ItemStack;
 import nicotine.mod.mods.gui.GUI;
 import nicotine.mod.option.SelectionOption;
 import nicotine.screens.clickgui.element.Window;
+import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.screens.clickgui.element.button.ItemButton;
+import nicotine.screens.clickgui.element.misc.HLine;
 import nicotine.util.ColorUtil;
 
 import java.util.*;
@@ -20,8 +22,6 @@ import static nicotine.util.Common.*;
 
 public class SelectionScreen extends BaseScreen {
     private SelectionOption selectionOption;
-    private String searchString = "";
-
 
     public SelectionScreen(SelectionOption selectionOption) {
         super("Item selection screen", new Window(0, 0, 0, 0));
@@ -52,70 +52,55 @@ public class SelectionScreen extends BaseScreen {
         return items;
     }
 
-    public void addItemButtons() {
-        int itemPosX = window.x + 5;
-        int itemPosY = window.y + 5;
+    @Override
+    protected void addDrawables() {
+        int posX = window.x + 5;
+        int posY = window.y + 5;
 
-        itemPosY += 16;
+        window.add(
+                new HLine(
+                        window.x,
+                        posY + mc.font.lineHeight + 2,
+                        window.width,
+                        ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal())
+                )
+        );
+
+        InputText inputText = new InputText(posX, posY, window.width - 5, mc.font.lineHeight + 2);
+
+        window.add(inputText);
+
+        posY += 16;
 
         for (ItemStack itemStack : getAllItems()) {
-            if (!itemStack.getHoverName().getString().toLowerCase().contains(searchString))
+            if (!itemStack.getHoverName().getString().toLowerCase().contains(InputText.text))
                 continue;
 
-            if (itemPosX + 16 > window.x + window.width) {
-                itemPosX = window.x + 5;
-                itemPosY += 16;
+            if (posX + 16 > window.x + window.width) {
+                posX = window.x + 5;
+                posY += 16;
             }
 
-            if (itemPosY + 16 > window.y + window.height) {
+            if (posY + 16 > window.y + window.height) {
                 break;
             }
 
-            ItemButton itemButton = new ItemButton(itemStack, selectionOption, itemPosX, itemPosY);
+            ItemButton itemButton = new ItemButton(itemStack, selectionOption, posX, posY);
             window.add(itemButton);
 
-            itemPosX += 16;
+            posX += 16;
         }
     }
 
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
+            InputText.reset();
             mc.setScreen(GUI.screen);
-        } else if (keyEvent.key() == InputConstants.KEY_SPACE) {
-            searchString += " ";
-        } else if (keyEvent.key() == InputConstants.KEY_BACKSPACE && !searchString.isEmpty()) {
-            searchString = searchString.substring(0, searchString.length() - 1);
         } else {
-            String input = InputConstants.getKey(new KeyEvent(keyEvent.key(), 0, 0)).getDisplayName().getString().toLowerCase();
-
-            if (input.length() < 2 && mc.font.width(searchString + input + "_") < window.width) {
-                searchString += input;
-            }
+            super.keyPressed(keyEvent);
         }
 
         return true;
     }
-
-    @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        window.centerPosition();
-        window.elements.clear();
-
-        addItemButtons();
-
-        window.draw(context, mouseX, mouseY);
-
-        int posX = window.x + 5;
-        int posY = window.y + 4;
-
-        int dividerLinePosY = posY + mc.font.lineHeight + 2;
-
-        int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
-
-        context.hLine(window.x, window.x + window.width, dividerLinePosY, dynamicColor);
-
-        context.drawString(mc.font, searchString + "_", posX, posY, ColorUtil.FOREGROUND_COLOR, true);
-    }
-
 }

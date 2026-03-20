@@ -3,14 +3,13 @@ package nicotine.util;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.ChatScreen;
-import nicotine.screens.clickgui.ClickGUI;
+import nicotine.screens.clickgui.BaseScreen;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ModOption;
-import nicotine.screens.clickgui.SelectionScreen;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
@@ -64,7 +63,7 @@ public class Keybind {
             return false;
 
         if (((keycode < 8 && GLFW.glfwGetMouseButton(window.handle(), keycode) == 1) || (keycode > 7 && InputConstants.isKeyDown(window, keycode))) &&
-                !(mc.screen instanceof ChatScreen) && !(mc.screen instanceof ClickGUI) && !(mc.screen instanceof SelectionScreen)) {
+                !(mc.screen instanceof ChatScreen) && !(mc.screen instanceof BaseScreen)) {
             if (!keysPressed.containsKey(keycode)) {
                 keysPressed.put(name, keycode);
             }

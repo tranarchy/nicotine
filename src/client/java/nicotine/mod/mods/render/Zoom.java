@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.gui.screens.ChatScreen;
-import nicotine.screens.clickgui.ClickGUI;
+import nicotine.screens.clickgui.BaseScreen;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -39,7 +39,7 @@ public class Zoom extends Mod  {
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!this.enabled || !InputConstants.isKeyDown(window, keybind.keyCode) ||
-                    mc.screen instanceof ChatScreen || mc.screen instanceof ClickGUI) {
+                    mc.screen instanceof ChatScreen || mc.screen instanceof BaseScreen) {
                 int fov =  fovOption.get();
                 if (fov == zoomFov.value)
                     fovOption.set(defaultFov);

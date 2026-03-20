@@ -40,7 +40,7 @@ public class KeybindButton extends GUIButton {
         }
     }
 
-    public KeybindButton(KeybindOption keybindOption, int x, int y, boolean clicked) {
+    public KeybindButton(KeybindOption keybindOption, int x, int y) {
         super(x, y);
         this.keybindOption = keybindOption;
         this.text = String.format("%s [%s]", keybindOption.name, formatKeybind(keyCodeToString(keybindOption.keyCode)));

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.ChatScreen;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.screens.clickgui.SelectionScreen;
+import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.util.EventBus;
 
 import static nicotine.util.Common.*;
@@ -29,7 +29,7 @@ public class FreeMove extends Mod {
         };
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!this.enabled || mc.screen == null || mc.screen instanceof ChatScreen || mc.screen instanceof SelectionScreen)
+            if (!this.enabled || mc.screen == null || mc.screen instanceof ChatScreen || InputText.captureInput)
                 return true;
 
             for (KeyMapping freeMoveKeybind : freeMoveKeybinds) {

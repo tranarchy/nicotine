@@ -1,6 +1,5 @@
 package nicotine.screens.clickgui;
 
-import net.minecraft.client.gui.GuiGraphics;
 import nicotine.screens.clickgui.element.Element;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.*;
@@ -8,6 +7,8 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
+import nicotine.screens.clickgui.element.misc.HLine;
+import nicotine.screens.clickgui.element.misc.VLine;
 import nicotine.util.ColorUtil;
 
 import static nicotine.util.Common.*;
@@ -21,6 +22,7 @@ public class ClickGUI extends BaseScreen {
 
     public ClickGUI() {
         super("nicotine GUI", new Window(0, 0, 0, 0));
+        setWindowSize();
     }
 
     private void setWindowSize() {
@@ -124,7 +126,7 @@ public class ClickGUI extends BaseScreen {
                 SwitchButton switchButton = new SwitchButton(switchOption, element.x, element.y);
                 window.add(switchButton);
             } else if (modOption instanceof KeybindOption keybindOption) {
-                KeybindButton keybindButton = new KeybindButton(keybindOption, element.x, element.y, false);
+                KeybindButton keybindButton = new KeybindButton(keybindOption, element.x, element.y);
                 window.add(keybindButton);
             } else if (modOption instanceof ToggleOption toggleOption) {
                 ToggleButton toggleButton = new ToggleButton(toggleOption, element.x, element.y);
@@ -141,28 +143,18 @@ public class ClickGUI extends BaseScreen {
         }
     }
 
-    private void drawGUI(GuiGraphics context, int mouseX, int mouseY) {
-        window.draw(context, mouseX, mouseY);
-
-        int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
-
-        Element firstElement = window.elements.getFirst();
-
-        int dividerLinePosY = firstElement.y + firstElement.height + 2;
-        context.vLine(window.x + window.width / 2, dividerLinePosY, window.y + window.height, dynamicColor);
-        context.hLine(window.x, window.x + window.width, dividerLinePosY, dynamicColor);
-    }
-
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-        window.elements.clear();
-        setWindowSize();
-        window.centerPosition();
-
+    protected void addDrawables() {
         addCategoryButtons();
         addModButtons();
         addOptionButtons();
 
-        drawGUI(context, mouseX, mouseY);
+        Element firstElement = window.elements.getFirst();
+
+        int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
+        int dividerLinePosY = firstElement.y + firstElement.height + 2;
+
+        window.add(new VLine(window.x + window.width / 2, dividerLinePosY, window.y + window.height - dividerLinePosY, dynamicColor));
+        window.add(new HLine(window.x, dividerLinePosY, window.width, dynamicColor));
     }
 }

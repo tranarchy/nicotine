@@ -16,6 +16,7 @@ import nicotine.mod.ModManager;
 import nicotine.screens.clickgui.element.Element;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.*;
+import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.util.Settings;
 import nicotine.util.render.Render2D;
 
@@ -58,11 +59,27 @@ public class BaseScreen extends Screen {
             KeybindButton.selectedKeybindOption = null;
         }
 
+        if (InputText.captureInput) {
+           if (keyEvent.key() == InputConstants.KEY_SPACE) {
+               InputText.text += " ";
+            } else if (keyEvent.key() == InputConstants.KEY_BACKSPACE && ! InputText.text.isEmpty()) {
+               InputText.text = InputText.text.substring(0, InputText.text.length() - 1);
+            } else {
+                String input = InputConstants.getKey(new KeyEvent(keyEvent.key(), 0, 0)).getDisplayName().getString().toLowerCase();
+
+                if (input.length() < 2 && mc.font.width(InputText.text + input + "_") < window.width) {
+                    InputText.text += input;
+                }
+            }
+       }
+
         return true;
     }
 
     @Override
     public boolean mouseClicked(MouseButtonEvent mouseButtonEvent, boolean doubled) {
+
+        InputText.captureInput = false;
 
         if (KeybindButton.selectedKeybindOption != null) {
             KeybindButton.selectedKeybindOption.keyCode = mouseButtonEvent.input();
@@ -99,6 +116,11 @@ public class BaseScreen extends Screen {
     }
 
     @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
+    @Override
     public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
         if (ClickGUI.blur) {
             this.renderBlurredBackground(context);
@@ -113,4 +135,14 @@ public class BaseScreen extends Screen {
             context.fill(RenderPipelines.END_PORTAL, textureSetup, 0, 0, this.width, this.height);
         }
     }
+
+    @Override
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+        window.elements.clear();
+        window.centerPosition();
+        addDrawables();
+        window.draw(context, mouseX, mouseY);
+    }
+
+    protected void addDrawables() {}
 }
