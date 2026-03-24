@@ -78,25 +78,25 @@ public class SelectionScreen extends BaseScreen {
 
         window.add(inputText);
 
-        posY += 16;
+        posY += 17;
 
         for (ItemStack itemStack : items) {
             if (!itemStack.getHoverName().getString().toLowerCase().contains(InputText.text))
                 continue;
 
-            if (posX + 16 > window.x + window.width) {
+            if (posX + 17 > window.x + window.width) {
                 posX = window.x + 5;
-                posY += 16;
+                posY += 17;
             }
 
-            if (posY + 16 > window.y + window.height) {
+            if (posY + 17 > window.y + window.height) {
                 break;
             }
 
             ItemButton itemButton = new ItemButton(itemStack, selectionOption, posX, posY);
             window.add(itemButton);
 
-            posX += 16;
+            posX += 17;
         }
     }
 
