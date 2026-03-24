@@ -1,7 +1,6 @@
 package nicotine.screens.clickgui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.world.flag.FeatureFlagSet;
@@ -22,16 +21,21 @@ import static nicotine.util.Common.*;
 
 public class SelectionScreen extends BaseScreen {
     private SelectionOption selectionOption;
+    private static boolean builtContents = false;
 
     public SelectionScreen(SelectionOption selectionOption) {
         super("Item selection screen", new Window(0, 0, 0, 0));
 
-        FeatureFlagSet featureFlagSet = Optional.ofNullable(mc.player).map(x -> x.connection).map(ClientPacketListener::enabledFeatures).orElse(FeatureFlagSet.of());
-        CreativeModeTab.ItemDisplayParameters itemDisplayParameters = new CreativeModeTab.ItemDisplayParameters(featureFlagSet, true, mc.level.registryAccess());
+        if (!builtContents) {
+            FeatureFlagSet featureFlagSet = Optional.ofNullable(mc.player).map(x -> x.connection).map(ClientPacketListener::enabledFeatures).orElse(FeatureFlagSet.of());
+            CreativeModeTab.ItemDisplayParameters itemDisplayParameters = new CreativeModeTab.ItemDisplayParameters(featureFlagSet, true, mc.level.registryAccess());
 
-        for (CreativeModeTab itemGroup : CreativeModeTabs.allTabs()) {
-            if (itemGroup.getSearchTabDisplayItems().isEmpty())
-                itemGroup.buildContents(itemDisplayParameters);
+            for (CreativeModeTab itemGroup : CreativeModeTabs.allTabs()) {
+                if (itemGroup.getSearchTabDisplayItems().isEmpty())
+                    itemGroup.buildContents(itemDisplayParameters);
+            }
+
+            builtContents = true;
         }
 
         this.selectionOption = selectionOption;
@@ -44,7 +48,8 @@ public class SelectionScreen extends BaseScreen {
 
         for (CreativeModeTab itemGroup : CreativeModeTabs.allTabs()) {
             for (ItemStack itemStack : itemGroup.getSearchTabDisplayItems()) {
-                if (!items.contains(itemStack) && selectionOption.filter(itemStack.getItem()))
+                if (items.stream().noneMatch(x -> x.getItem().equals(itemStack.getItem())) &&
+                        selectionOption.filter(itemStack.getItem()))
                     items.add(itemStack);
             }
         }
