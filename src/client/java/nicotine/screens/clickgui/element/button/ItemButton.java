@@ -25,7 +25,7 @@ public class ItemButton extends GUIButton {
     @Override
     public void draw(GuiGraphics context, double mouseX, double mouseY) {
         if (selectionOption.items.contains(this.itemStack.getItem()))
-            context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.FOREGROUND_COLOR);
+            context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.changeAlpha(ColorUtil.ACTIVE_FOREGROUND_COLOR, 128));
 
         if (mouseOverButton(mouseX, mouseY))
             Render2D.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.ACTIVE_FOREGROUND_COLOR);
