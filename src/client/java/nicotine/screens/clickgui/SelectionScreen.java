@@ -23,29 +23,34 @@ public class SelectionScreen extends BaseScreen {
     private SelectionOption selectionOption;
     private static boolean builtContents = false;
 
+    private final List<ItemStack> items = new ArrayList<>();
+
     public SelectionScreen(SelectionOption selectionOption) {
         super("Item selection screen", new Window(0, 0, 0, 0));
-
-        if (!builtContents) {
-            FeatureFlagSet featureFlagSet = Optional.ofNullable(mc.player).map(x -> x.connection).map(ClientPacketListener::enabledFeatures).orElse(FeatureFlagSet.of());
-            CreativeModeTab.ItemDisplayParameters itemDisplayParameters = new CreativeModeTab.ItemDisplayParameters(featureFlagSet, true, mc.level.registryAccess());
-
-            for (CreativeModeTab itemGroup : CreativeModeTabs.allTabs()) {
-                if (itemGroup.getSearchTabDisplayItems().isEmpty())
-                    itemGroup.buildContents(itemDisplayParameters);
-            }
-
-            builtContents = true;
-        }
 
         this.selectionOption = selectionOption;
         window.width = GUI.screen.window.width;
         window.height = GUI.screen.window.height;
+
+        if (!builtContents) {
+            buildItemGroups();
+            builtContents = true;
+        }
+
+        getAllItems();
     }
 
-    public List<ItemStack> getAllItems() {
-        List<ItemStack> items = new ArrayList<>();
+    private void buildItemGroups() {
+        FeatureFlagSet featureFlagSet = Optional.ofNullable(mc.player).map(x -> x.connection).map(ClientPacketListener::enabledFeatures).orElse(FeatureFlagSet.of());
+        CreativeModeTab.ItemDisplayParameters itemDisplayParameters = new CreativeModeTab.ItemDisplayParameters(featureFlagSet, true, mc.level.registryAccess());
 
+        for (CreativeModeTab itemGroup : CreativeModeTabs.allTabs()) {
+            if (itemGroup.getSearchTabDisplayItems().isEmpty())
+                itemGroup.buildContents(itemDisplayParameters);
+        }
+    }
+
+    public void getAllItems() {
         for (CreativeModeTab itemGroup : CreativeModeTabs.allTabs()) {
             for (ItemStack itemStack : itemGroup.getSearchTabDisplayItems()) {
                 if (items.stream().noneMatch(x -> x.getItem().equals(itemStack.getItem())) &&
@@ -53,8 +58,6 @@ public class SelectionScreen extends BaseScreen {
                     items.add(itemStack);
             }
         }
-
-        return items;
     }
 
     @Override
@@ -77,7 +80,7 @@ public class SelectionScreen extends BaseScreen {
 
         posY += 16;
 
-        for (ItemStack itemStack : getAllItems()) {
+        for (ItemStack itemStack : items) {
             if (!itemStack.getHoverName().getString().toLowerCase().contains(InputText.text))
                 continue;
 
