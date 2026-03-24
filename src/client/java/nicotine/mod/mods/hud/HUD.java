@@ -1,7 +1,7 @@
 package nicotine.mod.mods.hud;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.events.GuiRenderAfterEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
@@ -34,7 +34,7 @@ public class HUD extends Mod {
         this.modOptions.addAll(Arrays.asList(lowercase, bold, italic, separator));
     }
 
-    public static void drawHUD(GuiGraphics context) {
+    public static void drawHUD(GuiGraphicsExtractor context) {
         final int width = mc.getWindow().getGuiScaledWidth();
         final int height = mc.getWindow().getGuiScaledHeight();
 
@@ -117,7 +117,7 @@ public class HUD extends Mod {
                 context.fill(borderX, borderY, borderX + borderWidth, borderY + borderHeight, ColorUtil.BACKGROUND_COLOR);
                 Render2D.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
 
-                context.drawString(mc.font, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
+                context.text(mc.font, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
             }
 
             anchorIndexes.put(hudMod.anchor, anchorIndex + hudMod.texts.size());

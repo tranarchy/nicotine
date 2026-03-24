@@ -52,7 +52,7 @@ public class Item extends Mod {
 
                     if (text.enabled) {
                         ItemStack itemStack = itemEntity.getItem();
-                        String itemText = String.format("%s (%d)", itemStack.getItem().getName().getString(), itemStack.getCount());
+                        String itemText = String.format("%s (%d)", itemStack.getItemName().getString(), itemStack.getCount());
 
                         Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, itemEntity.position().add(0, 0.3, 0), itemText, CommonColors.WHITE, 0.6f);
                     }

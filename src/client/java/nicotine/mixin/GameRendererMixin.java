@@ -1,13 +1,14 @@
 package nicotine.mixin;
 
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.PerspectiveProjectionMatrixBuffer;
+import net.minecraft.client.renderer.ProjectionMatrixBuffer;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import nicotine.events.RenderHandEvent;
 import nicotine.events.TotemAnimationEvent;
 import nicotine.util.EventBus;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,10 +20,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameRendererMixin {
     @Final
     @Shadow
-    private PerspectiveProjectionMatrixBuffer levelProjectionMatrixBuffer;
+    private ProjectionMatrixBuffer levelProjectionMatrixBuffer;
 
     @Inject(method = "renderItemInHand", at = @At(value = "HEAD"))
-    private void renderItemInHand(float f, boolean bl, Matrix4f matrix4f, CallbackInfo info) {
+    private void renderItemInHand(final CameraRenderState cameraState, final float deltaPartialTick, final Matrix4fc modelViewMatrix, CallbackInfo info) {
         EventBus.post(new RenderHandEvent(levelProjectionMatrixBuffer));
     }
 

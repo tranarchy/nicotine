@@ -1,7 +1,7 @@
 package nicotine.screens.clickgui.element.button;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import nicotine.mod.option.KeybindOption;
 
@@ -54,7 +54,7 @@ public class KeybindButton extends GUIButton {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         if (selectedKeybindOption == this.keybindOption) {
             this.text = String.format("%s [_]", keybindOption.name);
             this.width = mc.font.width(this.text);
@@ -62,6 +62,6 @@ public class KeybindButton extends GUIButton {
             this.text = String.format("%s [%s]", keybindOption.name, formatKeybind(keyCodeToString(keybindOption.keyCode)));
         }
 
-        context.drawString(mc.font, this.text, this.x, this.y, color, true);
+        context.text(mc.font, this.text, this.x, this.y, color, true);
     }
 }

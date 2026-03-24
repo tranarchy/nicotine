@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.screens.clickgui.element.Element;
 import nicotine.util.ColorUtil;
 
@@ -22,8 +22,8 @@ public abstract class GUIButton extends Element {
     public void click(double mouseX, double mouseY) {}
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
-        context.drawString(mc.font, this.text, this.x, this.y, this.color, true);
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
+        context.text(mc.font, this.text, this.x, this.y, this.color, true);
     }
 
     public boolean mouseOverButton(double mouseX, double mouseY) {

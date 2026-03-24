@@ -1,6 +1,6 @@
 package nicotine.mixin;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import nicotine.events.RenderTooltipEvent;
@@ -17,8 +17,8 @@ public abstract class AbstractContainerScreenMixin {
     @Shadow
     protected Slot hoveredSlot;
 
-    @Inject(at = @At("HEAD"), method = "renderTooltip", cancellable = true)
-    protected void renderTooltip(GuiGraphics drawContext, int x, int y, CallbackInfo info) {
+    @Inject(at = @At("HEAD"), method = "extractTooltip", cancellable = true)
+    protected void extractTooltip(GuiGraphicsExtractor drawContext, int x, int y, CallbackInfo info) {
         boolean result = EventBus.post(new RenderTooltipEvent(drawContext, x, y, hoveredSlot));
 
         if (!result)

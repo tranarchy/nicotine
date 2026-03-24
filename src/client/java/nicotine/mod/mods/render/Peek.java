@@ -60,7 +60,7 @@ public class Peek extends Mod {
                         itemsToPeek = enderChestItems;
                     } else {
                         ItemContainerContents shulkerContainer = focusedStack.getComponents().get(DataComponents.CONTAINER);
-                        itemsToPeek = shulkerContainer.stream().toList();
+                        itemsToPeek = shulkerContainer.allItemsCopyStream().toList();
                     }
 
                     if (InputConstants.isKeyDown(mc.getWindow(), keybindOption.keyCode)) {
@@ -87,7 +87,7 @@ public class Peek extends Mod {
 
                     event.drawContext.fill(posX, posY, posX + MAX_WIDTH, posY + textRenderer.lineHeight + 4, ColorUtil.BACKGROUND_COLOR);
                     Render2D.drawBorder(event.drawContext, posX, posY, MAX_WIDTH, textRenderer.lineHeight + 4, ColorUtil.BORDER_COLOR);
-                    event.drawContext.drawString(textRenderer, focusedStack.getHoverName(), posX + 3, posY + 3, ColorUtil.FOREGROUND_COLOR, true);
+                    event.drawContext.text(textRenderer, focusedStack.getHoverName(), posX + 3, posY + 3, ColorUtil.FOREGROUND_COLOR, true);
 
                     posY += textRenderer.lineHeight + 4;
 
@@ -100,8 +100,8 @@ public class Peek extends Mod {
                             event.drawContext.fill(posX, posY, posX + SLOT_WIDTH, posY + SLOT_WIDTH, ColorUtil.BACKGROUND_COLOR);
                             Render2D.drawBorder(event.drawContext, posX, posY, SLOT_WIDTH, SLOT_WIDTH, ColorUtil.BORDER_COLOR);
 
-                            event.drawContext.renderItem(shulkerItem, posX + 1, posY + 1);
-                            event.drawContext.renderItemDecorations(textRenderer, shulkerItem, posX + 1, posY + 1, stackCount > 1 ? String.valueOf(stackCount) : "");
+                            event.drawContext.fakeItem(shulkerItem, posX + 1, posY + 1);
+                            event.drawContext.itemDecorations(textRenderer, shulkerItem, posX + 1, posY + 1, stackCount > 1 ? String.valueOf(stackCount) : "");
 
                             posX += SLOT_WIDTH;
                             itemIndex++;

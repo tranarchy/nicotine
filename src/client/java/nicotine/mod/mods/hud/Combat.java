@@ -61,7 +61,7 @@ public class Combat extends HUDMod {
             int modelX2 = this.pos.x + (PADDING + 5) + PLAYER_MODEL_SIZE;
             int modelY2 = this.pos.y + PADDING + (PLAYER_MODEL_SIZE * 2);
 
-            InventoryScreen.renderEntityInInventoryFollowsMouse(event.drawContext,
+            InventoryScreen.extractEntityInInventoryFollowsMouse(event.drawContext,
                     modelX1,
                     modelY1,
                     modelX2,
@@ -97,7 +97,7 @@ public class Combat extends HUDMod {
                 playerInfo.add(String.format("%d %sother players nearby", mc.level.players().size() - (mc.screen instanceof HUDEditorScreen ? 1 : 2), ChatFormatting.WHITE));
 
             for (int i = 0; i < playerInfo.size(); i++) {
-                event.drawContext.drawString(mc.font,
+                event.drawContext.text(mc.font,
                         playerInfo.get(i),
                         this.pos.x + (WINDOW_WIDTH / 2) - (mc.font.width(playerInfo.get(i)) / 2),
                         this.pos.y + PADDING + (mc.font.lineHeight * i),

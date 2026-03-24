@@ -2,7 +2,7 @@ package nicotine.screens;
 
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -115,7 +115,7 @@ public class HUDEditorScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
         final int windowWidth = mc.getWindow().getGuiScaledWidth();
         final int windowHeight = mc.getWindow().getGuiScaledHeight();
 
@@ -135,9 +135,9 @@ public class HUDEditorScreen extends Screen {
 
         HUD.drawHUD(context);
 
-       super.render(context, mouseX, mouseY, delta);
+       super.extractRenderState(context, mouseX, mouseY, delta);
     }
 
     @Override
-    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {}
+    public void extractBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {}
 }

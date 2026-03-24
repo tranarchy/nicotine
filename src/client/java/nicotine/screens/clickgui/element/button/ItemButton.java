@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import nicotine.mod.option.SelectionOption;
@@ -23,17 +23,17 @@ public class ItemButton extends GUIButton {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         if (selectionOption.items.contains(this.itemStack.getItem()))
             context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.changeAlpha(ColorUtil.ACTIVE_FOREGROUND_COLOR, 128));
 
         if (mouseOverButton(mouseX, mouseY))
             Render2D.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.ACTIVE_FOREGROUND_COLOR);
 
-        context.renderFakeItem(this.itemStack, this.x, this.y);
+        context.fakeItem(this.itemStack, this.x, this.y);
 
         if (mouseOverButton(mouseX, mouseY)) {
-            context.setComponentTooltipForNextFrame(mc.font, itemStack.getItem().getName().toFlatList(), (int) mouseX + 3, (int) mouseY + 3);
+            context.setComponentTooltipForNextFrame(mc.font, itemStack.getItemName().toFlatList(), (int) mouseX + 3, (int) mouseY + 3);
         }
     }
 

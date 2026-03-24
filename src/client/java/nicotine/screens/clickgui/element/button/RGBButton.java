@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.mod.option.RGBOption;
 import nicotine.screens.clickgui.ColorSelectionScreen;
 import nicotine.screens.clickgui.element.misc.Square;
@@ -18,7 +18,7 @@ public class RGBButton extends GUIButton {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         super.draw(context, mouseX, mouseY);
 
         Square color = new Square(x + width + 3, y - 1, 8, 8, rgbOption.getColor());

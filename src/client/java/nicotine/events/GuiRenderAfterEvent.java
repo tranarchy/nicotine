@@ -1,11 +1,11 @@
 package nicotine.events;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class GuiRenderAfterEvent {
-    public final GuiGraphics drawContext;
+    public final GuiGraphicsExtractor drawContext;
 
-    public GuiRenderAfterEvent(GuiGraphics drawContext) {
+    public GuiRenderAfterEvent(GuiGraphicsExtractor drawContext) {
         this.drawContext = drawContext;
     }
 }

@@ -19,13 +19,13 @@ import java.util.*;
 
 import static nicotine.util.Common.*;
 
-public class SelectionScreen extends BaseScreen {
+public class ItemSelectionScreen extends BaseScreen {
     private SelectionOption selectionOption;
     private static boolean builtContents = false;
 
     private final List<ItemStack> items = new ArrayList<>();
 
-    public SelectionScreen(SelectionOption selectionOption) {
+    public ItemSelectionScreen(SelectionOption selectionOption) {
         super("Item selection screen", new Window(0, 0, 0, 0));
 
         this.selectionOption = selectionOption;

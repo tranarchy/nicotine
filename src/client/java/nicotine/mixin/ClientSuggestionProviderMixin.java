@@ -12,8 +12,8 @@ import java.util.Collection;
 
 @Mixin(ClientSuggestionProvider.class)
 public class ClientSuggestionProviderMixin {
-    @Inject(method = "getCustomTabSugggestions", at = @At("RETURN"), cancellable = true)
-    public void getCustomTabSugggestions(CallbackInfoReturnable<Collection<String>> infoReturnable) {
+    @Inject(method = "getCustomTabSuggestions", at = @At("RETURN"), cancellable = true)
+    public void getCustomTabSuggestions(CallbackInfoReturnable<Collection<String>> infoReturnable) {
         Collection<String> suggestions =  infoReturnable.getReturnValue();
 
         for (Command command : CommandManager.commands) {

@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.Render2D;
 
@@ -17,7 +17,7 @@ public class Window extends Element {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
 
         context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR);

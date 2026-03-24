@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.mod.ModCategory;
 import nicotine.util.ColorUtil;
 
@@ -24,9 +24,9 @@ public class CategoryButton extends GUIButton {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         this.color = mouseOverButton(mouseX, mouseY) || this.selectedModCategory == this.modCategory ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
 
-        context.drawString(mc.font, this.text, this.x, this.y, this.color, true);
+        context.text(mc.font, this.text, this.x, this.y, this.color, true);
     }
 }

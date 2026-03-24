@@ -82,7 +82,7 @@ public class LogoutESP extends Mod {
                     event.matrixStack.pushPose();
                     event.matrixStack.translate(-view.x, -view.y, -view.z);
                     AvatarRenderState avatarRenderState = mc.getEntityRenderDispatcher().getPlayerRenderer(player).createRenderState(player, 0.0f);
-                    mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.getLevelRenderState().cameraRenderState, player.getX(), player.getY(), player.getZ(), event.matrixStack, mc.gameRenderer.getSubmitNodeStorage());
+                    mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.getGameRenderState().levelRenderState.cameraRenderState, player.getX(), player.getY(), player.getZ(), event.matrixStack, mc.gameRenderer.getSubmitNodeStorage());
                     event.matrixStack.popPose();
                 }
 

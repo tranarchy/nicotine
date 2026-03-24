@@ -109,7 +109,7 @@ public class NoRender extends Mod {
             return true;
         });
 
-        EventBus.register(RenderBeforeEvent.class, event -> {
+        EventBus.register(ExtractLevelEvent.class, event -> {
             if (!this.enabled)
                 return true;
 

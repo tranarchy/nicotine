@@ -100,7 +100,7 @@ public class FreeCam extends Mod {
             Vec3 view = event.camera.position();
             event.matrixStack.pushPose();
             event.matrixStack.translate(-view.x, -view.y, -view.z);
-            mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.getLevelRenderState().cameraRenderState, realPos.x, realPos.y, realPos.z, event.matrixStack, mc.gameRenderer.getSubmitNodeStorage());
+            mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.getGameRenderState().levelRenderState.cameraRenderState, realPos.x, realPos.y, realPos.z, event.matrixStack, mc.gameRenderer.getSubmitNodeStorage());
             event.matrixStack.popPose();
 
             return true;

@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element.misc;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.screens.clickgui.element.Element;
 
 public class VLine extends Element {
@@ -13,7 +13,7 @@ public class VLine extends Element {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
-        context.vLine(x, y, y + height, color);
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
+        context.verticalLine(x, y, y + height, color);
     }
 }

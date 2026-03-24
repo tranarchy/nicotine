@@ -1,7 +1,7 @@
 package nicotine.screens.clickgui.element.button;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import static nicotine.util.Common.mc;
 
@@ -16,7 +16,7 @@ public class InputText extends GUIButton {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         String textToDraw = text;
 
         if (textToDraw.isEmpty()) {
@@ -29,7 +29,7 @@ public class InputText extends GUIButton {
             textToDraw += "_";
         }
 
-        context.drawString(mc.font, textToDraw, this.x, this.y, this.color, true);
+        context.text(mc.font, textToDraw, this.x, this.y, this.color, true);
     }
 
     public static void reset() {

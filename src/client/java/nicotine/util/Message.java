@@ -9,7 +9,7 @@ public class Message {
     private static final String MESSAGE_PREFIX = String.format("%s[%snicotine%s] ", ChatFormatting.DARK_GRAY, ChatFormatting.RESET, ChatFormatting.DARK_GRAY);
 
     public static void send(String content) {
-        mc.player.displayClientMessage(Component.literal(MESSAGE_PREFIX + content), false);
+        mc.player.sendSystemMessage(Component.literal(MESSAGE_PREFIX + content));
     }
 
     public static void sendWarning(String content) {
@@ -22,6 +22,6 @@ public class Message {
 
     public static void command(String name, String description) {
         String content = MESSAGE_PREFIX + String.format("%s - %s%s", name, ChatFormatting.ITALIC, description);
-        mc.player.displayClientMessage(Component.literal(content), false);
+        mc.player.sendSystemMessage(Component.literal(content));
     }
 }

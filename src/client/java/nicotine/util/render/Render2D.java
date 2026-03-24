@@ -1,24 +1,24 @@
 package nicotine.util.render;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.joml.Vector2i;
 
 import static nicotine.util.Common.*;
 
 public class Render2D {
-    public static void drawBorder(GuiGraphics drawContext, int x, int y, int width, int height, int color) {
+    public static void drawBorder(GuiGraphicsExtractor drawContext, int x, int y, int width, int height, int color) {
         drawBorderVertical(drawContext, x, y, width, height, color);
         drawBorderHorizontal(drawContext, x, y, width, height, color);
     }
 
-    public static void drawBorderVertical(GuiGraphics drawContext, int x, int y, int width, int height, int color) {
-        drawContext.vLine(x, y , y + height, color);
-        drawContext.vLine(x + width, y, y + height, color);
+    public static void drawBorderVertical(GuiGraphicsExtractor drawContext, int x, int y, int width, int height, int color) {
+        drawContext.verticalLine(x, y , y + height, color);
+        drawContext.verticalLine(x + width, y, y + height, color);
     }
 
-    public static void drawBorderHorizontal(GuiGraphics drawContext, int x, int y, int width, int height, int color) {
-        drawContext.hLine(x, x + width, y, color);
-        drawContext.hLine(x, x + width, y + height, color);
+    public static void drawBorderHorizontal(GuiGraphicsExtractor drawContext, int x, int y, int width, int height, int color) {
+        drawContext.horizontalLine(x, x + width, y, color);
+        drawContext.horizontalLine(x, x + width, y + height, color);
     }
 
     public static boolean mouseOver(int posX, int posY, int width, int height, double mouseX, double mouseY) {

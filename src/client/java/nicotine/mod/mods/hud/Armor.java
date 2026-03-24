@@ -61,8 +61,8 @@ public class Armor extends HUDMod {
 
                 this.pos.x -= 18;
 
-                event.drawContext.renderItem(armorItems.get(i), this.pos.x, this.pos.y);
-                event.drawContext.renderItemDecorations(mc.font, armorItems.get(i), this.pos.x, this.pos.y, armorCount.getOrDefault(i, 1).toString());
+                event.drawContext.fakeItem(armorItems.get(i), this.pos.x, this.pos.y);
+                event.drawContext.itemDecorations(mc.font, armorItems.get(i), this.pos.x, this.pos.y, armorCount.getOrDefault(i, 1).toString());
             }
 
             return true;

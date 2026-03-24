@@ -46,7 +46,7 @@ public class HandFOV extends Mod {
                     fov.value * (float) (Math.PI / 180.0),
                     ((float)mc.getWindow().getWidth() / (float)mc.getWindow().getHeight() * aspect.value),
                     0.05F,
-                    mc.gameRenderer.getDepthFar()
+                    90F
             );
 
             RenderSystem.setProjectionMatrix(event.levelProjectionMatrixBuffer.getBuffer(matrix4f), ProjectionType.PERSPECTIVE);

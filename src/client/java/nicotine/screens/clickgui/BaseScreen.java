@@ -2,7 +2,7 @@ package nicotine.screens.clickgui;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
@@ -19,6 +19,7 @@ import nicotine.screens.clickgui.element.button.*;
 import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.util.Settings;
 import nicotine.util.render.Render2D;
+import org.jetbrains.annotations.NotNull;
 
 import static nicotine.util.Common.mc;
 
@@ -121,10 +122,10 @@ public class BaseScreen extends Screen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void extractBackground(@NotNull GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
         if (ClickGUI.blur) {
-            this.renderBlurredBackground(context);
-            this.renderMenuBackground(context);
+            this.extractBlurredBackground(context);
+            this.extractMenuBackground(context);
         }
 
         if (mc.level == null) {
@@ -137,7 +138,7 @@ public class BaseScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
+    public void extractRenderState(@NotNull GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
         window.elements.clear();
         window.centerPosition();
         addDrawables();

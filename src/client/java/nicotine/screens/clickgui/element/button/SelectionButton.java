@@ -1,7 +1,7 @@
 package nicotine.screens.clickgui.element.button;
 
 import nicotine.mod.option.SelectionOption;
-import nicotine.screens.clickgui.SelectionScreen;
+import nicotine.screens.clickgui.ItemSelectionScreen;
 
 import static nicotine.util.Common.mc;
 
@@ -18,6 +18,6 @@ public class SelectionButton extends GUIButton {
     @Override
     public void click(double mouseX, double mouseY) {
         if (mc.level != null)
-            mc.setScreen(new SelectionScreen(selectionOption));
+            mc.setScreen(new ItemSelectionScreen(selectionOption));
     }
 }

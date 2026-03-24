@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.ColorUtil;
@@ -40,7 +40,7 @@ public class SliderButton extends GUIButton {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         context.fill(
                 this.sliderX,
                 this.sliderY,
@@ -70,7 +70,7 @@ public class SliderButton extends GUIButton {
 
         String sliderText = sliderOption.decimal ? Float.toString(sliderOption.value) : Integer.toString((int)sliderOption.value);
 
-        context.drawString(
+        context.text(
                 mc.font,
                 Component.literal(sliderText),
                 (this.sliderX + (this.sliderWidth  / 2)) - (mc.font.width(sliderText) / 2),
@@ -79,6 +79,6 @@ public class SliderButton extends GUIButton {
                 true
         );
 
-        context.drawString(mc.font, this.text, this.x, this.y, color, true);
+        context.text(mc.font, this.text, this.x, this.y, color, true);
     }
 }

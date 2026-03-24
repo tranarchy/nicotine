@@ -38,8 +38,8 @@ public class ECrystal extends HUDMod {
                 }
             }
 
-            event.drawContext.renderItem(Items.END_CRYSTAL.getDefaultInstance(), this.pos.x, this.pos.y);
-            event.drawContext.renderItemDecorations(mc.font, Items.END_CRYSTAL.getDefaultInstance(), this.pos.x, this.pos.y, String.valueOf(eCrystalCount));
+            event.drawContext.fakeItem(Items.END_CRYSTAL.getDefaultInstance(), this.pos.x, this.pos.y);
+            event.drawContext.itemDecorations(mc.font, Items.END_CRYSTAL.getDefaultInstance(), this.pos.x, this.pos.y, String.valueOf(eCrystalCount));
 
             return true;
         });

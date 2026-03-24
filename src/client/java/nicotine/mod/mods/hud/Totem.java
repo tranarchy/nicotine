@@ -36,8 +36,8 @@ public class Totem extends HUDMod {
                 }
             }
 
-            event.drawContext.renderItem(Items.TOTEM_OF_UNDYING.getDefaultInstance(), this.pos.x, this.pos.y);
-            event.drawContext.renderItemDecorations(mc.font, Items.TOTEM_OF_UNDYING.getDefaultInstance(), this.pos.x, this.pos.y, String.valueOf(totemCount));
+            event.drawContext.fakeItem(Items.TOTEM_OF_UNDYING.getDefaultInstance(), this.pos.x, this.pos.y);
+            event.drawContext.itemDecorations(mc.font, Items.TOTEM_OF_UNDYING.getDefaultInstance(), this.pos.x, this.pos.y, String.valueOf(totemCount));
 
             return true;
         });

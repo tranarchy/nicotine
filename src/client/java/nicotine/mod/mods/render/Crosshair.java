@@ -44,8 +44,8 @@ public class Crosshair extends Mod {
             final int centerWidth = mc.getWindow().getGuiScaledWidth() / 2;
             final int centerHeight = (mc.getWindow().getGuiScaledHeight() / 2) - 1;
 
-            event.context.vLine(centerWidth, centerHeight - widthVal - 1, centerHeight + widthVal + 1, rgb.getColor());
-            event.context.hLine(centerWidth - widthVal, centerWidth + widthVal, centerHeight, rgb.getColor());
+            event.context.verticalLine(centerWidth, centerHeight - widthVal - 1, centerHeight + widthVal + 1, rgb.getColor());
+            event.context.horizontalLine(centerWidth - widthVal, centerWidth + widthVal, centerHeight, rgb.getColor());
 
             return false;
         });

@@ -8,15 +8,20 @@ import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Camera;
+import net.minecraft.client.CloudStatus;
 import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LevelTargetBundle;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
-import net.minecraft.client.renderer.state.LevelRenderState;
+import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.world.phys.Vec3;
 import nicotine.events.*;
 import nicotine.util.EventBus;
-import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,8 +47,8 @@ public abstract class LevelRendererMixin {
     @Final
     private LevelTargetBundle targets;
 
-    @Inject(at = @At("HEAD"), method = "renderBlockDestroyAnimation", cancellable = true)
-    private void renderBlockDestroyAnimation(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, LevelRenderState levelRenderState, CallbackInfo info) {
+    @Inject(at = @At("HEAD"), method = "extractBlockDestroyAnimation", cancellable = true)
+    private void extractBlockDestroyAnimation(final Camera camera, final LevelRenderState levelRenderState, CallbackInfo info) {
         boolean result = EventBus.post(new RenderBlockDamageEvent());
 
         if (!result) {
@@ -61,25 +66,35 @@ public abstract class LevelRendererMixin {
     }
 
     @Inject(method = {"renderLevel"}, at = {@At("HEAD")})
-    public void renderLevel(GraphicsResourceAllocator graphicsResourceAllocator, DeltaTracker deltaTracker, boolean bl, Camera camera, Matrix4f matrix4f, Matrix4f matrix4f2, Matrix4f matrix4f3, GpuBufferSlice gpuBufferSlice, Vector4f vector4f, boolean bl2, CallbackInfo info) {
-        this.camera = camera;
+    public void renderLevelBefore(
+            final GraphicsResourceAllocator resourceAllocator,
+            final DeltaTracker deltaTracker,
+            final boolean renderOutline,
+            final CameraRenderState cameraState,
+            final Matrix4fc modelViewMatrix,
+            final GpuBufferSlice terrainFog,
+            final Vector4f fogColor,
+            final boolean shouldRenderSky,
+            final ChunkSectionsToRender chunkSectionsToRender, CallbackInfo info) {
+        this.camera = Minecraft.getInstance().gameRenderer.getMainCamera();
         this.matrixStack = new PoseStack();
         this.multiBufferSource = this.renderBuffers.bufferSource();
 
         EventBus.post(new RenderBeforeEvent(camera, matrixStack, multiBufferSource));
     }
 
-    @Inject(method = {"renderLevel"}, at = {@At(value = "INVOKE", target = "Lnet/minecraft/client/Options;getCloudsType()Lnet/minecraft/client/CloudStatus;")})
-    private void beforeClouds(CallbackInfo info, @Local FrameGraphBuilder frameGraphBuilder) {
-        FramePass afterTranslucentPass = frameGraphBuilder.addPass("afterTranslucent");
-        this.targets.main = afterTranslucentPass.readsAndWrites(this.targets.main);
-        afterTranslucentPass.executes(() -> {
+    @Inject(method = {"extractLevel"}, at = {@At("HEAD")})
+    public void extractLevel(final DeltaTracker deltaTracker, final Camera camera, final float deltaPartialTick, CallbackInfo callbackInfo) {
+        EventBus.post(new ExtractLevelEvent());
+    }
+
+    @Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderTranslucentFeatures()V", shift = At.Shift.AFTER))
+    private void afterRenderTranslucentFeatures(CallbackInfo ci) {
             EventBus.post(new RenderEvent(camera, matrixStack, multiBufferSource));
-        });
     }
 
     @Inject(at = @At("HEAD"), method = "addSkyPass", cancellable = true)
-    private void addSkyPass(FrameGraphBuilder frameGraphBuilder, Camera camera, GpuBufferSlice gpuBufferSlice, CallbackInfo info) {
+    private void addSkyPass(final FrameGraphBuilder frame, final CameraRenderState cameraState, final GpuBufferSlice skyFog, CallbackInfo info) {
         boolean result = EventBus.post(new RenderSkyEvent());
 
         if (!result) {

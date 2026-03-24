@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import nicotine.mod.Mod;
 import nicotine.screens.clickgui.ClickGUI;
@@ -30,7 +30,7 @@ public class ModButton extends GUIButton {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
         this.color = this.mod.enabled || this.mod.alwaysEnabled ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
 
@@ -71,6 +71,6 @@ public class ModButton extends GUIButton {
             }
         }
 
-        context.drawString(mc.font, this.text, this.x, this.y + 1, this.color, true);
+        context.text(mc.font, this.text, this.x, this.y + 1, this.color, true);
     }
 }

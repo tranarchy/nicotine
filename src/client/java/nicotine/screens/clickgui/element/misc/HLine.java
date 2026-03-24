@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element.misc;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.screens.clickgui.element.Element;
 
 public class HLine extends Element {
@@ -14,7 +14,7 @@ public class HLine extends Element {
     }
 
     @Override
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {
-        context.hLine(x, x + width, y, color);
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
+        context.horizontalLine(x, x + width, y, color);
     }
 }

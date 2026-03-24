@@ -1,6 +1,6 @@
 package nicotine.screens.clickgui.element;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class Element {
     public int x;
@@ -15,5 +15,5 @@ public class Element {
         this.height = height;
     }
 
-    public void draw(GuiGraphics context, double mouseX, double mouseY) {}
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {}
 }
