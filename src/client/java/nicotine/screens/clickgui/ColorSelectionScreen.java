@@ -22,8 +22,8 @@ public class ColorSelectionScreen extends BaseScreen {
         super("Color selection screen", new Window(0, 0, 0, 0));
 
         this.rgbOption = rgbOption;
-        window.width = GUI.screen.window.width / 2;
-        window.height = GUI.screen.window.height / 2 - 70;
+        window.width = 160;
+        window.height = 100;
     }
 
     @Override
