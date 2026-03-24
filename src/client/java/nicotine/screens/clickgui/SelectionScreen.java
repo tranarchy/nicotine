@@ -103,8 +103,12 @@ public class SelectionScreen extends BaseScreen {
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
-            InputText.reset();
-            mc.setScreen(GUI.screen);
+            if (InputText.captureInput) {
+                InputText.captureInput = false;
+            } else {
+                InputText.reset();
+                mc.setScreen(GUI.screen);
+            }
         } else {
             super.keyPressed(keyEvent);
         }
