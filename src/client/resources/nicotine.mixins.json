@@ -33,7 +33,8 @@
         "ClientSuggestionProviderMixin",
         "ToastManagerMixin",
         "UnitDoubleMixin",
-        "CameraMixin"
+        "CameraMixin",
+        "ScrollWheelHandlerMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,
