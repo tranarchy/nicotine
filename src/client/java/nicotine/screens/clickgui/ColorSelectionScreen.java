@@ -10,7 +10,9 @@ import nicotine.screens.clickgui.element.button.SliderButton;
 import nicotine.screens.clickgui.element.button.ToggleButton;
 import nicotine.screens.clickgui.element.misc.Square;
 
+import java.awt.*;
 import java.util.Arrays;
+import java.util.HexFormat;
 
 import static nicotine.util.Common.*;
 
@@ -62,6 +64,33 @@ public class ColorSelectionScreen extends BaseScreen {
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
            mc.setScreen(GUI.screen);
+        } else if (keyEvent.hasControlDown()) {
+            if (keyEvent.key() == InputConstants.KEY_V) {
+
+                String hexColor = mc.keyboardHandler.getClipboard().trim();
+
+                if (hexColor.isEmpty()) {
+                    return true;
+                }
+
+                if (hexColor.charAt(0) != '#') {
+                    hexColor = '#' + hexColor;
+                }
+
+                if (hexColor.length() < 7) {
+                    return true;
+                }
+
+                if (hexColor.substring(1).codePoints().allMatch(HexFormat::isHexDigit)) {
+                    Color color = Color.decode(hexColor.substring(0, 7));
+
+                    rgbOption.red.value = color.getRed();
+                    rgbOption.green.value = color.getGreen();
+                    rgbOption.blue.value = color.getBlue();
+                }
+            } else if (keyEvent.key() == InputConstants.KEY_C) {
+                mc.keyboardHandler.setClipboard(Integer.toHexString(rgbOption.getColor()).substring(2));
+            }
         }
 
         return true;
