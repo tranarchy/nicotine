@@ -9,6 +9,7 @@ import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.SliderButton;
 import nicotine.screens.clickgui.element.button.ToggleButton;
 import nicotine.screens.clickgui.element.misc.Square;
+import nicotine.screens.clickgui.element.misc.Text;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public class ColorSelectionScreen extends BaseScreen {
 
         this.rgbOption = rgbOption;
         window.width = 160;
-        window.height = 100;
+        window.height = 105;
     }
 
     @Override
@@ -54,7 +55,12 @@ public class ColorSelectionScreen extends BaseScreen {
 
         ToggleButton rainbowButton = new ToggleButton(rgbOption.rainbow, elementPosX, elementPosY);
         window.add(rainbowButton);
-        elementPosY += 8;
+        elementPosY += 10;
+
+        String hexString = '#' + Integer.toHexString(rgbOption.getColor()).substring(2);
+        Text hexText = new Text(hexString, window.x + (window.width / 2) - (mc.font.width(hexString) / 2), elementPosY);
+        window.add(hexText);
+        elementPosY += 12;
 
         Square square = new Square(window.x + (window.width / 2) - 10, elementPosY, 20, 20, rgbOption.getColor());
         window.add(square);
