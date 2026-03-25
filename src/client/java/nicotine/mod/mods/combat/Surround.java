@@ -30,11 +30,11 @@ public class Surround extends Mod {
     private final ToggleOption doublePlace = new ToggleOption("Double");
     private final ToggleOption selfCenter = new ToggleOption("SelfCenter");
     private final ToggleOption inAir = new ToggleOption("InAir");
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_B);
 
     public Surround() {
         super(ModCategory.Combat, "Surround", "Surrounds you with obsidian");
-        this.modOptions.addAll(Arrays.asList(constant, doublePlace, selfCenter, inAir, keybind));
+        this.keybind.keyCode = InputConstants.KEY_B;
+        this.addOptions(Arrays.asList(constant, doublePlace, selfCenter, inAir));
     }
 
     @Override

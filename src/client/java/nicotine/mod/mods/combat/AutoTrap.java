@@ -14,7 +14,6 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.mods.render.LogoutESP;
-import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
@@ -22,7 +21,6 @@ import nicotine.util.Player;
 import nicotine.util.math.BoxUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static nicotine.util.Common.mc;
@@ -30,11 +28,11 @@ import static nicotine.util.Common.mc;
 public class AutoTrap extends Mod {
 
     private final ToggleOption logoutSpot = new ToggleOption("LogoutSpot");
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_Y);
 
     public AutoTrap() {
         super(ModCategory.Combat,"AutoTrap", "Traps the closest player with obsidian");
-        this.modOptions.addAll(Arrays.asList(logoutSpot, keybind));
+        this.keybind.keyCode = InputConstants.KEY_Y;
+        this.addOptions(logoutSpot);
     }
 
     @Override

@@ -10,25 +10,23 @@ import net.minecraft.world.phys.Vec3;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Keybind;
 import nicotine.util.Player;
 import nicotine.util.math.BoxUtil;
 
-import java.util.Arrays;
-
 import static nicotine.util.Common.mc;
 
 public class Scaffold extends Mod {
 
     private final ToggleOption selectBlock = new ToggleOption("SelectBlock");
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_N);
 
     public Scaffold() {
         super(ModCategory.Player, "Scaffold", "Places blocks below you as you move");
-        this.modOptions.addAll(Arrays.asList(selectBlock, keybind));
+
+        this.keybind.keyCode = InputConstants.KEY_N;
+        this.addOptions(selectBlock);
     }
 
     @Override

@@ -25,10 +25,10 @@ public class Xray extends Mod {
         }
     };
 
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_X);
-
     public Xray() {
         super(ModCategory.Render, "Xray");
+
+        this.keybind.keyCode = InputConstants.KEY_X;
 
         blocks.items.addAll(Arrays.asList(
                 Blocks.IRON_ORE.asItem(),
@@ -52,7 +52,7 @@ public class Xray extends Mod {
                 Blocks.END_PORTAL_FRAME.asItem()
         ));
 
-        this.modOptions.addAll(Arrays.asList(blocks, keybind));
+        this.addOptions(blocks);
     }
 
     @Override

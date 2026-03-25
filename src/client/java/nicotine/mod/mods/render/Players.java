@@ -54,7 +54,7 @@ public class Players extends Mod {
 
         tracerAlpha.subOption = true;
 
-        this.modOptions.addAll(Arrays.asList(
+        this.addOptions(Arrays.asList(
                 esp, espRender, espScale, espRgb,
                 tracer, tracerRgb, tracerAlpha, noArmor
         ));

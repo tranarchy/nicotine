@@ -29,7 +29,7 @@ public class LogoutESP extends Mod {
 
     public LogoutESP() {
         super(ModCategory.Render, "LogoutESP", "Shows where a player logged out");
-        this.modOptions.addAll(Arrays.asList(showPlayer, showElapsed, rgb));
+        this.addOptions(Arrays.asList(showPlayer, showElapsed, rgb));
     }
 
     @Override

@@ -34,7 +34,7 @@ public class CombatNotif extends Mod {
 
     public CombatNotif() {
         super(ModCategory.Combat, "CombatNotif");
-        this.modOptions.addAll(Arrays.asList(poppedTotems, enterDistance, toastNotif, playSound));
+        this.addOptions(Arrays.asList(poppedTotems, enterDistance, toastNotif, playSound));
     }
 
     @Override

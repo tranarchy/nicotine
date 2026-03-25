@@ -22,13 +22,14 @@ public class Pitch40 extends Mod {
     private float pitchToAdjust = 0;
     private int tickDelay = 0;
 
-    private final KeybindOption keyBind = new KeybindOption(InputConstants.KEY_I);
     private final ToggleOption yawLock = new ToggleOption("YawLock");
     private final ToggleOption thirdPerson = new ToggleOption("ThirdPerson");
 
     public Pitch40() {
         super(ModCategory.Movement, "Pitch40", "If you start from a high enough position\nIt let's you efly forever without fireworks");
-        this.modOptions.addAll(Arrays.asList(yawLock, thirdPerson, keyBind));
+
+        this.keybind.keyCode = InputConstants.KEY_I;
+        this.addOptions(Arrays.asList(yawLock, thirdPerson));
     }
 
     @Override

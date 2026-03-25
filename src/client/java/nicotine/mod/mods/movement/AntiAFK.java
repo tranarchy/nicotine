@@ -25,7 +25,7 @@ public class AntiAFK extends Mod {
 
     public AntiAFK() {
         super(ModCategory.Movement, "AntiAFK");
-        this.modOptions.addAll(Arrays.asList(move, jump, look, swing));
+        this.addOptions(Arrays.asList(move, jump, look, swing));
     }
 
     @Override

@@ -65,7 +65,7 @@ public class TouchBar extends Mod {
 
     public TouchBar() {
         super(ModCategory.Misc, "TouchBar", "Touch bar for Macbook Pro devices");
-        this.modOptions.addAll(Arrays.asList(refresh, coords, totem, eCrystal, server, customGIF, customButtons));
+        this.addOptions(Arrays.asList(refresh, coords, totem, eCrystal, server, customGIF, customButtons));
     }
 
     private static class ButtonClickHandler extends NSObject {

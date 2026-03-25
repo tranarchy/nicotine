@@ -19,7 +19,7 @@ public class Cords extends HUDMod {
     public Cords() {
         super(ModCategory.HUD, "Cords");
         this.anchor = HUDMod.Anchor.BottomLeft;
-        this.modOptions.add(showDirection);
+        this.addOptions(showDirection);
     }
 
     @Override

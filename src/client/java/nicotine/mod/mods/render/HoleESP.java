@@ -42,7 +42,7 @@ public class HoleESP extends Mod {
 
     public HoleESP() {
         super(ModCategory.Render,"HoleESP", "Shows safe spots against end crystals");
-        this.modOptions.addAll(Arrays.asList(width, height));
+        this.addOptions(Arrays.asList(width, height));
     }
 
     private List<BlockPos> getHoleSpots(int horizontal, int vertical) {

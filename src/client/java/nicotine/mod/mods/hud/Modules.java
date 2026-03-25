@@ -25,7 +25,7 @@ public class Modules extends HUDMod {
     public Modules() {
         super(ModCategory.HUD, "Modules");
         this.anchor = HUDMod.Anchor.TopRight;
-        this.modOptions.add(sorted);
+        this.addOptions(sorted);
     }
 
     @Override
@@ -42,10 +42,10 @@ public class Modules extends HUDMod {
             mods.removeAll(ModManager.modules.get(ModCategory.HUD));
             mods.removeAll(ModManager.modules.get(ModCategory.GUI));
 
-            for (int i = 0; i < this.modOptions.size(); i++) {
+            for (int i = 1; i < this.modOptions.size(); i++) {
                 if (this.modOptions.get(i) instanceof ToggleOption toggleOption) {
                     if (!toggleOption.enabled) {
-                        mods.removeAll(ModManager.modules.get(ModCategory.values()[i]));
+                        mods.removeAll(ModManager.modules.get(ModCategory.values()[i-1]));
                     }
                 }
             }

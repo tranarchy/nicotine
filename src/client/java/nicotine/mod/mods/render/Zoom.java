@@ -26,11 +26,11 @@ public class Zoom extends Mod  {
             30
     );
 
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_C);
-
     public Zoom() {
         super(ModCategory.Render, "Zoom");
-        this.modOptions.addAll(Arrays.asList(zoomFov, keybind));
+
+        this.keybind.keyCode = InputConstants.KEY_C;
+        this.addOptions(zoomFov);
     }
 
     @Override

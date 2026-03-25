@@ -24,7 +24,7 @@ public class AutoEat extends Mod {
 
     public AutoEat() {
         super(ModCategory.Player, "AutoEat");
-        this.modOptions.add(hunger);
+        this.addOptions(hunger);
     }
 
     @Override

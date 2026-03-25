@@ -38,7 +38,7 @@ public class Storage extends Mod {
         super(ModCategory.Render, "Storage");
         espRender.subOption = true;
         tracerAlpha.subOption = true;
-        this.modOptions.addAll(Arrays.asList(esp, espRender, tracer, tracerAlpha, optimizeRender));
+        this.addOptions(Arrays.asList(esp, espRender, tracer, tracerAlpha, optimizeRender));
     }
 
     @Override

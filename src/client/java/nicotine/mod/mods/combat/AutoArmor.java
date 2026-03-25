@@ -24,11 +24,11 @@ import static nicotine.util.Common.mc;
 public class AutoArmor extends Mod {
 
     private final ToggleOption elytraSwap = new ToggleOption("ElytraSwap");
-    private final KeybindOption elytraSwapKeybind = new KeybindOption("SwapKey", InputConstants.KEY_Z);
 
     public AutoArmor() {
         super(ModCategory.Combat,"AutoArmor");
-        this.modOptions.addAll(Arrays.asList(elytraSwap, elytraSwapKeybind));
+        this.keybind.keyCode = InputConstants.KEY_Z;
+        this.addOptions(elytraSwap);
     }
 
     @Override
@@ -37,7 +37,7 @@ public class AutoArmor extends Mod {
             if (!this.enabled || Inventory.isContainerOpen())
                 return true;
 
-            if (Keybind.keyReleased(elytraSwap.name, elytraSwap.enabled, elytraSwapKeybind.keyCode))
+            if (Keybind.keyReleased(elytraSwap.name, elytraSwap.enabled, keybind.keyCode))
                 elytraSwap.enabled = true;
 
             List<ItemStack> armorItems = Player.getArmorItems();

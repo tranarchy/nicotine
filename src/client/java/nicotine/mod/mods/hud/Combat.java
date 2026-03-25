@@ -31,7 +31,7 @@ public class Combat extends HUDMod {
 
     public Combat() {
         super(ModCategory.HUD, "Combat", "Shows the nearest player around you in a nice HUD");
-        this.modOptions.addAll(Arrays.asList(distance, totemCount, otherPlayers));
+        this.addOptions(Arrays.asList(distance, totemCount, otherPlayers));
     }
 
     @Override

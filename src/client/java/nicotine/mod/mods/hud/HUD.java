@@ -31,7 +31,7 @@ public class HUD extends Mod {
 
     public HUD() {
         super(ModCategory.HUD, "HUD");
-        this.modOptions.addAll(Arrays.asList(lowercase, bold, italic, separator));
+        this.addOptions(Arrays.asList(lowercase, bold, italic, separator));
     }
 
     public static void drawHUD(GuiGraphicsExtractor context) {

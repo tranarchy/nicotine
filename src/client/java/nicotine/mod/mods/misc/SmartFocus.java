@@ -20,7 +20,7 @@ public class SmartFocus extends Mod {
 
     public SmartFocus() {
         super(ModCategory.Misc, "SmartFocus", "When the game is not in focus limits your FPS");
-        this.modOptions.add(fps);
+        this.addOptions(fps);
     }
 
     @Override

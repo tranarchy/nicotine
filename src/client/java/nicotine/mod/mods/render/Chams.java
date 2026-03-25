@@ -17,7 +17,7 @@ public class Chams extends Mod {
 
     public Chams() {
         super(ModCategory.Render,"Chams");
-        this.modOptions.addAll(Arrays.asList(outline, rgb));
+        this.addOptions(Arrays.asList(outline, rgb));
     }
 
     @Override

@@ -24,7 +24,7 @@ public class NoRender extends Mod {
 
     public NoRender() {
         super(ModCategory.Render, "NoRender");
-        this.modOptions.addAll(Arrays.asList(overlays, bossBars, potionEffects, miscOverlays, toastNotifs, weather, sky, particles, totemAnimation));
+        this.addOptions(Arrays.asList(overlays, bossBars, potionEffects, miscOverlays, toastNotifs, weather, sky, particles, totemAnimation));
     }
 
     @Override

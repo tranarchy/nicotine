@@ -71,11 +71,11 @@ public class AutoCrystal extends Mod {
     );
     private final ToggleOption manualPlace = new ToggleOption("ManualPlace");
     private final ToggleOption renderPosition = new ToggleOption("RenderPosition", true);
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_R);
 
     public AutoCrystal() {
         super(ModCategory.Combat,"AutoCrystal", "Places and blows up end crystals around players");
-        this.modOptions.addAll(Arrays.asList(delay, placeDelay, minDamage, selfDamage, manualPlace, renderPosition, keybind));
+        this.keybind.keyCode = InputConstants.KEY_R;
+        this.addOptions(Arrays.asList(delay, placeDelay, minDamage, selfDamage, manualPlace, renderPosition));
     }
 
     private static float calculateExplosionDamage(Vec3 explosionPos, Entity entity) {

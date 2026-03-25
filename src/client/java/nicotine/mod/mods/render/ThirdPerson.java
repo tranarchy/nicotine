@@ -17,7 +17,7 @@ import static nicotine.util.Common.mc;
 public class ThirdPerson extends Mod {
     public ThirdPerson() {
         super(ModCategory.Render, "ThirdPerson");
-        this.modOptions.addAll(Arrays.asList(distance, disableZoom));
+        this.addOptions(Arrays.asList(distance, disableZoom));
     }
 
     private final double CAMERA_DISTANCE = 4.0;

@@ -29,7 +29,7 @@ public class NameTag extends Mod {
 
     public NameTag() {
         super(ModCategory.Render, "NameTag");
-        this.modOptions.addAll(Arrays.asList(health, armor, poppedTotem, ping, scale, rgb));
+        this.addOptions(Arrays.asList(health, armor, poppedTotem, ping, scale, rgb));
     }
 
     @Override

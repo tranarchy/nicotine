@@ -27,7 +27,7 @@ public class Crosshair extends Mod {
 
     public Crosshair() {
         super(ModCategory.Render,"Crosshair");
-        this.modOptions.addAll(Arrays.asList(width, rgb, noCrosshair));
+        this.addOptions(Arrays.asList(width, rgb, noCrosshair));
     }
 
     @Override

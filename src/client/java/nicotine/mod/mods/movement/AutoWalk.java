@@ -11,11 +11,10 @@ import static nicotine.util.Common.mc;
 
 public class AutoWalk extends Mod {
 
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_U);
 
     public AutoWalk() {
         super(ModCategory.Movement, "AutoWalk");
-        this.modOptions.add(keybind);
+        this.keybind.keyCode = InputConstants.KEY_U;
     }
 
     @Override

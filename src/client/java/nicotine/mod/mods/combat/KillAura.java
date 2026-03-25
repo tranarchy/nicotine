@@ -44,7 +44,6 @@ public class KillAura extends Mod {
             20
     );
     private final SwitchOption rotation = new SwitchOption("Look", new String[]{"Revert", "Stay", "Target", "None"});
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_K);
 
     private static boolean isWeapon(ItemStack itemStack) {
         return itemStack.is(ItemTags.SWORDS) || itemStack.is(ItemTags.AXES) || itemStack.is(ItemTags.SPEARS) || itemStack.getItem() instanceof MaceItem || itemStack.getItem() instanceof TridentItem;
@@ -52,7 +51,8 @@ public class KillAura extends Mod {
 
     public KillAura() {
         super(ModCategory.Combat, "KillAura");
-        this.modOptions.addAll(Arrays.asList(combatUpdate, selectWeapon, inAirOnly, players, hostile, angerable, passive, rotation, delay, keybind));
+        this.keybind.keyCode = InputConstants.KEY_K;
+        this.addOptions(Arrays.asList(combatUpdate, selectWeapon, inAirOnly, players, hostile, angerable, passive, rotation, delay));
     }
 
     @Override

@@ -33,7 +33,7 @@ public class ExtraRange extends Mod {
 
     public ExtraRange() {
         super(ModCategory.Player, "ExtraRange", "Lets you interact with stuff from further away");
-        this.modOptions.addAll(Arrays.asList(block, entity));
+        this.addOptions(Arrays.asList(block, entity));
     }
 
     @Override

@@ -20,7 +20,7 @@ public class AutoReconnect extends Mod {
 
     public AutoReconnect() {
         super(ModCategory.Misc, "AutoReconnect");
-        this.modOptions.add(delay);
+        this.addOptions(delay);
     }
 
     @Override

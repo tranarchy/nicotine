@@ -8,12 +8,8 @@ import net.minecraft.world.phys.Vec3;
 import nicotine.events.*;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
-
-
-import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
 
@@ -24,7 +20,6 @@ public class FreeCam extends Mod {
     private float realYaw;
     private AvatarRenderState avatarRenderState;
 
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_M);
     private final SliderOption speed = new SliderOption(
             "Speed",
             0.5f,
@@ -35,7 +30,9 @@ public class FreeCam extends Mod {
 
     public FreeCam() {
         super(ModCategory.Render, "FreeCam");
-        this.modOptions.addAll(Arrays.asList(speed, keybind));
+
+        this.keybind.keyCode = InputConstants.KEY_M;
+        this.addOptions(speed);
     }
 
     @Override

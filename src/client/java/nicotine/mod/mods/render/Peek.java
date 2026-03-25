@@ -13,7 +13,6 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderTooltipEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.screens.PeekScreen;
 import nicotine.util.ColorUtil;
@@ -33,11 +32,11 @@ public class Peek extends Mod {
 
     private final ToggleOption shulker = new ToggleOption("Shulker", true);
     private final ToggleOption enderChest = new ToggleOption("EnderChest");
-    private final KeybindOption keybindOption = new KeybindOption("InspectKey", InputConstants.KEY_LALT);
 
     public Peek() {
         super(ModCategory.Render, "Peek", "Lets you see inside shulkers and echets without opening them");
-        this.modOptions.addAll(Arrays.asList(shulker, enderChest, keybindOption));
+        this.keybind.keyCode = InputConstants.KEY_LALT;
+        this.addOptions(Arrays.asList(shulker, enderChest));
     }
 
     @Override
@@ -63,7 +62,7 @@ public class Peek extends Mod {
                         itemsToPeek = shulkerContainer.allItemsCopyStream().toList();
                     }
 
-                    if (InputConstants.isKeyDown(mc.getWindow(), keybindOption.keyCode)) {
+                    if (InputConstants.isKeyDown(mc.getWindow(), keybind.keyCode)) {
                         SimpleContainer peekInventory = new SimpleContainer(9 * 3);
 
                         for (int i = 0; i < itemsToPeek.size(); i++) {

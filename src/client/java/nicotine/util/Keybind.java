@@ -3,13 +3,14 @@ package nicotine.util;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.ChatScreen;
+import nicotine.mod.mods.combat.AutoArmor;
+import nicotine.mod.mods.render.Peek;
+import nicotine.mod.mods.render.Zoom;
 import nicotine.screens.clickgui.BaseScreen;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.KeybindOption;
-import nicotine.mod.option.ModOption;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
@@ -20,29 +21,15 @@ public class Keybind {
 
     private static final HashMap<String, Integer> keysPressed = new HashMap<>();
 
-    private static final List<String> denyList = Arrays.asList("Zoom", "AutoArmor", "Peek");
+    private static final List<Class> denyList = Arrays.asList(
+            Zoom.class, AutoArmor.class, Peek.class
+    );
 
     public static void init() {
-        for (ModCategory modCategory : ModCategory.values()) {
-            for (Mod mod : ModManager.modules.get(modCategory)) {
-                Optional<ModOption> optKeybindOption = mod.modOptions.stream().filter(x -> x instanceof KeybindOption).findAny();
-
-                if (!optKeybindOption.isPresent()) {
-                    mod.modOptions.add(new KeybindOption(-1));
-                }
-            }
-        }
-
         EventBus.register(ClientLevelTickEvent.class, event -> {
             for (ModCategory modCategory : ModCategory.values()) {
                 for (Mod mod : ModManager.modules.get(modCategory)) {
-                    Optional<ModOption> optKeybindOption = mod.modOptions.stream().filter(x -> x instanceof KeybindOption).findAny();
-
-                    if (denyList.contains(mod.name))
-                        continue;
-
-                    KeybindOption keybindOption = (KeybindOption) optKeybindOption.get();
-                    if (Keybind.keyReleased(mod, keybindOption.keyCode)) {
+                    if (!denyList.contains(mod.getClass()) && Keybind.keyReleased(mod, mod.keybind.keyCode)) {
                         mod.toggle();
 
                         return true;

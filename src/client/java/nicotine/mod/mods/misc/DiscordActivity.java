@@ -36,7 +36,7 @@ public class DiscordActivity extends Mod {
 
     public DiscordActivity() {
         super(ModCategory.Misc, "DiscordActivity");
-        this.modOptions.addAll(Arrays.asList(player, dimension));
+        this.addOptions(Arrays.asList(player, dimension));
     }
 
     private boolean socketOpen() {

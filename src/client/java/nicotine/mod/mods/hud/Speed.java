@@ -21,7 +21,7 @@ public class Speed extends HUDMod {
     public Speed() {
         super(ModCategory.HUD, "Speed");
         this.anchor = HUDMod.Anchor.TopLeft;
-        this.modOptions.add(unit);
+        this.addOptions(unit);
     }
 
     @Override

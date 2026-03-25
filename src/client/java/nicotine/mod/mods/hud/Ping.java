@@ -27,7 +27,7 @@ public class Ping extends HUDMod {
     public Ping() {
         super(ModCategory.HUD, "Ping");
         this.anchor = HUDMod.Anchor.TopLeft;
-        this.modOptions.add(source);
+        this.addOptions(source);
     }
 
     @Override

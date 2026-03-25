@@ -21,7 +21,7 @@ public class FastXP extends Mod {
 
     public FastXP() {
         super(ModCategory.Player, "FastXP", "Speeds up how fast you can throw XP bottles");
-        this.modOptions.add(delay);
+        this.addOptions(delay);
     }
 
     @Override

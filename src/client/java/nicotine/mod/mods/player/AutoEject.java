@@ -30,7 +30,7 @@ public class AutoEject extends Mod {
                 Items.ROTTEN_FLESH
         ));
 
-        this.modOptions.add(junk);
+        this.addOptions(junk);
     }
 
     @Override

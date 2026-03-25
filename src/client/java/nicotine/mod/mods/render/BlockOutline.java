@@ -28,7 +28,7 @@ public class BlockOutline extends Mod {
 
     public BlockOutline() {
         super(ModCategory.Render, "BlockOutline");
-        this.modOptions.addAll(Arrays.asList(render, rgb));
+        this.addOptions(Arrays.asList(render, rgb));
     }
 
     @Override

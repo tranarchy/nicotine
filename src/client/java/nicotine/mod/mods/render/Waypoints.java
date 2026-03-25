@@ -30,7 +30,7 @@ public class Waypoints extends Mod {
 
     public Waypoints() {
         super(ModCategory.Render, "Waypoints", "Waypoint system (see .help)");
-        this.modOptions.addAll(Arrays.asList(scale, rgb));
+        this.addOptions(Arrays.asList(scale, rgb));
     }
 
     private static Vec3 getAdjustedPosition(BlockPos pos) {

@@ -36,7 +36,7 @@ public class Item extends Mod {
         super(ModCategory.Render, "Item");
         espRender.subOption = true;
         tracerAlpha.subOption = true;
-        this.modOptions.addAll(Arrays.asList(text, esp, espRender, tracer, tracerAlpha));
+        this.addOptions(Arrays.asList(text, esp, espRender, tracer, tracerAlpha));
     }
 
     @Override

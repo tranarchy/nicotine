@@ -7,25 +7,22 @@ import nicotine.screens.clickgui.ClickGUI;
 import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.RGBOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-
-import java.util.Arrays;
 
 import static nicotine.util.Common.*;
 
 public class GUI extends Mod {
 
     private final RGBOption rgb = new RGBOption("RGB");
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_RSHIFT);
     public static BaseScreen screen;
 
     public GUI() {
         super(ModCategory.GUI, "GUI");
         this.alwaysEnabled = true;
-        this.modOptions.addAll(Arrays.asList(rgb, keybind));
+        this.keybind.keyCode = InputConstants.KEY_RSHIFT;
+        this.addOptions(rgb);
     }
 
     @Override

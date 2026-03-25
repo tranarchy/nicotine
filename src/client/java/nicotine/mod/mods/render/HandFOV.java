@@ -32,7 +32,7 @@ public class HandFOV extends Mod {
 
     public HandFOV() {
         super(ModCategory.Render,"HandFOV");
-        this.modOptions.addAll(Arrays.asList(fov, aspect));
+        this.addOptions(Arrays.asList(fov, aspect));
     }
 
     @Override

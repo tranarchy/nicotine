@@ -29,11 +29,11 @@ public class ElytraBounce extends Mod {
     private final SliderOption acDelay = new SliderOption("ACDelay", 7, 0, 20);
     private final ToggleOption yawLock = new ToggleOption("YawLock");
     private final ToggleOption thirdPerson = new ToggleOption("ThirdPerson");
-    private final KeybindOption keybind = new KeybindOption(InputConstants.KEY_V);
 
     public ElytraBounce() {
         super(ModCategory.Movement, "ElytraBounce");
-        this.modOptions.addAll(Arrays.asList(pitch, acDelay, yawLock, thirdPerson, keybind));
+        this.keybind.keyCode = InputConstants.KEY_V;
+        this.addOptions(Arrays.asList(pitch, acDelay, yawLock, thirdPerson));
     }
 
     @Override

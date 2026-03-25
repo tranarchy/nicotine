@@ -31,7 +31,7 @@ public class NoKnockback extends Mod {
 
     public NoKnockback() {
         super(ModCategory.Combat, "NoKnockback", "Adjusts knockback from entities and explosions");
-        this.modOptions.addAll(Arrays.asList(entity, explosion));
+        this.addOptions(Arrays.asList(entity, explosion));
     }
 
     @Override
