@@ -45,7 +45,6 @@ public class ModManager {
         add(new NameTag());
         add(new FullBright());
         add(new NoRender());
-        add(new NoFog());
         add(new ActiveSpawner());
         add(new BlockBreaking());
         add(new BlockOutline());

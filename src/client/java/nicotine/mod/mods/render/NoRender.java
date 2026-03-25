@@ -1,5 +1,6 @@
 package nicotine.mod.mods.render;
 
+import net.minecraft.client.renderer.fog.FogRenderer;
 import nicotine.events.*;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -11,6 +12,14 @@ import static nicotine.util.Common.*;
 import java.util.Arrays;
 
 public class NoRender extends Mod {
+
+    private final ToggleOption fog = new ToggleOption("Fog") {
+       @Override
+       public void toggle() {
+           super.toggle();
+           FogRenderer.toggleFog();
+       }
+    };
 
     private final ToggleOption overlays = new ToggleOption("Overlays", true);
     private final ToggleOption bossBars = new ToggleOption("BossBars");
@@ -24,7 +33,7 @@ public class NoRender extends Mod {
 
     public NoRender() {
         super(ModCategory.Render, "NoRender");
-        this.addOptions(Arrays.asList(overlays, bossBars, potionEffects, miscOverlays, toastNotifs, weather, sky, particles, totemAnimation));
+        this.addOptions(Arrays.asList(fog, overlays, bossBars, potionEffects, miscOverlays, toastNotifs, weather, sky, particles, totemAnimation));
     }
 
     @Override

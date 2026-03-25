@@ -225,7 +225,9 @@ public class Settings {
                             switchOption.value = modInfo.get(switchOption.id).getAsString();
                         }
                     } else if (modOption instanceof ToggleOption toggleOption) {
-                        toggleOption.enabled = modInfo.get(toggleOption.id).getAsBoolean();
+                        if (modInfo.get(toggleOption.id).getAsBoolean()) {
+                            toggleOption.toggle();
+                        }
                     } else if (modOption instanceof KeybindOption keybindOption) {
                         keybindOption.keyCode = modInfo.get(keybindOption.id).getAsInt();
                     } else if (modOption instanceof SelectionOption selectionOption) {

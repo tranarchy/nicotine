@@ -18,6 +18,6 @@ public class ToggleButton extends GUIButton {
 
     @Override
     public void click(double mouseX, double mouseY) {
-        this.toggleOption.enabled = !this.toggleOption.enabled;
+       this.toggleOption.toggle();
     }
 }

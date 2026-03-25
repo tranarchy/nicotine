@@ -14,4 +14,8 @@ public class ToggleOption extends ModOption {
 
         this.enabled = enabled;
     }
+
+    public void toggle() {
+        this.enabled = !this.enabled;
+    }
 }
