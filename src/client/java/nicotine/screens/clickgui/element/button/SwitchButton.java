@@ -1,5 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.mod.option.SwitchOption;
 
 import static nicotine.util.Common.*;
@@ -25,5 +26,14 @@ public class SwitchButton extends GUIButton {
 
         this.text = String.format("%s [%s]", switchOption.name, switchOption.value);
         this.width = mc.font.width(this.text);
+    }
+
+    @Override
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
+        super.draw(context, mouseX, mouseY);
+
+        if (mouseOverButton(mouseX, mouseY)) {
+            drawUnderline(context);
+        }
     }
 }

@@ -29,4 +29,8 @@ public abstract class GUIButton extends Element {
     public boolean mouseOverButton(double mouseX, double mouseY) {
         return (this.x <= mouseX && mouseX <= this.x + this.width && this.y <= mouseY && mouseY <= this.y + this.height);
     }
+
+    public void drawUnderline(GuiGraphicsExtractor context) {
+        context.horizontalLine(this.x, this.x + this.width - 1, this.y + mc.font.lineHeight + 1, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+    }
 }

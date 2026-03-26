@@ -1,5 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
 
@@ -19,5 +20,14 @@ public class ToggleButton extends GUIButton {
     @Override
     public void click(double mouseX, double mouseY) {
        this.toggleOption.toggle();
+    }
+
+    @Override
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
+        super.draw(context, mouseX, mouseY);
+
+        if (mouseOverButton(mouseX, mouseY)) {
+            drawUnderline(context);
+        }
     }
 }

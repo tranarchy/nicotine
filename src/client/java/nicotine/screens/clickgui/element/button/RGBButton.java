@@ -21,6 +21,10 @@ public class RGBButton extends GUIButton {
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         super.draw(context, mouseX, mouseY);
 
+        if (mouseOverButton(mouseX, mouseY)) {
+            drawUnderline(context);
+        }
+
         Square color = new Square(x + width + 3, y - 1, 8, 8, rgbOption.getColor());
         color.draw(context, mouseX, mouseY);
     }

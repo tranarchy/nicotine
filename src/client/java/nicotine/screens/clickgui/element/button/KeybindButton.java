@@ -63,5 +63,9 @@ public class KeybindButton extends GUIButton {
         }
 
         context.text(mc.font, this.text, this.x, this.y, color, true);
+
+        if (mouseOverButton(mouseX, mouseY)) {
+            drawUnderline(context);
+        }
     }
 }
