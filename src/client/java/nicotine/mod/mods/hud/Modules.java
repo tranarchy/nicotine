@@ -40,7 +40,7 @@ public class Modules extends HUDMod {
 
             List<Mod> mods = ModManager.modules.values().stream().flatMap(List::stream).collect(Collectors.toList());
             mods.removeAll(ModManager.modules.get(ModCategory.HUD));
-            mods.removeAll(ModManager.modules.get(ModCategory.GUI));
+            mods.removeAll(ModManager.modules.get(ModCategory.General));
 
             for (int i = 1; i < this.modOptions.size(); i++) {
                 if (this.modOptions.get(i) instanceof ToggleOption toggleOption) {

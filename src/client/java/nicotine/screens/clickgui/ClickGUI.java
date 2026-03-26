@@ -15,10 +15,7 @@ import static nicotine.util.Common.*;
 
 public class ClickGUI extends BaseScreen {
 
-    private static final int PADDING = 5;
-
-    public static boolean showDescription = false;
-    public static boolean blur = false;
+    private final int PADDING = 5;
 
     public ClickGUI() {
         super("nicotine GUI", new Window(0, 0, 0, 0));

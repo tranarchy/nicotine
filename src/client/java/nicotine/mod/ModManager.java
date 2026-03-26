@@ -1,7 +1,7 @@
 package nicotine.mod;
 
 import nicotine.mod.mods.combat.*;
-import nicotine.mod.mods.gui.*;
+import nicotine.mod.mods.general.*;
 import nicotine.mod.mods.hud.*;
 import nicotine.mod.mods.misc.*;
 import nicotine.mod.mods.movement.*;
@@ -114,7 +114,5 @@ public class ModManager {
         add(new Combat());
 
         add(new GUI());
-        add(new Tooltip());
-        add(new Blur());
     }
 }

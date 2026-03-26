@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import nicotine.mod.ModManager;
+import nicotine.mod.mods.general.GUI;
 import nicotine.screens.clickgui.element.Element;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.*;
@@ -123,7 +124,7 @@ public class BaseScreen extends Screen {
 
     @Override
     public void extractBackground(@NotNull GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
-        if (ClickGUI.blur) {
+        if (GUI.blur.enabled) {
             this.extractBlurredBackground(context);
             this.extractMenuBackground(context);
         }

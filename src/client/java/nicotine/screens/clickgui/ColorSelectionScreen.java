@@ -2,7 +2,7 @@ package nicotine.screens.clickgui;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.input.KeyEvent;
-import nicotine.mod.mods.gui.GUI;
+import nicotine.mod.mods.general.GUI;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.screens.clickgui.element.Window;

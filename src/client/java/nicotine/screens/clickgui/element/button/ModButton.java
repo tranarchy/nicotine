@@ -3,6 +3,7 @@ package nicotine.screens.clickgui.element.button;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import nicotine.mod.Mod;
+import nicotine.mod.mods.general.GUI;
 import nicotine.screens.clickgui.ClickGUI;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.Render2D;
@@ -57,7 +58,7 @@ public class ModButton extends GUIButton {
         if (mouseOverButton(mouseX, mouseY)) {
             this.text = " " + this.text;
 
-            if (ClickGUI.showDescription && !this.mod.description.isBlank()) {
+            if (GUI.tooltip.enabled && !this.mod.description.isBlank()) {
                 List<Component> description = new ArrayList<>();
                 String[] splitDescription = this.mod.description.split("\n");
                 for (int j = 0; j < splitDescription.length; j++) {

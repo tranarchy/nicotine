@@ -7,7 +7,7 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
-import nicotine.mod.mods.gui.GUI;
+import nicotine.mod.mods.general.GUI;
 import nicotine.mod.option.SelectionOption;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.InputText;
