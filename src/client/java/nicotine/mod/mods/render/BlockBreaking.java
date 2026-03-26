@@ -10,7 +10,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
 
@@ -40,7 +40,7 @@ public class BlockBreaking extends Mod {
 
                 AABB blockBreakingBox = BoxUtil.getBlockBoundingBox(blockPos).deflate(stage / 20.0f);
 
-                Render.drawFilledBox(event.camera, event.matrixStack, new Boxf(blockBreakingBox), rgb.getColor());
+                Render3D.drawFilledBox(event.camera, event.matrixStack, new Boxf(blockBreakingBox), rgb.getColor());
             }
 
             return true;

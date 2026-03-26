@@ -12,7 +12,7 @@ import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 
 import java.util.Arrays;
 
@@ -61,7 +61,7 @@ public class NameTag extends Mod {
                     if (ping.enabled)
                         nametagText += String.format(" [%s%dms%s]", ChatFormatting.GREEN, Player.getPing(player), ChatFormatting.RESET);
 
-                    Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, position, nametagText, rgb.getColor(), scale.value);
+                    Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, position, nametagText, rgb.getColor(), scale.value);
                 }
             }
 

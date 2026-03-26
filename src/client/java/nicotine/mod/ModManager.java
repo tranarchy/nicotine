@@ -114,5 +114,6 @@ public class ModManager {
         add(new Combat());
 
         add(new GUI());
+        add(new Render());
     }
 }

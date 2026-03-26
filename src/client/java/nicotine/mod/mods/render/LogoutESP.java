@@ -13,7 +13,7 @@ import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.*;
 import nicotine.util.math.Boxf;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 
 import java.util.*;
 
@@ -87,7 +87,7 @@ public class LogoutESP extends Mod {
                 }
 
                 Boxf boundingBox = new Boxf(player.getBoundingBox());
-                Render.drawBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
+                Render3D.drawBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
 
                 String text = player.getName().getString();
 
@@ -101,7 +101,7 @@ public class LogoutESP extends Mod {
                 }
 
                 Vec3 position = new Vec3(player.getX(), player.getBoundingBox().maxY, player.getZ());
-                Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, position, text, rgb.getColor(), 1.0f);
+                Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, position, text, rgb.getColor(), 1.0f);
             }
 
             return true;

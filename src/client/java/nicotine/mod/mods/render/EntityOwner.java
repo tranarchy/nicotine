@@ -5,14 +5,11 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.EventBus;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -72,7 +69,7 @@ public class EntityOwner extends Mod {
                     }
 
                     String text = String.format("Owned by %s",  ownerName);
-                    Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, entity.position().add(0, 0.3, 0), text, CommonColors.WHITE, 1.0f);
+                    Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, entity.position().add(0, 0.3, 0), text, CommonColors.WHITE, 1.0f);
                 }
             }
 

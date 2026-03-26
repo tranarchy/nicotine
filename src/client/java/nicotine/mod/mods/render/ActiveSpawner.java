@@ -9,20 +9,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mixininterfaces.IBaseSpawner;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
 import nicotine.util.BlockEntityUtil;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
 import nicotine.util.Player;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 import nicotine.util.math.BoxUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static nicotine.util.Common.*;
@@ -64,7 +61,7 @@ public class ActiveSpawner extends Mod {
             
             for (BlockPos blockPos : activeSpawners) {
                 if (Player.isPositionInRenderDistance(blockPos.getCenter())) {
-                    Render.drawFilledBox(event.camera, event.matrixStack, BoxUtil.getBlockBoundingBoxf(blockPos), CommonColors.GREEN);
+                    Render3D.drawFilledBox(event.camera, event.matrixStack, BoxUtil.getBlockBoundingBoxf(blockPos), CommonColors.GREEN);
                 }
             }
             

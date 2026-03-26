@@ -10,7 +10,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.option.*;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 import nicotine.util.math.Boxf;
 
 import java.util.Arrays;
@@ -74,20 +74,20 @@ public class Players extends Mod {
                     if (esp.enabled) {
                         switch (espRender.value) {
                             case "Box":
-                                Render.drawBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor());
+                                Render3D.drawBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor());
                                 break;
                             case "Filled":
-                                Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor());
+                                Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor());
                                 break;
                             case "Fade":
-                                Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor(), true);
+                                Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor(), true);
                                 break;
                         }
                     }
 
                     if (tracer.enabled) {
                         Vec3 targetPos = player.position();
-                        Render.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerRgb.getColor(), (int)tracerAlpha.value));
+                        Render3D.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerRgb.getColor(), (int)tracerAlpha.value));
                     }
                 }
             }

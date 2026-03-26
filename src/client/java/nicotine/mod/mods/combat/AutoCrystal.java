@@ -15,11 +15,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.ModManager;
-import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
@@ -27,7 +24,7 @@ import nicotine.util.EventBus;
 import nicotine.util.Player;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -279,7 +276,7 @@ public class AutoCrystal extends Mod {
                 return true;
 
             Boxf boundingBox = BoxUtil.getBlockBoundingBoxf(placementPositionToRender);
-            Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+            Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, ColorUtil.ACTIVE_FOREGROUND_COLOR);
 
             return true;
         });

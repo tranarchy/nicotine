@@ -13,7 +13,7 @@ import nicotine.mod.option.SwitchOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 import nicotine.util.math.Boxf;
 
 import java.util.Arrays;
@@ -54,19 +54,19 @@ public class Item extends Mod {
                         ItemStack itemStack = itemEntity.getItem();
                         String itemText = String.format("%s (%d)", itemStack.getItemName().getString(), itemStack.getCount());
 
-                        Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, itemEntity.position().add(0, 0.3, 0), itemText, CommonColors.WHITE, 0.6f);
+                        Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, itemEntity.position().add(0, 0.3, 0), itemText, CommonColors.WHITE, 0.6f);
                     }
 
                     if (esp.enabled) {
                         switch (espRender.value) {
                             case "Box":
-                                Render.drawBox(event.camera, event.matrixStack, boundingBox, CommonColors.WHITE);
+                                Render3D.drawBox(event.camera, event.matrixStack, boundingBox, CommonColors.WHITE);
                                 break;
                             case "Filled":
-                                Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, CommonColors.WHITE);
+                                Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, CommonColors.WHITE);
                                 break;
                             case "Fade":
-                                Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, CommonColors.WHITE, true);
+                                Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, CommonColors.WHITE, true);
                                 break;
                         }
                     }
@@ -74,7 +74,7 @@ public class Item extends Mod {
                     if (tracer.enabled) {
                         Vec3 targetPos = entity.position();
 
-                        Render.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(CommonColors.WHITE, (int)tracerAlpha.value));
+                        Render3D.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(CommonColors.WHITE, (int)tracerAlpha.value));
                     }
                 }
             }

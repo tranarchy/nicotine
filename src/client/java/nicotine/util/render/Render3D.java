@@ -8,13 +8,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderEvent;
+import nicotine.mod.mods.general.Render;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.math.Boxf;
 
 import static nicotine.util.Common.mc;
 
-public class Render {
+public class Render3D {
 
     private static BufferBuilder bufferBuilderLines;
     private static BufferBuilder bufferBuilderQuads;
@@ -63,8 +64,8 @@ public class Render {
         float normY = dirY / length;
         float normZ = dirZ / length;
 
-        bufferBuilderLines.addVertex(entry, (float) crosshairPos.x, (float) crosshairPos.y, (float) crosshairPos.z).setColor(color).setNormal(entry, normX, normY, normZ).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, (float) targetPos.x, (float) targetPos.y, (float) targetPos.z).setColor(color).setNormal(entry, normX, normY, normZ).setLineWidth(2.0F);
+        bufferBuilderLines.addVertex(entry, (float) crosshairPos.x, (float) crosshairPos.y, (float) crosshairPos.z).setColor(color).setNormal(entry, normX, normY, normZ).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, (float) targetPos.x, (float) targetPos.y, (float) targetPos.z).setColor(color).setNormal(entry, normX, normY, normZ).setLineWidth(Render.lineWidth.value);
     }
 
     public static void drawBox(Camera camera, PoseStack matrixStack, Boxf box, int color) {
@@ -73,35 +74,35 @@ public class Render {
 
         PoseStack.Pose entry = matrixStack.last();
 
-        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.minZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.minZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.minZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.minZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(2.0F);
+        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.minZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.minZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.minZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.minZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(Render.lineWidth.value);
 
-        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.minZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.minZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.minZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(2.0F);
+        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.minZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.minZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.minZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(Render.lineWidth.value);
 
-        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.minZ).setColor(color).setNormal(entry, -1.0F, 0.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.minZ).setColor(color).setNormal(entry, -1.0F, 0.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.minZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(2.0F);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.minZ).setColor(color).setNormal(entry, -1.0F, 0.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.minZ).setColor(color).setNormal(entry, -1.0F, 0.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.minZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(Render.lineWidth.value);
 
-        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 0.0F, -1.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.maxZ).setColor(color).setNormal(entry, 0.0F, -1.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.maxZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.maxZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(2.0F);
+        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 0.0F, -1.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.maxZ).setColor(color).setNormal(entry, 0.0F, -1.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.minX, box.minY, box.maxZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.maxZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(Render.lineWidth.value);
 
-        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 0.0F, -1.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.minZ).setColor(color).setNormal(entry, 0.0F, 0.0F, -1.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(2.0F);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 0.0F, -1.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.minZ).setColor(color).setNormal(entry, 0.0F, 0.0F, -1.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.minX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 1.0F, 0.0F, 0.0F).setLineWidth(Render.lineWidth.value);
 
-        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.minZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(2.0F);
-        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(2.0F);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.minY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 1.0F, 0.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.minZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(Render.lineWidth.value);
+        bufferBuilderLines.addVertex(entry, box.maxX, box.maxY, box.maxZ).setColor(color).setNormal(entry, 0.0F, 0.0F, 1.0F).setLineWidth(Render.lineWidth.value);
     }
 
     public static void drawFilledBox(Camera camera, PoseStack matrixStack, Boxf box, int color) {

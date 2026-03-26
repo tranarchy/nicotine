@@ -9,7 +9,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.*;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -56,11 +56,11 @@ public class Waypoints extends Mod {
                 if (mc.level.dimension().identifier().toString().equals(waypointInstance.dimension)) {
                     BlockPos pos = new BlockPos(waypointInstance.x, waypointInstance.y, waypointInstance.z);
                     String text = String.format("%s [%d %d %d]", StringUtils.capitalize(waypointInstance.name), pos.getX(), pos.getY(), pos.getZ());
-                    Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, getAdjustedPosition(pos), text, rgb.getColor(), scale.value);
+                    Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, getAdjustedPosition(pos), text, rgb.getColor(), scale.value);
                 }  else if (mc.level.dimension().equals(Level.NETHER) && Level.OVERWORLD.identifier().toString().equals(waypointInstance.dimension)) {
                     BlockPos pos = new BlockPos(waypointInstance.x / 8, waypointInstance.y, waypointInstance.z / 8);
                     String text = String.format("%s [%d %d %d] [OW]", StringUtils.capitalize(waypointInstance.name), pos.getX(), pos.getY(), pos.getZ());
-                    Render.drawText(event.matrixStack, event.multiBufferSource, event.camera, getAdjustedPosition(pos), text, rgb.getColor(), scale.value);
+                    Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, getAdjustedPosition(pos), text, rgb.getColor(), scale.value);
                 }
             }
 

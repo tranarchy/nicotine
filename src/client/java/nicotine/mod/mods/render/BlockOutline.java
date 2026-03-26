@@ -11,7 +11,7 @@ import nicotine.mod.option.SwitchOption;
 import nicotine.util.EventBus;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
-import nicotine.util.render.Render;
+import nicotine.util.render.Render3D;
 
 import java.util.Arrays;
 
@@ -53,13 +53,13 @@ public class BlockOutline extends Mod {
 
             switch (render.value) {
                 case "Box":
-                    Render.drawBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
+                    Render3D.drawBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
                     break;
                 case "Filled":
-                    Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
+                    Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
                     break;
                 case "Fade":
-                    Render.drawFilledBox(event.camera, event.matrixStack, boundingBox, rgb.getColor(), true);
+                    Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, rgb.getColor(), true);
                     break;
             }
 
