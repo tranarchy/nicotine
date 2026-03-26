@@ -87,17 +87,19 @@ public class ClickGUI extends BaseScreen {
         int posX = window.x + window.width / 2 + PADDING;
         int posY = window.elements.getFirst().y + window.elements.getFirst().height + PADDING;
 
-        ToggleOption toggleModOption = new ToggleOption("Enabled", ModButton.selectedMod.enabled);
-        ToggleButton toggleModOptionButton = new ToggleButton(
-                toggleModOption,
-                posX,
-                posY
-        );
+        if (!ModButton.selectedMod.alwaysEnabled) {
+            ToggleOption toggleModOption = new ToggleOption("Enabled", ModButton.selectedMod.enabled);
+            ToggleButton toggleModOptionButton = new ToggleButton(
+                    toggleModOption,
+                    posX,
+                    posY
+            );
 
-        window.elements.add(toggleModOptionButton);
+            window.elements.add(toggleModOptionButton);
 
-        posX += PADDING;
-        posY += mc.font.lineHeight + 5;
+            posX += PADDING;
+            posY += mc.font.lineHeight + 5;
+        }
 
         for (ModOption modOption : ModButton.selectedMod.modOptions) {
             Element element = new Element(
