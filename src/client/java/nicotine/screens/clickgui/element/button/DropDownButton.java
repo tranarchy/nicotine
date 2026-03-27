@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.ToggleOption;
+import nicotine.screens.clickgui.element.misc.Text;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.Render2D;
 
@@ -15,12 +16,9 @@ import java.util.List;
 import static nicotine.util.Common.*;
 
 public class DropDownButton extends GUIButton {
-    public int dropDownX;
-    public int dropDownY;
-    public int dropDownWidth;
-    public int dropDownHeight;
 
     private final DropDownOption dropDownOption;
+    private final Text boxText;
 
     public static DropDownOption selectedDropDownOption;
     public static int dropDownStartX;
@@ -32,10 +30,7 @@ public class DropDownButton extends GUIButton {
         this.height = mc.font.lineHeight;
         this.dropDownOption = dropDownOption;
 
-        this.dropDownX = this.x + this.width + 3;
-        this.dropDownY = this.y;
-        this.dropDownWidth = mc.font.width(this.dropDownOption.value + " ᎒");
-        this.dropDownHeight = mc.font.lineHeight;
+        this.boxText = new Text(String.format("%s%s", this.dropDownOption.value, " ᎒"), this.x + this.width + 4, this.y);
     }
 
     @Override
@@ -47,22 +42,22 @@ public class DropDownButton extends GUIButton {
             selectedDropDownOption = null;
         } else {
             selectedDropDownOption = this.dropDownOption;
-            dropDownStartX = dropDownX;
-            dropDownStartY = dropDownY + dropDownHeight + 2;
+            dropDownStartX = boxText.x;
+            dropDownStartY = y + height + 2;
         }
     }
 
     @Override
     public boolean mouseOverButton(double mouseX, double mouseY) {
-        return Render2D.mouseOver(this.dropDownX, this.dropDownY, this.dropDownWidth, this.dropDownHeight, mouseX, mouseY);
+        return Render2D.mouseOver(this.boxText.x, this.boxText.y, this.boxText.width, this.height, mouseX, mouseY);
     }
 
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         super.draw(context, mouseX, mouseY);
 
-        Render2D.drawBorderAroundText(context, dropDownOption.value + " ᎒", dropDownX, dropDownY, 1, ColorUtil.BORDER_COLOR);
-        context.text(mc.font, dropDownOption.value + " ᎒", dropDownX, dropDownY, ColorUtil.FOREGROUND_COLOR);
+        Render2D.drawBorderAroundText(context, boxText.text, this.boxText.x, this.boxText.y, 1, ColorUtil.BORDER_COLOR);
+        boxText.draw(context, mouseX, mouseY);
     }
 
     public static List<ToggleButton> getDropDownButtons() {
@@ -88,7 +83,16 @@ public class DropDownButton extends GUIButton {
                     posY
             ) {
                 @Override
+                public boolean mouseOverButton(double mouseX, double mouseY) {
+                    return Render2D.mouseOver(this.x, this.y, this.width, this.height, mouseX, mouseY);
+                }
+
+                @Override
                 public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
+                    if (mouseOverButton(mouseX, mouseY)) {
+                        this.color = ColorUtil.ACTIVE_FOREGROUND_COLOR;
+                    }
+
                     this.width = mc.font.width(modeList.getLast());
                     Render2D.drawBorderAroundText(context, this.x, this.y, this.width + 2, 1, ColorUtil.BORDER_COLOR);
                     context.text(mc.font, this.text, this.x, this.y, this.color, true);

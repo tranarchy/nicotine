@@ -11,7 +11,7 @@ public class Render2D {
         int borderX = x - padding - Math.round((float) padding / 2);
         int borderY = y - padding - Math.round((float) padding / 2);
 
-        int height = mc.font.lineHeight + 2 * padding;
+        int height = mc.font.lineHeight + padding * (padding > 1 ? 2 : 1);
 
         context.fill(borderX, borderY, borderX + width, borderY + height, ColorUtil.BACKGROUND_COLOR);
         Render2D.drawBorder(context, borderX, borderY, width, height, color);

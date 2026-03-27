@@ -4,11 +4,15 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import nicotine.mod.option.KeybindOption;
+import nicotine.screens.clickgui.element.misc.Text;
+import nicotine.util.ColorUtil;
+import nicotine.util.render.Render2D;
 
 import static nicotine.util.Common.*;
 
 public class KeybindButton extends GUIButton {
     private final KeybindOption keybindOption;
+    private final Text boxText;
     public static KeybindOption selectedKeybindOption = null;
 
     private String formatKeybind(String keybind) {
@@ -27,7 +31,7 @@ public class KeybindButton extends GUIButton {
 
     private String keyCodeToString(int keyCode) {
         if (keyCode == -1)
-            return "";
+            return "Unset";
         else if (keyCode < 8) {
             return switch (keyCode) {
                 case InputConstants.MOUSE_BUTTON_LEFT -> "MBL";
@@ -43,9 +47,16 @@ public class KeybindButton extends GUIButton {
     public KeybindButton(KeybindOption keybindOption, int x, int y) {
         super(x, y);
         this.keybindOption = keybindOption;
-        this.text = String.format("%s [%s]", keybindOption.name, formatKeybind(keyCodeToString(keybindOption.keyCode)));
+        this.text = keybindOption.name;
         this.width = mc.font.width(this.text);
         this.height = mc.font.lineHeight;
+
+        this.boxText = new Text(formatKeybind(keyCodeToString(keybindOption.keyCode)), this.x + this.width + 4, this.y);
+    }
+
+    @Override
+    public boolean mouseOverButton(double mouseX, double mouseY) {
+        return Render2D.mouseOver(this.x, this.y, this.width + this.boxText.width + 4, this.height, mouseX, mouseY);
     }
 
     @Override
@@ -60,13 +71,16 @@ public class KeybindButton extends GUIButton {
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         if (selectedKeybindOption == this.keybindOption) {
-            this.text = String.format("%s [_]", keybindOption.name);
-            this.width = mc.font.width(this.text);
+            this.boxText.text = "_";
+            //this.width = mc.font.width(this.text);
         } else {
-            this.text = String.format("%s [%s]", keybindOption.name, formatKeybind(keyCodeToString(keybindOption.keyCode)));
+            this.boxText.text = formatKeybind(keyCodeToString(keybindOption.keyCode));
         }
 
-        context.text(mc.font, this.text, this.x, this.y, color, true);
+        Render2D.drawBorderAroundText(context, this.boxText.text, this.boxText.x, this.boxText.y, 1, ColorUtil.BORDER_COLOR);
+        this.boxText.draw(context, mouseX, mouseY);
+
+        super.draw(context, mouseX, mouseY);
 
         if (mouseOverButton(mouseX, mouseY)) {
             drawUnderline(context);

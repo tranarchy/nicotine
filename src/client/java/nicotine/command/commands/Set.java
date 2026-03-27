@@ -65,18 +65,18 @@ public class Set extends Command {
             }
             sliderOption.value = valueToSet;
 
-        } else if (modOption instanceof DropDownOption switchOption) {
-            boolean validSwitchOption = false;
+        } else if (modOption instanceof DropDownOption dropDownOption) {
+            boolean validDropDownOption = false;
 
-            for (int i = 0; i < switchOption.modes.length; i++) {
-                if (switchOption.modes[i].equalsIgnoreCase(value)) {
-                    switchOption.value = switchOption.modes[i];
-                    validSwitchOption = true;
+            for (int i = 0; i < dropDownOption.modes.length; i++) {
+                if (dropDownOption.modes[i].equalsIgnoreCase(value)) {
+                    dropDownOption.value = dropDownOption.modes[i];
+                    validDropDownOption = true;
                     break;
                 }
             }
 
-            if (!validSwitchOption) {
+            if (!validDropDownOption) {
                 Message.sendWarning("Wrong value!");
                 return;
             }
