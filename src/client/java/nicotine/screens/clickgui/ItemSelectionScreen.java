@@ -26,11 +26,9 @@ public class ItemSelectionScreen extends BaseScreen {
     private final List<ItemStack> items = new ArrayList<>();
 
     public ItemSelectionScreen(ItemSelectionOption selectionOption) {
-        super("Item selection screen", new Window(0, 0, 0, 0));
+        super("Item selection screen", new Window(0, 0, GUI.screen.window.width, GUI.screen.window.height));
 
         this.selectionOption = selectionOption;
-        window.width = GUI.screen.window.width;
-        window.height = GUI.screen.window.height;
 
         if (!builtContents) {
             buildItemGroups();

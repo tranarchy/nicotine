@@ -22,11 +22,9 @@ public class ColorSelectionScreen extends BaseScreen {
     private RGBOption rgbOption;
 
     public ColorSelectionScreen(RGBOption rgbOption) {
-        super("Color selection screen", new Window(0, 0, 0, 0));
+        super("Color selection screen", new Window(0, 0, 160, 105));
 
         this.rgbOption = rgbOption;
-        window.width = 160;
-        window.height = 105;
     }
 
     @Override
