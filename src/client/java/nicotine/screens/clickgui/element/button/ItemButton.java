@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import nicotine.mod.option.SelectionOption;
+import nicotine.mod.option.ItemSelectionOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.Render2D;
 
@@ -12,9 +12,9 @@ import static nicotine.util.Common.mc;
 
 public class ItemButton extends GUIButton {
     public ItemStack itemStack;
-    private final SelectionOption selectionOption;
+    private final ItemSelectionOption selectionOption;
 
-    public ItemButton(ItemStack itemStack, SelectionOption selectionOption, int x, int y) {
+    public ItemButton(ItemStack itemStack, ItemSelectionOption selectionOption, int x, int y) {
         super(x, y);
 
         this.width = 16;

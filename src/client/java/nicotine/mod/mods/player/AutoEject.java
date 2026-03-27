@@ -4,7 +4,7 @@ import net.minecraft.world.item.Items;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.option.SelectionOption;
+import nicotine.mod.option.ItemSelectionOption;
 import nicotine.util.EventBus;
 import nicotine.util.Inventory;
 
@@ -14,7 +14,7 @@ import static nicotine.util.Common.mc;
 
 public class AutoEject extends Mod {
 
-    private final SelectionOption junk = new SelectionOption("Items");
+    private final ItemSelectionOption junk = new ItemSelectionOption("Items");
 
     public AutoEject() {
         super(ModCategory.Player, "AutoEject", "Throws away junk items from your inventory");

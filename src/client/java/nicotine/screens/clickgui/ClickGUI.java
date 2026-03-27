@@ -139,8 +139,8 @@ public class ClickGUI extends BaseScreen {
             } else if (modOption instanceof ToggleOption toggleOption) {
                 ToggleButton toggleButton = new ToggleButton(toggleOption, element.x, element.y);
                 window.add(toggleButton);
-            } else if (modOption instanceof SelectionOption selectionOption) {
-                SelectionButton selectionButton = new SelectionButton(selectionOption, element.x, element.y);
+            } else if (modOption instanceof ItemSelectionOption selectionOption) {
+                ItemSelectionButton selectionButton = new ItemSelectionButton(selectionOption, element.x, element.y);
                 window.add(selectionButton);
             } else if (modOption instanceof RGBOption rgbOption) {
                 RGBButton rgbButton = new RGBButton(rgbOption, element.x, element.y);

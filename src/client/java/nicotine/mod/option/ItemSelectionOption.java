@@ -5,10 +5,10 @@ import net.minecraft.world.item.Item;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SelectionOption extends ModOption {
+public class ItemSelectionOption extends ModOption {
     public List<Item> items = new ArrayList<>();
 
-    public SelectionOption(String name) {
+    public ItemSelectionOption(String name) {
         super(name);
     }
     

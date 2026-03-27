@@ -8,8 +8,7 @@ import nicotine.events.GetFaceOcclusionShapeEvent;
 import nicotine.events.GetRenderShapeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.option.KeybindOption;
-import nicotine.mod.option.SelectionOption;
+import nicotine.mod.option.ItemSelectionOption;
 import nicotine.util.EventBus;
 
 import java.util.Arrays;
@@ -18,7 +17,7 @@ import static nicotine.util.Common.mc;
 
 public class Xray extends Mod {
 
-    private final SelectionOption blocks = new SelectionOption("Blocks") {
+    private final ItemSelectionOption blocks = new ItemSelectionOption("Blocks") {
         @Override
         public boolean filter(Item item) {
             return item instanceof BlockItem;

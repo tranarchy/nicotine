@@ -99,7 +99,7 @@ public class Settings {
                            continue;
 
                        modDetails.addProperty(keybindOption.name, keybindOption.keyCode);
-                   } else if (modOption instanceof SelectionOption selectionOption) {
+                   } else if (modOption instanceof ItemSelectionOption selectionOption) {
                        JsonArray selection = new JsonArray();
 
                        for (Item item : selectionOption.items) {
@@ -230,7 +230,7 @@ public class Settings {
                         }
                     } else if (modOption instanceof KeybindOption keybindOption) {
                         keybindOption.keyCode = modInfo.get(keybindOption.id).getAsInt();
-                    } else if (modOption instanceof SelectionOption selectionOption) {
+                    } else if (modOption instanceof ItemSelectionOption selectionOption) {
                         selectionOption.items.clear();
 
                         JsonArray selection = (JsonArray) modInfo.get(selectionOption.id);

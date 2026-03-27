@@ -8,7 +8,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import nicotine.mod.mods.general.GUI;
-import nicotine.mod.option.SelectionOption;
+import nicotine.mod.option.ItemSelectionOption;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.screens.clickgui.element.button.ItemButton;
@@ -20,12 +20,12 @@ import java.util.*;
 import static nicotine.util.Common.*;
 
 public class ItemSelectionScreen extends BaseScreen {
-    private SelectionOption selectionOption;
+    private ItemSelectionOption selectionOption;
     private static boolean builtContents = false;
 
     private final List<ItemStack> items = new ArrayList<>();
 
-    public ItemSelectionScreen(SelectionOption selectionOption) {
+    public ItemSelectionScreen(ItemSelectionOption selectionOption) {
         super("Item selection screen", new Window(0, 0, 0, 0));
 
         this.selectionOption = selectionOption;
@@ -65,38 +65,40 @@ public class ItemSelectionScreen extends BaseScreen {
         int posX = window.x + 5;
         int posY = window.y + 5;
 
-        window.add(
-                new HLine(
-                        window.x,
-                        posY + mc.font.lineHeight + 2,
-                        window.width,
-                        ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal())
-                )
-        );
-
         InputText inputText = new InputText(posX, posY, window.width - 5, mc.font.lineHeight + 2);
-
         window.add(inputText);
 
-        posY += 17;
+        posY += mc.font.lineHeight + 2;
+
+        HLine separator = new HLine(
+                window.x,
+                posY,
+                window.width,
+                ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal())
+        );
+
+        window.add(separator);
+
+        posX -= 4;
+        posY += 3;
 
         for (ItemStack itemStack : items) {
             if (!itemStack.getHoverName().getString().toLowerCase().contains(InputText.text))
                 continue;
 
-            if (posX + 17 > window.x + window.width) {
-                posX = window.x + 5;
-                posY += 17;
+            if (posX + 16 > window.x + window.width) {
+                posX = window.x + 1;
+                posY += 16;
             }
 
-            if (posY + 17 > window.y + window.height) {
+            if (posY + 16 > window.y + window.height) {
                 break;
             }
 
             ItemButton itemButton = new ItemButton(itemStack, selectionOption, posX, posY);
             window.add(itemButton);
 
-            posX += 17;
+            posX += 16;
         }
     }
 
