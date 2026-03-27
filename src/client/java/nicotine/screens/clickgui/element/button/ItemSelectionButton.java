@@ -1,6 +1,7 @@
 package nicotine.screens.clickgui.element.button;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.mod.option.ItemSelectionOption;
 import nicotine.screens.clickgui.ItemSelectionScreen;
 
@@ -14,6 +15,15 @@ public class ItemSelectionButton extends GUIButton {
         this.width = mc.font.width(this.text);
         this.height = mc.font.lineHeight;
         this.selectionOption = selectionOption;
+    }
+
+    @Override
+    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
+        super.draw(context, mouseX, mouseY);
+
+        if (mouseOverButton(mouseX, mouseY)) {
+            drawUnderline(context);
+        }
     }
 
     @Override
