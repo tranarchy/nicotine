@@ -111,6 +111,9 @@ public class BaseScreen extends Screen {
                     guiButton.click(mouseX, mouseY);
                     break;
                 }
+            } else if (element instanceof SliderButton sliderButton &&
+                    Render2D.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY)) {
+                sliderButton.click(mouseX, mouseY);
             }
         }
 
