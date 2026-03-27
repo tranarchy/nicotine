@@ -159,10 +159,9 @@ public class ClickGUI extends BaseScreen {
 
         Element firstElement = window.elements.getFirst();
 
-        int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
         int dividerLinePosY = firstElement.y + firstElement.height + 2;
 
-        window.add(new VLine(window.x + window.width / 2, dividerLinePosY, window.y + window.height - dividerLinePosY, dynamicColor));
-        window.add(new HLine(window.x, dividerLinePosY, window.width, dynamicColor));
+        window.add(new VLine(window.x + window.width / 2, dividerLinePosY, window.y + window.height - dividerLinePosY, ColorUtil.getPulsatingColor()));
+        window.add(new HLine(window.x, dividerLinePosY, window.width, ColorUtil.getPulsatingColor()));
     }
 }

@@ -18,10 +18,8 @@ public class Window extends Element {
 
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
-        int dynamicColor = ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal());
-
         context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR);
-        Render2D.drawBorder(context, this.x, this.y, this.width, this.height, dynamicColor);
+        Render2D.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.getPulsatingColor());
 
         for (Element element : elements) {
             element.draw(context, mouseX, mouseY);

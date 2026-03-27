@@ -115,7 +115,7 @@ public class HUD extends Mod {
                 int borderHeight = mc.font.lineHeight + 2 * borderPadding;
 
                 context.fill(borderX, borderY, borderX + borderWidth, borderY + borderHeight, ColorUtil.BACKGROUND_COLOR);
-                Render2D.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
+                Render2D.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.getPulsatingColor());
 
                 context.text(mc.font, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
             }

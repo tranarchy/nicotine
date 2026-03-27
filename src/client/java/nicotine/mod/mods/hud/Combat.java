@@ -54,7 +54,7 @@ public class Combat extends HUDMod {
             this.pos.y = 10;
 
             event.drawContext.fill(this.pos.x, this.pos.y, this.pos.x + WINDOW_WIDTH, this.pos.y + WINDOW_HEIGHT, ColorUtil.BACKGROUND_COLOR);
-            Render2D.drawBorder(event.drawContext, this.pos.x, this.pos.y, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal()));
+            Render2D.drawBorder(event.drawContext, this.pos.x, this.pos.y, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.getPulsatingColor());
 
             int modelX1 = this.pos.x;
             int modelY1 = this.pos.y;

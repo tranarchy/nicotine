@@ -70,12 +70,7 @@ public class ItemSelectionScreen extends BaseScreen {
 
         posY += mc.font.lineHeight + 2;
 
-        HLine separator = new HLine(
-                window.x,
-                posY,
-                window.width,
-                ColorUtil.changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, ColorUtil.getDynamicBrightnessVal())
-        );
+        HLine separator = new HLine(window.x, posY, window.width, ColorUtil.getPulsatingColor());
 
         window.add(separator);
 

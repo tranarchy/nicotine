@@ -104,6 +104,10 @@ public class ColorUtil {
         return lerpedColor;
     }
 
+    public static int getPulsatingColor() {
+        return changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, getDynamicBrightnessVal());
+    }
+
     public static int lerpValue(int value, int targetValue, double timeDivisor) {
         double curTime = Util.getMillis() / timeDivisor;
 
