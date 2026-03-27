@@ -12,14 +12,12 @@ import net.minecraft.client.renderer.blockentity.AbstractEndPortalRenderer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
-import nicotine.mod.ModManager;
 import nicotine.mod.mods.general.GUI;
 import nicotine.screens.clickgui.element.Element;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.*;
 import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.util.Settings;
-import nicotine.util.render.Render2D;
 import org.jetbrains.annotations.NotNull;
 
 import static nicotine.util.Common.mc;
@@ -38,11 +36,9 @@ public class BaseScreen extends Screen {
         double mouseY = mouseButtonEvent.y();
 
         for (Element element : window.elements) {
-            if (element instanceof SliderButton sliderButton) {
-                if (Render2D.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY))  {
-                    sliderButton.click(mouseX, mouseY);
-                    return true;
-                }
+            if (element instanceof SliderButton sliderButton && sliderButton.mouseOverButton(mouseX, mouseY)) {
+                sliderButton.click(mouseX, mouseY);
+                return true;
             }
         }
 
@@ -98,22 +94,8 @@ public class BaseScreen extends Screen {
 
         for (Element element : window.elements) {
             if (element instanceof GUIButton guiButton && guiButton.mouseOverButton(mouseX, mouseY)) {
-                if (guiButton instanceof ToggleButton toggleButton && toggleButton.toggleOption.name.equals("Enabled")) {
-                    if (!ModButton.selectedMod.alwaysEnabled) {
-                        ModButton.selectedMod.toggle();
-                        break;
-                    }
-                } else if (guiButton instanceof CategoryButton categoryButton) {
-                    CategoryButton.selectedModCategory = categoryButton.modCategory;
-                    ModButton.selectedMod = ModManager.modules.get(CategoryButton.selectedModCategory).getFirst();
-                    break;
-                } else {
-                    guiButton.click(mouseX, mouseY);
-                    break;
-                }
-            } else if (element instanceof SliderButton sliderButton &&
-                    Render2D.mouseOver(sliderButton.sliderX, sliderButton.sliderY, sliderButton.sliderWidth, sliderButton.sliderHeight, mouseX, mouseY)) {
-                sliderButton.click(mouseX, mouseY);
+                guiButton.click(mouseX, mouseY);
+                return true;
             }
         }
 

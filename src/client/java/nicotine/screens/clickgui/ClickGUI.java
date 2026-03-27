@@ -62,13 +62,16 @@ public class ClickGUI extends BaseScreen {
     private void addModButtons() {
         if (CategoryButton.selectedModCategory == null) {
             CategoryButton.selectedModCategory = ModCategory.values()[0];
-            ModButton.selectedMod = ModManager.modules.get(CategoryButton.selectedModCategory).getFirst();
         }
 
         int posX = window.x + PADDING;
         int posY = window.elements.getFirst().y + window.elements.getFirst().height + PADDING;
 
         for (Mod mod : ModManager.modules.get(CategoryButton.selectedModCategory)) {
+            if (ModButton.selectedMod == null) {
+                ModButton.selectedMod = mod;
+            }
+
             ModButton modButton = new ModButton(
                     mod,
                     posX,
@@ -88,7 +91,13 @@ public class ClickGUI extends BaseScreen {
         int posY = window.elements.getFirst().y + window.elements.getFirst().height + PADDING;
 
         if (!ModButton.selectedMod.alwaysEnabled) {
-            ToggleOption toggleModOption = new ToggleOption("Enabled", ModButton.selectedMod.enabled);
+            ToggleOption toggleModOption = new ToggleOption("Enabled", ModButton.selectedMod.enabled) {
+                @Override
+                public void toggle() {
+                    ModButton.selectedMod.toggle();
+                }
+            };
+
             ToggleButton toggleModOptionButton = new ToggleButton(
                     toggleModOption,
                     posX,

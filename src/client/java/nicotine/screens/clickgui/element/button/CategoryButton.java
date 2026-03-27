@@ -21,6 +21,7 @@ public class CategoryButton extends GUIButton {
     @Override
     public void click(double mouseX, double mouseY) {
         selectedModCategory = this.modCategory;
+        ModButton.selectedMod = null;
     }
 
     @Override

@@ -3,6 +3,7 @@ package nicotine.screens.clickgui.element.button;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.screens.clickgui.element.Element;
 import nicotine.util.ColorUtil;
+import nicotine.util.render.Render2D;
 
 import static nicotine.util.Common.mc;
 
@@ -27,7 +28,7 @@ public abstract class GUIButton extends Element {
     }
 
     public boolean mouseOverButton(double mouseX, double mouseY) {
-        return (this.x <= mouseX && mouseX <= this.x + this.width && this.y <= mouseY && mouseY <= this.y + this.height);
+        return Render2D.mouseOver(this.x, this.y, this.width, this.height, mouseX, mouseY);
     }
 
     public void drawUnderline(GuiGraphicsExtractor context) {
