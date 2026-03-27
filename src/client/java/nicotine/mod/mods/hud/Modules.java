@@ -5,7 +5,7 @@ import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.SwitchOption;
+import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 
@@ -17,7 +17,7 @@ import static nicotine.util.Common.mc;
 
 public class Modules extends HUDMod {
 
-    private final SwitchOption sorted = new SwitchOption(
+    private final DropDownOption sorted = new DropDownOption(
             "Sort",
             new String[]{"No", "Yes", "Reverse"}
     );

@@ -130,9 +130,9 @@ public class ClickGUI extends BaseScreen {
                 );
 
                 window.add(sliderButton);
-            } else if (modOption instanceof SwitchOption switchOption) {
-                SwitchButton switchButton = new SwitchButton(switchOption, element.x, element.y);
-                window.add(switchButton);
+            } else if (modOption instanceof DropDownOption dropDownOption) {
+                DropDownButton dropDownButton = new DropDownButton(dropDownOption, element.x, element.y);
+                window.add(dropDownButton);
             } else if (modOption instanceof KeybindOption keybindOption) {
                 KeybindButton keybindButton = new KeybindButton(keybindOption, element.x, element.y);
                 window.add(keybindButton);

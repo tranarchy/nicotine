@@ -7,7 +7,7 @@ import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.RGBOption;
-import nicotine.mod.option.SwitchOption;
+import nicotine.mod.option.DropDownOption;
 import nicotine.util.EventBus;
 import nicotine.util.math.BoxUtil;
 import nicotine.util.math.Boxf;
@@ -19,7 +19,7 @@ import static nicotine.util.Common.mc;
 
 public class BlockOutline extends Mod {
 
-    private final SwitchOption render = new SwitchOption(
+    private final DropDownOption render = new DropDownOption(
             "Render",
             new String[]{"Box", "Filled", "Fade"}
     );

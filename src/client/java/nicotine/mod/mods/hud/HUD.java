@@ -7,7 +7,7 @@ import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.option.SwitchOption;
+import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.screens.HUDEditorScreen;
 import nicotine.util.ColorUtil;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import static nicotine.util.Common.mc;
 
 public class HUD extends Mod {
-    public static final SwitchOption separator = new SwitchOption(
+    public static final DropDownOption separator = new DropDownOption(
             "Separator",
             new String[]{"->", ">", "<", "=", ":", ""}
     );
@@ -106,17 +106,7 @@ public class HUD extends Mod {
                         posY = hudMod.pos.y + (fontHeight * i);
                 }
 
-                int borderPadding = 2;
-
-                int borderX = posX - borderPadding - (borderPadding / 2);
-                int borderY = posY - borderPadding - (borderPadding / 2);
-
-                int borderWidth = mc.font.width(formattedText) + 2 * borderPadding;
-                int borderHeight = mc.font.lineHeight + 2 * borderPadding;
-
-                context.fill(borderX, borderY, borderX + borderWidth, borderY + borderHeight, ColorUtil.BACKGROUND_COLOR);
-                Render2D.drawBorder(context, borderX, borderY, borderWidth, borderHeight, ColorUtil.getPulsatingColor());
-
+                Render2D.drawBorderAroundText(context, formattedText, posX, posY, 2, ColorUtil.getPulsatingColor());
                 context.text(mc.font, formattedText, posX, posY, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
             }
 

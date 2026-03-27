@@ -4,7 +4,7 @@ import net.minecraft.ChatFormatting;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.option.SwitchOption;
+import nicotine.mod.option.DropDownOption;
 import nicotine.util.EventBus;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import static nicotine.util.Common.mc;
 
 public class Speed extends HUDMod {
 
-    private final SwitchOption unit = new SwitchOption(
+    private final DropDownOption unit = new DropDownOption(
             "Unit",
             new String[]{"km/h", "m/s"}
     );

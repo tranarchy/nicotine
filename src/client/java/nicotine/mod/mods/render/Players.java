@@ -22,7 +22,7 @@ public class Players extends Mod {
     private final ToggleOption noArmor = new ToggleOption("NoArmor");
     ToggleOption esp = new ToggleOption("ESP");
 
-    private final SwitchOption espRender = new SwitchOption(
+    private final DropDownOption espRender = new DropDownOption(
             "Render",
             new String[]{"Box", "Filled", "Fade"}
     );

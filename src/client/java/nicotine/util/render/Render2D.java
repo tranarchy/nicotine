@@ -1,11 +1,26 @@
 package nicotine.util.render;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import nicotine.util.ColorUtil;
 import org.joml.Vector2i;
 
 import static nicotine.util.Common.*;
 
 public class Render2D {
+    public static void drawBorderAroundText(GuiGraphicsExtractor context, int x, int y, int width, int padding, int color) {
+        int borderX = x - padding - Math.round((float) padding / 2);
+        int borderY = y - padding - Math.round((float) padding / 2);
+
+        int height = mc.font.lineHeight + 2 * padding;
+
+        context.fill(borderX, borderY, borderX + width, borderY + height, ColorUtil.BACKGROUND_COLOR);
+        Render2D.drawBorder(context, borderX, borderY, width, height, color);
+    }
+
+    public static void drawBorderAroundText(GuiGraphicsExtractor context, String text, int x, int y, int padding, int color) {
+       drawBorderAroundText(context, x, y,  mc.font.width(text) + 2 * padding, padding, color);
+    }
+
     public static void drawBorder(GuiGraphicsExtractor drawContext, int x, int y, int width, int height, int color) {
         drawBorderVertical(drawContext, x, y, width, height, color);
         drawBorderHorizontal(drawContext, x, y, width, height, color);

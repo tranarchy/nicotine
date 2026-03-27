@@ -65,7 +65,7 @@ public class Set extends Command {
             }
             sliderOption.value = valueToSet;
 
-        } else if (modOption instanceof SwitchOption switchOption) {
+        } else if (modOption instanceof DropDownOption switchOption) {
             boolean validSwitchOption = false;
 
             for (int i = 0; i < switchOption.modes.length; i++) {

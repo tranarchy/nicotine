@@ -13,9 +13,8 @@ import net.minecraft.world.item.TridentItem;
 import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.option.KeybindOption;
 import nicotine.mod.option.SliderOption;
-import nicotine.mod.option.SwitchOption;
+import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Inventory;
@@ -43,7 +42,7 @@ public class KillAura extends Mod {
             0,
             20
     );
-    private final SwitchOption rotation = new SwitchOption("Look", new String[]{"Revert", "Stay", "Target", "None"});
+    private final DropDownOption rotation = new DropDownOption("Look", new String[]{"Revert", "Stay", "Target", "None"});
 
     private static boolean isWeapon(ItemStack itemStack) {
         return itemStack.is(ItemTags.SWORDS) || itemStack.is(ItemTags.AXES) || itemStack.is(ItemTags.SPEARS) || itemStack.getItem() instanceof MaceItem || itemStack.getItem() instanceof TridentItem;

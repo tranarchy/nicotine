@@ -90,8 +90,8 @@ public class Settings {
                 for (ModOption modOption : mod.modOptions) {
                    if (modOption instanceof SliderOption sliderOption) {
                        modDetails.addProperty(sliderOption.id, sliderOption.value);
-                   } else if (modOption instanceof SwitchOption switchOption) {
-                       modDetails.addProperty(switchOption.id, switchOption.value);
+                   } else if (modOption instanceof DropDownOption dropDownOption) {
+                       modDetails.addProperty(dropDownOption.id, dropDownOption.value);
                    } else if (modOption instanceof ToggleOption toggleOption) {
                        modDetails.addProperty(toggleOption.id, toggleOption.enabled);
                    }  else if (modOption instanceof KeybindOption keybindOption) {
@@ -219,10 +219,10 @@ public class Settings {
 
                     if (modOption instanceof SliderOption sliderOption) {
                         sliderOption.value = modInfo.get(sliderOption.id).getAsFloat();
-                    } else if (modOption instanceof SwitchOption switchOption) {
-                        String switchVal = modInfo.get(switchOption.id).getAsString();
-                        if (Arrays.stream(switchOption.modes).toList().contains(switchVal)) {
-                            switchOption.value = modInfo.get(switchOption.id).getAsString();
+                    } else if (modOption instanceof DropDownOption dropDownOption) {
+                        String switchVal = modInfo.get(dropDownOption.id).getAsString();
+                        if (Arrays.stream(dropDownOption.modes).toList().contains(switchVal)) {
+                            dropDownOption.value = modInfo.get(dropDownOption.id).getAsString();
                         }
                     } else if (modOption instanceof ToggleOption toggleOption) {
                         if (modInfo.get(toggleOption.id).getAsBoolean()) {

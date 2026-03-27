@@ -9,7 +9,7 @@ import nicotine.events.RenderBeforeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.SliderOption;
-import nicotine.mod.option.SwitchOption;
+import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
@@ -24,7 +24,7 @@ public class Item extends Mod {
 
     private final ToggleOption text = new ToggleOption("Text");
     private final ToggleOption esp = new ToggleOption("ESP");
-    private final SwitchOption espRender = new SwitchOption(
+    private final DropDownOption espRender = new DropDownOption(
             "Render",
             new String[]{"Box", "Filled", "Fade"}
     );

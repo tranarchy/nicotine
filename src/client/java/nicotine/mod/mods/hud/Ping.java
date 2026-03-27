@@ -7,7 +7,7 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.PacketInEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
-import nicotine.mod.option.SwitchOption;
+import nicotine.mod.option.DropDownOption;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
 
@@ -19,7 +19,7 @@ public class Ping extends HUDMod {
     private int tick = 0;
     private int pingVal = 0;
 
-    private final SwitchOption source = new SwitchOption(
+    private final DropDownOption source = new DropDownOption(
             "Source",
             new String[]{"Tab", "QueryPingPacket"}
     );

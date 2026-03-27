@@ -20,6 +20,8 @@ import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.util.Settings;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Comparator;
+
 import static nicotine.util.Common.mc;
 
 public class BaseScreen extends Screen {
@@ -89,9 +91,13 @@ public class BaseScreen extends Screen {
         double mouseX = mouseButtonEvent.x();
         double mouseY = mouseButtonEvent.y();
 
-        for (Element element : window.elements) {
+        for (Element element : window.elements.reversed()) {
             if (element instanceof GUIButton guiButton && guiButton.mouseOverButton(mouseX, mouseY)) {
                 guiButton.click(mouseX, mouseY, mouseButtonEvent.input());
+
+                if (!(guiButton instanceof DropDownButton))
+                    DropDownButton.selectedDropDownOption = null;
+
                 return true;
             }
         }
@@ -124,7 +130,14 @@ public class BaseScreen extends Screen {
     public void extractRenderState(@NotNull GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
         window.elements.clear();
         window.centerPosition();
+
         addDrawables();
+        if (DropDownButton.selectedDropDownOption != null) {
+            window.elements.addAll(DropDownButton.getDropDownButtons());
+        }
+
+        window.elements.sort(Comparator.comparing(x -> x.z));
+
         window.draw(context, mouseX, mouseY);
     }
 
