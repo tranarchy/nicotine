@@ -11,10 +11,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.CloudStatus;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LevelTargetBundle;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
@@ -47,8 +44,8 @@ public abstract class LevelRendererMixin {
     @Final
     private LevelTargetBundle targets;
 
-    @Inject(at = @At("HEAD"), method = "extractBlockDestroyAnimation", cancellable = true)
-    private void extractBlockDestroyAnimation(final Camera camera, final LevelRenderState levelRenderState, CallbackInfo info) {
+    @Inject(at = @At("HEAD"), method = "submitBlockDestroyAnimation", cancellable = true)
+    private void submitBlockDestroyAnimation(final PoseStack poseStack, final SubmitNodeCollector submitNodeCollector, final LevelRenderState levelRenderState, CallbackInfo info) {
         boolean result = EventBus.post(new RenderBlockDamageEvent());
 
         if (!result) {
