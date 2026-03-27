@@ -37,7 +37,7 @@ public class BaseScreen extends Screen {
 
         for (Element element : window.elements) {
             if (element instanceof SliderButton sliderButton && sliderButton.mouseOverButton(mouseX, mouseY)) {
-                sliderButton.click(mouseX, mouseY);
+                sliderButton.click(mouseX, mouseY, InputConstants.MOUSE_BUTTON_LEFT);
                 return true;
             }
         }
@@ -86,15 +86,12 @@ public class BaseScreen extends Screen {
             return true;
         }
 
-        if (mouseButtonEvent.input() != InputConstants.MOUSE_BUTTON_LEFT)
-            return true;
-
         double mouseX = mouseButtonEvent.x();
         double mouseY = mouseButtonEvent.y();
 
         for (Element element : window.elements) {
             if (element instanceof GUIButton guiButton && guiButton.mouseOverButton(mouseX, mouseY)) {
-                guiButton.click(mouseX, mouseY);
+                guiButton.click(mouseX, mouseY, mouseButtonEvent.input());
                 return true;
             }
         }

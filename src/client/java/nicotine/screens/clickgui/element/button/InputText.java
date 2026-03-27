@@ -1,5 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
@@ -38,7 +39,10 @@ public class InputText extends GUIButton {
     }
 
     @Override
-    public void click(double mouseX, double mouseY) {
+    public void click(double mouseX, double mouseY, int input) {
+        if (input != InputConstants.MOUSE_BUTTON_LEFT)
+            return;
+
         captureInput = true;
     }
 }

@@ -49,8 +49,12 @@ public class KeybindButton extends GUIButton {
     }
 
     @Override
-    public void click(double mouseX, double mouseY) {
-        selectedKeybindOption = this.keybindOption;
+    public void click(double mouseX, double mouseY, int input) {
+        if (input == InputConstants.MOUSE_BUTTON_LEFT) {
+            selectedKeybindOption = this.keybindOption;
+        } else if (input == InputConstants.MOUSE_BUTTON_RIGHT) {
+            keybindOption.keyCode = -1;
+        }
     }
 
     @Override

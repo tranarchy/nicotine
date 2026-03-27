@@ -1,5 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import nicotine.mod.option.SliderOption;
@@ -28,7 +29,10 @@ public class SliderButton extends GUIButton {
     }
 
     @Override
-    public void click(double mouseX, double mouseY) {
+    public void click(double mouseX, double mouseY, int input) {
+        if (input != InputConstants.MOUSE_BUTTON_LEFT)
+            return;
+
         float value = sliderOption.minValue + ((((float) (Math.round(mouseX) - this.sliderX) / this.sliderWidth)) * (sliderOption.maxValue - sliderOption.minValue));
         value = Math.round(value * 100.0f) / 100.0f;
 

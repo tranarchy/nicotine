@@ -1,5 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.ColorUtil;
@@ -18,8 +19,11 @@ public class ToggleButton extends GUIButton {
     }
 
     @Override
-    public void click(double mouseX, double mouseY) {
-       this.toggleOption.toggle();
+    public void click(double mouseX, double mouseY, int input) {
+        if (input != InputConstants.MOUSE_BUTTON_LEFT)
+            return;
+
+        this.toggleOption.toggle();
     }
 
     @Override

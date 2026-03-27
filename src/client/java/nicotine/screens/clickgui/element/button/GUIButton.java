@@ -20,7 +20,7 @@ public abstract class GUIButton extends Element {
         super(x, y, 0, 0);
     }
 
-    public void click(double mouseX, double mouseY) {}
+    public void click(double mouseX, double mouseY, int input) {}
 
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {

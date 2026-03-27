@@ -1,5 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +39,10 @@ public class ItemButton extends GUIButton {
     }
 
     @Override
-    public void click(double mouseX, double mouseY) {
+    public void click(double mouseX, double mouseY, int input) {
+        if (input != InputConstants.MOUSE_BUTTON_LEFT)
+            return;
+
         Item item = this.itemStack.getItem();
 
         if (selectionOption.items.contains(item)) {

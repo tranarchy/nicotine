@@ -1,5 +1,6 @@
 package nicotine.screens.clickgui.element.button;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.mod.option.RGBOption;
 import nicotine.screens.clickgui.ColorSelectionScreen;
@@ -30,7 +31,10 @@ public class RGBButton extends GUIButton {
     }
 
     @Override
-    public void click(double mouseX, double mouseY) {
+    public void click(double mouseX, double mouseY, int input) {
+        if (input != InputConstants.MOUSE_BUTTON_LEFT)
+            return;
+
         mc.setScreen(new ColorSelectionScreen(rgbOption));
     }
 }
