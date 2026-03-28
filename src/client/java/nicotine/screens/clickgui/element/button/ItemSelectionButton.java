@@ -31,7 +31,7 @@ public class ItemSelectionButton extends GUIButton {
         if (input != InputConstants.MOUSE_BUTTON_LEFT)
             return;
 
-        if (mc.level != null)
+        if (mc.level != null || ItemSelectionScreen.builtContents)
             mc.setScreen(new ItemSelectionScreen(selectionOption));
     }
 }

@@ -13,17 +13,18 @@ import net.minecraft.world.entity.vehicle.boat.ChestBoat;
 import net.minecraft.world.entity.vehicle.minecart.MinecartChest;
 import net.minecraft.world.entity.vehicle.minecart.MinecartHopper;
 import net.minecraft.world.level.block.entity.*;
+import nicotine.mod.mods.general.GUI;
 
 public class ColorUtil {
     public static final int FOREGROUND_COLOR = 0xFF626282;
-    public static final int BACKGROUND_COLOR = 0xC810101A;
     public static final int SELECTED_BACKGROUND_COLOR = 0x7810101A;
-    public static final int BORDER_COLOR = 0xFF10101A;
+    public static final int BORDER_COLOR = 0xFF171721;
 
     public static final int PURPLE = 0xFF5F44C4;
     public static final int GOLD = 0xFFFFAA00;
 
     public static int ACTIVE_FOREGROUND_COLOR = 0xFF9889FA;
+    public static int BACKGROUND_COLOR = 0xFF10101A;
 
     private static final int[] rainbowList = {
             0xFFFF6663,
@@ -105,7 +106,7 @@ public class ColorUtil {
     }
 
     public static int getPulsatingColor() {
-        return changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, getDynamicBrightnessVal());
+        return GUI.pulsatingColor.enabled ? changeBrightness(ColorUtil.ACTIVE_FOREGROUND_COLOR, getDynamicBrightnessVal()) : ColorUtil.ACTIVE_FOREGROUND_COLOR;
     }
 
     public static int lerpValue(int value, int targetValue, double timeDivisor) {

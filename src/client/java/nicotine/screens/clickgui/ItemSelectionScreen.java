@@ -21,7 +21,7 @@ import static nicotine.util.Common.*;
 
 public class ItemSelectionScreen extends BaseScreen {
     private ItemSelectionOption selectionOption;
-    private static boolean builtContents = false;
+    public static boolean builtContents = false;
 
     private final List<ItemStack> items = new ArrayList<>();
 
