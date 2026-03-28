@@ -15,7 +15,7 @@ Despite being a Fabric mod, nicotine doesn't depend on the Fabric API and it use
 
 ## Preview
 <p align="center">
-  
+  <img src="https://github.com/user-attachments/assets/709100e9-1664-4a86-b88b-613a16b9afc8" />
 </p>
 
 ## Usage
