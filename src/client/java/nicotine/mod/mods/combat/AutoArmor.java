@@ -28,6 +28,7 @@ public class AutoArmor extends Mod {
     public AutoArmor() {
         super(ModCategory.Combat,"AutoArmor");
         this.keybind.keyCode = InputConstants.KEY_Z;
+        this.keybind.name = "ElytraSwap";
         this.addOptions(elytraSwap);
     }
 

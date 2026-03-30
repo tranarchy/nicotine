@@ -36,6 +36,7 @@ public class Peek extends Mod {
     public Peek() {
         super(ModCategory.Render, "Peek", "Lets you see inside shulkers and echets without opening them");
         this.keybind.keyCode = InputConstants.KEY_LALT;
+        this.keybind.name = "Inspect";
         this.addOptions(Arrays.asList(shulker, enderChest));
     }
 
