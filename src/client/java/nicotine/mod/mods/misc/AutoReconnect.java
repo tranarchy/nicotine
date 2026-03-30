@@ -4,7 +4,7 @@ import nicotine.events.DisconnectEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.SliderOption;
-import nicotine.screens.AutoReconnectScreen;
+import nicotine.screens.clickgui.AutoReconnectScreen;
 import nicotine.util.EventBus;
 
 import static nicotine.util.Common.mc;

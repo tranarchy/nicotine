@@ -12,7 +12,7 @@ import static nicotine.util.Common.mc;
 public class ToggleButton extends GUIButton {
     private final Text boxText;
 
-    public final ToggleOption toggleOption;
+    public ToggleOption toggleOption;
 
     public ToggleButton(ToggleOption toggleOption, int x, int y) {
         super(toggleOption.name, x, y);

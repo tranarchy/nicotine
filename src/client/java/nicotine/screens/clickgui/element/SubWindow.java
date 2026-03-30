@@ -15,7 +15,7 @@ public class SubWindow extends Window implements Draggable {
     protected BaseScreen screen;
 
     private final Text titleText;
-    private final ToggleButton closeButton;
+    protected final ToggleButton closeButton;
     protected final Window dragArea;
 
     @Override
@@ -50,6 +50,11 @@ public class SubWindow extends Window implements Draggable {
             public void draw(GuiGraphicsExtractor context,double mouseX, double mouseY){
                 Render2D.drawBorderAroundText(context, this.x, this.y, this.width, this.height,2, ColorUtil.getPulsatingColor());
                 context.text(mc.font, this.text, this.x, this.y, ColorUtil.getPulsatingColor(), true);
+            }
+
+            @Override
+            public boolean mouseOverElement(double mouseX, double mouseY) {
+                return Render2D.mouseOver(this.x, this.y, this.width, this.height, mouseX, mouseY);
             }
         };
 
