@@ -32,7 +32,7 @@ public class Storage extends Mod {
 
     private final ToggleOption tracer = new ToggleOption("Tracer");
     private final SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
-    private final ToggleOption optimizeRender = new ToggleOption("OptimizeRender", false);
+    private final ToggleOption optimizeRender = new ToggleOption("OptimizeRender");
 
     public Storage() {
         super(ModCategory.Render, "Storage");

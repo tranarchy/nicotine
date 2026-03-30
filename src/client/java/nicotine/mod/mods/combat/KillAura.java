@@ -29,11 +29,11 @@ public class KillAura extends Mod {
 
     private float delayLeft = 0.0f;
 
-    private final ToggleOption combatUpdate = new ToggleOption("CombatUpdate", true);
-    private final ToggleOption selectWeapon = new ToggleOption("SelectWeapon", false);
+    private final ToggleOption combatUpdate = new ToggleOption("CombatUpdate");
+    private final ToggleOption selectWeapon = new ToggleOption("SelectWeapon");
     private final ToggleOption inAirOnly = new ToggleOption("InAirOnly");
-    private final ToggleOption players = new ToggleOption("Players", true);
-    private final ToggleOption hostile = new ToggleOption("Hostile", true);
+    private final ToggleOption players = new ToggleOption("Players");
+    private final ToggleOption hostile = new ToggleOption("Hostile");
     private final ToggleOption angerable = new ToggleOption("Neutral");
     private final ToggleOption passive = new ToggleOption("Passive");
     private final SliderOption delay = new SliderOption(

@@ -67,7 +67,7 @@ public class AutoCrystal extends Mod {
             75
     );
     private final ToggleOption manualPlace = new ToggleOption("ManualPlace");
-    private final ToggleOption renderPosition = new ToggleOption("RenderPosition", true);
+    private final ToggleOption renderPosition = new ToggleOption("RenderPosition");
 
     public AutoCrystal() {
         super(ModCategory.Combat,"AutoCrystal", "Places and blows up end crystals around players");

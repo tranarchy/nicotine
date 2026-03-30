@@ -23,7 +23,7 @@ public class GUI extends Mod {
 
     public static final ToggleOption tooltip = new ToggleOption("Tooltip");
     public static final ToggleOption blur = new ToggleOption("Blur");
-    public static final ToggleOption pulsatingColor = new ToggleOption("PulsatingColor", true);
+    public static final ToggleOption pulsatingColor = new ToggleOption("PulsatingColor");
     private final SliderOption bgAlpha = new SliderOption("BGAlpha", 255, 0, 255);
     private final RGBOption rgb = new RGBOption("RGB");
 

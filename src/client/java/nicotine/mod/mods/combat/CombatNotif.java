@@ -27,8 +27,8 @@ public class CombatNotif extends Mod {
 
     private List<AbstractClientPlayer> prevPlayers = new ArrayList<>();
 
-    private final ToggleOption poppedTotems = new ToggleOption("PoppedTotems", true);
-    private final ToggleOption enterDistance = new ToggleOption("EnterDistance", true);
+    private final ToggleOption poppedTotems = new ToggleOption("PoppedTotems");
+    private final ToggleOption enterDistance = new ToggleOption("EnterDistance");
     private final ToggleOption toastNotif = new ToggleOption("ToastNotif");
     private final ToggleOption playSound = new ToggleOption("PlaySound");
 

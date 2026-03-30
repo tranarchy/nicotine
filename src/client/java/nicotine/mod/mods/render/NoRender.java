@@ -21,9 +21,9 @@ public class NoRender extends Mod {
        }
     };
 
-    private final ToggleOption overlays = new ToggleOption("Overlays", true);
+    private final ToggleOption overlays = new ToggleOption("Overlays");
     private final ToggleOption bossBars = new ToggleOption("BossBars");
-    private final ToggleOption potionEffects = new ToggleOption("PotionEffects", true);
+    private final ToggleOption potionEffects = new ToggleOption("PotionEffects");
     private final ToggleOption miscOverlays = new ToggleOption("MiscOverlays");
     private final ToggleOption toastNotifs = new ToggleOption("ToastNotifs");
     private final ToggleOption weather = new ToggleOption("Weather");

@@ -15,7 +15,7 @@ import static nicotine.util.Common.mc;
 
 public class Cords extends HUDMod {
 
-    private final ToggleOption showDirection = new ToggleOption("ShowDirection", true);
+    private final ToggleOption showDirection = new ToggleOption("ShowDirection");
 
     public Cords() {
         super(ModCategory.HUD, "Cords");

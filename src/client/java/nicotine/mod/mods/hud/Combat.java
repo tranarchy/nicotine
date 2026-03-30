@@ -20,9 +20,9 @@ import java.util.List;
 import static nicotine.util.Common.*;
 
 public class Combat extends HUDMod {
-    private static final ToggleOption distance = new ToggleOption("Distance", true);
-    private static final ToggleOption totemCount = new ToggleOption("TotemCount", true);
-    private static final ToggleOption otherPlayers = new ToggleOption("OtherPlayers", true);
+    private static final ToggleOption distance = new ToggleOption("Distance");
+    private static final ToggleOption totemCount = new ToggleOption("TotemCount");
+    private static final ToggleOption otherPlayers = new ToggleOption("OtherPlayers");
     
     private static final int PLAYER_MODEL_SIZE = 30;
     private static final int WINDOW_WIDTH = 200;

@@ -9,12 +9,6 @@ public class ToggleOption extends ModOption {
         this.enabled = false;
     }
 
-    public ToggleOption(String name, boolean enabled) {
-        super(name);
-
-        this.enabled = enabled;
-    }
-
     public void toggle() {
         this.enabled = !this.enabled;
     }

@@ -91,12 +91,14 @@ public class ClickGUI extends BaseScreen {
         int posY = window.elements.getFirst().y + window.elements.getFirst().height + PADDING;
 
         if (!ModButton.selectedMod.alwaysEnabled) {
-            ToggleOption toggleModOption = new ToggleOption("Enabled", ModButton.selectedMod.enabled) {
+            ToggleOption toggleModOption = new ToggleOption("Enabled") {
                 @Override
                 public void toggle() {
                     ModButton.selectedMod.toggle();
                 }
             };
+
+            toggleModOption.enabled = ModButton.selectedMod.enabled;
 
             ToggleButton toggleModOptionButton = new ToggleButton(
                     toggleModOption,

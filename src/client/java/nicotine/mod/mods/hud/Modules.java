@@ -31,7 +31,7 @@ public class Modules extends HUDMod {
     @Override
     protected void init() {
         for (int i = 0; i < ModCategory.values().length - 2; i ++) {
-            this.modOptions.add(new ToggleOption(ModCategory.values()[i].name(), true));
+            this.modOptions.add(new ToggleOption(ModCategory.values()[i].name()));
         }
 
         EventBus.register(ClientLevelTickEvent.class, event -> {

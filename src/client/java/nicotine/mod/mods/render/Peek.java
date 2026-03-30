@@ -31,7 +31,7 @@ public class Peek extends Mod {
     public static boolean echestWasOpened = false;
     public static List<ItemStack> enderChestItems = new ArrayList<>();
 
-    private final ToggleOption shulker = new ToggleOption("Shulker", true);
+    private final ToggleOption shulker = new ToggleOption("Shulker");
     private final ToggleOption enderChest = new ToggleOption("EnderChest");
 
     public Peek() {
