@@ -5,6 +5,7 @@ import net.minecraft.client.input.KeyEvent;
 import nicotine.mod.mods.general.GUI;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
+import nicotine.screens.clickgui.element.SubWindow;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.SliderButton;
 import nicotine.screens.clickgui.element.button.ToggleButton;
@@ -17,20 +18,21 @@ import java.util.HexFormat;
 
 import static nicotine.util.Common.*;
 
-public class ColorSelectionScreen extends BaseScreen {
+public class ColorSelectionScreen extends SubWindow {
 
-    private RGBOption rgbOption;
+    private final RGBOption rgbOption;
 
-    public ColorSelectionScreen(RGBOption rgbOption) {
-        super("Color selection screen", new Window(0, 0, 160, 105));
-
+    public ColorSelectionScreen(BaseScreen screen, String title, RGBOption rgbOption) {
+        super(screen, title, 0, 0, 160, 105);
         this.rgbOption = rgbOption;
     }
 
     @Override
-    protected void addDrawables() {
-        int elementPosX = window.x + 5;
-        int elementPosY = window.y + 10;
+    public void addDrawables() {
+        super.addDrawables();
+
+        int elementPosX = this.x + 5;
+        int elementPosY = this.y + 10;
 
         for (SliderOption sliderOption : Arrays.asList(rgbOption.red, rgbOption.green, rgbOption.blue)) {
 
@@ -42,39 +44,37 @@ public class ColorSelectionScreen extends BaseScreen {
                     elementPosY,
                     elementPosX + buttonWidth + 3,
                     elementPosY - 2,
-                    window.width - buttonWidth - 15,
+                    this.width - buttonWidth - 15,
                     mc.font.lineHeight + 1
             );
 
-            window.add(sliderButton);
+            this.add(sliderButton);
 
             elementPosY += 16;
         }
 
         ToggleButton rainbowButton = new ToggleButton(rgbOption.rainbow, elementPosX, elementPosY);
-        window.add(rainbowButton);
+        this.add(rainbowButton);
         elementPosY += 10;
 
         String hexString = '#' + Integer.toHexString(rgbOption.getColor()).substring(2);
-        Text hexText = new Text(hexString, window.x + (window.width / 2) - (mc.font.width(hexString) / 2), elementPosY);
-        window.add(hexText);
+        Text hexText = new Text(hexString, this.x + (this.width / 2) - (mc.font.width(hexString) / 2), elementPosY);
+        this.add(hexText);
         elementPosY += 12;
 
-        Square square = new Square(window.x + (window.width / 2) - 10, elementPosY, 20, 20, rgbOption.getColor());
-        window.add(square);
+        Square square = new Square(this.x + (this.width / 2) - 10, elementPosY, 20, 20, rgbOption.getColor());
+        this.add(square);
     }
 
     @Override
-    public boolean keyPressed(KeyEvent keyEvent) {
-        if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
-           mc.setScreen(GUI.screen);
-        } else if (keyEvent.hasControlDown()) {
+    public boolean handleKeyPress(KeyEvent keyEvent) {
+       if (keyEvent.hasControlDown()) {
             if (keyEvent.key() == InputConstants.KEY_V) {
 
                 String hexColor = mc.keyboardHandler.getClipboard().trim();
 
                 if (hexColor.isEmpty()) {
-                    return true;
+                    return false;
                 }
 
                 if (hexColor.charAt(0) != '#') {
@@ -82,7 +82,7 @@ public class ColorSelectionScreen extends BaseScreen {
                 }
 
                 if (hexColor.length() < 7) {
-                    return true;
+                    return false;
                 }
 
                 if (hexColor.substring(1).codePoints().allMatch(HexFormat::isHexDigit)) {
@@ -91,12 +91,16 @@ public class ColorSelectionScreen extends BaseScreen {
                     rgbOption.red.value = color.getRed();
                     rgbOption.green.value = color.getGreen();
                     rgbOption.blue.value = color.getBlue();
+
+                    return false;
                 }
             } else if (keyEvent.key() == InputConstants.KEY_C) {
                 mc.keyboardHandler.setClipboard(Integer.toHexString(rgbOption.getColor()).substring(2));
+
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 }

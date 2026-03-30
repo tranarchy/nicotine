@@ -97,7 +97,6 @@ public class ModManager {
             add(new TouchBar());
 
         add(new HUD());
-        add(new HUDEditor());
         add(new Watermark());
         add(new Modules());
         add(new Cords());

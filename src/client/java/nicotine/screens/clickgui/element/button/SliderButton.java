@@ -44,7 +44,7 @@ public class SliderButton extends GUIButton {
     }
 
     @Override
-    public boolean mouseOverButton(double mouseX, double mouseY) {
+    public boolean mouseOverElement(double mouseX, double mouseY) {
         return Render2D.mouseOver(this.sliderX, this.sliderY, this.sliderWidth, this.sliderHeight, mouseX, mouseY);
     }
 

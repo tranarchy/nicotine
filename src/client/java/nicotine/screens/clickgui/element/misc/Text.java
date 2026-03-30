@@ -14,6 +14,7 @@ public class Text extends Element {
         super(x, y, 0, 0);
         this.text = text;
         this.width = mc.font.width(text);
+        this.height = mc.font.lineHeight;
     }
 
     @Override

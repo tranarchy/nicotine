@@ -21,12 +21,12 @@ public class Totem extends HUDMod {
             if (!this.enabled)
                 return true;
 
-            this.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - 8;
+            int posX = (mc.getWindow().getGuiScaledWidth() / 2) - 8;
 
             if (ModManager.getMod("ECrystal").enabled)
-                this.pos.x = mc.getWindow().getGuiScaledWidth() / 2;
+                posX = mc.getWindow().getGuiScaledWidth() / 2;
 
-            this.pos.y = mc.getWindow().getGuiScaledHeight() - 80;
+            int posY = mc.getWindow().getGuiScaledHeight() - 80;
 
             int totemCount = 0;
 
@@ -36,8 +36,8 @@ public class Totem extends HUDMod {
                 }
             }
 
-            event.drawContext.fakeItem(Items.TOTEM_OF_UNDYING.getDefaultInstance(), this.pos.x, this.pos.y);
-            event.drawContext.itemDecorations(mc.font, Items.TOTEM_OF_UNDYING.getDefaultInstance(), this.pos.x, this.pos.y, String.valueOf(totemCount));
+            event.drawContext.fakeItem(Items.TOTEM_OF_UNDYING.getDefaultInstance(), posX, posY);
+            event.drawContext.itemDecorations(mc.font, Items.TOTEM_OF_UNDYING.getDefaultInstance(), posX, posY, String.valueOf(totemCount));
 
             return true;
         });

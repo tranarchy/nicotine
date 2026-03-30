@@ -3,12 +3,12 @@ package nicotine.screens.clickgui.element.button;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import nicotine.screens.clickgui.element.misc.Text;
 
 import static nicotine.util.Common.mc;
 
 public class InputText extends GUIButton {
-    public static boolean captureInput = false;
-    public static String text = "";
+    public static InputText selectedTextBox = null;
 
     public InputText(int x, int y, int width, int height) {
         super(x, y);
@@ -18,24 +18,19 @@ public class InputText extends GUIButton {
 
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
-        String textToDraw = text;
+        String textToDraw = this.text;
 
         if (textToDraw.isEmpty()) {
-            if (captureInput) {
+            if (selectedTextBox == this) {
                 textToDraw = "_";
             } else {
                 textToDraw = String.format("%s%s", ChatFormatting.ITALIC, "Type here");
             }
-        } else if (captureInput) {
+        } else if (selectedTextBox == this) {
             textToDraw += "_";
         }
 
         context.text(mc.font, textToDraw, this.x, this.y, this.color, true);
-    }
-
-    public static void reset() {
-        captureInput = false;
-        text = "";
     }
 
     @Override
@@ -43,6 +38,6 @@ public class InputText extends GUIButton {
         if (input != InputConstants.MOUSE_BUTTON_LEFT)
             return;
 
-        captureInput = true;
+        selectedTextBox = this;
     }
 }

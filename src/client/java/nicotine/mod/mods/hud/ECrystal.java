@@ -22,12 +22,12 @@ public class ECrystal extends HUDMod {
             if (!this.enabled)
                 return true;
 
-            this.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - 8;
+            int posX = (mc.getWindow().getGuiScaledWidth() / 2) - 8;
 
             if (ModManager.getMod("Totem").enabled)
-                this.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) - 18;
+                posX = (mc.getWindow().getGuiScaledWidth() / 2) - 18;
 
-            this.pos.y = mc.getWindow().getGuiScaledHeight() - 80;
+            int posY = mc.getWindow().getGuiScaledHeight() - 80;
 
             int eCrystalCount = 0;
 
@@ -38,8 +38,8 @@ public class ECrystal extends HUDMod {
                 }
             }
 
-            event.drawContext.fakeItem(Items.END_CRYSTAL.getDefaultInstance(), this.pos.x, this.pos.y);
-            event.drawContext.itemDecorations(mc.font, Items.END_CRYSTAL.getDefaultInstance(), this.pos.x, this.pos.y, String.valueOf(eCrystalCount));
+            event.drawContext.fakeItem(Items.END_CRYSTAL.getDefaultInstance(), posX, posY);
+            event.drawContext.itemDecorations(mc.font, Items.END_CRYSTAL.getDefaultInstance(), posX, posY, String.valueOf(eCrystalCount));
 
             return true;
         });

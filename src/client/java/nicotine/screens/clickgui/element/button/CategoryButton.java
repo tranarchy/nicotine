@@ -30,7 +30,7 @@ public class CategoryButton extends GUIButton {
 
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
-        this.color = mouseOverButton(mouseX, mouseY) || this.selectedModCategory == this.modCategory ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
+        this.color = mouseOverElement(mouseX, mouseY) || this.selectedModCategory == this.modCategory ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
 
         context.text(mc.font, this.text, this.x, this.y, this.color, true);
     }

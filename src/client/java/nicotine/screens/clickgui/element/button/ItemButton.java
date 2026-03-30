@@ -28,12 +28,12 @@ public class ItemButton extends GUIButton {
         if (selectionOption.items.contains(this.itemStack.getItem()))
             context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.changeAlpha(ColorUtil.ACTIVE_FOREGROUND_COLOR, 128));
 
-        if (mouseOverButton(mouseX, mouseY))
+        if (mouseOverElement(mouseX, mouseY))
             Render2D.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.ACTIVE_FOREGROUND_COLOR);
 
         context.fakeItem(this.itemStack, this.x, this.y);
 
-        if (mouseOverButton(mouseX, mouseY)) {
+        if (mouseOverElement(mouseX, mouseY)) {
             context.setComponentTooltipForNextFrame(mc.font, itemStack.getItemName().toFlatList(), (int) mouseX + 3, (int) mouseY + 3);
         }
     }

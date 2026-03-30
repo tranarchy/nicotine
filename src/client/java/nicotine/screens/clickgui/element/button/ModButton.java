@@ -57,7 +57,7 @@ public class ModButton extends GUIButton {
             );
         }
 
-        if (mouseOverButton(mouseX, mouseY)) {
+        if (mouseOverElement(mouseX, mouseY)) {
             this.text = " " + this.text;
 
             if (GUI.tooltip.enabled && !this.mod.description.isBlank()) {

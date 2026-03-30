@@ -140,10 +140,12 @@ public class ClickGUI extends BaseScreen {
                 ToggleButton toggleButton = new ToggleButton(toggleOption, element.x, element.y);
                 window.add(toggleButton);
             } else if (modOption instanceof ItemSelectionOption selectionOption) {
-                ItemSelectionButton selectionButton = new ItemSelectionButton(selectionOption, element.x, element.y);
+                String title = String.format("%s - Items", ModButton.selectedMod.name);
+                ItemSelectionButton selectionButton = new ItemSelectionButton(title, selectionOption, element.x, element.y);
                 window.add(selectionButton);
             } else if (modOption instanceof RGBOption rgbOption) {
-                RGBButton rgbButton = new RGBButton(rgbOption, element.x, element.y);
+                String title = String.format("%s - RGB", ModButton.selectedMod.name);
+                RGBButton rgbButton = new RGBButton(title, rgbOption, element.x, element.y);
                 window.add(rgbButton);
             }
 
@@ -163,5 +165,7 @@ public class ClickGUI extends BaseScreen {
 
         window.add(new VLine(window.x + window.width / 2, dividerLinePosY, window.y + window.height - dividerLinePosY, ColorUtil.getPulsatingColor()));
         window.add(new HLine(window.x, dividerLinePosY, window.width, ColorUtil.getPulsatingColor()));
+
+        super.addDrawables();
     }
 }

@@ -48,7 +48,7 @@ public class DropDownButton extends GUIButton {
     }
 
     @Override
-    public boolean mouseOverButton(double mouseX, double mouseY) {
+    public boolean mouseOverElement(double mouseX, double mouseY) {
         return Render2D.mouseOver(this.boxText.x, this.boxText.y, this.boxText.width, this.height, mouseX, mouseY);
     }
 
@@ -83,18 +83,18 @@ public class DropDownButton extends GUIButton {
                     posY
             ) {
                 @Override
-                public boolean mouseOverButton(double mouseX, double mouseY) {
+                public boolean mouseOverElement(double mouseX, double mouseY) {
                     return Render2D.mouseOver(this.x, this.y, this.width, this.height, mouseX, mouseY);
                 }
 
                 @Override
                 public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
-                    if (mouseOverButton(mouseX, mouseY)) {
+                    if (mouseOverElement(mouseX, mouseY)) {
                         this.color = ColorUtil.ACTIVE_FOREGROUND_COLOR;
                     }
 
                     this.width = mc.font.width(modeList.getLast());
-                    Render2D.drawBorderAroundText(context, this.x, this.y, this.width + 2, 1, ColorUtil.BORDER_COLOR);
+                    Render2D.drawBorderAroundText(context, this.x, this.y, this.width, this.height, 1, ColorUtil.BORDER_COLOR);
                     context.text(mc.font, this.text, this.x, this.y, this.color, true);
                 }
             };

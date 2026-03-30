@@ -28,8 +28,8 @@ public class Armor extends HUDMod {
             if (!this.enabled)
                 return true;
 
-            this.pos.x = (mc.getWindow().getGuiScaledWidth() / 2) + 19;
-            this.pos.y = mc.getWindow().getGuiScaledHeight() - 59;
+            int posX = (mc.getWindow().getGuiScaledWidth() / 2) + 19;
+            int posY = mc.getWindow().getGuiScaledHeight() - 59;
 
             HashMap<Integer, Integer> armorCount= new HashMap<>();
 
@@ -55,14 +55,14 @@ public class Armor extends HUDMod {
                 }
             }
 
-            this.pos.x += 18 * 4;
+            posX += 18 * 4;
 
             for (int i = 0; i < armorItems.size(); i++) {
 
-                this.pos.x -= 18;
+                posX -= 18;
 
-                event.drawContext.fakeItem(armorItems.get(i), this.pos.x, this.pos.y);
-                event.drawContext.itemDecorations(mc.font, armorItems.get(i), this.pos.x, this.pos.y, armorCount.getOrDefault(i, 1).toString());
+                event.drawContext.fakeItem(armorItems.get(i), posX, posY);
+                event.drawContext.itemDecorations(mc.font, armorItems.get(i), posX, posY, armorCount.getOrDefault(i, 1).toString());
             }
 
             return true;

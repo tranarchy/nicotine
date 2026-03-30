@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static nicotine.util.Common.mc;
+import static nicotine.util.Common.window;
 
-public class Window extends Element {
+public class Window extends ClickableElement {
     public final List<Element> elements = new ArrayList<>();
 
     public Window(int x, int y, int width, int height) {
@@ -18,8 +19,10 @@ public class Window extends Element {
 
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
-        context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR);
-        Render2D.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.getPulsatingColor());
+        if (this.width != 0 && this.height != 0) {
+            context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR);
+            Render2D.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.getPulsatingColor());
+        }
 
         for (Element element : elements) {
             element.draw(context, mouseX, mouseY);

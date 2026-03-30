@@ -9,6 +9,7 @@ import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import nicotine.mod.mods.general.GUI;
 import nicotine.mod.option.ItemSelectionOption;
+import nicotine.screens.clickgui.element.SubWindow;
 import nicotine.screens.clickgui.element.Window;
 import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.screens.clickgui.element.button.ItemButton;
@@ -19,14 +20,16 @@ import java.util.*;
 
 import static nicotine.util.Common.*;
 
-public class ItemSelectionScreen extends BaseScreen {
+public class ItemSelectionScreen extends SubWindow {
     private ItemSelectionOption selectionOption;
     public static boolean builtContents = false;
 
+    private final InputText inputText;
+
     private final List<ItemStack> items = new ArrayList<>();
 
-    public ItemSelectionScreen(ItemSelectionOption selectionOption) {
-        super("Item selection screen", new Window(0, 0, GUI.screen.window.width, GUI.screen.window.height));
+    public ItemSelectionScreen(BaseScreen screen, String title, ItemSelectionOption selectionOption) {
+        super(screen, title, 0, 0, screen.window.width, screen.window.height);
 
         this.selectionOption = selectionOption;
 
@@ -34,6 +37,8 @@ public class ItemSelectionScreen extends BaseScreen {
             buildItemGroups();
             builtContents = true;
         }
+
+        inputText = new InputText(0, 0, this.width - 5, mc.font.lineHeight + 2);
 
         getAllItems();
     }
@@ -59,55 +64,53 @@ public class ItemSelectionScreen extends BaseScreen {
     }
 
     @Override
-    protected void addDrawables() {
-        int posX = window.x + 5;
-        int posY = window.y + 5;
+    public void addDrawables() {
+        super.addDrawables();
 
-        InputText inputText = new InputText(posX, posY, window.width - 5, mc.font.lineHeight + 2);
-        window.add(inputText);
+        int posX = this.x + 5;
+        int posY = this.y + 5;
+
+        inputText.x = posX;
+        inputText.y = posY;
+
+        this.add(inputText);
 
         posY += mc.font.lineHeight + 2;
 
-        HLine separator = new HLine(window.x, posY, window.width, ColorUtil.getPulsatingColor());
+        HLine separator = new HLine(this.x, posY, this.width, ColorUtil.getPulsatingColor());
 
-        window.add(separator);
+        this.add(separator);
 
         posX -= 4;
         posY += 3;
 
         for (ItemStack itemStack : items) {
-            if (!itemStack.getHoverName().getString().toLowerCase().contains(InputText.text))
+            if (!itemStack.getHoverName().getString().toLowerCase().contains(inputText.text))
                 continue;
 
-            if (posX + 16 > window.x + window.width) {
-                posX = window.x + 1;
+            if (posX + 16 > this.x + this.width) {
+                posX = this.x + 1;
                 posY += 16;
             }
 
-            if (posY + 16 > window.y + window.height) {
+            if (posY + 16 > this.y + this.height) {
                 break;
             }
 
             ItemButton itemButton = new ItemButton(itemStack, selectionOption, posX, posY);
-            window.add(itemButton);
+            this.add(itemButton);
 
             posX += 16;
         }
     }
 
     @Override
-    public boolean keyPressed(KeyEvent keyEvent) {
-        if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
-            if (InputText.captureInput) {
-                InputText.captureInput = false;
-            } else {
-                InputText.reset();
-                mc.setScreen(GUI.screen);
-            }
-        } else {
-            super.keyPressed(keyEvent);
+    public boolean handleKeyPress(KeyEvent keyEvent) {
+        if (keyEvent.key() == InputConstants.KEY_ESCAPE && InputText.selectedTextBox != null) {
+            InputText.selectedTextBox = null;
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

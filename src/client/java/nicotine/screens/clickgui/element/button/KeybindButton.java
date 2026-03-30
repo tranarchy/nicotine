@@ -55,7 +55,7 @@ public class KeybindButton extends GUIButton {
     }
 
     @Override
-    public boolean mouseOverButton(double mouseX, double mouseY) {
+    public boolean mouseOverElement(double mouseX, double mouseY) {
         return Render2D.mouseOver(this.x, this.y, this.width + this.boxText.width + 4, this.height, mouseX, mouseY);
     }
 
@@ -82,7 +82,7 @@ public class KeybindButton extends GUIButton {
 
         super.draw(context, mouseX, mouseY);
 
-        if (mouseOverButton(mouseX, mouseY)) {
+        if (mouseOverElement(mouseX, mouseY)) {
             drawUnderline(context);
         }
     }

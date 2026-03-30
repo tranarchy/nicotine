@@ -7,7 +7,7 @@ import nicotine.events.GuiRenderBeforeEvent;
 import nicotine.mod.ModCategory;
 import nicotine.mod.HUDMod;
 import nicotine.mod.option.ToggleOption;
-import nicotine.screens.HUDEditorScreen;
+import nicotine.screens.clickgui.HUDScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
 import nicotine.util.Player;
@@ -42,7 +42,7 @@ public class Combat extends HUDMod {
 
             AbstractClientPlayer nearestPlayer = Player.findNearestPlayer(false);
 
-            if (mc.screen instanceof HUDEditorScreen)
+            if (mc.screen instanceof HUDScreen)
                 nearestPlayer = mc.player;
 
             if (nearestPlayer == null || mc.screen instanceof InventoryScreen)
@@ -50,16 +50,16 @@ public class Combat extends HUDMod {
 
             final int CENTER_WIDTH = mc.getWindow().getGuiScaledWidth() / 2;
 
-            this.pos.x = CENTER_WIDTH - (WINDOW_WIDTH / 2);
-            this.pos.y = 10;
+            int posX = CENTER_WIDTH - (WINDOW_WIDTH / 2);
+            int posY = 10;
 
-            event.drawContext.fill(this.pos.x, this.pos.y, this.pos.x + WINDOW_WIDTH, this.pos.y + WINDOW_HEIGHT, ColorUtil.BACKGROUND_COLOR);
-            Render2D.drawBorder(event.drawContext, this.pos.x, this.pos.y, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.getPulsatingColor());
+            event.drawContext.fill(posX, posY, posX + WINDOW_WIDTH, posY + WINDOW_HEIGHT, ColorUtil.BACKGROUND_COLOR);
+            Render2D.drawBorder(event.drawContext, posX, posY, WINDOW_WIDTH, WINDOW_HEIGHT, ColorUtil.getPulsatingColor());
 
-            int modelX1 = this.pos.x;
-            int modelY1 = this.pos.y;
-            int modelX2 = this.pos.x + (PADDING + 5) + PLAYER_MODEL_SIZE;
-            int modelY2 = this.pos.y + PADDING + (PLAYER_MODEL_SIZE * 2);
+            int modelX1 = posX;
+            int modelY1 = posY;
+            int modelX2 = posX + (PADDING + 5) + PLAYER_MODEL_SIZE;
+            int modelY2 = posY + PADDING + (PLAYER_MODEL_SIZE * 2);
 
             InventoryScreen.extractEntityInInventoryFollowsMouse(event.drawContext,
                     modelX1,
@@ -94,13 +94,13 @@ public class Combat extends HUDMod {
             }
 
             if (otherPlayers.enabled)
-                playerInfo.add(String.format("%d %sother players nearby", mc.level.players().size() - (mc.screen instanceof HUDEditorScreen ? 1 : 2), ChatFormatting.WHITE));
+                playerInfo.add(String.format("%d %sother players nearby", mc.level.players().size() - (mc.screen instanceof HUDScreen ? 1 : 2), ChatFormatting.WHITE));
 
             for (int i = 0; i < playerInfo.size(); i++) {
                 event.drawContext.text(mc.font,
                         playerInfo.get(i),
-                        this.pos.x + (WINDOW_WIDTH / 2) - (mc.font.width(playerInfo.get(i)) / 2),
-                        this.pos.y + PADDING + (mc.font.lineHeight * i),
+                        posX + (WINDOW_WIDTH / 2) - (mc.font.width(playerInfo.get(i)) / 2),
+                        posY + PADDING + (mc.font.lineHeight * i),
                         ColorUtil.ACTIVE_FOREGROUND_COLOR,
                         true);
             }
