@@ -3,6 +3,7 @@ package nicotine.mixin;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
+import nicotine.events.AbstractContainerScreenTickEvent;
 import nicotine.events.RenderTooltipEvent;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,5 +24,10 @@ public abstract class AbstractContainerScreenMixin {
 
         if (!result)
             info.cancel();
+    }
+
+    @Inject(at = @At("HEAD"), method = "tick")
+    public final void tick(CallbackInfo info) {
+        EventBus.post(new AbstractContainerScreenTickEvent(((AbstractContainerScreen) (Object)this)));
     }
 }

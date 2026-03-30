@@ -9,6 +9,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemContainerContents;
+import nicotine.events.AbstractContainerScreenTickEvent;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderTooltipEvent;
 import nicotine.mod.Mod;
@@ -120,16 +121,14 @@ public class Peek extends Mod {
             return true;
         });
 
-        EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (mc.screen instanceof ContainerScreen genericContainerScreen) {
-                if (genericContainerScreen.getTitle().toString().contains("enderchest")) {
-                    echestWasOpened = true;
-                    enderChestItems.clear();
-                    genericContainerScreen.getMenu().slots.forEach(slot -> {
-                        if (enderChestItems.size() < 27)
-                            enderChestItems.add(slot.getItem());
-                    });
-                }
+        EventBus.register(AbstractContainerScreenTickEvent.class, event -> {
+            if (event.abstractContainerScreen.getTitle().toString().contains("enderchest")) {
+                echestWasOpened = true;
+                enderChestItems.clear();
+                event.abstractContainerScreen.getMenu().slots.forEach(slot -> {
+                    if (enderChestItems.size() < 27)
+                        enderChestItems.add(slot.getItem());
+                });
             }
 
             return true;
