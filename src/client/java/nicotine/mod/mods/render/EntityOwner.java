@@ -4,7 +4,7 @@ import com.mojang.authlib.yggdrasil.ProfileResult;
 import net.minecraft.util.CommonColors;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.TamableAnimal;
-import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.util.EventBus;
@@ -45,7 +45,7 @@ public class EntityOwner extends Mod {
 
     @Override
     protected void init() {
-        EventBus.register(RenderBeforeEvent.class, event -> {
+        EventBus.register(RenderEvent.class, event -> {
             if (!this.enabled)
                 return true;
 

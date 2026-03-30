@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.SliderOption;
@@ -45,7 +45,7 @@ public class Storage extends Mod {
     protected void init() {
         ArrayList<BlockEntity> allSurroundingBlockEntities = new ArrayList<>();
 
-        EventBus.register(RenderBeforeEvent.class, event -> {
+        EventBus.register(RenderEvent.class, event -> {
             if (!this.enabled)
                 return true;
 
@@ -81,13 +81,13 @@ public class Storage extends Mod {
                if (esp.enabled) {
                    switch (espRender.value) {
                        case "Box":
-                           Render3D.drawBox(event.camera, event.matrixStack, boundingBox, blockColor);
+                           Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, blockColor);
                            break;
                        case "Filled":
-                           Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor);
+                           Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, blockColor);
                            break;
                        case "Fade":
-                           Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor, true);
+                           Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, blockColor, true);
                            break;
                    }
                }
@@ -99,7 +99,7 @@ public class Storage extends Mod {
                            boundingBox.minZ
                    );
 
-                   Render3D.drawTracer(event.camera, event.matrixStack, tracerPos, ColorUtil.changeAlpha(blockColor, (int)tracerAlpha.value));
+                   Render3D.drawTracer(event.camera, event.multiBufferSource, event.matrixStack, tracerPos, ColorUtil.changeAlpha(blockColor, (int)tracerAlpha.value));
                }
             }
 
@@ -114,13 +114,13 @@ public class Storage extends Mod {
                 if (esp.enabled) {
                     switch (espRender.value) {
                         case "Box":
-                            Render3D.drawBox(event.camera, event.matrixStack, boundingBox, blockColor);
+                            Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, blockColor);
                             break;
                         case "Filled":
-                            Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor);
+                            Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, blockColor);
                             break;
                         case "Fade":
-                            Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, blockColor, true);
+                            Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, blockColor, true);
                             break;
                     }
                 }
@@ -132,7 +132,7 @@ public class Storage extends Mod {
                             boundingBox.minZ
                     );
 
-                    Render3D.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(blockColor, (int)tracerAlpha.value));
+                    Render3D.drawTracer(event.camera, event.multiBufferSource, event.matrixStack, targetPos, ColorUtil.changeAlpha(blockColor, (int)tracerAlpha.value));
                 }
             }
 

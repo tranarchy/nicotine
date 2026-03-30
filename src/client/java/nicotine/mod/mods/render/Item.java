@@ -5,7 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.SliderOption;
@@ -41,7 +41,7 @@ public class Item extends Mod {
 
     @Override
     protected void init() {
-        EventBus.register(RenderBeforeEvent.class, event -> {
+        EventBus.register(RenderEvent.class, event -> {
 
             if (!this.enabled)
                 return true;
@@ -60,13 +60,13 @@ public class Item extends Mod {
                     if (esp.enabled) {
                         switch (espRender.value) {
                             case "Box":
-                                Render3D.drawBox(event.camera, event.matrixStack, boundingBox, CommonColors.WHITE);
+                                Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, CommonColors.WHITE);
                                 break;
                             case "Filled":
-                                Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, CommonColors.WHITE);
+                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, CommonColors.WHITE);
                                 break;
                             case "Fade":
-                                Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, CommonColors.WHITE, true);
+                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, CommonColors.WHITE, true);
                                 break;
                         }
                     }
@@ -74,7 +74,7 @@ public class Item extends Mod {
                     if (tracer.enabled) {
                         Vec3 targetPos = entity.position();
 
-                        Render3D.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(CommonColors.WHITE, (int)tracerAlpha.value));
+                        Render3D.drawTracer(event.camera, event.multiBufferSource, event.matrixStack, targetPos, ColorUtil.changeAlpha(CommonColors.WHITE, (int)tracerAlpha.value));
                     }
                 }
             }

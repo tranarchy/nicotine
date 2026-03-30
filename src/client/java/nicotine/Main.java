@@ -22,7 +22,6 @@ public class Main implements ClientModInitializer {
 			CommandManager.init();
 			Player.init();
             Keybind.init();
-            Render3D.init();
 			Settings.load();
 
             ranInit = true;

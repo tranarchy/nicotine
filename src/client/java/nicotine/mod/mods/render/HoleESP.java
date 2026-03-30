@@ -5,7 +5,7 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import nicotine.events.ClientLevelTickEvent;
-import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.SliderOption;
@@ -84,12 +84,12 @@ public class HoleESP extends Mod {
 
     @Override
     protected void init() {
-        EventBus.register(RenderBeforeEvent.class, event -> {
+        EventBus.register(RenderEvent.class, event -> {
             if (!this.enabled)
                 return true;
 
             for (BlockPos holeSpot : holeSpots) {
-                Render3D.drawFilledBox(event.camera, event.matrixStack, BoxUtil.getBlockBoundingBoxf(holeSpot.offset(0, 1, 0)), CommonColors.SOFT_RED);
+                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, BoxUtil.getBlockBoundingBoxf(holeSpot.offset(0, 1, 0)), CommonColors.SOFT_RED);
             }
 
             return true;

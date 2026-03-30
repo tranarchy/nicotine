@@ -3,7 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.phys.Vec3;
-import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.events.SubmitNameTagEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -38,7 +38,7 @@ public class NameTag extends Mod {
             return !this.enabled;
         });
 
-        EventBus.register(RenderBeforeEvent.class, event -> {
+        EventBus.register(RenderEvent.class, event -> {
             if (!this.enabled)
                 return true;
 

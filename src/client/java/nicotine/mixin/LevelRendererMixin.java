@@ -1,21 +1,17 @@
 package nicotine.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
-import com.mojang.blaze3d.framegraph.FramePass;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Camera;
-import net.minecraft.client.CloudStatus;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
-import net.minecraft.world.phys.Vec3;
 import nicotine.events.*;
 import nicotine.util.EventBus;
 import org.joml.Matrix4fc;
@@ -34,7 +30,7 @@ public abstract class LevelRendererMixin {
     @Unique
     Camera camera;
     PoseStack matrixStack;
-    MultiBufferSource multiBufferSource;
+    MultiBufferSource.BufferSource multiBufferSource;
 
     @Final
     @Shadow

@@ -4,7 +4,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderArmorEvent;
-import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.*;
@@ -62,7 +62,7 @@ public class Players extends Mod {
 
     @Override
     protected void init() {
-         EventBus.register(RenderBeforeEvent.class, event -> {
+         EventBus.register(RenderEvent.class, event -> {
 
             if (!this.enabled)
                 return true;
@@ -74,20 +74,20 @@ public class Players extends Mod {
                     if (esp.enabled) {
                         switch (espRender.value) {
                             case "Box":
-                                Render3D.drawBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor());
+                                Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espRgb.getColor());
                                 break;
                             case "Filled":
-                                Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor());
+                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espRgb.getColor());
                                 break;
                             case "Fade":
-                                Render3D.drawFilledBox(event.camera, event.matrixStack, boundingBox, espRgb.getColor(), true);
+                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espRgb.getColor(), true);
                                 break;
                         }
                     }
 
                     if (tracer.enabled) {
                         Vec3 targetPos = player.position();
-                        Render3D.drawTracer(event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerRgb.getColor(), (int)tracerAlpha.value));
+                        Render3D.drawTracer(event.camera, event.multiBufferSource, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerRgb.getColor(), (int)tracerAlpha.value));
                     }
                 }
             }

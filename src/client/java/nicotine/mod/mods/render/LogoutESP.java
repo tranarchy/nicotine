@@ -7,6 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.ConnectEvent;
 import nicotine.events.RenderBeforeEvent;
+import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.RGBOption;
@@ -87,7 +88,7 @@ public class LogoutESP extends Mod {
                 }
 
                 Boxf boundingBox = new Boxf(player.getBoundingBox());
-                Render3D.drawBox(event.camera, event.matrixStack, boundingBox, rgb.getColor());
+                Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, rgb.getColor());
 
                 String text = player.getName().getString();
 

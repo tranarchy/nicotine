@@ -40,7 +40,7 @@ public class BlockBreaking extends Mod {
 
                 AABB blockBreakingBox = BoxUtil.getBlockBoundingBox(blockPos).deflate(stage / 20.0f);
 
-                Render3D.drawFilledBox(event.camera, event.matrixStack, new Boxf(blockBreakingBox), rgb.getColor());
+                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, new Boxf(blockBreakingBox), rgb.getColor());
             }
 
             return true;
