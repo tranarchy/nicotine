@@ -96,7 +96,6 @@ public class ModManager {
         if (System.getProperty("os.name").startsWith("Mac"))
             add(new TouchBar());
 
-        add(new HUD());
         add(new Watermark());
         add(new Modules());
         add(new Cords());
@@ -113,6 +112,7 @@ public class ModManager {
         add(new Combat());
 
         add(new GUI());
+        add(new HUD());
         add(new Render());
     }
 }

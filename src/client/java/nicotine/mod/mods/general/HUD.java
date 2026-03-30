@@ -1,4 +1,4 @@
-package nicotine.mod.mods.hud;
+package nicotine.mod.mods.general;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import nicotine.events.ClientLevelTickEvent;
@@ -26,11 +26,16 @@ public class HUD extends Mod {
     public static HUDScreen screen;
 
     public HUD() {
-        super(ModCategory.HUD, "HUD");
+        super(ModCategory.General, "HUD");
+        this.alwaysEnabled = true;
+
         this.keybind.keyCode = InputConstants.KEY_H;
         this.keybind.name = "Editor";
+
         this.addOptions(Arrays.asList(lowercase, bold, italic, separator));
+
         screen = new HUDScreen();
+        screen.init();
     }
 
     @Override

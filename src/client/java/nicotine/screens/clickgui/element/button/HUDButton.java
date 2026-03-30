@@ -2,9 +2,8 @@ package nicotine.screens.clickgui.element.button;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.util.CommonColors;
 import nicotine.mod.HUDMod;
-import nicotine.mod.mods.hud.HUD;
+import nicotine.mod.mods.general.HUD;
 import nicotine.screens.clickgui.element.Draggable;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.Render2D;

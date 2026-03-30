@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
+import nicotine.mod.mods.general.HUD;
 import nicotine.util.EventBus;
 
 import java.util.List;

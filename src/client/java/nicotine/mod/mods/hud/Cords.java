@@ -5,6 +5,7 @@ import net.minecraft.world.level.Level;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
+import nicotine.mod.mods.general.HUD;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import org.apache.commons.lang3.StringUtils;

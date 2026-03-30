@@ -7,6 +7,7 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.PacketInEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.ModCategory;
+import nicotine.mod.mods.general.HUD;
 import nicotine.mod.option.DropDownOption;
 import nicotine.util.EventBus;
 import nicotine.util.Player;

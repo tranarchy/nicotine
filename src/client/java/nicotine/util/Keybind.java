@@ -4,6 +4,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.ChatScreen;
 import nicotine.mod.mods.combat.AutoArmor;
+import nicotine.mod.mods.general.GUI;
+import nicotine.mod.mods.general.HUD;
 import nicotine.mod.mods.render.Peek;
 import nicotine.mod.mods.render.Zoom;
 import nicotine.screens.clickgui.BaseScreen;
@@ -22,7 +24,7 @@ public class Keybind {
     private static final HashMap<String, Integer> keysPressed = new HashMap<>();
 
     private static final List<Class> denyList = Arrays.asList(
-            Zoom.class, AutoArmor.class, Peek.class
+            Zoom.class, AutoArmor.class, Peek.class, HUD.class, GUI.class
     );
 
     public static void init() {
