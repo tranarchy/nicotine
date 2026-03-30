@@ -17,7 +17,7 @@ public class Common {
     public static final Window window = mc.getWindow();
 
     public static HashMap<AbstractClientPlayer, Integer> totemPopCounter = new HashMap<>();
-    public static List<WaypointInstance> allWaypoints = new ArrayList<>();
+    public static List<WaypointInstance> waypointInstances = new ArrayList<>();
     public static List<LevelChunk> loadedChunks = new ArrayList<>();
     public static Set<UUID> friendList = new HashSet<>();
 }

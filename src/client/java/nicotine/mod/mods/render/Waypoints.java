@@ -49,7 +49,7 @@ public class Waypoints extends Mod {
             if (!this.enabled || mc.isSingleplayer())
                 return true;
 
-            for (WaypointInstance waypointInstance : allWaypoints) {
+            for (WaypointInstance waypointInstance : waypointInstances) {
                 if (!waypointInstance.server.equals(currentServer.ip))
                     continue;
 

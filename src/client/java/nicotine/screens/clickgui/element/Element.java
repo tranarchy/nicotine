@@ -2,7 +2,7 @@ package nicotine.screens.clickgui.element;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
-public class Element {
+public abstract class Element {
     public int x;
     public int y;
     public int width;
@@ -17,5 +17,5 @@ public class Element {
         this.z = 0;
     }
 
-    public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {}
+    public abstract void draw(GuiGraphicsExtractor context, double mouseX, double mouseY);
 }

@@ -16,6 +16,8 @@ import nicotine.mod.mods.general.GUI;
 import nicotine.screens.clickgui.element.*;
 import nicotine.screens.clickgui.element.button.*;
 import nicotine.screens.clickgui.element.button.InputText;
+import nicotine.screens.clickgui.element.window.subwindow.SubWindow;
+import nicotine.screens.clickgui.element.window.Window;
 import nicotine.util.Settings;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
@@ -32,6 +34,9 @@ public class BaseScreen extends Screen {
     protected final Vector2i dragOffset = new Vector2i(-1, -1);
     protected ClickableElement elementForDragging = null;
     private boolean draggingSlider = false;
+
+    public double mouseX = 0;
+    public double mouseY = 0;
 
     private final List<SubWindow> subWindows = new ArrayList<>();
 
@@ -60,6 +65,12 @@ public class BaseScreen extends Screen {
         }
 
         return true;
+    }
+
+    @Override
+    public void mouseMoved(final double x, final double y) {
+        this.mouseX = x;
+        this.mouseY = y;
     }
 
     public static void dragElement(double mouseX, double mouseY, Vector2i dragOffset, Element element) {

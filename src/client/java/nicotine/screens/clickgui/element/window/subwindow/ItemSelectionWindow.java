@@ -1,4 +1,4 @@
-package nicotine.screens.clickgui;
+package nicotine.screens.clickgui.element.window.subwindow;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.input.KeyEvent;
@@ -7,10 +7,8 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
-import nicotine.mod.mods.general.GUI;
 import nicotine.mod.option.ItemSelectionOption;
-import nicotine.screens.clickgui.element.SubWindow;
-import nicotine.screens.clickgui.element.Window;
+import nicotine.screens.clickgui.BaseScreen;
 import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.screens.clickgui.element.button.ItemButton;
 import nicotine.screens.clickgui.element.misc.HLine;
@@ -20,7 +18,7 @@ import java.util.*;
 
 import static nicotine.util.Common.*;
 
-public class ItemSelectionScreen extends SubWindow {
+public class ItemSelectionWindow extends SubWindow {
     private ItemSelectionOption selectionOption;
     public static boolean builtContents = false;
 
@@ -28,7 +26,7 @@ public class ItemSelectionScreen extends SubWindow {
 
     private final List<ItemStack> items = new ArrayList<>();
 
-    public ItemSelectionScreen(BaseScreen screen, String title, ItemSelectionOption selectionOption) {
+    public ItemSelectionWindow(BaseScreen screen, String title, ItemSelectionOption selectionOption) {
         super(screen, title, 0, 0, screen.window.width, screen.window.height);
 
         this.selectionOption = selectionOption;

@@ -7,7 +7,7 @@ import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.screens.clickgui.element.Window;
+import nicotine.screens.clickgui.element.window.Window;
 import nicotine.screens.clickgui.element.button.HUDButton;
 import nicotine.util.EventBus;
 import org.jetbrains.annotations.NotNull;

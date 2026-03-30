@@ -60,8 +60,8 @@ public class DropDownButton extends GUIButton {
         boxText.draw(context, mouseX, mouseY);
     }
 
-    public static List<ToggleButton> getDropDownButtons() {
-        List<ToggleButton> dropDownElements = new ArrayList<>();
+    public static List<GUIButton> getDropDownButtons() {
+        List<GUIButton> dropDownElements = new ArrayList<>();
 
         int posX = dropDownStartX;
         int posY = dropDownStartY;
@@ -71,20 +71,15 @@ public class DropDownButton extends GUIButton {
         for (int i = 0; i < selectedDropDownOption.modes.length; i++) {
             String mode = selectedDropDownOption.modes[i];
 
-            ToggleButton dropDownElement =  new ToggleButton(
-                    new ToggleOption(mode) {
-                        @Override
-                        public void toggle() {
-                            selectedDropDownOption.value = mode;
-                            selectedDropDownOption = null;
-                        }
-                    },
+            GUIButton dropDownElement =  new GUIButton(
+                    mode,
                     posX,
                     posY
             ) {
                 @Override
-                public boolean mouseOverElement(double mouseX, double mouseY) {
-                    return Render2D.mouseOver(this.x, this.y, this.width, this.height, mouseX, mouseY);
+                public void click(double mouseX, double mouseY, int input) {
+                    selectedDropDownOption.value = mode;
+                    selectedDropDownOption = null;
                 }
 
                 @Override

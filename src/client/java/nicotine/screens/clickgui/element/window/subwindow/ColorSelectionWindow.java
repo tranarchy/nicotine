@@ -1,12 +1,10 @@
-package nicotine.screens.clickgui;
+package nicotine.screens.clickgui.element.window.subwindow;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.input.KeyEvent;
-import nicotine.mod.mods.general.GUI;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
-import nicotine.screens.clickgui.element.SubWindow;
-import nicotine.screens.clickgui.element.Window;
+import nicotine.screens.clickgui.BaseScreen;
 import nicotine.screens.clickgui.element.button.SliderButton;
 import nicotine.screens.clickgui.element.button.ToggleButton;
 import nicotine.screens.clickgui.element.misc.Square;
@@ -18,11 +16,11 @@ import java.util.HexFormat;
 
 import static nicotine.util.Common.*;
 
-public class ColorSelectionScreen extends SubWindow {
+public class ColorSelectionWindow extends SubWindow {
 
     private final RGBOption rgbOption;
 
-    public ColorSelectionScreen(BaseScreen screen, String title, RGBOption rgbOption) {
+    public ColorSelectionWindow(BaseScreen screen, String title, RGBOption rgbOption) {
         super(screen, title, 0, 0, 160, 105);
         this.rgbOption = rgbOption;
     }
@@ -68,7 +66,7 @@ public class ColorSelectionScreen extends SubWindow {
 
     @Override
     public boolean handleKeyPress(KeyEvent keyEvent) {
-       if (keyEvent.hasControlDown()) {
+       if (keyEvent.hasControlDown() && this.mouseOverElement(this.screen.mouseX, this.screen.mouseY)) {
             if (keyEvent.key() == InputConstants.KEY_V) {
 
                 String hexColor = mc.keyboardHandler.getClipboard().trim();

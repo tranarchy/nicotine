@@ -1,7 +1,7 @@
 package nicotine.screens.clickgui;
 
 import nicotine.screens.clickgui.element.Element;
-import nicotine.screens.clickgui.element.Window;
+import nicotine.screens.clickgui.element.window.Window;
 import nicotine.screens.clickgui.element.button.*;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -113,41 +113,41 @@ public class ClickGUI extends BaseScreen {
         }
 
         for (ModOption modOption : ModButton.selectedMod.modOptions) {
-            Element element = new Element(
-                    modOption.subOption ? posX + PADDING : posX,
-                    posY,
-                    mc.font.width(modOption.name),
-                    mc.font.lineHeight + 3
-            );
-
+            
+            int buttonX = posX + (modOption.subOption ? PADDING : 0);
+            int buttonY = posY;
+            
+            int width = mc.font.width(modOption.name);
+            int height = mc.font.lineHeight + 3;
+            
             if (modOption instanceof SliderOption sliderOption) {
                 SliderButton sliderButton = new SliderButton(
                         sliderOption,
-                        element.x,
-                        element.y,
-                        element.x + element.width + 3,
-                        element.y - 2,
-                        (window.width / 2) - element.width - (PADDING * (modOption.subOption ? 3 : 2)) - 6,
-                        element.height - 2
+                        buttonX,
+                        buttonY,
+                        buttonX + width + 3,
+                        buttonY - 2,
+                        (window.width / 2) - width - (PADDING * (modOption.subOption ? 3 : 2)) - 6,
+                        height - 2
                 );
 
                 window.add(sliderButton);
             } else if (modOption instanceof DropDownOption dropDownOption) {
-                DropDownButton dropDownButton = new DropDownButton(dropDownOption, element.x, element.y);
+                DropDownButton dropDownButton = new DropDownButton(dropDownOption, buttonX, buttonY);
                 window.add(dropDownButton);
             } else if (modOption instanceof KeybindOption keybindOption) {
-                KeybindButton keybindButton = new KeybindButton(keybindOption, element.x, element.y);
+                KeybindButton keybindButton = new KeybindButton(keybindOption, buttonX, buttonY);
                 window.add(keybindButton);
             } else if (modOption instanceof ToggleOption toggleOption) {
-                ToggleButton toggleButton = new ToggleButton(toggleOption, element.x, element.y);
+                ToggleButton toggleButton = new ToggleButton(toggleOption, buttonX, buttonY);
                 window.add(toggleButton);
             } else if (modOption instanceof ItemSelectionOption selectionOption) {
                 String title = String.format("%s - Items", ModButton.selectedMod.name);
-                ItemSelectionButton selectionButton = new ItemSelectionButton(title, selectionOption, element.x, element.y);
+                ItemSelectionButton selectionButton = new ItemSelectionButton(this, title, selectionOption, buttonX, buttonY);
                 window.add(selectionButton);
             } else if (modOption instanceof RGBOption rgbOption) {
                 String title = String.format("%s - RGB", ModButton.selectedMod.name);
-                RGBButton rgbButton = new RGBButton(title, rgbOption, element.x, element.y);
+                RGBButton rgbButton = new RGBButton(this, title, rgbOption, buttonX, buttonY);
                 window.add(rgbButton);
             }
 
@@ -162,7 +162,6 @@ public class ClickGUI extends BaseScreen {
         addOptionButtons();
 
         Element firstElement = window.elements.getFirst();
-
         int dividerLinePosY = firstElement.y + firstElement.height + 2;
 
         window.add(new VLine(window.x + window.width / 2, dividerLinePosY, window.y + window.height - dividerLinePosY, ColorUtil.getPulsatingColor()));

@@ -8,12 +8,12 @@ import nicotine.util.render.Render2D;
 
 import static nicotine.util.Common.mc;
 
-public abstract class GUIButton extends ClickableElement {
+public class GUIButton extends ClickableElement {
     public String text = "";
     public int color = ColorUtil.FOREGROUND_COLOR;
 
     public GUIButton(String text, int x, int y) {
-        super(x, y, 0, 0);
+        super(x, y, mc.font.width(text), mc.font.lineHeight);
         this.text = text;
     }
 

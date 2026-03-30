@@ -1,6 +1,8 @@
-package nicotine.screens.clickgui.element;
+package nicotine.screens.clickgui.element.window;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import nicotine.screens.clickgui.element.ClickableElement;
+import nicotine.screens.clickgui.element.Element;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.Render2D;
 
@@ -8,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static nicotine.util.Common.mc;
-import static nicotine.util.Common.window;
 
 public class Window extends ClickableElement {
     public final List<Element> elements = new ArrayList<>();

@@ -5,10 +5,9 @@ import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
-import nicotine.mod.option.ToggleOption;
-import nicotine.screens.clickgui.element.SubWindow;
-import nicotine.screens.clickgui.element.Window;
-import nicotine.screens.clickgui.element.button.ToggleButton;
+import nicotine.screens.clickgui.element.window.subwindow.SubWindow;
+import nicotine.screens.clickgui.element.window.Window;
+import nicotine.screens.clickgui.element.button.GUIButton;
 import nicotine.screens.clickgui.element.misc.Text;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.Render2D;
@@ -28,10 +27,16 @@ public class AutoReconnectScreen extends BaseScreen {
 
             int elementPosY = this.y + 10;
 
-            this.closeButton.toggleOption = new ToggleOption("X") {
+            this.closeButton = new GUIButton(this.closeButton.text, this.closeButton.x, this.closeButton.y) {
                 @Override
-                public void toggle() {
+                public void click(double mouseX, double mouseY, int input) {
                     mc.setScreen(new JoinMultiplayerScreen(new TitleScreen()));
+                }
+
+                @Override
+                public void draw(GuiGraphicsExtractor context,double mouseX, double mouseY){
+                    Render2D.drawBorderAroundText(context, this.x, this.y, this.width, this.height,2, ColorUtil.getPulsatingColor());
+                    context.text(mc.font, this.text, this.x, this.y, ColorUtil.getPulsatingColor(), true);
                 }
             };
 
@@ -41,14 +46,7 @@ public class AutoReconnectScreen extends BaseScreen {
 
             elementPosY += 20;
 
-            ToggleOption reconnectOption = new ToggleOption("Reconnect") {
-                @Override
-                public void toggle() {
-                    reconnect();
-                }
-            };
-
-            ToggleButton reconnectButton = new ToggleButton(reconnectOption, this.x + (this.width / 2) - (mc.font.width(reconnectOption.name) / 2), elementPosY) {
+            GUIButton reconnectButton = new GUIButton("Reconnect", this.x + (this.width / 2) - (mc.font.width("Reconnect") / 2), elementPosY) {
                 @Override
                 public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
                     Render2D.drawBorderAroundText(context, this.x, this.y, this.width, this.height, 2, ColorUtil.getPulsatingColor());
@@ -56,8 +54,8 @@ public class AutoReconnectScreen extends BaseScreen {
                 }
 
                 @Override
-                public boolean mouseOverElement(double mouseX, double mouseY) {
-                    return Render2D.mouseOver(this.x, this.y, this.width, this.height, mouseX, mouseY);
+                public void click(double mouseX, double mouseY, int input) {
+                    reconnect();
                 }
             };
             this.add(reconnectButton);

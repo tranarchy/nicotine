@@ -2,7 +2,7 @@ package nicotine.screens.clickgui.element;
 
 import nicotine.util.render.Render2D;
 
-public class ClickableElement extends Element {
+public abstract class ClickableElement extends Element {
     public ClickableElement(int x, int y, int width, int height) {
         super(x, y, width, height);
     }

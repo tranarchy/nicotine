@@ -1,11 +1,12 @@
-package nicotine.screens.clickgui.element;
+package nicotine.screens.clickgui.element.window.subwindow;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
-import nicotine.mod.option.ToggleOption;
 import nicotine.screens.clickgui.BaseScreen;
-import nicotine.screens.clickgui.element.button.ToggleButton;
+import nicotine.screens.clickgui.element.Draggable;
+import nicotine.screens.clickgui.element.button.GUIButton;
 import nicotine.screens.clickgui.element.misc.Text;
+import nicotine.screens.clickgui.element.window.Window;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.Render2D;
 
@@ -15,7 +16,7 @@ public class SubWindow extends Window implements Draggable {
     protected BaseScreen screen;
 
     private final Text titleText;
-    protected final ToggleButton closeButton;
+    protected GUIButton closeButton;
     protected final Window dragArea;
 
     @Override
@@ -38,14 +39,7 @@ public class SubWindow extends Window implements Draggable {
             }
         };
 
-        ToggleOption closeOption = new ToggleOption("X") {
-            @Override
-            public void toggle() {
-                screen.removeSubWindow(subWindow);
-            }
-        };
-
-        closeButton = new ToggleButton(closeOption, subWindow.x, subWindow.y) {
+        closeButton = new GUIButton("X", subWindow.x, subWindow.y) {
             @Override
             public void draw(GuiGraphicsExtractor context,double mouseX, double mouseY){
                 Render2D.drawBorderAroundText(context, this.x, this.y, this.width, this.height,2, ColorUtil.getPulsatingColor());
@@ -53,8 +47,8 @@ public class SubWindow extends Window implements Draggable {
             }
 
             @Override
-            public boolean mouseOverElement(double mouseX, double mouseY) {
-                return Render2D.mouseOver(this.x, this.y, this.width, this.height, mouseX, mouseY);
+            public void click(double mouseX, double mouseY, int input) {
+                screen.removeSubWindow(subWindow);
             }
         };
 

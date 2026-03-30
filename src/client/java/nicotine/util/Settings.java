@@ -32,7 +32,7 @@ public class Settings {
         settings.addProperty("commandPrefix", CommandManager.prefix);
 
         JsonObject waypoints = new JsonObject();
-        for (WaypointInstance waypointInstance : allWaypoints) {
+        for (WaypointInstance waypointInstance : waypointInstances) {
 
             JsonObject waypoint = new JsonObject();
             waypoint.addProperty("dimension", waypointInstance.dimension);
@@ -44,7 +44,7 @@ public class Settings {
             waypoints.add(waypointInstance.name, waypoint);
         }
 
-        if (!allWaypoints.isEmpty()) {
+        if (!waypointInstances.isEmpty()) {
             settings.add("waypoints", waypoints);
         }
 
@@ -157,7 +157,7 @@ public class Settings {
             JsonObject waypoints = (JsonObject) settings.get("waypoints");
             for (String waypoint : waypoints.keySet()) {
                 JsonObject waypointInfo = (JsonObject) waypoints.get(waypoint);
-                allWaypoints.add(new WaypointInstance(
+                waypointInstances.add(new WaypointInstance(
                         waypoint,
                         waypointInfo.get("dimension").getAsString(),
                         waypointInfo.get("server").getAsString(),

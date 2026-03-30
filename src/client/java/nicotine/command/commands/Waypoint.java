@@ -11,7 +11,7 @@ import static nicotine.util.Common.*;
 
 public class Waypoint extends Command {
     private void addWaypoint(String waypoint, int x, int y, int z) {
-        allWaypoints.add(new WaypointInstance(waypoint, mc.level.dimension().identifier().toString(), currentServer.ip, x, y, z));
+        waypointInstances.add(new WaypointInstance(waypoint, mc.level.dimension().identifier().toString(), currentServer.ip, x, y, z));
         Settings.save();
     }
 
@@ -23,9 +23,9 @@ public class Waypoint extends Command {
     private void removeWaypoint(String waypoint) {
         boolean removed = false;
 
-        for (WaypointInstance  waypointInstance : allWaypoints.stream().toList()) {
+        for (WaypointInstance  waypointInstance : waypointInstances.stream().toList()) {
             if (waypointInstance.name.equals(waypoint) && waypointInstance.server.equals(currentServer.ip)) {
-                allWaypoints.remove(waypointInstance);
+                waypointInstances.remove(waypointInstance);
                 removed = true;
                 break;
             }
@@ -48,7 +48,7 @@ public class Waypoint extends Command {
     @Override
     public void trigger(String[] splitCommand) {
         if (splitCommand.length == 1) {
-            for (WaypointInstance waypointInstance : allWaypoints) {
+            for (WaypointInstance waypointInstance : waypointInstances) {
                 if (waypointInstance.server.equals(currentServer.ip)) {
                     Message.send(String.format("%s%s -> %s[%d %d %d] [%s]",
                             ChatFormatting.DARK_PURPLE,
