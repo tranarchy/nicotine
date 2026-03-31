@@ -136,6 +136,7 @@ public class BaseScreen extends Screen {
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
             Settings.save();
+            DropDownButton.selectedDropDownOption = null;
             this.onClose();
         }
 
