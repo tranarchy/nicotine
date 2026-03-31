@@ -202,6 +202,11 @@ public class BaseScreen extends Screen {
     }
 
     @Override
+    public boolean isAllowedInPortal() {
+        return true;
+    }
+
+    @Override
     public void extractBackground(@NotNull GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
         if (GUI.blur.enabled) {
             this.extractBlurredBackground(context);
