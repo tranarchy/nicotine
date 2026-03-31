@@ -54,7 +54,7 @@ public class Item extends Mod {
                         ItemStack itemStack = itemEntity.getItem();
                         String itemText = String.format("%s (%d)", itemStack.getItemName().getString(), itemStack.getCount());
 
-                        Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, itemEntity.position().add(0, 0.3, 0), itemText, CommonColors.WHITE, 0.6f);
+                        Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, itemEntity.position().add(0, 0.3, 0), itemText, CommonColors.WHITE, 1.0f);
                     }
 
                     if (esp.enabled) {

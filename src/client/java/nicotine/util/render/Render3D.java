@@ -11,6 +11,8 @@ import nicotine.mod.mods.general.Render;
 import nicotine.util.ColorUtil;
 import nicotine.util.math.Boxf;
 
+import java.util.List;
+
 import static nicotine.util.Common.mc;
 
 public class Render3D {
@@ -131,6 +133,10 @@ public class Render3D {
     }
 
     public static void drawText(PoseStack matrix, MultiBufferSource multiBufferSource, Camera camera, Vec3 position, String text, int color, float scale) {
+        drawTexts(matrix, multiBufferSource, camera, position, List.of(text), List.of(color), scale, false);
+    }
+
+    public static void drawTexts(PoseStack matrix, MultiBufferSource multiBufferSource, Camera camera, Vec3 position, List<String> texts, List<Integer> colors, float scale, boolean dynamicScaling) {
         Font textRenderer = mc.font;
 
         Vec3 cameraPos = camera.position();
@@ -138,11 +144,23 @@ public class Render3D {
         matrix.pushPose();
         matrix.translate((float)(position.x - cameraPos.x), (float)(position.y - cameraPos.y) + 0.50F, (float)(position.z - cameraPos.z));
         matrix.mulPose(camera.rotation());
-        float size = (0.025F * scale) + (float)position.distanceTo(mc.player.position()) / 1000;
-        matrix.scale(size, -size, size);
-        float x = (float) textRenderer.width(text) / 2.0F;
+        float size = 0.025F * scale;
 
-        textRenderer.drawInBatch(Component.literal(text), -x, 0.0F, color, true, matrix.last().pose(), multiBufferSource, Font.DisplayMode.SEE_THROUGH,  0x50000000, 0);
+        if (dynamicScaling)
+            size += (float)position.distanceTo(mc.player.position()) / 1000;
+
+        matrix.scale(size, -size, size);
+
+        int y = (int)(size / 0.025F);
+
+        for (int i = texts.size() - 1; i >= 0; i--) {
+            String text = texts.get(i);
+
+            float x = (float) textRenderer.width(text) / 2.0F;
+            textRenderer.drawInBatch(Component.literal(text), -x, y, colors.get(i), true, matrix.last().pose(), multiBufferSource, Font.DisplayMode.SEE_THROUGH, 0x50000000, 0);
+            y -= mc.font.lineHeight + 2;
+        }
+
         matrix.popPose();
     }
 }
