@@ -3,3 +3,5 @@ accessible method net/minecraft/client/renderer/RenderPipelines register (Lcom/m
 accessible method net/minecraft/client/renderer/rendertype/RenderType create (Ljava/lang/String;Lnet/minecraft/client/renderer/rendertype/RenderSetup;)Lnet/minecraft/client/renderer/rendertype/RenderType;
 accessible field net/minecraft/client/renderer/RenderPipelines LINES_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 accessible field net/minecraft/client/renderer/RenderPipelines DEBUG_FILLED_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
+accessible class net/minecraft/client/multiplayer/ClientChunkCache$Storage
+accessible method net/minecraft/client/multiplayer/ClientChunkCache$Storage inRange (II)Z

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -18,6 +19,6 @@ public class Common {
 
     public static HashMap<AbstractClientPlayer, Integer> totemPopCounter = new HashMap<>();
     public static List<WaypointInstance> waypointInstances = new ArrayList<>();
-    public static List<LevelChunk> loadedChunks = new ArrayList<>();
+    public static HashMap<LevelChunk, ClientLevel> loadedChunks = new HashMap<>();
     public static Set<UUID> friendList = new HashSet<>();
 }

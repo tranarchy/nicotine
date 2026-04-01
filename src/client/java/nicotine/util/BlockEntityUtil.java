@@ -18,7 +18,9 @@ public class BlockEntityUtil {
 
         List<BlockEntity> blockEntities = new ArrayList<>();
 
-        for (LevelChunk levelChunk : loadedChunks) {
+        loadedChunks.entrySet().removeIf(entry -> entry.getValue().dimension() != mc.player.level().dimension());
+
+        for (LevelChunk levelChunk : loadedChunks.keySet()) {
             blockEntities.addAll(levelChunk.getBlockEntities().values());
         }
 
