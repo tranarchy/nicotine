@@ -3,6 +3,7 @@ package nicotine.util;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import nicotine.mod.mods.combat.AutoArmor;
 import nicotine.mod.mods.general.GUI;
 import nicotine.mod.mods.general.HUD;
@@ -52,7 +53,7 @@ public class Keybind {
             return false;
 
         if (((keycode < 8 && GLFW.glfwGetMouseButton(window.handle(), keycode) == 1) || (keycode > 7 && InputConstants.isKeyDown(window, keycode))) &&
-                !(mc.screen instanceof ChatScreen) && !(mc.screen instanceof BaseScreen)) {
+                !(mc.screen instanceof ChatScreen) && !(mc.screen instanceof BaseScreen) && !(mc.screen instanceof SignEditScreen)) {
             if (!keysPressed.containsKey(keycode)) {
                 keysPressed.put(name, keycode);
             }

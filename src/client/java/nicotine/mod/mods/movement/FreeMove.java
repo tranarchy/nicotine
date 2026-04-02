@@ -3,6 +3,7 @@ package nicotine.mod.mods.movement;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -29,7 +30,7 @@ public class FreeMove extends Mod {
         };
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!this.enabled || mc.screen == null || mc.screen instanceof ChatScreen || InputText.selectedTextBox != null)
+            if (!this.enabled || mc.screen == null || mc.screen instanceof ChatScreen || mc.screen instanceof SignEditScreen || InputText.selectedTextBox != null)
                 return true;
 
             for (KeyMapping freeMoveKeybind : freeMoveKeybinds) {
