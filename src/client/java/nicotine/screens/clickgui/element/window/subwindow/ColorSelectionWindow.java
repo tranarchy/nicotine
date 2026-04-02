@@ -9,6 +9,7 @@ import nicotine.screens.clickgui.element.button.SliderButton;
 import nicotine.screens.clickgui.element.button.ToggleButton;
 import nicotine.screens.clickgui.element.misc.Square;
 import nicotine.screens.clickgui.element.misc.Text;
+import nicotine.screens.clickgui.element.window.DecoratedWindow;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -16,7 +17,7 @@ import java.util.HexFormat;
 
 import static nicotine.util.Common.*;
 
-public class ColorSelectionWindow extends SubWindow {
+public class ColorSelectionWindow extends DecoratedWindow {
 
     private final RGBOption rgbOption;
 

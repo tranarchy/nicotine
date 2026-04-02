@@ -16,7 +16,7 @@ import nicotine.mod.mods.general.GUI;
 import nicotine.screens.clickgui.element.*;
 import nicotine.screens.clickgui.element.button.*;
 import nicotine.screens.clickgui.element.button.InputText;
-import nicotine.screens.clickgui.element.window.subwindow.SubWindow;
+import nicotine.screens.clickgui.element.window.DecoratedWindow;
 import nicotine.screens.clickgui.element.window.Window;
 import nicotine.util.Settings;
 import org.jetbrains.annotations.NotNull;
@@ -38,18 +38,18 @@ public class BaseScreen extends Screen {
     public double mouseX = 0;
     public double mouseY = 0;
 
-    private final List<SubWindow> subWindows = new ArrayList<>();
+    private final List<Window> subWindows = new ArrayList<>();
 
     public BaseScreen(String title, Window window) {
         super(Component.literal(title));
         this.window = window;
     }
 
-    public void addSubWindow(SubWindow subWindow) {
+    public void addSubWindow(Window subWindow) {
         this.subWindows.add(subWindow);
     }
 
-    public void removeSubWindow(SubWindow subWindow) {
+    public void removeSubWindow(Window subWindow) {
         this.subWindows.remove(subWindow);
     }
 
@@ -104,7 +104,7 @@ public class BaseScreen extends Screen {
             dragElement(mouseX, mouseY, dragOffset, elementForDragging);
             return true;
         } else {
-            for (Element element : window.elements) {
+            for (Element element : this.window.getElements()) {
                 if (element instanceof SliderButton sliderButton && sliderButton.mouseOverElement(mouseX, mouseY)) {
                     sliderButton.click(mouseX, mouseY, InputConstants.MOUSE_BUTTON_LEFT);
                     draggingSlider = true;
@@ -116,7 +116,7 @@ public class BaseScreen extends Screen {
         if (draggingSlider)
             return true;
 
-        for (Element element : this.window.elements) {
+        for (Element element : this.window.getElements(true)) {
             if (!(element instanceof Draggable draggable))
                 continue;
 
@@ -140,7 +140,7 @@ public class BaseScreen extends Screen {
             this.onClose();
         }
 
-        for (SubWindow subWindow : this.subWindows) {
+        for (Window subWindow : this.subWindows) {
             if (subWindow.handleKeyPress(keyEvent)) {
                 return true;
             }
@@ -159,13 +159,18 @@ public class BaseScreen extends Screen {
             } else {
                 String input = InputConstants.getKey(new KeyEvent(keyEvent.key(), 0, 0)).getDisplayName().getString().toLowerCase();
 
-                if (input.length() < 2 && mc.font.width( InputText.selectedTextBox.text + input + "_") < window.width) {
+                if (input.length() < 2 && mc.font.width( InputText.selectedTextBox.text + input + "_") < InputText.selectedTextBox.width) {
                     InputText.selectedTextBox.text += input;
                 }
             }
        }
 
         return true;
+    }
+
+    @Override
+    public void init() {
+        this.window.centerPosition();
     }
 
     @Override
@@ -183,7 +188,7 @@ public class BaseScreen extends Screen {
         double mouseX = mouseButtonEvent.x();
         double mouseY = mouseButtonEvent.y();
 
-        for (Element element : window.elements.reversed()) {
+        for (Element element : this.window.getElements().reversed()) {
             if (element instanceof ClickableElement clickableElement && clickableElement.mouseOverElement(mouseX, mouseY)) {
                 clickableElement.click(mouseX, mouseY, mouseButtonEvent.input());
 
@@ -225,26 +230,26 @@ public class BaseScreen extends Screen {
 
     @Override
     public void extractRenderState(@NotNull GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
-        window.elements.clear();
-        window.centerPosition();
+        window.clear();
 
         addDrawables();
         if (DropDownButton.selectedDropDownOption != null) {
-            window.elements.addAll(DropDownButton.getDropDownButtons());
+            window.add(DropDownButton.getDropDownButtons());
         }
 
-        window.elements.sort(Comparator.comparing(x -> x.z));
+        this.window.applyZIndex();
 
         window.draw(context, mouseX, mouseY);
     }
 
     protected void addDrawables() {
-        for (SubWindow subWindow : this.subWindows) {
+        this.window.addDrawables();
+
+        for (Window subWindow : this.subWindows) {
             this.window.add(subWindow);
             subWindow.addDrawables();
-            for (Element element : subWindow.elements) {
-                this.window.add(element);
-            }
+            this.window.add(subWindow.getElements());
+            subWindow.clear();
         }
     }
 }

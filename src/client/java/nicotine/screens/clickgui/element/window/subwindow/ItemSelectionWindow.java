@@ -12,14 +12,15 @@ import nicotine.screens.clickgui.BaseScreen;
 import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.screens.clickgui.element.button.ItemButton;
 import nicotine.screens.clickgui.element.misc.HLine;
+import nicotine.screens.clickgui.element.window.DecoratedWindow;
 import nicotine.util.ColorUtil;
 
 import java.util.*;
 
 import static nicotine.util.Common.*;
 
-public class ItemSelectionWindow extends SubWindow {
-    private ItemSelectionOption selectionOption;
+public class ItemSelectionWindow extends DecoratedWindow {
+    private final ItemSelectionOption selectionOption;
     public static boolean builtContents = false;
 
     private final InputText inputText;

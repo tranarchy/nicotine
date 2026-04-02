@@ -1,7 +1,5 @@
 package nicotine.screens.clickgui;
 
-import nicotine.screens.clickgui.element.Element;
-import nicotine.screens.clickgui.element.window.Window;
 import nicotine.screens.clickgui.element.button.*;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -9,6 +7,7 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
 import nicotine.screens.clickgui.element.misc.HLine;
 import nicotine.screens.clickgui.element.misc.VLine;
+import nicotine.screens.clickgui.element.window.DecoratedWindow;
 import nicotine.util.ColorUtil;
 
 import static nicotine.util.Common.*;
@@ -18,7 +17,7 @@ public class ClickGUI extends BaseScreen {
     private final int PADDING = 5;
 
     public ClickGUI() {
-        super("nicotine GUI", new Window(0, 0, 0, 0));
+        super("nicotine GUI", new DecoratedWindow(null, String.format("nicotine v%s", nicotine.getVersion()), 0, 0, 0, 0));
         setWindowSize();
     }
 
@@ -65,7 +64,7 @@ public class ClickGUI extends BaseScreen {
         }
 
         int posX = window.x + PADDING;
-        int posY = window.elements.getFirst().y + window.elements.getFirst().height + PADDING;
+        int posY = window.y + 4 + mc.font.lineHeight + PADDING;
 
         for (Mod mod : ModManager.modules.get(CategoryButton.selectedModCategory)) {
             if (ModButton.selectedMod == null) {
@@ -88,7 +87,7 @@ public class ClickGUI extends BaseScreen {
 
     private void addOptionButtons() {
         int posX = window.x + window.width / 2 + PADDING;
-        int posY = window.elements.getFirst().y + window.elements.getFirst().height + PADDING;
+        int posY = window.y + 4 + mc.font.lineHeight + PADDING;
 
         if (!ModButton.selectedMod.alwaysEnabled) {
             ToggleOption toggleModOption = new ToggleOption("Enabled") {
@@ -106,7 +105,7 @@ public class ClickGUI extends BaseScreen {
                     posY
             );
 
-            window.elements.add(toggleModOptionButton);
+            window.add(toggleModOptionButton);
 
             posX += PADDING;
             posY += mc.font.lineHeight + 5;
@@ -161,8 +160,7 @@ public class ClickGUI extends BaseScreen {
         addModButtons();
         addOptionButtons();
 
-        Element firstElement = window.elements.getFirst();
-        int dividerLinePosY = firstElement.y + firstElement.height + 2;
+        int dividerLinePosY = window.y + 4 + mc.font.lineHeight + 2;
 
         window.add(new VLine(window.x + window.width / 2, dividerLinePosY, window.y + window.height - dividerLinePosY, ColorUtil.getPulsatingColor()));
         window.add(new HLine(window.x, dividerLinePosY, window.width, ColorUtil.getPulsatingColor()));

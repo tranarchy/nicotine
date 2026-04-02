@@ -3,13 +3,13 @@ package nicotine.screens.clickgui.element.button;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import nicotine.screens.clickgui.BaseScreen;
-import nicotine.screens.clickgui.element.window.subwindow.SubWindow;
+import nicotine.screens.clickgui.element.window.DecoratedWindow;
 
 
 public class SubWindowButton extends GUIButton {
     protected final BaseScreen screen;
     protected final String title;
-    protected SubWindow subWindow;
+    protected DecoratedWindow subWindow;
 
     public SubWindowButton(BaseScreen screen, String text, String title, int x, int y) {
         super(text, x, y);
@@ -36,7 +36,7 @@ public class SubWindowButton extends GUIButton {
         this.subWindow.y = (int)mouseY;
     }
 
-    public void setSubWindow(SubWindow subWindow) {
+    public void setSubWindow(DecoratedWindow subWindow) {
         this.subWindow = subWindow;
     }
 }
