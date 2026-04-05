@@ -24,14 +24,11 @@ import static nicotine.util.Common.*;
 
 public class Settings {
     private static final String SETTINGS_PATH = "nicotine.json";
+    private static final String WAYPOINTS_PATH = "nicotine_waypoints.json";
 
     public static void save() {
-
-        JsonObject settings = new JsonObject();
-
-        settings.addProperty("commandPrefix", CommandManager.prefix);
-
         JsonObject waypoints = new JsonObject();
+
         for (WaypointInstance waypointInstance : waypointInstances) {
 
             JsonObject waypoint = new JsonObject();
@@ -44,9 +41,9 @@ public class Settings {
             waypoints.add(waypointInstance.name, waypoint);
         }
 
-        if (!waypointInstances.isEmpty()) {
-            settings.add("waypoints", waypoints);
-        }
+        JsonObject settings = new JsonObject();
+
+        settings.addProperty("commandPrefix", CommandManager.prefix);
 
         if (!friendList.isEmpty()) {
             JsonArray friends = new JsonArray();
@@ -130,12 +127,18 @@ public class Settings {
             FileWriter settingsFile = new FileWriter(SETTINGS_PATH);
             settingsFile.write(settings.toString());
             settingsFile.close();
+
+            if (!waypointInstances.isEmpty()) {
+                FileWriter waypointsFile = new FileWriter(WAYPOINTS_PATH);
+                waypointsFile.write(waypoints.toString());
+                waypointsFile.close();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void load() {
+    public static void init() {
         Path settingsPath = Paths.get(SETTINGS_PATH);
         if (!Files.exists(settingsPath))
             return;
@@ -151,21 +154,6 @@ public class Settings {
 
         if (settings.has("commandPrefix")) {
             CommandManager.prefix = settings.get("commandPrefix").getAsString();
-        }
-
-        if (settings.has("waypoints")) {
-            JsonObject waypoints = (JsonObject) settings.get("waypoints");
-            for (String waypoint : waypoints.keySet()) {
-                JsonObject waypointInfo = (JsonObject) waypoints.get(waypoint);
-                waypointInstances.add(new WaypointInstance(
-                        waypoint,
-                        waypointInfo.get("dimension").getAsString(),
-                        waypointInfo.get("server").getAsString(),
-                        waypointInfo.get("x").getAsInt(),
-                        waypointInfo.get("y").getAsInt(),
-                        waypointInfo.get("z").getAsInt())
-                );
-            }
         }
 
         if (settings.has("friends")) {
@@ -247,5 +235,31 @@ public class Settings {
                 }
             }
         }
+
+        Path waypointsPath = Paths.get(WAYPOINTS_PATH);
+        if (!Files.exists(waypointsPath))
+            return;
+
+        JsonObject waypoints;
+
+        try {
+            String waypointsAsString = Files.readString(waypointsPath);
+            waypoints = (JsonObject) JsonParser.parseString(waypointsAsString);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        for (String waypoint : waypoints.keySet()) {
+            JsonObject waypointInfo = (JsonObject) waypoints.get(waypoint);
+            waypointInstances.add(new WaypointInstance(
+                    waypoint,
+                    waypointInfo.get("dimension").getAsString(),
+                    waypointInfo.get("server").getAsString(),
+                    waypointInfo.get("x").getAsInt(),
+                    waypointInfo.get("y").getAsInt(),
+                    waypointInfo.get("z").getAsInt())
+            );
+        }
+
     }
 }

@@ -22,7 +22,7 @@ public class Main implements ClientModInitializer {
 			CommandManager.init();
 			Player.init();
             Keybind.init();
-			Settings.load();
+			Settings.init();
 
             ranInit = true;
 
