@@ -28,7 +28,7 @@ public class ItemSelectionWindow extends DecoratedWindow {
     private final List<ItemStack> items = new ArrayList<>();
 
     public ItemSelectionWindow(BaseScreen screen, String title, ItemSelectionOption selectionOption) {
-        super(screen, title, 0, 0, screen.window.width, screen.window.height);
+        super(screen, title, 0, 0, 224, 180);
 
         this.selectionOption = selectionOption;
 
@@ -37,7 +37,7 @@ public class ItemSelectionWindow extends DecoratedWindow {
             builtContents = true;
         }
 
-        inputText = new InputText(0, 0, this.width - 4, mc.font.lineHeight + 2);
+        inputText = new InputText(0, 0, this.width - 4, mc.font.lineHeight + 2, "Search");
 
         getAllItems();
     }
@@ -74,26 +74,34 @@ public class ItemSelectionWindow extends DecoratedWindow {
 
         this.add(inputText);
 
-        posX -= 4;
+        posX -= 3;
         posY += mc.font.lineHeight + 5;
 
-        for (ItemStack itemStack : items) {
-            if (!itemStack.getHoverName().getString().toLowerCase().contains(inputText.text))
-                continue;
+        List<ItemStack> filteredItems = items.stream().filter(
+                x -> x.getHoverName().getString().toLowerCase().contains(inputText.text.toLowerCase())
+        ).toList();
 
-            if (posX + 16 > this.x + this.width) {
-                posX = this.x + 1;
-                posY += 16;
+
+        if (this.width / 17 * this.scrollOffset > filteredItems.size() - 1 && !filteredItems.isEmpty()) {
+            scrollOffset--;
+        }
+
+        int skipAmount = this.width / 17 * this.scrollOffset;
+
+        for (ItemStack itemStack : filteredItems.stream().skip(skipAmount).toList()) {
+            if (posX + 17 > this.x + this.width) {
+                posX = this.x + 2;
+                posY += 17;
             }
 
-            if (posY + 16 > this.y + this.height) {
+            if (posY + 17 > this.y + this.height) {
                 break;
             }
 
             ItemButton itemButton = new ItemButton(itemStack, selectionOption, posX, posY);
             this.add(itemButton);
 
-            posX += 16;
+            posX += 17;
         }
     }
 }
