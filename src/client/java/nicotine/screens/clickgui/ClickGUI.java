@@ -148,6 +148,14 @@ public class ClickGUI extends BaseScreen {
                 String title = String.format("%s - RGB", ModButton.selectedMod.name);
                 RGBButton rgbButton = new RGBButton(this, title, rgbOption, buttonX, buttonY);
                 window.add(rgbButton);
+            } else if (modOption instanceof ClickOption clickOption) {
+                GUIButton guiButton = new GUIButton(clickOption.name, buttonX, buttonY) {
+                    @Override
+                    public void click(double mouseX, double mouseY, int input) {
+                        clickOption.click();
+                    }
+                };
+                window.add(guiButton);
             }
 
             posY += mc.font.lineHeight + 5;

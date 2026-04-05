@@ -6,7 +6,7 @@ import nicotine.mod.option.ModOption;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mod {
+public abstract class Mod {
     public ModCategory modCategory;
     public String name;
     public String description = "";

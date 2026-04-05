@@ -81,9 +81,5 @@ public class KeybindButton extends GUIButton {
         this.boxText.draw(context, mouseX, mouseY);
 
         super.draw(context, mouseX, mouseY);
-
-        if (mouseOverElement(mouseX, mouseY)) {
-            drawUnderline(context);
-        }
     }
 }

@@ -16,6 +16,8 @@ import static nicotine.util.Common.mc;
 public class Window extends ClickableElement {
     private final List<Element> elements = new ArrayList<>();
 
+    public int scrollOffset = 0;
+
     public Window(int x, int y, int width, int height) {
         super(x, y, width, height);
     }

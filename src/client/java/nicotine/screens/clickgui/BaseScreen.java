@@ -16,14 +16,12 @@ import nicotine.mod.mods.general.GUI;
 import nicotine.screens.clickgui.element.*;
 import nicotine.screens.clickgui.element.button.*;
 import nicotine.screens.clickgui.element.button.InputText;
-import nicotine.screens.clickgui.element.window.DecoratedWindow;
 import nicotine.screens.clickgui.element.window.Window;
 import nicotine.util.Settings;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import static nicotine.util.Common.mc;
@@ -96,6 +94,22 @@ public class BaseScreen extends Screen {
     }
 
     @Override
+    public boolean mouseScrolled(final double x, final double y, final double scrollX, final double scrollY) {
+        for (Element element : this.window.getElements(true)) {
+            if (element instanceof Window window && window.mouseOverElement(mouseX, mouseY)) {
+                if (scrollY > 0) {
+                    if (window.scrollOffset > 0)
+                        window.scrollOffset--;
+                } else {
+                    window.scrollOffset++;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
     public boolean mouseDragged(MouseButtonEvent mouseButtonEvent, double offsetX, double offsetY) {
         double mouseX = mouseButtonEvent.x();
         double mouseY = mouseButtonEvent.y();
@@ -132,12 +146,21 @@ public class BaseScreen extends Screen {
         return true;
     }
 
+    public void closeScreen() {
+        this.onClose();
+    }
+
     @Override
     public boolean keyPressed(KeyEvent keyEvent) {
         if (keyEvent.key() == InputConstants.KEY_ESCAPE) {
+            if (InputText.selectedTextBox != null) {
+                InputText.selectedTextBox = null;
+                return true;
+            }
+
             Settings.save();
             DropDownButton.selectedDropDownOption = null;
-            this.onClose();
+            closeScreen();
         }
 
         for (Window subWindow : this.subWindows) {
@@ -157,9 +180,15 @@ public class BaseScreen extends Screen {
             } else if (keyEvent.key() == InputConstants.KEY_BACKSPACE && !  InputText.selectedTextBox.text.isEmpty()) {
                InputText.selectedTextBox.text = InputText.selectedTextBox.text.substring(0,  InputText.selectedTextBox.text.length() - 1);
             } else {
-                String input = InputConstants.getKey(new KeyEvent(keyEvent.key(), 0, 0)).getDisplayName().getString().toLowerCase();
+                String input = InputConstants.getKey(new KeyEvent(keyEvent.key(), 0, 0)).getDisplayName().getString();
 
-                if (input.length() < 2 && mc.font.width( InputText.selectedTextBox.text + input + "_") < InputText.selectedTextBox.width) {
+                if (input.length() < 2 &&
+                        (InputText.selectedTextBox.regexString.isEmpty() ||
+                                String.format("%s%s", InputText.selectedTextBox.text, input).matches(InputText.selectedTextBox.regexString))
+                    ) {
+                    if (keyEvent.modifiers() != 1)
+                        input = input.toLowerCase();
+
                     InputText.selectedTextBox.text += input;
                 }
             }

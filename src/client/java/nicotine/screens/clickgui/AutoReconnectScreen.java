@@ -1,16 +1,11 @@
 package nicotine.screens.clickgui;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ConnectScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import nicotine.screens.clickgui.element.window.DecoratedWindow;
-import nicotine.screens.clickgui.element.window.Window;
 import nicotine.screens.clickgui.element.button.GUIButton;
 import nicotine.screens.clickgui.element.misc.Text;
-import nicotine.util.ColorUtil;
-import nicotine.util.render.Render2D;
 
 import static nicotine.util.Common.currentServer;
 import static nicotine.util.Common.mc;
@@ -29,13 +24,7 @@ public class AutoReconnectScreen extends BaseScreen {
 
         elementPosY += 20;
 
-        GUIButton reconnectButton = new GUIButton("Reconnect", this.window.x + (this.window.width / 2) - (mc.font.width("Reconnect") / 2), elementPosY) {
-            @Override
-            public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
-                Render2D.drawBorderAroundText(context, this.x, this.y, this.width, this.height, 2, ColorUtil.getPulsatingColor());
-                context.text(mc.font, this.text, this.x, this.y, this.color, true);
-            }
-
+        GUIButton reconnectButton = new GUIButton("Reconnect", this.window.x + (this.window.width / 2) - (mc.font.width("Reconnect") / 2), elementPosY, 2) {
             @Override
             public void click(double mouseX, double mouseY, int input) {
                 reconnect();

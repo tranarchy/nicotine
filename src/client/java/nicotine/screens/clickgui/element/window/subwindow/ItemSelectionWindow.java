@@ -37,7 +37,7 @@ public class ItemSelectionWindow extends DecoratedWindow {
             builtContents = true;
         }
 
-        inputText = new InputText(0, 0, this.width - 5, mc.font.lineHeight + 2);
+        inputText = new InputText(0, 0, this.width - 4, mc.font.lineHeight + 2);
 
         getAllItems();
     }
@@ -69,19 +69,13 @@ public class ItemSelectionWindow extends DecoratedWindow {
         int posX = this.x + 5;
         int posY = this.y + 5;
 
-        inputText.x = posX;
-        inputText.y = posY;
+        inputText.x = posX - 2;
+        inputText.y = posY - 2;
 
         this.add(inputText);
 
-        posY += mc.font.lineHeight + 2;
-
-        HLine separator = new HLine(this.x, posY, this.width, ColorUtil.getPulsatingColor());
-
-        this.add(separator);
-
         posX -= 4;
-        posY += 3;
+        posY += mc.font.lineHeight + 5;
 
         for (ItemStack itemStack : items) {
             if (!itemStack.getHoverName().getString().toLowerCase().contains(inputText.text))
@@ -101,15 +95,5 @@ public class ItemSelectionWindow extends DecoratedWindow {
 
             posX += 16;
         }
-    }
-
-    @Override
-    public boolean handleKeyPress(KeyEvent keyEvent) {
-        if (keyEvent.key() == InputConstants.KEY_ESCAPE && InputText.selectedTextBox != null) {
-            InputText.selectedTextBox = null;
-            return true;
-        }
-
-        return false;
     }
 }

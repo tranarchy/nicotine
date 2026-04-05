@@ -33,13 +33,18 @@ public class ToggleButton extends GUIButton {
 
     @Override
     public boolean mouseOverElement(double mouseX, double mouseY) {
-        return Render2D.mouseOver(this.x, this.y, this.width + this.boxText.width + 4, this.height, mouseX, mouseY);
+        return Render2D.mouseOver(this.x, this.y, getFullWidth(), this.height, mouseX, mouseY);
+    }
+
+    public int getFullWidth() {
+        return this.width + this.boxText.width + 4;
     }
 
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         this.color = this.toggleOption.enabled ? ColorUtil.ACTIVE_FOREGROUND_COLOR : ColorUtil.FOREGROUND_COLOR;
         this.boxText.color = this.color;
+        this.boxText.x = this.x + this.width + 4;
 
         Render2D.drawBorderAroundText(context, this.boxText.text, this.boxText.x, this.boxText.y, 1, ColorUtil.BORDER_COLOR);
         this.boxText.text = this.toggleOption.enabled ? "✔" : "";

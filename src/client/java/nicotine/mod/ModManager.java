@@ -49,7 +49,6 @@ public class ModManager {
         add(new BlockBreaking());
         add(new BlockOutline());
         add(new EntityOwner());
-        add(new Waypoints());
         add(new FreeCam());
         add(new ThirdPerson());
         add(new Xray());
@@ -114,5 +113,6 @@ public class ModManager {
         add(new GUI());
         add(new HUD());
         add(new Render());
+        add(new Waypoints());
     }
 }

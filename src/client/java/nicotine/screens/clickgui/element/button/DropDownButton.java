@@ -52,9 +52,13 @@ public class DropDownButton extends GUIButton {
         return Render2D.mouseOver(this.boxText.x, this.boxText.y, this.boxText.width, this.height, mouseX, mouseY);
     }
 
+    public int getFullWidth() {
+        return this.width + this.boxText.width;
+    }
+
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
-        super.draw(context, mouseX, mouseY);
+        context.text(mc.font, this.text, this.x, this.y, this.color, true);
 
         Render2D.drawBorderAroundText(context, boxText.text, this.boxText.x, this.boxText.y, 1, ColorUtil.BORDER_COLOR);
         boxText.draw(context, mouseX, mouseY);

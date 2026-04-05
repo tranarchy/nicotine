@@ -20,10 +20,6 @@ public class SubWindowButton extends GUIButton {
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         super.draw(context, mouseX, mouseY);
-
-        if (mouseOverElement(mouseX, mouseY)) {
-            drawUnderline(context);
-        }
     }
 
     @Override

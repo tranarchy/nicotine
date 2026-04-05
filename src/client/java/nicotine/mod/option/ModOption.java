@@ -1,6 +1,6 @@
 package nicotine.mod.option;
 
-public class ModOption {
+public abstract class ModOption {
     public String name;
     public String id;
     public boolean subOption;
