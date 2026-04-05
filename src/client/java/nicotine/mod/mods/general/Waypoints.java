@@ -63,17 +63,15 @@ public class Waypoints extends Mod {
                     continue;
 
                 List<String> texts = new ArrayList<>();
-
-                String waypointName = StringUtils.capitalize(waypointInstance.name);
                 BlockPos pos = new BlockPos(waypointInstance.x, waypointInstance.y, waypointInstance.z);
 
                 if (mc.level.dimension().identifier().toString().equals(waypointInstance.dimension)) {
-                    texts.add(waypointName);
+                    texts.add(waypointInstance.name);
                     texts.add(String.format("%d %d %d", pos.getX(), pos.getY(), pos.getZ()));
                     Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, getAdjustedPosition(pos), texts, List.of(nameRGB.getColor(), cordsRGB.getColor()), scale.value, true);
                 }  else if (mc.level.dimension().equals(Level.NETHER) && Level.OVERWORLD.identifier().toString().equals(waypointInstance.dimension)) {
                     pos = new BlockPos(waypointInstance.x / 8, waypointInstance.y, waypointInstance.z / 8);
-                    texts.add(String.format("%s [OW]", waypointName));
+                    texts.add(String.format("%s [OW]", waypointInstance.name));
                     texts.add(String.format("%d %d %d", pos.getX(), pos.getY(), pos.getZ()));
                     Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, getAdjustedPosition(pos), texts, List.of(nameRGB.getColor(), cordsRGB.getColor()), scale.value, true);
                 }

@@ -4,9 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import nicotine.command.CommandManager;
 import nicotine.events.FinishedLoadingEvent;
 import nicotine.mod.ModManager;
-import nicotine.mod.mods.general.HUD;
 import nicotine.util.*;
-import nicotine.util.render.Render3D;
 
 public class Main implements ClientModInitializer {
 
