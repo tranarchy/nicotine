@@ -4,4 +4,5 @@ accessible method net/minecraft/client/renderer/rendertype/RenderType create (Lj
 accessible field net/minecraft/client/renderer/RenderPipelines LINES_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 accessible field net/minecraft/client/renderer/RenderPipelines DEBUG_FILLED_SNIPPET Lcom/mojang/blaze3d/pipeline/RenderPipeline$Snippet;
 accessible class net/minecraft/client/multiplayer/ClientChunkCache$Storage
+accessible class net/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack
 accessible method net/minecraft/client/multiplayer/ClientChunkCache$Storage inRange (II)Z

@@ -34,7 +34,9 @@
         "ToastManagerMixin",
         "UnitDoubleMixin",
         "CameraMixin",
-        "ScrollWheelHandlerMixin"
+        "ScrollWheelHandlerMixin",
+        "GuiGraphicsExtractorMixin",
+        "GuiRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,
