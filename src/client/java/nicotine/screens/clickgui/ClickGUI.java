@@ -141,11 +141,11 @@ public class ClickGUI extends BaseScreen {
                 ToggleButton toggleButton = new ToggleButton(toggleOption, buttonX, buttonY);
                 window.add(toggleButton);
             } else if (modOption instanceof ItemSelectionOption selectionOption) {
-                String title = String.format("%s - Items", ModButton.selectedMod.name);
+                String title = String.format("%s - %s", ModButton.selectedMod.name, selectionOption.name);
                 ItemSelectionButton selectionButton = new ItemSelectionButton(this, title, selectionOption, buttonX, buttonY);
                 window.add(selectionButton);
             } else if (modOption instanceof RGBOption rgbOption) {
-                String title = String.format("%s - RGB", ModButton.selectedMod.name);
+                String title = String.format("%s - %s", ModButton.selectedMod.name, rgbOption.name);
                 RGBButton rgbButton = new RGBButton(this, title, rgbOption, buttonX, buttonY);
                 window.add(rgbButton);
             } else if (modOption instanceof ClickOption clickOption) {
