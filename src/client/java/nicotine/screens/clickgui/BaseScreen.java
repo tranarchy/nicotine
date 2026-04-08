@@ -134,7 +134,7 @@ public class BaseScreen extends Screen {
             if (!(element instanceof Draggable draggable))
                 continue;
 
-            if (draggable.isDraggableArea(mouseX, mouseY)) {
+            if (draggable.isDraggableArea(mouseX, mouseY) && mouseButtonEvent.input() == InputConstants.MOUSE_BUTTON_LEFT) {
                 elementForDragging = (ClickableElement) element;
 
                 dragOffset.x = element.x - (int) mouseX;
