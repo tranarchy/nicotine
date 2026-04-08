@@ -38,16 +38,16 @@ public class DecoratedWindow extends Window implements Draggable {
         titleText = new Text(title, this.width, this.y) {
             @Override
             public void draw(GuiGraphicsExtractor context,double mouseX, double mouseY){
-                Render2D.drawBorderAroundText(context, this.x, this.y, this.width, this.height,2, ColorUtil.getPulsatingColor());
-                context.text(mc.font, this.text, this.x, this.y, ColorUtil.getPulsatingColor(), true);
+                context.verticalLine(this.x - 3, dragArea.y, dragArea.y + dragArea.height, ColorUtil.getPulsatingColor());
+                context.text(mc.font, this.text, this.x, this.y, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
             }
         };
 
         closeButton = new GUIButton("X", this.x, this.y) {
             @Override
             public void draw(GuiGraphicsExtractor context,double mouseX, double mouseY){
-                Render2D.drawBorderAroundText(context, this.x, this.y, this.width, this.height,2, ColorUtil.getPulsatingColor());
-                context.text(mc.font, this.text, this.x, this.y, ColorUtil.getPulsatingColor(), true);
+                context.verticalLine(this.x + this.width + 1, dragArea.y, dragArea.y + dragArea.height, ColorUtil.getPulsatingColor());
+                context.text(mc.font, this.text, this.x, this.y, ColorUtil.ACTIVE_FOREGROUND_COLOR, true);
             }
 
             @Override
@@ -61,10 +61,12 @@ public class DecoratedWindow extends Window implements Draggable {
 
     @Override
     public void addDrawables() {
+        titleText.width = mc.font.width(titleText.text);
         titleText.x = this.x + this.width - titleText.width - 1;
         titleText.y = this.y - titleText.height - 1;
 
-        closeButton.x = this.x + (closeButton.width  / 2);
+        closeButton.width = mc.font.width(closeButton.text);
+        closeButton.x = this.x + (closeButton.width / 2);
         closeButton.y = this.y - closeButton.height - 1;
 
         dragArea.x = this.x;

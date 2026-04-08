@@ -164,6 +164,8 @@ public class ClickGUI extends BaseScreen {
 
     @Override
     protected void addDrawables() {
+        setWindowSize();
+
         addCategoryButtons();
         addModButtons();
         addOptionButtons();
