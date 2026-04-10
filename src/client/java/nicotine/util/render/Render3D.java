@@ -97,7 +97,7 @@ public class Render3D {
 
         PoseStack.Pose entry = matrixStack.last();
 
-        color = ColorUtil.changeAlpha(color, fade ? ColorUtil.getDynamicFadeVal() : 0x32);
+        color = ColorUtil.changeAlpha(color, fade ? ColorUtil.getDynamicFadeVal() : (int)Render.alpha.value);
 
         buffer.addVertex(entry, box.maxX, box.maxY, box.minZ).setColor(color);
         buffer.addVertex(entry, box.minX, box.maxY, box.minZ).setColor(color);
