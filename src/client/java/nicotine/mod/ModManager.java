@@ -7,6 +7,7 @@ import nicotine.mod.mods.misc.*;
 import nicotine.mod.mods.movement.*;
 import nicotine.mod.mods.player.*;
 import nicotine.mod.mods.render.*;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.util.*;
 
@@ -92,7 +93,7 @@ public class ModManager {
         add(new ExtraTab());
         add(new DiscordActivity());
 
-        if (System.getProperty("os.name").startsWith("Mac"))
+        if (SystemUtils.IS_OS_MAC)
             add(new TouchBar());
 
         add(new Watermark());

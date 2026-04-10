@@ -8,6 +8,7 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,7 +41,7 @@ public class DiscordActivity extends Mod {
     }
 
     private boolean socketOpen() {
-        if (System.getProperty("os.name").startsWith("Win")) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             for (int i = 0; i < 10; i++) {
                 try {
                     randomAccessFile = new RandomAccessFile("\\\\\\\\?\\\\pipe\\\\discord-ipc-" + i, "rw");
@@ -81,7 +82,7 @@ public class DiscordActivity extends Mod {
     }
 
     private void socketClose() {
-        if (System.getProperty("os.name").startsWith("Win")) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             if (randomAccessFile == null)
                 return;
 
@@ -103,7 +104,7 @@ public class DiscordActivity extends Mod {
     }
 
     private void socketWrite(ByteBuffer buffer) {
-        if (System.getProperty("os.name").startsWith("Win")) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             try {
                 randomAccessFile.write(buffer.array());
             } catch (IOException e) {
