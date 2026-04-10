@@ -17,6 +17,7 @@ import nicotine.events.ClientTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
+import nicotine.mod.mods.hud.GIF;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
@@ -167,6 +168,9 @@ public class TouchBar extends Mod {
     }
 
     private static String getCustomGIFButton() {
+        if (Render2D.getGIFEntry() == null)
+            GIF.images.select();
+
         return createButton("custom", "", Render2D.getGIFEntry().bytes, false, true, null);
     }
 

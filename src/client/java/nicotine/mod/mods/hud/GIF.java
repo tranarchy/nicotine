@@ -25,7 +25,7 @@ public class GIF extends HUDMod {
     private GIFEntry entryToDraw;
     private long prevTime = System.nanoTime();
 
-    private DropDownOption images;
+    public static DropDownOption images;
     private SliderOption fps = new SliderOption("FPS", 30, 1, 60);
     private final ClickOption refresh = new ClickOption("Refresh") {
         @Override
