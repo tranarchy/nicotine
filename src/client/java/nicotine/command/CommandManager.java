@@ -4,6 +4,7 @@ import nicotine.command.commands.*;
 import nicotine.events.SendMessageEvent;
 import nicotine.util.EventBus;
 import nicotine.util.Message;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class CommandManager {
         add(new Waypoint());
         add(new Friend());
 
-        if (System.getProperty("os.name").startsWith("Mac"))
+        if (SystemUtils.IS_OS_MAC)
             add(new TouchBarCustom());
 
         EventBus.register(SendMessageEvent.class, event -> {
