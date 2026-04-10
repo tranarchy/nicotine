@@ -26,7 +26,7 @@ public class Totem extends HUDMod {
             if (ModManager.getMod("ECrystal").enabled)
                 posX = mc.getWindow().getGuiScaledWidth() / 2;
 
-            int posY = mc.getWindow().getGuiScaledHeight() - 80;
+            int posY = mc.getWindow().getGuiScaledHeight() - 75;
 
             int totemCount = 0;
 

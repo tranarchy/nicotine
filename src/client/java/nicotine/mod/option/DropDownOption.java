@@ -10,4 +10,6 @@ public class DropDownOption extends ModOption {
         this.modes = modes;
         this.value = modes[0];
     }
+
+    public void select() {};
 }

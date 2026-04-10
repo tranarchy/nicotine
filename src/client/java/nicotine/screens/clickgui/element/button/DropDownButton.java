@@ -83,6 +83,7 @@ public class DropDownButton extends GUIButton {
                 @Override
                 public void click(double mouseX, double mouseY, int input) {
                     selectedDropDownOption.value = mode;
+                    selectedDropDownOption.select();
                     selectedDropDownOption = null;
                 }
 

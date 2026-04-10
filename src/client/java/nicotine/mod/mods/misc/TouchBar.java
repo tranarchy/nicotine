@@ -20,13 +20,9 @@ import nicotine.mod.ModManager;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
-import org.apache.commons.io.FileUtils;
+import nicotine.util.render.Render2D;
 import org.joml.Vector2d;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
@@ -49,9 +45,6 @@ public class TouchBar extends Mod {
     public static final List<TouchBarButton> buttons = new ArrayList<>();
 
     private static final HashMap<String, byte[]> touchBarImages = new HashMap<>();
-    private static final List<byte[]> customImageFrames = new ArrayList<>();
-    private static int customImageCurFrame = 0;
-    private static long customSize = 0;
 
     private static long elapsedTime = System.currentTimeMillis();
 
@@ -174,13 +167,7 @@ public class TouchBar extends Mod {
     }
 
     private static String getCustomGIFButton() {
-        if (customImageFrames.size() == customImageCurFrame + 1) {
-            customImageCurFrame = 0;
-        } else {
-            customImageCurFrame++;
-        }
-
-        return createButton("custom", "", customImageFrames.get(customImageCurFrame), false, true, null);
+        return createButton("custom", "", Render2D.getGIFEntry().bytes, false, true, null);
     }
 
     private static void setButtonTitle(Pointer button, String title) {
@@ -288,32 +275,8 @@ public class TouchBar extends Mod {
         RuntimeUtils.msg(mainWindow, "setTouchBar:", touchBar);
     }
 
-    private static void extractGIFFrameBytes(File file) {
-        customImageFrames.clear();
-        customImageCurFrame = 0;
-
-        try {
-            ImageReader reader = ImageIO.getImageReadersByFormatName("gif").next();
-            ImageInputStream stream = ImageIO.createImageInputStream(file);
-            reader.setInput(stream);
-
-            int count = reader.getNumImages(true);
-            for (int i = 0; i < count; i++) {
-                BufferedImage frame = reader.read(i);
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                ImageIO.write(frame, "png", byteArrayOutputStream);
-                customImageFrames.add(byteArrayOutputStream.toByteArray());
-            }
-        } catch (IOException e) {
-           e.printStackTrace();
-        }
-
-    }
-
     private static void extractTouchBarImagesBytes() {
-
         List<String> fileNames = Arrays.asList(
-                "custom.gif",
                 "block-grass_block_side.png",
                 "item-compass_01.png",
                 "item-redstone.png",
@@ -321,35 +284,14 @@ public class TouchBar extends Mod {
                 "item-totem_of_undying.png"
         );
 
-        File dir = new File("nicotine");
-
-        if (!dir.exists())
-            dir.mkdir();
-
         for (String fileName : fileNames) {
-            if (fileName.contains("-")) { // minecraft
-                String path = String.format("minecraft:textures/%s", fileName.replace('-', '/'));
-                try {
-                    InputStream inputStream = mc.getResourceManager().getResource(Identifier.parse(path)).get().open();
-                    touchBarImages.put(fileName, inputStream.readAllBytes());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            String path = String.format("minecraft:textures/%s", fileName.replace('-', '/'));
 
-            } else { // custom
-                File outputFile = new File("nicotine/" + fileName);
-
-                if (!outputFile.exists()) {
-                    InputStream inputStream = TouchBar.class.getClassLoader().getResourceAsStream("touchbarimages/custom.gif");
-                    try {
-                        FileUtils.copyInputStreamToFile(inputStream, outputFile);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                customSize = outputFile.length();
-                extractGIFFrameBytes(outputFile);
+            try {
+                InputStream inputStream = mc.getResourceManager().getResource(Identifier.parse(path)).get().open();
+                touchBarImages.put(fileName, inputStream.readAllBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -368,8 +310,6 @@ public class TouchBar extends Mod {
     protected void init() {
         extractTouchBarImagesBytes();
 
-        File customFile = new File("nicotine/custom.gif");
-
         EventBus.register(ClientTickEvent.class, event -> {
            if (!this.enabled)
                return true;
@@ -379,11 +319,6 @@ public class TouchBar extends Mod {
                return true;
            else
                elapsedTime = curTime;
-
-           if (customFile.length() != customSize) {
-               extractGIFFrameBytes(customFile);
-               customSize = customFile.length();
-           }
 
            int buttonsSize = buttons.size();
 

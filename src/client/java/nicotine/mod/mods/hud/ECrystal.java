@@ -27,7 +27,7 @@ public class ECrystal extends HUDMod {
             if (ModManager.getMod("Totem").enabled)
                 posX = (mc.getWindow().getGuiScaledWidth() / 2) - 18;
 
-            int posY = mc.getWindow().getGuiScaledHeight() - 80;
+            int posY = mc.getWindow().getGuiScaledHeight() - 75;
 
             int eCrystalCount = 0;
 

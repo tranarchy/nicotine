@@ -109,6 +109,7 @@ public class ModManager {
         add(new Totem());
         add(new ECrystal());
         add(new Combat());
+        add(new GIF());
 
         add(new GUI());
         add(new HUD());
