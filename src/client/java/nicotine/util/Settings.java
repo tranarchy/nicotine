@@ -92,9 +92,6 @@ public class Settings {
                    } else if (modOption instanceof ToggleOption toggleOption) {
                        modDetails.addProperty(toggleOption.id, toggleOption.enabled);
                    }  else if (modOption instanceof KeybindOption keybindOption) {
-                       if (keybindOption.keyCode == -1)
-                           continue;
-
                        modDetails.addProperty(keybindOption.name, keybindOption.keyCode);
                    } else if (modOption instanceof ItemSelectionOption selectionOption) {
                        JsonArray selection = new JsonArray();
