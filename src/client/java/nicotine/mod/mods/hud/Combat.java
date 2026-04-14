@@ -20,18 +20,19 @@ import java.util.List;
 import static nicotine.util.Common.*;
 
 public class Combat extends HUDMod {
-    private static final ToggleOption distance = new ToggleOption("Distance");
-    private static final ToggleOption totemCount = new ToggleOption("TotemCount");
-    private static final ToggleOption otherPlayers = new ToggleOption("OtherPlayers");
+    private final ToggleOption ignoreFriends = new ToggleOption("IgnoreFriends");
+    private final ToggleOption distance = new ToggleOption("Distance");
+    private final ToggleOption totemCount = new ToggleOption("TotemCount");
+    private final ToggleOption otherPlayers = new ToggleOption("OtherPlayers");
     
-    private static final int PLAYER_MODEL_SIZE = 30;
-    private static final int WINDOW_WIDTH = 200;
-    private static final int WINDOW_HEIGHT = 70;
-    private static final int PADDING = 10;
+    private final int PLAYER_MODEL_SIZE = 30;
+    private final int WINDOW_WIDTH = 200;
+    private final int WINDOW_HEIGHT = 70;
+    private final int PADDING = 10;
 
     public Combat() {
         super(ModCategory.HUD, "Combat", "Shows the nearest player around you in a nice HUD");
-        this.addOptions(Arrays.asList(distance, totemCount, otherPlayers));
+        this.addOptions(Arrays.asList(ignoreFriends, distance, totemCount, otherPlayers));
     }
 
     @Override
@@ -40,7 +41,7 @@ public class Combat extends HUDMod {
             if (!this.enabled || mc.getDebugOverlay().showDebugScreen())
                 return true;
 
-            AbstractClientPlayer nearestPlayer = Player.findNearestPlayer(false);
+            AbstractClientPlayer nearestPlayer = Player.findNearestPlayer(ignoreFriends.enabled);
 
             if (mc.screen instanceof HUDScreen)
                 nearestPlayer = mc.player;

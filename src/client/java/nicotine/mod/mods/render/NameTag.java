@@ -8,6 +8,7 @@ import nicotine.events.RenderEvent;
 import nicotine.events.SubmitNameTagEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
+import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.mod.option.ToggleOption;
@@ -28,10 +29,13 @@ public class NameTag extends Mod {
     private final SliderOption scale = new SliderOption("Scale", 1, 0.5f, 3.0f, true);
     private final RGBOption nameRGB = new RGBOption("Name");
     private final RGBOption infoRGB = new RGBOption("Info");
+    private final DropDownOption friendPrefix = new DropDownOption("FriendPrefix", new String[]{"[F]", "[+]", "[❤]", "None"});
+    private final RGBOption friendNameRGB = new RGBOption("FriendName");
+    private final RGBOption friendInfoRGB = new RGBOption("FriendInfo");
 
     public NameTag() {
         super(ModCategory.Render, "NameTag");
-        this.addOptions(Arrays.asList(health, armor, poppedTotem, ping, scale, nameRGB, infoRGB));
+        this.addOptions(Arrays.asList(health, armor, poppedTotem, ping, scale, nameRGB, infoRGB, friendPrefix, friendNameRGB, friendInfoRGB));
     }
 
     @Override
@@ -54,8 +58,21 @@ public class NameTag extends Mod {
 
                 String nameTag = player.getName().getString();
 
+                int nameColor, infoColor;
+
                 if (friendList.contains(player.getUUID())) {
-                    nameTag = "[F] " + nameTag;
+                    nameColor = friendNameRGB.getColor();
+                    infoColor = friendInfoRGB.getColor();
+
+                    if (!friendPrefix.value.equals("None"))
+                        nameTag = String.format("%s %s", friendPrefix.value, nameTag);
+                } else {
+                    nameColor = nameRGB.getColor();
+                    infoColor = infoRGB.getColor();
+                }
+
+                if (friendList.contains(player.getUUID())) {
+
                 }
 
                 texts.add(nameTag);
@@ -79,7 +96,7 @@ public class NameTag extends Mod {
                     texts.add(secondaryText);
                 }
 
-                Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, position, texts, List.of(nameRGB.getColor(), infoRGB.getColor()), scale.value, false);
+                Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, position, texts, List.of(nameColor, infoColor), scale.value, false);
             }
 
             return true;

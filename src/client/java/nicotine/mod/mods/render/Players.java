@@ -15,6 +15,7 @@ import nicotine.util.math.Boxf;
 
 import java.util.Arrays;
 
+import static nicotine.util.Common.friendList;
 import static nicotine.util.Common.mc;
 
 public class Players extends Mod {
@@ -35,9 +36,11 @@ public class Players extends Mod {
             true
     );
 
-    private final RGBOption espRgb = new RGBOption("RGB");
+    private final RGBOption enemyEspRGB = new RGBOption("Enemy");
+    private final RGBOption friendEspRGB = new RGBOption("Friend");
     private final ToggleOption tracer = new ToggleOption("Tracer");
-    private final RGBOption tracerRgb = new RGBOption("RGB");
+    private final RGBOption enemyTracerRGB = new RGBOption("Enemy");
+    private final RGBOption friendTracerRGB = new RGBOption("Friend");
     private final SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
 
     public Players() {
@@ -46,17 +49,23 @@ public class Players extends Mod {
         espRender.subOption = true;
         espScale.subOption = true;
 
-        espRgb.id = "ESPRGB";
-        espRgb.subOption = true;
+        enemyEspRGB.id = "ESPRGB";
+        enemyEspRGB.subOption = true;
 
-        tracerRgb.id = "TracerRGB";
-        tracerRgb.subOption = true;
+        friendEspRGB.id = "FriendESPRGB";
+        friendEspRGB.subOption = true;
+
+        enemyTracerRGB.id = "TracerRGB";
+        enemyTracerRGB.subOption = true;
+
+        friendTracerRGB.id = "FriendTracerRGB";
+        friendTracerRGB.subOption = true;
 
         tracerAlpha.subOption = true;
 
         this.addOptions(Arrays.asList(
-                esp, espRender, espScale, espRgb,
-                tracer, tracerRgb, tracerAlpha, noArmor
+                esp, espRender, espScale, enemyEspRGB, friendEspRGB,
+                tracer, enemyTracerRGB, friendTracerRGB, tracerAlpha, noArmor
         ));
     }
 
@@ -72,22 +81,26 @@ public class Players extends Mod {
                     Boxf boundingBox = new Boxf(player.getBoundingBox().inflate(espScale.value - 1));
 
                     if (esp.enabled) {
+                        int espColor = friendList.contains(player.getUUID()) ? friendEspRGB.getColor() : enemyEspRGB.getColor();
+
                         switch (espRender.value) {
                             case "Box":
-                                Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espRgb.getColor());
+                                Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espColor);
                                 break;
                             case "Filled":
-                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espRgb.getColor());
+                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espColor);
                                 break;
                             case "Fade":
-                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espRgb.getColor(), true);
+                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espColor, true);
                                 break;
                         }
                     }
 
                     if (tracer.enabled) {
+                        int tracerColor = friendList.contains(player.getUUID()) ? friendTracerRGB.getColor() : enemyTracerRGB.getColor();
+
                         Vec3 targetPos = player.position();
-                        Render3D.drawTracer(event.camera, event.multiBufferSource, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerRgb.getColor(), (int)tracerAlpha.value));
+                        Render3D.drawTracer(event.camera, event.multiBufferSource, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerColor, (int)tracerAlpha.value));
                     }
                 }
             }
