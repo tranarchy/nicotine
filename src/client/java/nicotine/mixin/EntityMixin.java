@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.KnockbackEvent;
 import nicotine.events.PushEvent;
+import nicotine.events.TurnPlayerEvent;
 import nicotine.mod.ModManager;
 import nicotine.mod.mods.render.Chams;
 import nicotine.util.EventBus;
@@ -46,6 +47,18 @@ public class EntityMixin {
     public void isCurrentlyGlowing(CallbackInfoReturnable<Boolean> info) {
         if (ModManager.getMod("Chams").enabled && Chams.outline.enabled && mc.level != null && mc.level.getEntity(id) instanceof RemotePlayer) {
             info.setReturnValue(true);
+        }
+    }
+
+    @Inject(at = @At("HEAD"), method = "turn", cancellable = true)
+    public void turn(final double xo, final double yo, CallbackInfo info) {
+        if (id != mc.player.getId())
+            return;
+
+        boolean result = EventBus.post(new TurnPlayerEvent(xo, yo));
+
+        if (!result) {
+           info.cancel();
         }
     }
 }

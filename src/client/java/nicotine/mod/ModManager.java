@@ -51,6 +51,7 @@ public class ModManager {
         add(new BlockOutline());
         add(new EntityOwner());
         add(new FreeCam());
+        add(new Freelook());
         add(new ThirdPerson());
         add(new Xray());
         add(new Peek());

@@ -6,3 +6,4 @@ accessible field net/minecraft/client/renderer/RenderPipelines DEBUG_FILLED_SNIP
 accessible class net/minecraft/client/multiplayer/ClientChunkCache$Storage
 accessible class net/minecraft/client/gui/GuiGraphicsExtractor$ScissorStack
 accessible method net/minecraft/client/multiplayer/ClientChunkCache$Storage inRange (II)Z
+accessible method net/minecraft/client/Camera setRotation (FF)V
