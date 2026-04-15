@@ -12,8 +12,11 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Input;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -234,6 +237,29 @@ public class Player {
 
     public static void startFlying() {
         mc.getConnection().send(new ServerboundPlayerCommandPacket(mc.player, ServerboundPlayerCommandPacket.Action.START_FALL_FLYING));
+    }
+
+    public static void elytraSwap() {
+        for (int i = 0; i <= 35; i++) {
+            ItemStack curStack = mc.player.getInventory().getItem(i);
+            Item curItem = curStack.getItem();
+            if (curItem.components().has(DataComponents.EQUIPPABLE)) {
+                EquipmentSlot equipment = curItem.components().get(DataComponents.EQUIPPABLE).slot();
+
+                if (equipment.getType() != EquipmentSlot.Type.HUMANOID_ARMOR)
+                    continue;
+
+                int equipmentSlot = equipment.getIndex() + 1;
+                int armorSlot = 35 + equipmentSlot;
+
+                ItemStack armorStack = mc.player.getInventory().getItem(armorSlot);
+
+                if ((armorStack.getItem() == Items.ELYTRA && curItem != Items.ELYTRA) || (armorStack.getItem() != Items.ELYTRA && curItem == Items.ELYTRA)) {
+                    Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
+                    return;
+                }
+            }
+        }
     }
 
     public static void selfCenter() {

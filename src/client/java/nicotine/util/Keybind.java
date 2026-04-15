@@ -53,6 +53,10 @@ public class Keybind {
     }
 
     public static boolean keyReleased(String name, boolean enabled, int keycode) {
+        return keyReleased(name, enabled, keycode, true);
+    }
+
+    public static boolean keyReleased(String name, boolean enabled, int keycode, boolean showToggleMsg) {
         if (keycode == -1)
             return false;
 
@@ -62,7 +66,10 @@ public class Keybind {
             }
         } else if (keysPressed.getOrDefault(name, -1) != -1) {
             keysPressed.remove(name);
-            Message.send(String.format("%s [%s%s%s]", name, enabled ? ChatFormatting.RED : ChatFormatting.GREEN, enabled ? "OFF" : "ON", ChatFormatting.DARK_GRAY));
+
+            if (showToggleMsg)
+                Message.send(String.format("%s [%s%s%s]", name, enabled ? ChatFormatting.RED : ChatFormatting.GREEN, enabled ? "OFF" : "ON", ChatFormatting.DARK_GRAY));
+
             return true;
         }
 

@@ -23,13 +23,10 @@ import static nicotine.util.Common.mc;
 
 public class AutoArmor extends Mod {
 
-    private final ToggleOption elytraSwap = new ToggleOption("ElytraSwap");
-
     public AutoArmor() {
         super(ModCategory.Combat,"AutoArmor");
         this.keybind.keyCode = InputConstants.KEY_Z;
         this.keybind.name = "ElytraSwap";
-        this.addOptions(elytraSwap);
     }
 
     @Override
@@ -38,12 +35,14 @@ public class AutoArmor extends Mod {
             if (!this.enabled || Inventory.isContainerOpen())
                 return true;
 
-            if (Keybind.keyReleased(elytraSwap.name, elytraSwap.enabled, keybind.keyCode))
-                elytraSwap.enabled = true;
+            if (Keybind.keyReleased(keybind.name, true, keybind.keyCode, false)) {
+                Player.elytraSwap();
+                return true;
+            }
 
             List<ItemStack> armorItems = Player.getArmorItems();
 
-            if (!armorItems.contains(ItemStack.EMPTY) && !elytraSwap.enabled)
+            if (!armorItems.contains(ItemStack.EMPTY))
                 return true;
 
             for (int i = 0; i <= 35; i++) {
@@ -60,13 +59,7 @@ public class AutoArmor extends Mod {
 
                     ItemStack armorStack = mc.player.getInventory().getItem(armorSlot);
 
-                    if (elytraSwap.enabled) {
-                        if ((armorStack.getItem() == Items.ELYTRA && curItem != Items.ELYTRA) || (armorStack.getItem() != Items.ELYTRA && curItem == Items.ELYTRA)) {
-                            Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
-                            elytraSwap.enabled = false;
-                            return true;
-                        }
-                    } else if (armorStack == ItemStack.EMPTY && curItem != Items.ELYTRA) {
+                   if (armorStack == ItemStack.EMPTY && curItem != Items.ELYTRA) {
                         Inventory.swap(i < 9 ? 36 + i : i, 9 - equipmentSlot);
                     } else if (curItem == Items.ELYTRA && armorStack.getItem() == Items.ELYTRA) {
                         if (armorStack.getDamageValue() > curStack.getDamageValue() && armorStack.getDamageValue() == armorStack.getMaxDamage() - 1) {
@@ -76,8 +69,6 @@ public class AutoArmor extends Mod {
                     }
                 }
             }
-
-            elytraSwap.enabled = false;
 
             return true;
         });
