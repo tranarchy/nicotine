@@ -1,4 +1,4 @@
-package nicotine.mod.mods.render;
+package nicotine.mod.mods.player;
 
 import net.minecraft.util.Mth;
 import nicotine.events.AlignCameraWithEntityEvent;
@@ -14,7 +14,7 @@ public class Freelook extends Mod {
     private float xRot, yRot, xRotO, yRotO = 0;
 
     public Freelook() {
-        super(ModCategory.Render, "Freelook");
+        super(ModCategory.Player, "Freelook");
     }
 
     @Override

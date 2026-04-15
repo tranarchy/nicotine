@@ -51,7 +51,6 @@ public class ModManager {
         add(new BlockOutline());
         add(new EntityOwner());
         add(new FreeCam());
-        add(new Freelook());
         add(new ThirdPerson());
         add(new Xray());
         add(new Peek());
@@ -59,6 +58,7 @@ public class ModManager {
         add(new HandFOV());;
         add(new Crosshair());
 
+        add(new Freelook());
         add(new PortalScreen());
         add(new AlphaInventory());
         add(new ExtraRange());
