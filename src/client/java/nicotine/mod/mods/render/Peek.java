@@ -2,7 +2,6 @@ package nicotine.mod.mods.render;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.screens.inventory.ContainerScreen;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.SimpleContainer;
@@ -10,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemContainerContents;
 import nicotine.events.AbstractContainerScreenTickEvent;
-import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderTooltipEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -18,6 +16,7 @@ import nicotine.mod.option.ToggleOption;
 import nicotine.screens.PeekScreen;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
+import nicotine.util.Keybind;
 import nicotine.util.render.Render2D;
 import org.joml.Matrix3x2fStack;
 
@@ -64,7 +63,7 @@ public class Peek extends Mod {
                         itemsToPeek = shulkerContainer.allItemsCopyStream().toList();
                     }
 
-                    if (InputConstants.isKeyDown(mc.getWindow(), keybind.keyCode)) {
+                    if (Keybind.keyDown(keybind.keyCode)) {
                         SimpleContainer peekInventory = new SimpleContainer(9 * 3);
 
                         for (int i = 0; i < itemsToPeek.size(); i++) {

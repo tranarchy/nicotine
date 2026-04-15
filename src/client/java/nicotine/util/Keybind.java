@@ -44,6 +44,10 @@ public class Keybind {
         });
     }
 
+    public static boolean keyDown(int keycode) {
+        return (keycode < 8 && GLFW.glfwGetMouseButton(window.handle(), keycode) == 1) || (keycode > 7 && InputConstants.isKeyDown(window, keycode));
+    }
+
     public static boolean keyReleased(Mod mod, int keycode) {
         return keyReleased(mod.name, mod.enabled, keycode);
     }
@@ -52,8 +56,7 @@ public class Keybind {
         if (keycode == -1)
             return false;
 
-        if (((keycode < 8 && GLFW.glfwGetMouseButton(window.handle(), keycode) == 1) || (keycode > 7 && InputConstants.isKeyDown(window, keycode))) &&
-                !(mc.screen instanceof ChatScreen) && !(mc.screen instanceof BaseScreen) && !(mc.screen instanceof SignEditScreen)) {
+        if (keyDown(keycode) && !(mc.screen instanceof ChatScreen) && !(mc.screen instanceof BaseScreen) && !(mc.screen instanceof SignEditScreen)) {
             if (!keysPressed.containsKey(keycode)) {
                 keysPressed.put(name, keycode);
             }

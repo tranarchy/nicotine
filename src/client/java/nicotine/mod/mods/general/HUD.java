@@ -8,11 +8,11 @@ import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.screens.clickgui.HUDScreen;
 import nicotine.util.EventBus;
+import nicotine.util.Keybind;
 
 import java.util.Arrays;
 
 import static nicotine.util.Common.mc;
-import static nicotine.util.Common.window;
 
 public class HUD extends Mod {
     public static final DropDownOption separator = new DropDownOption(
@@ -41,7 +41,7 @@ public class HUD extends Mod {
     @Override
     protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (InputConstants.isKeyDown(window, keybind.keyCode) && mc.screen == null)
+            if (Keybind.keyDown(keybind.keyCode) && mc.screen == null)
                 mc.setScreen(screen);
 
             return true;

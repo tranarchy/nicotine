@@ -10,9 +10,9 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
+import nicotine.util.Keybind;
 
 import static nicotine.util.Common.mc;
-import static nicotine.util.Common.window;
 
 public class Zoom extends Mod {
     private int defaultFov = 0;
@@ -36,7 +36,7 @@ public class Zoom extends Mod {
         OptionInstance<Integer> fovOption = mc.options.fov();
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!this.enabled || !InputConstants.isKeyDown(window, keybind.keyCode) ||
+            if (!this.enabled || !Keybind.keyDown(keybind.keyCode) ||
                     mc.screen instanceof ChatScreen || mc.screen instanceof BaseScreen) {
                 int fov =  fovOption.get();
                 if (fov == zoomFov.value)
@@ -52,7 +52,7 @@ public class Zoom extends Mod {
         });
 
         EventBus.register(MouseScrollEvent.class, event -> {
-            if (InputConstants.isKeyDown(window, keybind.keyCode)) {
+            if (Keybind.keyDown(keybind.keyCode)) {
                 if (event.cords.y == 1 && zoomFov.value > zoomFov.minValue) {
                     zoomFov.value--;
                 } else if (event.cords.y == -1 && zoomFov.value < zoomFov.maxValue) {

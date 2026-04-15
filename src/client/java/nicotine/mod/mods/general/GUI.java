@@ -12,6 +12,7 @@ import nicotine.mod.ModCategory;
 import nicotine.mod.option.RGBOption;
 import nicotine.util.ColorUtil;
 import nicotine.util.EventBus;
+import nicotine.util.Keybind;
 
 import java.util.Arrays;
 
@@ -42,7 +43,7 @@ public class GUI extends Mod {
             ColorUtil.ACTIVE_FOREGROUND_COLOR = rgb.getColor();
             ColorUtil.BACKGROUND_COLOR = ColorUtil.changeAlpha(ColorUtil.BACKGROUND_COLOR, (int)bgAlpha.value);
 
-            if (InputConstants.isKeyDown(window, keybind.keyCode) && (mc.screen == null || mc.screen instanceof TitleScreen))
+            if (Keybind.keyDown(keybind.keyCode) && (mc.screen == null || mc.screen instanceof TitleScreen))
                 mc.setScreen(screen);
 
             return true;
