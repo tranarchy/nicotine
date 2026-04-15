@@ -11,6 +11,7 @@ import nicotine.mod.mods.general.Render;
 import nicotine.util.ColorUtil;
 import nicotine.util.math.Boxf;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static nicotine.util.Common.mc;
@@ -133,10 +134,12 @@ public class Render3D {
     }
 
     public static void drawText(PoseStack matrix, MultiBufferSource multiBufferSource, Camera camera, Vec3 position, String text, int color, float scale) {
-        drawTexts(matrix, multiBufferSource, camera, position, List.of(text), List.of(color), scale, false);
+        LinkedHashMap<String, Integer> texts = new LinkedHashMap<>();
+        texts.put(text, color);
+        drawTexts(matrix, multiBufferSource, camera, position, texts, scale, false);
     }
 
-    public static void drawTexts(PoseStack matrix, MultiBufferSource multiBufferSource, Camera camera, Vec3 position, List<String> texts, List<Integer> colors, float scale, boolean dynamicScaling) {
+    public static void drawTexts(PoseStack matrix, MultiBufferSource multiBufferSource, Camera camera, Vec3 position, LinkedHashMap<String, Integer> texts, float scale, boolean dynamicScaling) {
         Font textRenderer = mc.font;
 
         Vec3 cameraPos = camera.position();
@@ -153,11 +156,11 @@ public class Render3D {
 
         int y = (int)(size / 0.025F);
 
-        for (int i = texts.size() - 1; i >= 0; i--) {
-            String text = texts.get(i);
-
+        for (String text : texts.reversed().keySet()) {
             float x = (float) textRenderer.width(text) / 2.0F;
-            textRenderer.drawInBatch(Component.literal(text), -x, y, colors.get(i), true, matrix.last().pose(), multiBufferSource, Font.DisplayMode.SEE_THROUGH, 0x50000000, 0);
+            int color = texts.get(text);
+
+            textRenderer.drawInBatch(Component.literal(text), -x, y, color, true, matrix.last().pose(), multiBufferSource, Font.DisplayMode.SEE_THROUGH, 0x50000000, 0);
             y -= mc.font.lineHeight + 2;
         }
 

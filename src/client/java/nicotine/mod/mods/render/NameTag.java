@@ -52,7 +52,7 @@ public class NameTag extends Mod {
                 if (!(player instanceof RemotePlayer))
                     continue;
 
-                List<String> texts = new ArrayList<>();
+                LinkedHashMap<String, Integer> texts = new LinkedHashMap<>();
 
                 Vec3 position = new Vec3(player.getX(), player.getBoundingBox().maxY, player.getZ());
 
@@ -71,11 +71,7 @@ public class NameTag extends Mod {
                     infoColor = infoRGB.getColor();
                 }
 
-                if (friendList.contains(player.getUUID())) {
-
-                }
-
-                texts.add(nameTag);
+                texts.put(nameTag, nameColor);
 
                 String secondaryText = "";
 
@@ -93,10 +89,10 @@ public class NameTag extends Mod {
                     secondaryText += String.format(" %d%sms%s", Player.getPing(player), ChatFormatting.GREEN, ChatFormatting.RESET);
 
                 if (!secondaryText.isEmpty()) {
-                    texts.add(secondaryText);
+                    texts.put(secondaryText, infoColor);
                 }
 
-                Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, position, texts, List.of(nameColor, infoColor), scale.value, false);
+                Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, position, texts, scale.value, false);
             }
 
             return true;
