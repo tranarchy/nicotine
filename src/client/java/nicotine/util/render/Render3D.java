@@ -134,9 +134,13 @@ public class Render3D {
     }
 
     public static void drawText(PoseStack matrix, MultiBufferSource multiBufferSource, Camera camera, Vec3 position, String text, int color, float scale) {
+        drawText(matrix, multiBufferSource, camera, position, text, color, scale, false);
+    }
+
+    public static void drawText(PoseStack matrix, MultiBufferSource multiBufferSource, Camera camera, Vec3 position, String text, int color, float scale, boolean dynamicScaling) {
         LinkedHashMap<String, Integer> texts = new LinkedHashMap<>();
         texts.put(text, color);
-        drawTexts(matrix, multiBufferSource, camera, position, texts, scale, false);
+        drawTexts(matrix, multiBufferSource, camera, position, texts, scale, dynamicScaling);
     }
 
     public static void drawTexts(PoseStack matrix, MultiBufferSource multiBufferSource, Camera camera, Vec3 position, LinkedHashMap<String, Integer> texts, float scale, boolean dynamicScaling) {

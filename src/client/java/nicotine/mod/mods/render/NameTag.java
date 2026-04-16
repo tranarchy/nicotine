@@ -27,6 +27,7 @@ public class NameTag extends Mod {
     private final ToggleOption poppedTotem = new ToggleOption("PoppedTotem");
     private final ToggleOption ping = new ToggleOption("Ping");
     private final SliderOption scale = new SliderOption("Scale", 1, 0.5f, 3.0f, true);
+    private final ToggleOption dynamicScaling = new ToggleOption("DynamicScaling");
     private final RGBOption nameRGB = new RGBOption("Name");
     private final RGBOption infoRGB = new RGBOption("Info");
     private final DropDownOption friendPrefix = new DropDownOption("FriendPrefix", new String[]{"[F]", "[+]", "[❤]", "None"});
@@ -35,7 +36,7 @@ public class NameTag extends Mod {
 
     public NameTag() {
         super(ModCategory.Render, "NameTag");
-        this.addOptions(Arrays.asList(health, armor, poppedTotem, ping, scale, nameRGB, infoRGB, friendPrefix, friendNameRGB, friendInfoRGB));
+        this.addOptions(Arrays.asList(health, armor, poppedTotem, ping, scale, dynamicScaling, nameRGB, infoRGB, friendPrefix, friendNameRGB, friendInfoRGB));
     }
 
     @Override
@@ -92,7 +93,7 @@ public class NameTag extends Mod {
                     texts.put(secondaryText, infoColor);
                 }
 
-                Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, position, texts, scale.value, false);
+                Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, position, texts, scale.value, dynamicScaling.enabled);
             }
 
             return true;

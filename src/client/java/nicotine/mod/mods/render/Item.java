@@ -23,6 +23,7 @@ import static nicotine.util.Common.mc;
 public class Item extends Mod {
 
     private final ToggleOption text = new ToggleOption("Text");
+    private final ToggleOption dynamicScaling = new ToggleOption("DynamicScaling");
     private final ToggleOption esp = new ToggleOption("ESP");
     private final DropDownOption espRender = new DropDownOption(
             "Render",
@@ -34,9 +35,10 @@ public class Item extends Mod {
 
     public Item() {
         super(ModCategory.Render, "Item");
+        dynamicScaling.subOption = true;
         espRender.subOption = true;
         tracerAlpha.subOption = true;
-        this.addOptions(Arrays.asList(text, esp, espRender, tracer, tracerAlpha));
+        this.addOptions(Arrays.asList(text, dynamicScaling, esp, espRender, tracer, tracerAlpha));
     }
 
     @Override
@@ -54,7 +56,7 @@ public class Item extends Mod {
                         ItemStack itemStack = itemEntity.getItem();
                         String itemText = String.format("%s (%d)", itemStack.getItemName().getString(), itemStack.getCount());
 
-                        Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, itemEntity.position().add(0, 0.3, 0), itemText, CommonColors.WHITE, 1.0f);
+                        Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, itemEntity.position().add(0, 0.3, 0), itemText, CommonColors.WHITE, 1.0f, dynamicScaling.enabled);
                     }
 
                     if (esp.enabled) {
