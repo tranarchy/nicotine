@@ -25,7 +25,7 @@ public class BlockBreaking extends Mod {
 
     public BlockBreaking() {
         super(ModCategory.Render, "BlockBreaking");
-        this.addOptions(Arrays.asList(rgb, noAnimation));
+        this.addOptions(Arrays.asList(noAnimation, rgb));
     }
 
     @Override
