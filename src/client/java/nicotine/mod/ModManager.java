@@ -88,10 +88,10 @@ public class ModManager {
         add(new Surround());
         add(new CombatNotif());
 
+        add(new Tab());
         add(new NoTelemetry());
         add(new SmartFocus());
         add(new AutoReconnect());
-        add(new ExtraTab());
         add(new DiscordActivity());
 
         if (SystemUtils.IS_OS_MAC)
