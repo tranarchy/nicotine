@@ -165,7 +165,7 @@ public class HUDScreen extends BaseScreen {
 
     public void init() {
         EventBus.register(GuiRenderAfterEvent.class, event -> {
-            if (mc.getDebugOverlay().showDebugScreen() || mc.screen instanceof HUDScreen)
+            if (mc.screen instanceof HUDScreen)
                return true;
 
             extractRenderState(event.drawContext, 0, 0, 0);

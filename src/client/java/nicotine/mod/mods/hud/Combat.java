@@ -38,7 +38,7 @@ public class Combat extends HUDMod {
     @Override
     protected void init() {
         EventBus.register(GuiRenderBeforeEvent.class, event -> {
-            if (!this.enabled || mc.getDebugOverlay().showDebugScreen())
+            if (!this.enabled)
                 return true;
 
             AbstractClientPlayer nearestPlayer = Player.findNearestPlayer(ignoreFriends.enabled);
