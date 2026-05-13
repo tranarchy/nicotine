@@ -44,6 +44,7 @@ public class ModManager {
         add(new LogoutESP());
         add(new HoleESP());
         add(new NameTag());
+        //add(new Trajectory());
         add(new FullBright());
         add(new NoRender());
         add(new ActiveSpawner());
