@@ -53,26 +53,29 @@ public class DiscordActivity extends Mod {
             }
         } else {
             String[] envVars = { "XDG_RUNTIME_DIR", "TMPDIR", "TMP", "TEMP" };
+            String[] subPaths = {"", "/app/com.discordapp.Discord", "/.flatpak/com.discordapp.Discord/xdg-run" };
 
             for (String envVar : envVars) {
+                String path = System.getenv(envVar);
 
-                if (System.getenv(envVar) == null) {
+                if (path == null)
                     continue;
-                }
 
-                for (int i = 0; i < 10; i++) {
-                    String socketFileName = String.format("%s/discord-ipc-%d", System.getenv(envVar), i);
+                for (String subPath : subPaths) {
+                    for (int i = 0; i < 10; i++) {
+                        String socketFileName = String.format("%s%s/discord-ipc-%d", path, subPath, i);
 
-                    File socketFile = new File(socketFileName);
+                        File socketFile = new File(socketFileName);
 
-                    if (socketFile.exists()) {
-                        try {
-                            socketChannel = SocketChannel.open(UnixDomainSocketAddress.of(socketFileName));
-                        } catch (IOException e) {
-                            continue;
+                        if (socketFile.exists()) {
+                            try {
+                                socketChannel = SocketChannel.open(UnixDomainSocketAddress.of(socketFileName));
+                            } catch (IOException e) {
+                                continue;
+                            }
+
+                            return true;
                         }
-
-                        return true;
                     }
                 }
             }
