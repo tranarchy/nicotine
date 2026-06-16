@@ -56,19 +56,19 @@ public class Item extends Mod {
                         ItemStack itemStack = itemEntity.getItem();
                         String itemText = String.format("%s (%d)", itemStack.getItemName().getString(), itemStack.getCount());
 
-                        Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, itemEntity.position().add(0, 0.3, 0), itemText, CommonColors.WHITE, 1.0f, dynamicScaling.enabled);
+                        Render3D.drawText(event.submitNodeStorage, event.matrixStack, event.camera, itemEntity.position().add(0, 0.3, 0), itemText, CommonColors.WHITE, 1.0f, dynamicScaling.enabled);
                     }
 
                     if (esp.enabled) {
                         switch (espRender.value) {
                             case "Box":
-                                Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, CommonColors.WHITE);
+                                Render3D.drawBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, CommonColors.WHITE);
                                 break;
                             case "Filled":
-                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, CommonColors.WHITE);
+                                Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, CommonColors.WHITE);
                                 break;
                             case "Fade":
-                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, CommonColors.WHITE, true);
+                                Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, CommonColors.WHITE, true);
                                 break;
                         }
                     }
@@ -76,7 +76,7 @@ public class Item extends Mod {
                     if (tracer.enabled) {
                         Vec3 targetPos = entity.position();
 
-                        Render3D.drawTracer(event.camera, event.multiBufferSource, event.matrixStack, targetPos, ColorUtil.changeAlpha(CommonColors.WHITE, (int)tracerAlpha.value));
+                        Render3D.drawTracer(event.submitNodeStorage, event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(CommonColors.WHITE, (int)tracerAlpha.value));
                     }
                 }
             }

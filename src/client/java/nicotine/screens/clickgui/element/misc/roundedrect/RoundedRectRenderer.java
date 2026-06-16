@@ -2,14 +2,11 @@ package nicotine.screens.clickgui.element.misc.roundedrect;
 
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.render.pip.PictureInPictureRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import org.joml.Matrix4f;
+import nicotine.util.render.CustomRenderType;
 
 public class RoundedRectRenderer extends PictureInPictureRenderer<RoundedRectRenderState> {
-    public RoundedRectRenderer(MultiBufferSource.BufferSource bufferSource) {
-        super(bufferSource);
-    }
 
     private final float[] SIN_TABLE = {
             0,0.1736482f,
@@ -69,58 +66,60 @@ public class RoundedRectRenderer extends PictureInPictureRenderer<RoundedRectRen
     }
 
     @Override
-    protected void renderToTexture(RoundedRectRenderState renderState, PoseStack pose) {
-        VertexConsumer vertexConsumer = this.bufferSource.getBuffer(RenderTypes.debugTriangleFan());
+    protected void renderToTexture(RoundedRectRenderState renderState, PoseStack poseStack, SubmitNodeCollector submitNodeCollector) {
+        submitNodeCollector.submitCustomGeometry(
+                poseStack,
+                RenderTypes.debugTriangleFan(),
+                (entry, vertexConsumer) -> {
+                    float cx = 0f;
+                    float cy = 0f;
+                    float dx = (float) (renderState.x1() - renderState.x0());
+                    float dy = (float) (renderState.y1() - renderState.y0());
 
-        Matrix4f entry = pose.last().pose();
+                    float r = 4f;
 
-        float cx = 0f;
-        float cy = 0f;
-        float dx = (float) (renderState.x1() - renderState.x0());
-        float dy = (float) (renderState.y1() - renderState.y0());
+                    int i = 0;
+                    float x0, y0, x, y;
+                    x = 0f;
 
-        float r = 4f;
+                    dx -= r + r;
+                    dy -= r + r;
 
-        int i = 0;
-        float x0,y0,x,y;
-        x = 0f;
+                    vertexConsumer.addVertex(entry, cx, cy, 0f).setColor(renderState.color());
 
-        dx-=r+r;
-        dy-=r+r;
+                    x0 = cx + (0.5f * dx);
+                    y0 = cy + (0.5f * dy);
 
-        vertexConsumer.addVertex(entry, cx, cy, 0f).setColor(renderState.color());
+                    for (; i < 9; i++) {
+                        x = x0 + (r * SIN_TABLE[i + 9]);
+                        y = y0 + (r * SIN_TABLE[i]);
+                        vertexConsumer.addVertex(entry, x, y, 0f).setColor(renderState.color());
+                    }
 
-        x0 = cx + (0.5f * dx);
-        y0 = cy + (0.5f * dy);
+                    x0 -= dx;
+                    for (; i < 18; i++) {
+                        x = x0 + (r * SIN_TABLE[i + 9]);
+                        y = y0 + (r * SIN_TABLE[i]);
+                        vertexConsumer.addVertex(entry, x, y, 0f).setColor(renderState.color());
+                    }
 
-        for (; i < 9; i++) {
-            x= x0 + (r * SIN_TABLE[i+9]);
-            y= y0 + (r * SIN_TABLE[i]);
-            vertexConsumer.addVertex(entry, x, y, 0f).setColor(renderState.color());
-        }
+                    y0 -= dy;
+                    for (; i < 27; i++) {
+                        x = x0 + (r * SIN_TABLE[i + 9]);
+                        y = y0 + (r * SIN_TABLE[i]);
+                        vertexConsumer.addVertex(entry, x, y, 0).setColor(renderState.color());
+                    }
 
-        x0 -= dx;
-        for (; i < 18; i++) {
-            x= x0+ (r * SIN_TABLE[i+9]);
-            y= y0 + (r * SIN_TABLE[i]);
-            vertexConsumer.addVertex(entry, x, y, 0f).setColor(renderState.color());
-        }
+                    x0 += dx;
+                    for (; i < 36; i++) {
+                        x = x0 + (r * SIN_TABLE[i + 9]);
+                        y = y0 + (r * SIN_TABLE[i]);
+                        vertexConsumer.addVertex(entry, x, y, 0).setColor(renderState.color());
+                    }
 
-        y0 -= dy;
-        for (; i < 27; i++) {
-            x= x0 + (r * SIN_TABLE[i+9]);
-            y= y0 + (r * SIN_TABLE[i]);
-            vertexConsumer.addVertex(entry, x, y, 0).setColor(renderState.color());
-        }
-
-        x0 += dx;
-        for (; i < 36; i++) {
-            x=x0+(r * SIN_TABLE[i+9]);
-            y=y0+(r * SIN_TABLE[i]);
-            vertexConsumer.addVertex(entry, x, y, 0).setColor(renderState.color());
-        }
-
-        vertexConsumer.addVertex(entry, x,cy+(0.5f*dy), 0).setColor(renderState.color());
+                    vertexConsumer.addVertex(entry, x, cy + (0.5f * dy), 0).setColor(renderState.color());
+                }
+        );
     }
 
     @Override

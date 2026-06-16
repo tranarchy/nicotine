@@ -1,8 +1,8 @@
 package nicotine.mixin;
 
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
 import nicotine.events.*;
 import nicotine.util.EventBus;
 import org.spongepowered.asm.mixin.Mixin;
@@ -10,8 +10,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(Gui.class)
-public class GuiMixin {
+@Mixin(Hud.class)
+public class HudMixin {
+    @Inject(at = @At("HEAD"), method = "extractRenderState")
+    public void renderBefore(final GuiGraphicsExtractor graphics, final DeltaTracker deltaTracker, CallbackInfo info) {
+        EventBus.post(new GuiRenderBeforeEvent(graphics));
+    }
+
+    @Inject(at = @At("TAIL"), method = "extractRenderState")
+    public void renderAfter(final GuiGraphicsExtractor graphics, final DeltaTracker deltaTracker, CallbackInfo info) {
+        EventBus.post(new GuiRenderAfterEvent(graphics));
+    }
+
     @Inject(at = @At("HEAD"), method = "extractEffects", cancellable = true)
     private void extractEffects(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo info) {
         boolean result = EventBus.post(new RenderStatusEffectsOverlayEvent());
@@ -28,16 +38,6 @@ public class GuiMixin {
         if (!result) {
             info.cancel();
         }
-    }
-
-    @Inject(at = @At("HEAD"), method = "extractRenderState")
-    public void renderBefore(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo info) {
-        EventBus.post(new GuiRenderBeforeEvent(guiGraphics));
-    }
-
-    @Inject(at = @At("TAIL"), method = "extractRenderState")
-    public void renderAfter(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker, CallbackInfo info) {
-        EventBus.post(new GuiRenderAfterEvent(guiGraphics));
     }
 
     @Inject(at = @At("HEAD"), method = "extractCameraOverlays", cancellable = true)

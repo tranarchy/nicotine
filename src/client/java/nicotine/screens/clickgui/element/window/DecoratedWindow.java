@@ -27,7 +27,7 @@ public class DecoratedWindow extends Window implements Draggable {
         if (screen != null)
             screen.removeSubWindow(this);
         else
-            mc.setScreen(null);
+            mc.gui.setScreen(null);
     }
 
     public DecoratedWindow(@Nullable BaseScreen screen, String title, int x, int y, int width, int height) {

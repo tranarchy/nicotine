@@ -80,7 +80,7 @@ public class Scaffold extends Mod {
                 scaffoldDirection = Direction.UP;
                 placementPos = initPos.offset(0, -2, 0);
 
-                lookAtPos = placementPos.getCenter();
+                lookAtPos = Vec3.atCenterOf(placementPos);
 
                 if (mc.level.getBlockState(placementPos).getBlock().defaultBlockState().canBeReplaced())
                     return true;

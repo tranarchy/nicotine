@@ -157,7 +157,7 @@ public class TouchBar extends Mod {
 
         if (mc.player == null)
             address = "main menu";
-        else if (mc.isSingleplayer())
+        else if (mc.hasSingleplayerServer())
             address = "single player";
         else if (currentServer != null) {
             address = currentServer.ip;

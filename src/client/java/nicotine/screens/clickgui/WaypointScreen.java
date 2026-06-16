@@ -46,7 +46,7 @@ public class WaypointScreen extends BaseScreen {
     public WaypointScreen() {
         super("nicotine waypoints", new DecoratedWindow(null, "Waypoints", 0, 0, 280, 230) {
             protected void close() {
-                mc.setScreen(GUI.screen);
+                mc.gui.setScreen(GUI.screen);
             }
         });
 
@@ -314,7 +314,7 @@ public class WaypointScreen extends BaseScreen {
     @Override
     public void closeScreen() {
         if (list)
-            mc.setScreen(GUI.screen);
+            mc.gui.setScreen(GUI.screen);
         else
            changeMode();
     }

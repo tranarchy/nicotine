@@ -163,7 +163,7 @@ public class Player {
             if (action.lookAtPos != null)
                 target = action.lookAtPos;
             else
-                target = action.blockHitResult.getBlockPos().getCenter();
+                target = Vec3.atCenterOf(action.blockHitResult.getBlockPos());
 
             if (action.selfCenter) {
                 selfCenter();
@@ -263,7 +263,7 @@ public class Player {
     }
 
     public static void selfCenter() {
-        Vec3 centerPos = mc.player.blockPosition().getCenter();
+        Vec3 centerPos = Vec3.atCenterOf(mc.player.blockPosition());
 
         if (centerPos.x == mc.player.getX() && centerPos.z == mc.player.getZ())
             return;

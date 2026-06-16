@@ -43,8 +43,8 @@ public class GUI extends Mod {
             ColorUtil.ACTIVE_FOREGROUND_COLOR = rgb.getColor();
             ColorUtil.BACKGROUND_COLOR = ColorUtil.changeAlpha(ColorUtil.BACKGROUND_COLOR, (int)bgAlpha.value);
 
-            if (Keybind.keyDown(keybind.keyCode) && (mc.screen == null || mc.screen instanceof TitleScreen))
-                mc.setScreen(screen);
+            if (Keybind.keyDown(keybind.keyCode) && (mc.gui.screen() == null || mc.gui.screen() instanceof TitleScreen))
+                mc.gui.setScreen(screen);
 
             return true;
         });

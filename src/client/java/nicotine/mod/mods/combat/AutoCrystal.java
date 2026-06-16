@@ -109,8 +109,8 @@ public class AutoCrystal extends Mod {
                     if (!mc.player.isWithinBlockInteractionRange(pos, 0))
                         continue;
 
-                    Vec3 centerPos = pos.getCenter();
-                    EndCrystal endCrystalEntity = new EndCrystal(null, centerPos.x, pos.getY() + 1, centerPos.z);
+                    Vec3 centerPos = Vec3.atCenterOf(pos);
+                    EndCrystal endCrystalEntity = new EndCrystal(mc.level, centerPos.x, pos.getY() + 1, centerPos.z);
 
                     if (!mc.player.isWithinEntityInteractionRange(endCrystalEntity, 0))
                         continue;
@@ -146,7 +146,7 @@ public class AutoCrystal extends Mod {
 
         for (BlockPos pos : directions.keySet()) {
             if (mc.player.isWithinBlockInteractionRange(pos, 0) && mc.level.getBlockState(pos).getBlock() == Blocks.AIR) {
-                if (pos.getCenter().distanceTo(playerPos) < nearestPos.getCenter().distanceTo(playerPos)) {
+                if (Vec3.atCenterOf(pos).distanceTo(playerPos) < Vec3.atCenterOf(nearestPos).distanceTo(playerPos)) {
                     nearestPos = pos;
                 }
             }
@@ -220,7 +220,7 @@ public class AutoCrystal extends Mod {
                     if (invalidPlacement)
                         continue;
 
-                    Vec3 crystalPos = placementPosition.getBottomCenter().add(0, 1, 0);
+                    Vec3 crystalPos = Vec3.atBottomCenterOf(placementPosition).add(0, 1, 0);
 
                     float selfDmg = calculateExplosionDamage(crystalPos, mc.player);
                     if (selfDmg > selfDamage.value)
@@ -276,7 +276,7 @@ public class AutoCrystal extends Mod {
                 return true;
 
             Boxf boundingBox = BoxUtil.getBlockBoundingBoxf(placementPositionToRender);
-            Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, ColorUtil.ACTIVE_FOREGROUND_COLOR);
+            Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, ColorUtil.ACTIVE_FOREGROUND_COLOR);
 
             return true;
         });

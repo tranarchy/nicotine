@@ -21,7 +21,7 @@ public class AlphaInventory extends Mod {
             if (!this.enabled)
                 return true;
 
-            if (event.packet instanceof ServerboundContainerClosePacket && mc.screen instanceof InventoryScreen) {
+            if (event.packet instanceof ServerboundContainerClosePacket && mc.gui.screen() instanceof InventoryScreen) {
                 return false;
             }
 

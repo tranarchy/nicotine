@@ -89,7 +89,7 @@ public class HoleESP extends Mod {
                 return true;
 
             for (BlockPos holeSpot : holeSpots) {
-                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, BoxUtil.getBlockBoundingBoxf(holeSpot.offset(0, 1, 0)), CommonColors.SOFT_RED);
+                Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, BoxUtil.getBlockBoundingBoxf(holeSpot.offset(0, 1, 0)), CommonColors.SOFT_RED);
             }
 
             return true;

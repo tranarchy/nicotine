@@ -58,7 +58,7 @@ public class Xray extends Mod {
     public void toggle() {
         this.enabled = !this.enabled;
         mc.smartCull = !this.enabled;
-        mc.levelRenderer.allChanged();
+        mc.levelExtractor.allChanged();
     }
 
     @Override

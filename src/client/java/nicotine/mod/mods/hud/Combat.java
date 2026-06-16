@@ -43,10 +43,10 @@ public class Combat extends HUDMod {
 
             AbstractClientPlayer nearestPlayer = Player.findNearestPlayer(ignoreFriends.enabled);
 
-            if (mc.screen instanceof HUDScreen)
+            if (mc.gui.screen() instanceof HUDScreen)
                 nearestPlayer = mc.player;
 
-            if (nearestPlayer == null || mc.screen instanceof InventoryScreen)
+            if (nearestPlayer == null || mc.gui.screen() instanceof InventoryScreen)
                 return true;
 
             final int CENTER_WIDTH = mc.getWindow().getGuiScaledWidth() / 2;
@@ -95,7 +95,7 @@ public class Combat extends HUDMod {
             }
 
             if (otherPlayers.enabled)
-                playerInfo.add(String.format("%d %sother players nearby", mc.level.players().size() - (mc.screen instanceof HUDScreen ? 1 : 2), ChatFormatting.WHITE));
+                playerInfo.add(String.format("%d %sother players nearby", mc.level.players().size() - (mc.gui.screen() instanceof HUDScreen ? 1 : 2), ChatFormatting.WHITE));
 
             for (int i = 0; i < playerInfo.size(); i++) {
                 event.drawContext.text(mc.font,

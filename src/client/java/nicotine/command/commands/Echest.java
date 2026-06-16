@@ -32,7 +32,7 @@ public class Echest extends Command {
     @Override
     protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (mc.screen == null && openScreen) {
+            if (mc.gui.screen() == null && openScreen) {
                 openScreen = false;
                 List<ItemStack> peekItems;
 
@@ -48,7 +48,7 @@ public class Echest extends Command {
                 for (int i = 0; i < peekItems.size(); i++) {
                     peekInventory.setItem(i, peekItems.get(i));
                 }
-                mc.setScreen(new PeekScreen(Component.literal("Ender Chest"), peekInventory));
+                mc.gui.setScreen(new PeekScreen(Component.literal("Ender Chest"), peekInventory));
             }
 
             return true;

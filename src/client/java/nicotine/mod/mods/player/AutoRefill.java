@@ -18,7 +18,7 @@ public class AutoRefill extends Mod {
     @Override
     protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!this.enabled || mc.screen != null)
+            if (!this.enabled || mc.gui.screen() != null)
                 return true;
 
             if (mc.player.getMainHandItem().getCount() == mc.player.getMainHandItem().getMaxStackSize() || mc.player.getMainHandItem() == ItemStack.EMPTY)

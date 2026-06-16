@@ -7,6 +7,7 @@ import net.minecraft.util.CommonColors;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.SpawnerBlockEntity;
+import net.minecraft.world.phys.Vec3;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.RenderEvent;
 import nicotine.mixininterfaces.IBaseSpawner;
@@ -60,8 +61,8 @@ public class ActiveSpawner extends Mod {
                 return true;
             
             for (BlockPos blockPos : activeSpawners) {
-                if (Player.isPositionInRenderDistance(blockPos.getCenter())) {
-                    Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, BoxUtil.getBlockBoundingBoxf(blockPos), CommonColors.GREEN);
+                if (Player.isPositionInRenderDistance(Vec3.atCenterOf(blockPos))) {
+                    Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, BoxUtil.getBlockBoundingBoxf(blockPos), CommonColors.GREEN);
                 }
             }
             

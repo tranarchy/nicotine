@@ -24,8 +24,8 @@
 	],
     "accessWidener": "nicotine.accesswidener",
 	"depends": {
-      "fabricloader": ">=0.18.6",
-      "minecraft": "~26.1.2",
+      "fabricloader": ">=0.19.3",
+      "minecraft": "~26.2",
       "java": ">=25"
 	}
 }

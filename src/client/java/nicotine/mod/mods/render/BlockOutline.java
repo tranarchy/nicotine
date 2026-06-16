@@ -53,13 +53,13 @@ public class BlockOutline extends Mod {
 
             switch (render.value) {
                 case "Box":
-                    Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, rgb.getColor());
+                    Render3D.drawBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, rgb.getColor());
                     break;
                 case "Filled":
-                    Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, rgb.getColor());
+                    Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, rgb.getColor());
                     break;
                 case "Fade":
-                    Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, rgb.getColor(), true);
+                    Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, rgb.getColor(), true);
                     break;
             }
 

@@ -118,12 +118,12 @@ public class NoRender extends Mod {
             return true;
         });
 
-        EventBus.register(ExtractLevelEvent.class, event -> {
+        EventBus.register(ExtractParticleEvent.class, event -> {
             if (!this.enabled)
                 return true;
 
             if (particles.enabled)
-                mc.particleEngine.clearParticles();
+                return false;
 
             return true;
         });

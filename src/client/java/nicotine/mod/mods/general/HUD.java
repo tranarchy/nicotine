@@ -41,8 +41,8 @@ public class HUD extends Mod {
     @Override
     protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (Keybind.keyDown(keybind.keyCode) && mc.screen == null)
-                mc.setScreen(screen);
+            if (Keybind.keyDown(keybind.keyCode) && mc.gui.screen() == null)
+                mc.gui.setScreen(screen);
 
             return true;
         });

@@ -42,7 +42,7 @@ public class Inventory {
     }
 
     public static boolean isContainerOpen() {
-        if (mc.screen instanceof ContainerScreen || mc.screen instanceof ShulkerBoxScreen)
+        if (mc.gui.screen() instanceof ContainerScreen || mc.gui.screen() instanceof ShulkerBoxScreen)
             return true;
 
         return false;

@@ -46,7 +46,7 @@ public class Surround extends Mod {
             List<BlockPos> surroundBlocks = Player.getSurroundBlocks(mc.player.blockPosition());
 
             if (selfCenter.enabled) {
-                Comparator<BlockPos> byDistanceToPlayer = Comparator.comparingInt(blockPos -> (int)blockPos.getCenter().distanceTo(mc.player.position()));
+                Comparator<BlockPos> byDistanceToPlayer = Comparator.comparingInt(blockPos -> (int)Vec3.atCenterOf(blockPos).distanceTo(mc.player.position()));
                 surroundBlocks.sort(byDistanceToPlayer.reversed());
             }
 

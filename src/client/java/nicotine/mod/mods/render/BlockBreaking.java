@@ -3,6 +3,7 @@ package nicotine.mod.mods.render;
 import net.minecraft.client.renderer.state.level.BlockBreakingRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.events.RenderBlockDamageEvent;
 import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
@@ -30,17 +31,17 @@ public class BlockBreaking extends Mod {
 
     @Override
     protected void init() {
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!this.enabled)
                 return true;
 
-            for (BlockBreakingRenderState breakingBlockRenderState : mc.gameRenderer.getGameRenderState().levelRenderState.blockBreakingRenderStates) {
+            for (BlockBreakingRenderState breakingBlockRenderState : mc.gameRenderer.gameRenderState().levelRenderState.blockBreakingRenderStates) {
                 BlockPos blockPos = breakingBlockRenderState.blockPos();
                 int stage = Math.abs(breakingBlockRenderState.progress() - 9);
 
                 AABB blockBreakingBox = BoxUtil.getBlockBoundingBox(blockPos).deflate(stage / 20.0f);
 
-                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, new Boxf(blockBreakingBox), rgb.getColor());
+                Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, new Boxf(blockBreakingBox), rgb.getColor());
             }
 
             return true;

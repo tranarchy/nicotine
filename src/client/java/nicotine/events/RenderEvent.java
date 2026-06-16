@@ -3,16 +3,16 @@ package nicotine.events;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeStorage;
 
 public class RenderEvent {
     public final Camera camera;
     public final PoseStack matrixStack;
-    public final MultiBufferSource.BufferSource multiBufferSource;
+    public SubmitNodeStorage submitNodeStorage;
 
-    public RenderEvent(Camera camera, PoseStack matrixStack, MultiBufferSource.BufferSource multiBufferSource) {
+    public RenderEvent(Camera camera, PoseStack matrixStack, SubmitNodeStorage submitNodeStorage) {
         this.camera = camera;
         this.matrixStack = matrixStack;
-        this.multiBufferSource = multiBufferSource;
+        this.submitNodeStorage = submitNodeStorage;
     }
 }

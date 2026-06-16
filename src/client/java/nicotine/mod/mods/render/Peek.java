@@ -69,7 +69,7 @@ public class Peek extends Mod {
                         for (int i = 0; i < itemsToPeek.size(); i++) {
                             peekInventory.setItem(i, itemsToPeek.get(i));
                         }
-                        mc.setScreen(new PeekScreen(focusedStack.getHoverName(), peekInventory));
+                        mc.gui.setScreen(new PeekScreen(focusedStack.getHoverName(), peekInventory));
                     }
 
                     int posX = event.x + (SLOT_WIDTH / 2);

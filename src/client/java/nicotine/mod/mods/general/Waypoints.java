@@ -33,7 +33,7 @@ public class Waypoints extends Mod {
     private final ClickOption manage = new ClickOption("Manage") {
         @Override
         public void click() {
-          mc.setScreen(new WaypointScreen());
+          mc.gui.setScreen(new WaypointScreen());
         }
     };
 
@@ -55,7 +55,7 @@ public class Waypoints extends Mod {
     @Override
     protected void init() {
         EventBus.register(RenderEvent.class, event -> {
-            if (!this.enabled || mc.isSingleplayer())
+            if (!this.enabled || mc.hasSingleplayerServer())
                 return true;
 
             for (WaypointInstance waypointInstance : waypointInstances) {
@@ -68,12 +68,12 @@ public class Waypoints extends Mod {
                 if (mc.level.dimension().identifier().toString().equals(waypointInstance.dimension)) {
                     texts.put(waypointInstance.name, nameRGB.getColor());
                     texts.put(String.format("%d %d %d", pos.getX(), pos.getY(), pos.getZ()), cordsRGB.getColor());
-                    Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, getAdjustedPosition(pos), texts, scale.value, true);
+                    Render3D.drawTexts(event.submitNodeStorage, event.matrixStack, event.camera, getAdjustedPosition(pos), texts, scale.value, true);
                 }  else if (mc.level.dimension().equals(Level.NETHER) && Level.OVERWORLD.identifier().toString().equals(waypointInstance.dimension)) {
                     pos = new BlockPos(waypointInstance.x / 8, waypointInstance.y, waypointInstance.z / 8);
                     texts.put(String.format("%s [OW]", waypointInstance.name), nameRGB.getColor());
                     texts.put(String.format("%d %d %d", pos.getX(), pos.getY(), pos.getZ()), cordsRGB.getColor());
-                    Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, getAdjustedPosition(pos), texts, scale.value, true);
+                    Render3D.drawTexts(event.submitNodeStorage, event.matrixStack, event.camera, getAdjustedPosition(pos), texts, scale.value, true);
                 }
             }
 

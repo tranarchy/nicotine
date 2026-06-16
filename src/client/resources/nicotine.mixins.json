@@ -18,7 +18,6 @@
         "DisconnectedScreenMixin",
         "EntityMixin",
         "GameRendererMixin",
-        "GuiMixin",
         "HumanoidArmorLayerMixin",
         "IntRangeMixin",
         "LevelRendererMixin",
@@ -36,7 +35,9 @@
         "CameraMixin",
         "ScrollWheelHandlerMixin",
         "GuiGraphicsExtractorMixin",
-        "GuiRendererMixin"
+        "GuiRendererMixin",
+        "HudMixin",
+        "ParticleEngineMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,

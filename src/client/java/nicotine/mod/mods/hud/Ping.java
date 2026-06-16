@@ -34,7 +34,7 @@ public class Ping extends HUDMod {
     @Override
     protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!this.enabled || mc.isSingleplayer())
+            if (!this.enabled || mc.hasSingleplayerServer())
                 return true;
 
             if (source.value.equals("Tab"))
@@ -55,7 +55,7 @@ public class Ping extends HUDMod {
         });
 
         EventBus.register(PacketInEvent.class, event -> {
-            if (!this.enabled || source.value.equals("Tab") || mc.isSingleplayer())
+            if (!this.enabled || source.value.equals("Tab") || mc.hasSingleplayerServer())
                 return true;
 
             if (event.packet instanceof ClientboundPongResponsePacket ClientboundPongResponsePacket && mc.player != null) {

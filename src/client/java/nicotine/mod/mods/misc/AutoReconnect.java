@@ -29,7 +29,7 @@ public class AutoReconnect extends Mod {
             if (!this.enabled)
                 return true;
 
-            mc.setScreen(new AutoReconnectScreen((int)delay.value * 20));
+            mc.gui.setScreen(new AutoReconnectScreen((int)delay.value * 20));
             return true;
         });
 

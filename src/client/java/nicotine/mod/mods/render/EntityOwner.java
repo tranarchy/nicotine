@@ -69,7 +69,7 @@ public class EntityOwner extends Mod {
                     }
 
                     String text = String.format("Owned by %s",  ownerName);
-                    Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, entity.position().add(0, 0.3, 0), text, CommonColors.WHITE, 1.0f);
+                    Render3D.drawText(event.submitNodeStorage, event.matrixStack, event.camera, entity.position().add(0, 0.3, 0), text, CommonColors.WHITE, 1.0f);
                 }
             }
 

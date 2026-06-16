@@ -5,6 +5,7 @@ import net.minecraft.client.player.RemotePlayer;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderArmorEvent;
 import nicotine.events.RenderEvent;
+import nicotine.events.RenderPlayerEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.*;
@@ -38,6 +39,9 @@ public class Players extends Mod {
 
     private final RGBOption enemyEspRGB = new RGBOption("Enemy");
     private final RGBOption friendEspRGB = new RGBOption("Friend");
+    private final ToggleOption outline = new ToggleOption("Outline");
+    private final RGBOption enemyOutlineRGB = new RGBOption("Enemy");
+    private final RGBOption friendOutlineRGB = new RGBOption("Friend");
     private final ToggleOption tracer = new ToggleOption("Tracer");
     private final RGBOption enemyTracerRGB = new RGBOption("Enemy");
     private final RGBOption friendTracerRGB = new RGBOption("Friend");
@@ -55,6 +59,12 @@ public class Players extends Mod {
         friendEspRGB.id = "FriendESPRGB";
         friendEspRGB.subOption = true;
 
+        enemyOutlineRGB.id = "EnemyOutlineRGB";
+        enemyOutlineRGB.subOption = true;
+
+        friendOutlineRGB.id = "FriendOutlineRGB";
+        friendOutlineRGB.subOption = true;
+
         enemyTracerRGB.id = "TracerRGB";
         enemyTracerRGB.subOption = true;
 
@@ -64,7 +74,7 @@ public class Players extends Mod {
         tracerAlpha.subOption = true;
 
         this.addOptions(Arrays.asList(
-                esp, espRender, espScale, enemyEspRGB, friendEspRGB,
+                esp, espRender, espScale, enemyEspRGB, friendEspRGB, outline, enemyOutlineRGB, friendOutlineRGB,
                 tracer, enemyTracerRGB, friendTracerRGB, tracerAlpha, noArmor
         ));
     }
@@ -85,13 +95,13 @@ public class Players extends Mod {
 
                         switch (espRender.value) {
                             case "Box":
-                                Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espColor);
+                                Render3D.drawBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, espColor);
                                 break;
                             case "Filled":
-                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espColor);
+                                Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, espColor);
                                 break;
                             case "Fade":
-                                Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, espColor, true);
+                                Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, espColor, true);
                                 break;
                         }
                     }
@@ -100,10 +110,21 @@ public class Players extends Mod {
                         int tracerColor = friendList.contains(player.getUUID()) ? friendTracerRGB.getColor() : enemyTracerRGB.getColor();
 
                         Vec3 targetPos = player.position();
-                        Render3D.drawTracer(event.camera, event.multiBufferSource, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerColor, (int)tracerAlpha.value));
+                        Render3D.drawTracer(event.submitNodeStorage, event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerColor, (int)tracerAlpha.value));
                     }
                 }
             }
+
+            return true;
+        });
+
+        EventBus.register(RenderPlayerEvent.class, event -> {
+            if (!this.enabled || !outline.enabled || event.avatarRenderState.id == mc.player.getId())
+                return true;
+
+            int outlineColor = friendList.contains(mc.level.getEntity(event.avatarRenderState.id).getUUID()) ? friendOutlineRGB.getColor() : enemyOutlineRGB.getColor();
+
+            event.avatarRenderState.outlineColor = outlineColor;
 
             return true;
         });

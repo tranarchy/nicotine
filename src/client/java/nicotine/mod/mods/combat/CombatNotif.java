@@ -54,8 +54,8 @@ public class CombatNotif extends Mod {
             }
 
             if (toastNotif.enabled) {
-                mc.getToastManager().clear();
-                mc.getToastManager().addToast(new CombatToast(Component.literal(String.format("Popped a totem [%s%d%s]", ChatFormatting.DARK_PURPLE, totemCount, ChatFormatting.RESET)), event.player));
+                mc.gui.toastManager().clear();
+                mc.gui.toastManager().addToast(new CombatToast(Component.literal(String.format("Popped a totem [%s%d%s]", ChatFormatting.DARK_PURPLE, totemCount, ChatFormatting.RESET)), event.player));
             }
 
             return true;
@@ -71,7 +71,7 @@ public class CombatNotif extends Mod {
                         Message.sendInfo(String.format("%s entered your render distance", player.getName().getString()));
 
                         if (toastNotif.enabled) {
-                            mc.getToastManager().addToast(new CombatToast(Component.literal("In render distance"), player));
+                            mc.gui.toastManager().addToast(new CombatToast(Component.literal("In render distance"), player));
                         }
 
                         if (playSound.enabled)

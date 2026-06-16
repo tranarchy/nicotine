@@ -22,7 +22,7 @@ public class Server extends HUDMod {
     @Override
     protected void init() {
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!this.enabled || mc.isSingleplayer())
+            if (!this.enabled || mc.hasSingleplayerServer())
                 return true;
 
             String serverText = String.format("server %s%s %s", ChatFormatting.WHITE, HUD.separator.value, currentServer.ip);

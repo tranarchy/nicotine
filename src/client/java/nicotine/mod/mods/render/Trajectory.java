@@ -62,7 +62,7 @@ public class Trajectory extends Mod {
             if (projectile == null)
                 return true;
 
-            Render3D.drawFilledBox(event.camera, event.multiBufferSource, event.matrixStack, new Boxf(BoxUtil.get1x1Box(projectile.position())), rgb.getColor());
+            Render3D.drawFilledBox(event.submitNodeStorage, event.camera, event.matrixStack, new Boxf(BoxUtil.get1x1Box(projectile.position())), rgb.getColor());
 
             return true;
         });

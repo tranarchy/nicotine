@@ -1,7 +1,7 @@
 package nicotine.mixin;
 
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.client.renderer.state.gui.pip.PictureInPictureRenderState;
 import nicotine.screens.clickgui.element.misc.roundedrect.RoundedRectRenderState;
@@ -20,22 +20,22 @@ public class GuiRendererMixin {
     @Unique
     private RoundedRectRenderer roundedRectRenderer = null;
 
-    @Shadow
-    @Final
-    private MultiBufferSource.BufferSource bufferSource;
 
     @Shadow
     @Final
     private GuiRenderState renderState;
 
+    @Shadow
+    @Final
+    private FeatureRenderDispatcher featureRenderDispatcher;
 
     @Inject(method = "preparePictureInPictureState", at = @At("HEAD"))
     private <T extends PictureInPictureRenderState> void preparePictureInPictureState(final T picturesInPictureState, final int guiScale, CallbackInfo info) {
         if (picturesInPictureState instanceof RoundedRectRenderState roundedRectRenderState) {
             if (roundedRectRenderer == null)
-                roundedRectRenderer = new RoundedRectRenderer(this.bufferSource);
+                roundedRectRenderer = new RoundedRectRenderer();
 
-            roundedRectRenderer.prepare(roundedRectRenderState, this.renderState, guiScale);
+            roundedRectRenderer.prepare(roundedRectRenderState, this.renderState, this.featureRenderDispatcher, guiScale);
         }
     }
 }

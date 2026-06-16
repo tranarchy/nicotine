@@ -60,7 +60,7 @@ public class Keybind {
         if (keycode == -1)
             return false;
 
-        if (keyDown(keycode) && !(mc.screen instanceof ChatScreen) && !(mc.screen instanceof BaseScreen) && !(mc.screen instanceof SignEditScreen)) {
+        if (keyDown(keycode) && !(mc.gui.screen() instanceof ChatScreen) && !(mc.gui.screen() instanceof BaseScreen) && !(mc.gui.screen() instanceof SignEditScreen)) {
             if (!keysPressed.containsKey(keycode)) {
                 keysPressed.put(name, keycode);
             }

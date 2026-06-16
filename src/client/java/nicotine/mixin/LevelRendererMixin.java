@@ -30,15 +30,10 @@ public abstract class LevelRendererMixin {
     @Unique
     Camera camera;
     PoseStack matrixStack;
-    MultiBufferSource.BufferSource multiBufferSource;
 
     @Final
     @Shadow
-    private RenderBuffers renderBuffers;
-
-    @Shadow
-    @Final
-    private LevelTargetBundle targets;
+    private SubmitNodeStorage submitNodeStorage;
 
     @Inject(at = @At("HEAD"), method = "submitBlockDestroyAnimation", cancellable = true)
     private void submitBlockDestroyAnimation(final PoseStack poseStack, final SubmitNodeCollector submitNodeCollector, final LevelRenderState levelRenderState, CallbackInfo info) {
@@ -58,32 +53,17 @@ public abstract class LevelRendererMixin {
         }
     }
 
-    @Inject(method = {"renderLevel"}, at = {@At("HEAD")})
-    public void renderLevelBefore(
-            final GraphicsResourceAllocator resourceAllocator,
-            final DeltaTracker deltaTracker,
-            final boolean renderOutline,
-            final CameraRenderState cameraState,
-            final Matrix4fc modelViewMatrix,
-            final GpuBufferSlice terrainFog,
-            final Vector4f fogColor,
-            final boolean shouldRenderSky,
-            final ChunkSectionsToRender chunkSectionsToRender, CallbackInfo info) {
-        this.camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+    @Inject(method = {"render"}, at = {@At("HEAD")})
+    public void render(final GraphicsResourceAllocator resourceAllocator, final DeltaTracker deltaTracker, final boolean renderOutline, final CameraRenderState cameraState, final Matrix4fc modelViewMatrix, final GpuBufferSlice terrainFog, final Vector4f fogColor, final boolean shouldRenderSky, CallbackInfo info) {
+        this.camera = Minecraft.getInstance().gameRenderer.mainCamera();
         this.matrixStack = new PoseStack();
-        this.multiBufferSource = this.renderBuffers.bufferSource();
 
-        EventBus.post(new RenderBeforeEvent(camera, matrixStack, multiBufferSource));
+        EventBus.post(new RenderBeforeEvent(camera, matrixStack, submitNodeStorage));
     }
 
-    @Inject(method = {"extractLevel"}, at = {@At("HEAD")})
-    public void extractLevel(final DeltaTracker deltaTracker, final Camera camera, final float deltaPartialTick, CallbackInfo callbackInfo) {
-        EventBus.post(new ExtractLevelEvent());
-    }
-
-    @Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderTranslucentFeatures()V", shift = At.Shift.AFTER))
+    @Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher$PreparedFrame;executeTranslucent()V", shift = At.Shift.AFTER))
     private void afterRenderTranslucentFeatures(CallbackInfo ci) {
-            EventBus.post(new RenderEvent(camera, matrixStack, multiBufferSource));
+            EventBus.post(new RenderEvent(camera, matrixStack, submitNodeStorage));
     }
 
     @Inject(at = @At("HEAD"), method = "addSkyPass", cancellable = true)

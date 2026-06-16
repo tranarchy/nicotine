@@ -197,7 +197,7 @@ public class DiscordActivity extends Mod {
 
                 if (mc.player == null)
                     details = "In main menu";
-                else if (mc.isSingleplayer())
+                else if (mc.hasSingleplayerServer())
                     details = "Playing single player";
                 else if (currentServer != null)
                     details = "Playing on " + currentServer.ip;

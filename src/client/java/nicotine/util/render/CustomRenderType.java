@@ -1,6 +1,5 @@
 package nicotine.util.render;
 
-import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.*;
 
 public class CustomRenderType {

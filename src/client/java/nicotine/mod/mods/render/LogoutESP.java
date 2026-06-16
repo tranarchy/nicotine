@@ -83,12 +83,12 @@ public class LogoutESP extends Mod {
                     event.matrixStack.pushPose();
                     event.matrixStack.translate(-view.x, -view.y, -view.z);
                     AvatarRenderState avatarRenderState = mc.getEntityRenderDispatcher().getPlayerRenderer(player).createRenderState(player, 0.0f);
-                    mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.getGameRenderState().levelRenderState.cameraRenderState, player.getX(), player.getY(), player.getZ(), event.matrixStack, mc.gameRenderer.getSubmitNodeStorage());
+                    mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.gameRenderState().levelRenderState.cameraRenderState, player.getX(), player.getY(), player.getZ(), event.matrixStack, event.submitNodeStorage);
                     event.matrixStack.popPose();
                 }
 
                 Boxf boundingBox = new Boxf(player.getBoundingBox());
-                Render3D.drawBox(event.camera, event.multiBufferSource, event.matrixStack, boundingBox, rgb.getColor());
+                Render3D.drawBox(event.submitNodeStorage, event.camera, event.matrixStack, boundingBox, rgb.getColor());
 
                 String text = player.getName().getString();
 
@@ -102,7 +102,7 @@ public class LogoutESP extends Mod {
                 }
 
                 Vec3 position = new Vec3(player.getX(), player.getBoundingBox().maxY, player.getZ());
-                Render3D.drawText(event.matrixStack, event.multiBufferSource, event.camera, position, text, rgb.getColor(), 1.0f);
+                Render3D.drawText(event.submitNodeStorage, event.matrixStack, event.camera, position, text, rgb.getColor(), 1.0f);
             }
 
             return true;

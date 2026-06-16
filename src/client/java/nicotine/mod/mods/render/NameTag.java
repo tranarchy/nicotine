@@ -93,7 +93,7 @@ public class NameTag extends Mod {
                     texts.put(secondaryText, infoColor);
                 }
 
-                Render3D.drawTexts(event.matrixStack, event.multiBufferSource, event.camera, position, texts, scale.value, dynamicScaling.enabled);
+                Render3D.drawTexts(event.submitNodeStorage, event.matrixStack, event.camera, position, texts, scale.value, dynamicScaling.enabled);
             }
 
             return true;

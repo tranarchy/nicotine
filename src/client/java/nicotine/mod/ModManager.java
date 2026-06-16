@@ -38,7 +38,6 @@ public class ModManager {
         }
 
         add(new Players());
-        add(new Chams());
         add(new Storage());
         add(new Item());
         add(new LogoutESP());

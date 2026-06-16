@@ -37,7 +37,7 @@ public class Zoom extends Mod {
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
             if (!this.enabled || !Keybind.keyDown(keybind.keyCode) ||
-                    mc.screen instanceof ChatScreen || mc.screen instanceof BaseScreen) {
+                    mc.gui.screen() instanceof ChatScreen || mc.gui.screen() instanceof BaseScreen) {
                 int fov =  fovOption.get();
                 if (fov == zoomFov.value)
                     fovOption.set(defaultFov);

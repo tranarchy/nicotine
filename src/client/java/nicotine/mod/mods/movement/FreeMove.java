@@ -30,7 +30,7 @@ public class FreeMove extends Mod {
         };
 
         EventBus.register(ClientLevelTickEvent.class, event -> {
-            if (!this.enabled || mc.screen == null || mc.screen instanceof ChatScreen || mc.screen instanceof SignEditScreen || InputText.selectedTextBox != null)
+            if (!this.enabled || mc.gui.screen() == null || mc.gui.screen() instanceof ChatScreen || mc.gui.screen() instanceof SignEditScreen || InputText.selectedTextBox != null)
                 return true;
 
             for (KeyMapping freeMoveKeybind : freeMoveKeybinds) {

@@ -3,6 +3,7 @@ package nicotine.screens.clickgui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import nicotine.events.GuiRenderAfterEvent;
+import nicotine.events.GuiRenderBeforeEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -90,7 +91,7 @@ public class HUDScreen extends BaseScreen {
         int windowAreaX = windowWidth / 4;
         int windowAreaY = windowHeight / 4;
 
-        if (mc.screen instanceof HUDScreen) {
+        if (mc.gui.screen() instanceof HUDScreen) {
             anchorAreas.add(new AnchorArea(new Window(0, 0, windowAreaX, windowAreaY), HUDMod.Anchor.TopLeft));
             anchorAreas.add(new AnchorArea(new Window(windowWidth - windowAreaX - 1, 0, windowAreaX, windowAreaY), HUDMod.Anchor.TopRight));
             anchorAreas.add(new AnchorArea(new Window(0, windowHeight - windowAreaY - 1, windowAreaX, windowAreaY), HUDMod.Anchor.BottomLeft));
@@ -165,7 +166,7 @@ public class HUDScreen extends BaseScreen {
 
     public void init() {
         EventBus.register(GuiRenderAfterEvent.class, event -> {
-            if (mc.screen instanceof HUDScreen)
+            if (mc.gui.screen() instanceof HUDScreen)
                return true;
 
             extractRenderState(event.drawContext, 0, 0, 0);

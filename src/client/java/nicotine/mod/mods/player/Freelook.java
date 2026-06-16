@@ -59,7 +59,7 @@ public class Freelook extends Mod {
             if (!this.enabled)
                 return true;
 
-            mc.gameRenderer.getMainCamera().setRotation(
+            mc.gameRenderer.mainCamera().setRotation(
                     event.partialTicks == 1.0F ? yRot : Mth.rotLerp(event.partialTicks, yRotO, yRot),
                     event.partialTicks == 1.0F ? xRot : Mth.rotLerp(event.partialTicks, xRotO, xRot)
             );
