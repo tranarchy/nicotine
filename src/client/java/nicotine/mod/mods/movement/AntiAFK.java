@@ -2,6 +2,7 @@ package nicotine.mod.mods.movement;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.component.SwingAnimation;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -67,7 +68,7 @@ public class AntiAFK extends Mod {
                 }
 
                 if (swing.enabled && random.nextBoolean()) {
-                    mc.player.swing(InteractionHand.MAIN_HAND);
+                    mc.player.swing(InteractionHand.MAIN_HAND, SwingAnimation.DEFAULT, true);
                 }
 
                 if (look.enabled && random.nextBoolean()) {

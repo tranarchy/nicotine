@@ -82,7 +82,7 @@ public class LogoutESP extends Mod {
                     Vec3 view = event.camera.position();
                     event.matrixStack.pushPose();
                     event.matrixStack.translate(-view.x, -view.y, -view.z);
-                    AvatarRenderState avatarRenderState = mc.getEntityRenderDispatcher().getPlayerRenderer(player).createRenderState(player, 0.0f);
+                    AvatarRenderState avatarRenderState = (AvatarRenderState) mc.getEntityRenderDispatcher().getRenderer(player).createRenderState(player, 0);
                     mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.gameRenderState().levelRenderState.cameraRenderState, player.getX(), player.getY(), player.getZ(), event.matrixStack, event.submitNodeStorage);
                     event.matrixStack.popPose();
                 }

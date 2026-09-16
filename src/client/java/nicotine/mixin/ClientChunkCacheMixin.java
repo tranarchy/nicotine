@@ -28,12 +28,12 @@ public class ClientChunkCacheMixin {
     private ClientLevel level;
 
     @Inject(method = "replaceWithPacketData", at = @At("TAIL"))
-    private void replaceWithPacketData(int i, int j, FriendlyByteBuf friendlyByteBuf, Map<Heightmap.Types, long[]> map, Consumer<ClientboundLevelChunkPacketData.BlockEntityTagOutput> consumer, CallbackInfoReturnable<LevelChunk> info) {
+    private void replaceWithPacketData(final int chunkX, final int chunkZ, final ClientboundLevelChunkPacketData chunkData, CallbackInfoReturnable<LevelChunk> info) {
         loadedChunks.put(info.getReturnValue(), level);
     }
 
     @Inject(method = "replaceWithPacketData", at = @At(value = "NEW", target = "net/minecraft/world/level/chunk/LevelChunk", shift = At.Shift.BEFORE))
-    private void replaceWithPacketData(int i, int j, FriendlyByteBuf friendlyByteBuf, Map<Heightmap.Types, long[]> map, Consumer<ClientboundLevelChunkPacketData.BlockEntityTagOutput> consumer, CallbackInfoReturnable<LevelChunk> info, @Local LevelChunk levelChunk) {
+    private void replaceWithPacketData(final int chunkX, final int chunkZ, final ClientboundLevelChunkPacketData chunkData, CallbackInfoReturnable<LevelChunk> info, @Local LevelChunk levelChunk) {
         if (levelChunk != null) {
             loadedChunks.remove(levelChunk, level);
         }
@@ -45,7 +45,7 @@ public class ClientChunkCacheMixin {
     }
 
     @Inject(method = "updateViewRadius", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientChunkCache$Storage;inRange(II)Z"))
-    private void updateViewRadius(int loadDistance, CallbackInfo ci, @Local(name = "newStorage") ClientChunkCache.Storage newStorage, @Local(name = "chunk") LevelChunk chunk, @Local(name = "pos") ChunkPos pos) {
+    private void updateViewRadius(final int viewRange, CallbackInfo ci, @Local(name = "newStorage") ClientChunkCache.Storage newStorage, @Local(name = "chunk") LevelChunk chunk, @Local(name = "pos") ChunkPos pos) {
         if (!newStorage.inRange(pos.x(), pos.z())) {
             loadedChunks.remove(chunk, level);
         }

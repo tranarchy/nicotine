@@ -17,6 +17,7 @@ import nicotine.screens.clickgui.element.*;
 import nicotine.screens.clickgui.element.button.*;
 import nicotine.screens.clickgui.element.button.InputText;
 import nicotine.screens.clickgui.element.window.Window;
+import nicotine.util.Keybind;
 import nicotine.util.Settings;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
@@ -208,7 +209,7 @@ public class BaseScreen extends Screen {
         InputText.selectedTextBox = null;
 
         if (KeybindButton.selectedKeybindOption != null) {
-            KeybindButton.selectedKeybindOption.keyCode = mouseButtonEvent.input();
+            KeybindButton.selectedKeybindOption.keyCode = mouseButtonEvent.input() + 1000;
             KeybindButton.selectedKeybindOption = null;
 
             return true;

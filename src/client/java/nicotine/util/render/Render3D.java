@@ -142,13 +142,11 @@ public class Render3D {
     }
 
     public static void drawTexts(SubmitNodeStorage submitNodeStorage, PoseStack matrix, Camera camera, Vec3 position, LinkedHashMap<String, Integer> texts, float scale, boolean dynamicScaling) {
-        Font textRenderer = mc.font;
-
         Vec3 cameraPos = camera.position();
 
         matrix.pushPose();
         matrix.translate((float)(position.x - cameraPos.x), (float)(position.y - cameraPos.y) + 0.50F, (float)(position.z - cameraPos.z));
-        matrix.mulPose(camera.rotation());
+        matrix.rotate(camera.rotation());
         float size = 0.025F * scale;
 
         if (dynamicScaling)
@@ -159,7 +157,7 @@ public class Render3D {
         int y = (int)(size / 0.025F);
 
         for (String text : texts.reversed().keySet()) {
-            float x = (float) textRenderer.width(text) / 2.0F;
+            float x = (float) mc.font.width(text) / 2.0F;
             int color = texts.get(text);
             submitNodeStorage.submitText(matrix, -x, y, Component.literal(text).getVisualOrderText(), false, Font.DisplayMode.SEE_THROUGH, 0, color, 0x50000000, 0);
 

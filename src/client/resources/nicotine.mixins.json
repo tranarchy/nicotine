@@ -37,7 +37,8 @@
         "GuiGraphicsExtractorMixin",
         "GuiRendererMixin",
         "HudMixin",
-        "ParticleEngineMixin"
+        "ParticleEngineMixin",
+        "WeatherEffectRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,

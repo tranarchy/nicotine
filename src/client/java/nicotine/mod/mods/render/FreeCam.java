@@ -51,7 +51,7 @@ public class FreeCam extends Mod {
             realPitch = mc.player.getXRot();
             realYaw = mc.player.getYRot();
 
-            avatarRenderState = mc.getEntityRenderDispatcher().getPlayerRenderer(mc.player).createRenderState(mc.player, 0.0f);
+            avatarRenderState = (AvatarRenderState) mc.getEntityRenderDispatcher().getRenderer(mc.player).createRenderState(mc.player, 0);
         } else {
             mc.player.setDeltaMovement(Vec3.ZERO);
             mc.player.snapTo(realPos, realYaw, realPitch);
@@ -97,7 +97,7 @@ public class FreeCam extends Mod {
             Vec3 view = event.camera.position();
             event.matrixStack.pushPose();
             event.matrixStack.translate(-view.x, -view.y, -view.z);
-            //mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.gameRenderState().levelRenderState.cameraRenderState, realPos.x, realPos.y, realPos.z, event.matrixStack, mc.gameRenderer.node());
+            mc.getEntityRenderDispatcher().submit(avatarRenderState, mc.gameRenderer.gameRenderState().levelRenderState.cameraRenderState, realPos.x, realPos.y, realPos.z, event.matrixStack, event.submitNodeStorage);
             event.matrixStack.popPose();
 
             return true;

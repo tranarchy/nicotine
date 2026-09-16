@@ -48,6 +48,6 @@ You can change the keybind from the click GUI itself or via this command `.set g
 
 ## Other versions
 
-nicotine is currently made for version **26.2**
+nicotine is currently made for version **26.3**
 
 If you want to use nicotine on a server that runs on another version you can use the [ViaFabricPlus](https://modrinth.com/mod/viafabricplus) mod

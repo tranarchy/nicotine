@@ -1,20 +1,24 @@
 package nicotine.mixin;
 
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
 import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
+import com.mojang.renderpearl.api.commands.RenderPass;
+import com.mojang.renderpearl.api.textures.GpuSampler;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
 import net.minecraft.client.Camera;
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayerGroup;
 import net.minecraft.client.renderer.chunk.ChunkSectionsToRender;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.state.level.LevelRenderState;
 import nicotine.events.*;
 import nicotine.util.EventBus;
-import org.joml.Matrix4fc;
 import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -44,26 +48,18 @@ public abstract class LevelRendererMixin {
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "addWeatherPass", cancellable = true)
-    private void addWeatherPass(FrameGraphBuilder frameGraphBuilder, GpuBufferSlice gpuBufferSlice, CallbackInfo info) {
-        boolean result = EventBus.post(new RenderWeatherEvent());
-
-        if (!result) {
-            info.cancel();
-        }
-    }
-
     @Inject(method = {"render"}, at = {@At("HEAD")})
-    public void render(final GraphicsResourceAllocator resourceAllocator, final DeltaTracker deltaTracker, final boolean renderOutline, final CameraRenderState cameraState, final Matrix4fc modelViewMatrix, final GpuBufferSlice terrainFog, final Vector4f fogColor, final boolean shouldRenderSky, CallbackInfo info) {
+    public void render(final GraphicsResourceAllocator resourceAllocator, final boolean renderOutline, final CameraRenderState cameraState, final GpuBufferSlice terrainFog, final Vector4f fogColor, final boolean shouldRenderSky, final boolean consistentDepthRequired, CallbackInfo info) {
         this.camera = Minecraft.getInstance().gameRenderer.mainCamera();
         this.matrixStack = new PoseStack();
 
         EventBus.post(new RenderBeforeEvent(camera, matrixStack, submitNodeStorage));
     }
 
-    @Inject(method = "lambda$addMainPass$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher$PreparedFrame;executeTranslucent()V", shift = At.Shift.AFTER))
-    private void afterRenderTranslucentFeatures(CallbackInfo ci) {
-            EventBus.post(new RenderEvent(camera, matrixStack, submitNodeStorage));
+    @WrapOperation(method = "executeClassicTransparency", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/ChunkSectionsToRender;renderGroup(Lnet/minecraft/client/renderer/chunk/ChunkSectionLayerGroup;Lcom/mojang/renderpearl/api/commands/RenderPass;Lcom/mojang/renderpearl/api/textures/GpuSampler;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Z)V"))
+    private void wrapRenderTranslucentTerrain(ChunkSectionsToRender chunkSectionsToRender, ChunkSectionLayerGroup group, RenderPass renderPass, GpuSampler sampler, GpuTextureView atlas, boolean renderWireframeTerrain, Operation<Void> original) {
+        original.call(chunkSectionsToRender, group, renderPass, sampler, atlas, renderWireframeTerrain);
+        EventBus.post(new RenderEvent(camera, matrixStack, submitNodeStorage));
     }
 
     @Inject(at = @At("HEAD"), method = "addSkyPass", cancellable = true)

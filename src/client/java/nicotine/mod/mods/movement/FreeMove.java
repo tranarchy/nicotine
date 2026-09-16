@@ -35,7 +35,7 @@ public class FreeMove extends Mod {
 
             for (KeyMapping freeMoveKeybind : freeMoveKeybinds) {
                 InputConstants.Key key = InputConstants.getKey(freeMoveKeybind.saveString());
-                if (InputConstants.isKeyDown(window, key.getValue())) {
+                if (InputConstants.isKeyDown(key.getValue())) {
                     freeMoveKeybind.setDown(true);
                 }
             }

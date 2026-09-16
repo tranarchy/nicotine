@@ -1,5 +1,6 @@
 package nicotine.command.commands;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import nicotine.command.Command;
 import nicotine.mod.Mod;
 import nicotine.mod.ModManager;
@@ -7,13 +8,10 @@ import nicotine.mod.option.*;
 import nicotine.util.Message;
 import nicotine.util.Settings;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.lwjgl.glfw.GLFW;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Optional;
 
-@SuppressWarnings("unchecked")
 public class Set extends Command {
 
     public Set() {
@@ -90,16 +88,12 @@ public class Set extends Command {
 
             toggleOption.enabled = Boolean.parseBoolean(value);
         } else if (modOption instanceof KeybindOption keybindOption) {
-            String glfwKey = String.format("GLFW_KEY_%s", value.toUpperCase());
+            String keyString =  value.contains("mouse") ? String.format("key.%s", value) : String.format("key.keyboard.%s", value);
             int keyCode = -1;
 
             try {
-                Field field = GLFW.class.getDeclaredField(glfwKey);
-                field.setAccessible(true);
-
-                keyCode = field.getInt(null);
-
-            } catch (NoSuchFieldException | IllegalAccessException e) {
+                keyCode = InputConstants.getKey(keyString).getValue();
+            } catch (NumberFormatException e) {
                 e.fillInStackTrace();
             }
 

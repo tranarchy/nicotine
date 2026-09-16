@@ -14,7 +14,7 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLMouse;
 
 import java.util.*;
 
@@ -44,8 +44,12 @@ public class Keybind {
         });
     }
 
+    public static int mouseButtonMask(int button) {
+        return 1 << (button - 1);
+    }
+
     public static boolean keyDown(int keycode) {
-        return (keycode < 8 && GLFW.glfwGetMouseButton(window.handle(), keycode) == 1) || (keycode > 7 && InputConstants.isKeyDown(window, keycode));
+        return (keycode < 1000 && InputConstants.isKeyDown(keycode)) || (keycode > 1000 && (SDLMouse.SDL_GetMouseState(null, null) & mouseButtonMask(keycode - 1000)) != 0);
     }
 
     public static boolean keyReleased(Mod mod, int keycode) {

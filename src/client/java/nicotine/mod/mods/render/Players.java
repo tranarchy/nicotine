@@ -119,7 +119,7 @@ public class Players extends Mod {
         });
 
         EventBus.register(RenderPlayerEvent.class, event -> {
-            if (!this.enabled || !outline.enabled || event.avatarRenderState.id == mc.player.getId())
+            if (!this.enabled || !outline.enabled || event.avatarRenderState.id == mc.player.getId() || mc.level.getEntity(event.avatarRenderState.id) == null)
                 return true;
 
             int outlineColor = friendList.contains(mc.level.getEntity(event.avatarRenderState.id).getUUID()) ? friendOutlineRGB.getColor() : enemyOutlineRGB.getColor();

@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerInputPacket;
+import net.minecraft.network.protocol.game.ServerboundPunchPacket;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.player.Input;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -103,6 +105,7 @@ public class Player {
 
                 attack(action.entity);
                 swingHand();
+                mc.player.connection.send(ServerboundPunchPacket.INSTANCE);
             } else {
                 if (!mc.player.isWithinBlockInteractionRange(action.blockHitResult.getBlockPos(), 0)) {
                     return true;
@@ -218,13 +221,13 @@ public class Player {
         ItemStack selectedItem = mc.player.getInventory().getSelectedItem();
 
         if (selectedItem.is(ItemTags.SPEARS))
-            mc.gameMode.piercingAttack(selectedItem.getComponents().get(DataComponents.PIERCING_WEAPON));
+            mc.gameMode.piercingAttack(mc.player.getMainHandItem().getAttackAnimation(), selectedItem.getComponents().get(DataComponents.PIERCING_WEAPON));
         else
             mc.gameMode.attack(mc.player, entity);
     }
 
     public static void swingHand() {
-        mc.player.swing(InteractionHand.MAIN_HAND);
+        mc.player.swing(InteractionHand.MAIN_HAND, mc.player.getItemInHand(InteractionHand.MAIN_HAND).getAttackAnimation(), false);
     }
 
     public static void toggleSneak() {

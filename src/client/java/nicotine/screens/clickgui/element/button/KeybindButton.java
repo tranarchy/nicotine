@@ -32,12 +32,12 @@ public class KeybindButton extends GUIButton {
     private String keyCodeToString(int keyCode) {
         if (keyCode == -1)
             return "Unset";
-        else if (keyCode < 8) {
-            return switch (keyCode) {
+        else if (keyCode > 1000) {
+            return switch (keyCode - 1000) {
                 case InputConstants.MOUSE_BUTTON_LEFT -> "MBL";
                 case InputConstants.MOUSE_BUTTON_RIGHT -> "MBR";
                 case InputConstants.MOUSE_BUTTON_MIDDLE -> "MBM";
-                default -> String.format("MB%d", keyCode);
+                default -> String.format("MB%d", keyCode - 1000);
             };
         } else {
             return InputConstants.getKey(new KeyEvent(keyCode, 0, 0)).getDisplayName().getString();

@@ -60,7 +60,7 @@ public class Peek extends Mod {
                         itemsToPeek = enderChestItems;
                     } else {
                         ItemContainerContents shulkerContainer = focusedStack.getComponents().get(DataComponents.CONTAINER);
-                        itemsToPeek = shulkerContainer.allItemsCopyStream().toList();
+                        itemsToPeek = shulkerContainer.itemCopies().toList();
                     }
 
                     if (Keybind.keyDown(keybind.keyCode)) {

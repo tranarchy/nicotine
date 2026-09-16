@@ -2,6 +2,7 @@ package nicotine.mod.mods.combat;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.network.protocol.game.ServerboundPunchPacket;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
@@ -92,11 +93,13 @@ public class KillAura extends Mod {
                                 if (mc.crosshairPickEntity == entity) {
                                     Player.attack(entity);
                                     Player.swingHand();
+                                    mc.player.connection.send(ServerboundPunchPacket.INSTANCE);
                                 }
                                 break;
                             case "None":
                                 Player.attack(entity);
                                 Player.swingHand();
+                                mc.player.connection.send(ServerboundPunchPacket.INSTANCE);
                                 break;
                         }
 

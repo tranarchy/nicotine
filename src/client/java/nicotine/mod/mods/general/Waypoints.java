@@ -3,6 +3,7 @@ package nicotine.mod.mods.general;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -54,7 +55,7 @@ public class Waypoints extends Mod {
 
     @Override
     protected void init() {
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
             if (!this.enabled || mc.hasSingleplayerServer())
                 return true;
 

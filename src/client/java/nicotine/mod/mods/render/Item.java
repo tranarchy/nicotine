@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import nicotine.events.RenderBeforeEvent;
 import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
@@ -43,7 +44,7 @@ public class Item extends Mod {
 
     @Override
     protected void init() {
-        EventBus.register(RenderEvent.class, event -> {
+        EventBus.register(RenderBeforeEvent.class, event -> {
 
             if (!this.enabled)
                 return true;
