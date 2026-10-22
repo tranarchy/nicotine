@@ -5,10 +5,12 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Blocks;
 import nicotine.events.GetFaceOcclusionShapeEvent;
+import nicotine.events.FluidFaceOccludedByStateEvent;
 import nicotine.events.GetRenderShapeEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.ItemSelectionOption;
+import nicotine.mod.option.ToggleOption;
 import nicotine.util.EventBus;
 
 import java.util.Arrays;
@@ -23,6 +25,8 @@ public class Xray extends Mod {
             return item instanceof BlockItem;
         }
     };
+
+    private final ToggleOption hideFluids = new ToggleOption("HideFluids");
 
     public Xray() {
         super(ModCategory.Render, "Xray");
@@ -51,7 +55,7 @@ public class Xray extends Mod {
                 Blocks.END_PORTAL_FRAME.asItem()
         ));
 
-        this.addOptions(blocks);
+        this.addOptions(Arrays.asList(blocks, hideFluids));
     }
 
     @Override
@@ -79,6 +83,13 @@ public class Xray extends Mod {
                 return true;
 
             if (blocks.items.contains(event.block.asItem()))
+                return true;
+
+            return false;
+        });
+
+        EventBus.register(FluidFaceOccludedByStateEvent.class, event -> {
+            if (!this.enabled || mc.player == null || !hideFluids.enabled)
                 return true;
 
             return false;

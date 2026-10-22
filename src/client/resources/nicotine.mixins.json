@@ -38,7 +38,8 @@
         "GuiRendererMixin",
         "HudMixin",
         "ParticleEngineMixin",
-        "WeatherEffectRendererMixin"
+        "WeatherEffectRendererMixin",
+        "FluidRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1,
