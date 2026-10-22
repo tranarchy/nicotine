@@ -8,6 +8,7 @@ import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
+import nicotine.mod.mods.general.GUI;
 import nicotine.screens.clickgui.element.window.Window;
 import nicotine.screens.clickgui.element.button.HUDButton;
 import nicotine.util.EventBus;
@@ -92,9 +93,11 @@ public class HUDScreen extends BaseScreen {
         int windowAreaY = windowHeight / 4;
 
         if (mc.gui.screen() instanceof HUDScreen) {
-            anchorAreas.add(new AnchorArea(new Window(0, 0, windowAreaX, windowAreaY), HUDMod.Anchor.TopLeft));
-            anchorAreas.add(new AnchorArea(new Window(windowWidth - windowAreaX - 1, 0, windowAreaX, windowAreaY), HUDMod.Anchor.TopRight));
-            anchorAreas.add(new AnchorArea(new Window(0, windowHeight - windowAreaY - 1, windowAreaX, windowAreaY), HUDMod.Anchor.BottomLeft));
+            int roundedCornerOffset = GUI.roundedCorners.enabled ? 1 : 0;
+
+            anchorAreas.add(new AnchorArea(new Window(roundedCornerOffset, roundedCornerOffset, windowAreaX, windowAreaY), HUDMod.Anchor.TopLeft));
+            anchorAreas.add(new AnchorArea(new Window(windowWidth - windowAreaX - 1, roundedCornerOffset, windowAreaX, windowAreaY), HUDMod.Anchor.TopRight));
+            anchorAreas.add(new AnchorArea(new Window(roundedCornerOffset, windowHeight - windowAreaY - 1, windowAreaX, windowAreaY), HUDMod.Anchor.BottomLeft));
             anchorAreas.add(new AnchorArea(new Window(windowWidth - windowAreaX - 1, windowHeight - windowAreaY - 1, windowAreaX, windowAreaY), HUDMod.Anchor.BottomRight));
         }
 

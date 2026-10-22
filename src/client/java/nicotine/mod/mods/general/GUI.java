@@ -22,6 +22,7 @@ public class GUI extends Mod {
 
     public static BaseScreen screen;
 
+    public static final ToggleOption roundedCorners = new ToggleOption("RoundedCorners");
     public static final ToggleOption tooltip = new ToggleOption("Tooltip");
     public static final ToggleOption blur = new ToggleOption("Blur");
     public static final ToggleOption pulsatingColor = new ToggleOption("PulsatingColor");
@@ -32,7 +33,7 @@ public class GUI extends Mod {
         super(ModCategory.General, "GUI");
         this.alwaysEnabled = true;
         this.keybind.keyCode = InputConstants.KEY_RSHIFT;
-        this.addOptions(Arrays.asList(tooltip, blur, pulsatingColor, bgAlpha, rgb));
+        this.addOptions(Arrays.asList(roundedCorners, tooltip, blur, pulsatingColor, bgAlpha, rgb));
     }
 
     @Override
@@ -41,7 +42,7 @@ public class GUI extends Mod {
 
         EventBus.register(ClientTickEvent.class, event -> {
             ColorUtil.ACTIVE_FOREGROUND_COLOR = rgb.getColor();
-            ColorUtil.BACKGROUND_COLOR = ColorUtil.changeAlpha(ColorUtil.BACKGROUND_COLOR, (int)bgAlpha.value);
+            ColorUtil.BACKGROUND_COLOR = ColorUtil.changeAlpha(ColorUtil.BACKGROUND_COLOR, roundedCorners.enabled ? 255 : (int)bgAlpha.value);
 
             if (Keybind.keyDown(keybind.keyCode) && (mc.gui.screen() == null || mc.gui.screen() instanceof TitleScreen))
                 mc.gui.setScreen(screen);

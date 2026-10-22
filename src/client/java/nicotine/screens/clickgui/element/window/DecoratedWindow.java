@@ -63,11 +63,11 @@ public class DecoratedWindow extends Window implements Draggable {
     public void addDrawables() {
         titleText.width = mc.font.width(titleText.text);
         titleText.x = this.x + this.width - titleText.width - 1;
-        titleText.y = this.y - titleText.height - 1;
+        titleText.y = this.y - titleText.height - 5;
 
         closeButton.width = mc.font.width(closeButton.text);
         closeButton.x = this.x + (closeButton.width / 2);
-        closeButton.y = this.y - closeButton.height - 1;
+        closeButton.y = this.y - closeButton.height - 5;
 
         dragArea.x = this.x;
         dragArea.y = closeButton.y - 3;

@@ -2,8 +2,11 @@ package nicotine.screens.clickgui.element.window;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
+import nicotine.mixininterfaces.IGuiGraphicsExtractor;
+import nicotine.mod.mods.general.GUI;
 import nicotine.screens.clickgui.element.ClickableElement;
 import nicotine.screens.clickgui.element.Element;
+import nicotine.screens.clickgui.element.misc.roundedrect.RoundedRectRenderState;
 import nicotine.util.ColorUtil;
 import nicotine.util.render.Render2D;
 
@@ -25,8 +28,16 @@ public class Window extends ClickableElement {
     @Override
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         if (this.width != 0 && this.height != 0) {
-            context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR);
-            Render2D.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.getPulsatingColor());
+            if (GUI.roundedCorners.enabled) {
+                RoundedRectRenderState roundedRectRenderStateBorder = new RoundedRectRenderState(this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, ColorUtil.getPulsatingColor(), ((IGuiGraphicsExtractor) context).getScissorStack().peek());
+                RoundedRectRenderState roundedRectRenderStateBackground = new RoundedRectRenderState(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR, null);
+
+                ((IGuiGraphicsExtractor) context).getGuiRenderState().addPicturesInPictureState(roundedRectRenderStateBorder);
+                ((IGuiGraphicsExtractor) context).getGuiRenderState().addPicturesInPictureState(roundedRectRenderStateBackground);
+            } else {
+                context.fill(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR);
+                Render2D.drawBorder(context, this.x, this.y, this.width, this.height, ColorUtil.getPulsatingColor());
+            }
         }
 
         for (Element element : elements) {
