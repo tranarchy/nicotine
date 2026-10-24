@@ -37,9 +37,9 @@ public class SliderButton extends GUIButton {
         value = Math.round(value * 100.0f) / 100.0f;
 
         if (sliderOption.decimal) {
-            sliderOption.value = value;
+            sliderOption.setValue(value);
         } else {
-            sliderOption.value =  Math.round(value);
+            sliderOption.setValue(Math.round(value));
         }
     }
 

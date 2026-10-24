@@ -93,11 +93,9 @@ public class HUDScreen extends BaseScreen {
         int windowAreaY = windowHeight / 4;
 
         if (mc.gui.screen() instanceof HUDScreen) {
-            int roundedCornerOffset = GUI.roundedCorners.enabled ? 1 : 0;
-
-            anchorAreas.add(new AnchorArea(new Window(roundedCornerOffset, roundedCornerOffset, windowAreaX, windowAreaY), HUDMod.Anchor.TopLeft));
-            anchorAreas.add(new AnchorArea(new Window(windowWidth - windowAreaX - 1, roundedCornerOffset, windowAreaX, windowAreaY), HUDMod.Anchor.TopRight));
-            anchorAreas.add(new AnchorArea(new Window(roundedCornerOffset, windowHeight - windowAreaY - 1, windowAreaX, windowAreaY), HUDMod.Anchor.BottomLeft));
+            anchorAreas.add(new AnchorArea(new Window(0, 0, windowAreaX, windowAreaY), HUDMod.Anchor.TopLeft));
+            anchorAreas.add(new AnchorArea(new Window(windowWidth - windowAreaX - 1, 0, windowAreaX, windowAreaY), HUDMod.Anchor.TopRight));
+            anchorAreas.add(new AnchorArea(new Window(0, windowHeight - windowAreaY - 1, windowAreaX, windowAreaY), HUDMod.Anchor.BottomLeft));
             anchorAreas.add(new AnchorArea(new Window(windowWidth - windowAreaX - 1, windowHeight - windowAreaY - 1, windowAreaX, windowAreaY), HUDMod.Anchor.BottomRight));
         }
 

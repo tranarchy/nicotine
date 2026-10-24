@@ -29,8 +29,8 @@ public class Window extends ClickableElement {
     public void draw(GuiGraphicsExtractor context, double mouseX, double mouseY) {
         if (this.width != 0 && this.height != 0) {
             if (GUI.roundedCorners.enabled) {
-                RoundedRectRenderState roundedRectRenderStateBorder = new RoundedRectRenderState(this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, ColorUtil.getPulsatingColor(), ((IGuiGraphicsExtractor) context).getScissorStack().peek());
-                RoundedRectRenderState roundedRectRenderStateBackground = new RoundedRectRenderState(this.x, this.y, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR, null);
+                RoundedRectRenderState roundedRectRenderStateBorder = new RoundedRectRenderState(this.x, this.y, this.x + this.width + 1, this.y + this.height + 1, ColorUtil.getPulsatingColor(), ((IGuiGraphicsExtractor) context).getScissorStack().peek());
+                RoundedRectRenderState roundedRectRenderStateBackground = new RoundedRectRenderState(this.x + 1, this.y + 1, this.x + this.width, this.y + this.height, ColorUtil.BACKGROUND_COLOR, null);
 
                 ((IGuiGraphicsExtractor) context).getGuiRenderState().addPicturesInPictureState(roundedRectRenderStateBorder);
                 ((IGuiGraphicsExtractor) context).getGuiRenderState().addPicturesInPictureState(roundedRectRenderStateBackground);

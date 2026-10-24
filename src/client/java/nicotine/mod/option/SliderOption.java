@@ -23,4 +23,8 @@ public class SliderOption extends ModOption {
         this.maxValue = maxValue;
         this.decimal = false;
     }
+
+    public void setValue(float value) {
+        this.value = value;
+    }
 }
