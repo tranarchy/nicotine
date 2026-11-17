@@ -23,8 +23,8 @@ import java.util.*;
 import static nicotine.util.Common.*;
 
 public class Settings {
-    private static final String SETTINGS_PATH = "nicotine.json";
-    private static final String WAYPOINTS_PATH = "nicotine_waypoints.json";
+    public static final String SETTINGS_PATH = "nicotine.json";
+    public static final String WAYPOINTS_PATH = "nicotine_waypoints.json";
 
     public static void save() {
         JsonObject waypoints = new JsonObject();
@@ -182,8 +182,9 @@ public class Settings {
                     continue;
 
                 if (!mod.alwaysEnabled) {
-                    if (modInfo.get("enabled").getAsBoolean()) {
-                        mod.toggle();
+                    if (!(modInfo.get("enabled").getAsBoolean() && mod.enabled)) {
+                        if (modInfo.get("enabled").getAsBoolean() || mod.enabled)
+                            mod.toggle();
                     }
                 }
 
@@ -210,9 +211,12 @@ public class Settings {
                             dropDownOption.value = modInfo.get(dropDownOption.id).getAsString();
                         }
                     } else if (modOption instanceof ToggleOption toggleOption) {
-                        if (modInfo.get(toggleOption.id).getAsBoolean()) {
-                            toggleOption.toggle();
-                        }
+                        if (modInfo.get(toggleOption.id).getAsBoolean() && toggleOption.enabled)
+                            continue;
+
+                        if (modInfo.get(toggleOption.id).getAsBoolean() || toggleOption.enabled)
+                                toggleOption.toggle();
+
                     } else if (modOption instanceof KeybindOption keybindOption) {
                         keybindOption.keyCode = modInfo.get(keybindOption.id).getAsInt();
                     } else if (modOption instanceof ItemSelectionOption selectionOption) {
@@ -232,7 +236,9 @@ public class Settings {
                 }
             }
         }
+    }
 
+    public static void initWaypoints() {
         Path waypointsPath = Paths.get(WAYPOINTS_PATH);
         if (!Files.exists(waypointsPath))
             return;
@@ -257,6 +263,5 @@ public class Settings {
                     waypointInfo.get("z").getAsInt())
             );
         }
-
     }
 }

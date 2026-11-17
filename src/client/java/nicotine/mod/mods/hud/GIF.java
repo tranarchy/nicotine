@@ -8,14 +8,18 @@ import nicotine.mod.option.ClickOption;
 import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.SliderOption;
 import nicotine.util.EventBus;
+import nicotine.util.FileUtil;
 import nicotine.util.render.GIFEntry;
 import nicotine.util.render.Render2D;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.lwjgl.sdl.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 
 import static nicotine.util.Common.mc;
 
@@ -27,6 +31,7 @@ public class GIF extends HUDMod {
 
     public static DropDownOption images;
     private SliderOption fps = new SliderOption("FPS", 30, 1, 60);
+
     private final ClickOption refresh = new ClickOption("Refresh") {
         @Override
         public void click() {
@@ -44,9 +49,25 @@ public class GIF extends HUDMod {
         }
     };
 
+    private final ClickOption browse = new ClickOption("Browse") {
+        @Override
+        public void click() {
+            SDL_DialogFileCallbackI callback = ((userdata, filelist, filter) -> {
+                List<String> files = FileUtil.convertFileList(filelist);
+                for (String file : files) {
+                    SDLFileSystem.SDL_CopyFile(file, gifDir.getPath() + File.separatorChar + FilenameUtils.getName(file));
+                }
+
+                refresh.click();
+            });
+
+            FileUtil.openDialog(callback, "GIF", "gif", true);
+        }
+    };
+
     public GIF() {
         super(ModCategory.HUD, "GIF");
-        this.addOptions(Arrays.asList(images, fps, refresh));
+        this.addOptions(Arrays.asList(images, fps, browse, refresh));
     }
 
     @Override

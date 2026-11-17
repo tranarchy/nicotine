@@ -113,6 +113,7 @@ public class ModManager {
         add(new Combat());
         add(new GIF());
 
+        add(new Config());
         add(new GUI());
         add(new HUD());
         add(new Render());

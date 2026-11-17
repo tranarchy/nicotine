@@ -14,6 +14,8 @@ import nicotine.screens.clickgui.WaypointScreen;
 import nicotine.util.*;
 import nicotine.util.render.Render3D;
 import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.sdl.SDLFileSystem;
+import org.lwjgl.sdl.SDL_DialogFileCallbackI;
 
 import java.util.*;
 
@@ -38,9 +40,41 @@ public class Waypoints extends Mod {
         }
     };
 
+    private final ClickOption waypointsImport = new ClickOption("Import") {
+        @Override
+        public void click() {
+            SDL_DialogFileCallbackI callback = ((userdata, filelist, filter) -> {
+                List<String> files = FileUtil.convertFileList(filelist);
+                if (files.isEmpty())
+                    return;
+
+                SDLFileSystem.SDL_CopyFile(files.getFirst(), Settings.WAYPOINTS_PATH);
+                waypointInstances.clear();
+                Settings.initWaypoints();
+            });
+
+            FileUtil.openDialog(callback, "Waypoints file", "json", false);
+        }
+    };
+
+    private final ClickOption waypointsExport = new ClickOption("Export") {
+        @Override
+        public void click() {
+            SDL_DialogFileCallbackI callback = ((userdata, filelist, filter) -> {
+                List<String> files = FileUtil.convertFileList(filelist);
+                if (files.isEmpty())
+                    return;
+
+                SDLFileSystem.SDL_CopyFile(Settings.WAYPOINTS_PATH, files.getFirst());
+            });
+
+            FileUtil.saveDialog(callback, "Waypoints file", "json");
+        }
+    };
+
     public Waypoints() {
         super(ModCategory.General, "Waypoints");
-        this.addOptions(Arrays.asList(manage, scale, nameRGB, cordsRGB));
+        this.addOptions(Arrays.asList(manage, waypointsImport, waypointsExport, scale, nameRGB, cordsRGB));
     }
 
     private static Vec3 getAdjustedPosition(BlockPos pos) {

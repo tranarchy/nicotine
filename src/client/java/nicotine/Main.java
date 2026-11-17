@@ -21,6 +21,7 @@ public class Main implements ClientModInitializer {
 			Player.init();
             Keybind.init();
 			Settings.init();
+			Settings.initWaypoints();
 
             ranInit = true;
 
