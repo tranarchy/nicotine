@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static nicotine.util.Common.mc;
+import static nicotine.util.Common.modMetadata;
 
 public class HUDScreen extends BaseScreen {
 
@@ -38,7 +39,7 @@ public class HUDScreen extends BaseScreen {
     private HUDMod.Anchor prevAnchor = HUDMod.Anchor.None;
 
     public HUDScreen() {
-        super("nicotine HUD", new Window(0, 0, 0, 0));
+        super(String.format("%s HUD", modMetadata.getName()), new Window(0, 0, 0, 0));
     }
 
     @Override

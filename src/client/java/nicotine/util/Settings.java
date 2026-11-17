@@ -23,8 +23,8 @@ import java.util.*;
 import static nicotine.util.Common.*;
 
 public class Settings {
-    public static final String SETTINGS_PATH = "nicotine.json";
-    public static final String WAYPOINTS_PATH = "nicotine_waypoints.json";
+    public static final String SETTINGS_PATH = String.format("%s.json", modMetadata.getName());
+    public static final String WAYPOINTS_PATH = String.format("%s_waypoints.json", modMetadata.getName());
 
     public static void save() {
         JsonObject waypoints = new JsonObject();

@@ -17,7 +17,11 @@ public class ClickGUI extends BaseScreen {
     private final int PADDING = 5;
 
     public ClickGUI() {
-        super("nicotine GUI", new DecoratedWindow(null, String.format("nicotine v%s", nicotine.getVersion()), 0, 0, 0, 0));
+        super(
+                String.format("%s GUI", modMetadata.getName()),
+                new DecoratedWindow(null, String.format("%s v%s", modMetadata.getName(), modMetadata.getVersion()), 0, 0, 0, 0)
+        );
+
         setWindowSize();
     }
 

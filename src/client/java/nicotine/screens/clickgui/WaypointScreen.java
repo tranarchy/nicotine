@@ -44,7 +44,7 @@ public class WaypointScreen extends BaseScreen {
     private final HashMap<String, FaviconTexture> serverIcons = new HashMap<>();
 
     public WaypointScreen() {
-        super("nicotine waypoints", new DecoratedWindow(null, "Waypoints", 0, 0, 280, 230) {
+        super(String.format("%s waypoints", modMetadata.getName()), new DecoratedWindow(null, "Waypoints", 0, 0, 280, 230) {
             protected void close() {
                 mc.gui.setScreen(GUI.screen);
             }

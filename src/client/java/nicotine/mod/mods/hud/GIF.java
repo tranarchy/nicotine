@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static nicotine.util.Common.mc;
+import static nicotine.util.Common.modMetadata;
 
 public class GIF extends HUDMod {
     private File gifDir;
@@ -72,12 +73,12 @@ public class GIF extends HUDMod {
 
     @Override
     public void init() {
-        gifDir = new File("nicotine");
+        gifDir = new File(modMetadata.getName());
 
         if (!gifDir.exists())
             gifDir.mkdir();
 
-        File outputFile = new File("nicotine/blahaj.gif");
+        File outputFile = new File(String.format("%s/blahaj.gif", modMetadata.getName()));
 
         if (!outputFile.exists()) {
             InputStream inputStream = GIF.class.getClassLoader().getResourceAsStream("gifs/blahaj.gif");
@@ -91,7 +92,7 @@ public class GIF extends HUDMod {
         images = new DropDownOption("Images", gifDir.list()) {
             @Override
             public void select() {
-                Render2D.extractGIFImages(new File(String.format("nicotine/%s", this.value)));
+                Render2D.extractGIFImages(new File(String.format("%s/%s", modMetadata.getName(), this.value)));
             }
         };
 

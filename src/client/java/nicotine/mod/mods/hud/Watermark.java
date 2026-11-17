@@ -8,7 +8,7 @@ import nicotine.util.EventBus;
 
 import java.util.List;
 
-import static nicotine.util.Common.nicotine;
+import static nicotine.util.Common.modMetadata;
 
 public class Watermark extends HUDMod {
 
@@ -23,7 +23,7 @@ public class Watermark extends HUDMod {
             if (!this.enabled)
                 return true;
 
-            String watermarkText = String.format("nicotine %sv%s", ChatFormatting.WHITE, nicotine.getVersion());
+            String watermarkText = String.format("%s %sv%s", modMetadata.getName(), ChatFormatting.WHITE, modMetadata.getVersion());
             this.texts = List.of(watermarkText);
 
             return true;

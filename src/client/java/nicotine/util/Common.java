@@ -12,7 +12,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import java.util.*;
 
 public class Common {
-    public static final ModMetadata nicotine = FabricLoader.getInstance().getModContainer("nicotine").get().getMetadata();
+    public static final ModMetadata modMetadata = FabricLoader.getInstance().getModContainer("nicotine").get().getMetadata();
     public static final Minecraft mc = Minecraft.getInstance();
     public static ServerData currentServer;
     public static final Window window = mc.getWindow();

@@ -7,8 +7,7 @@ import nicotine.screens.clickgui.element.window.DecoratedWindow;
 import nicotine.screens.clickgui.element.button.GUIButton;
 import nicotine.screens.clickgui.element.misc.Text;
 
-import static nicotine.util.Common.currentServer;
-import static nicotine.util.Common.mc;
+import static nicotine.util.Common.*;
 
 public class AutoReconnectScreen extends BaseScreen {
     private int tick = 0;
@@ -40,7 +39,7 @@ public class AutoReconnectScreen extends BaseScreen {
     }
 
     public AutoReconnectScreen(int delay) {
-        super("nicotine AutoReconnect", new DecoratedWindow(null, "AutoReconnect", 0, 0, 160, 50));
+        super(String.format("%s AutoReconnect", modMetadata.getName()), new DecoratedWindow(null, "AutoReconnect", 0, 0, 160, 50));
         this.delay = delay;
     }
 
