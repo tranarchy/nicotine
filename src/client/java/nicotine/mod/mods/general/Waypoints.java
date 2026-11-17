@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.option.ClickOption;
@@ -13,7 +12,8 @@ import nicotine.mod.option.SliderOption;
 import nicotine.screens.clickgui.WaypointScreen;
 import nicotine.util.*;
 import nicotine.util.render.Render3D;
-import org.apache.commons.lang3.StringUtils;
+import nicotine.util.waypoint.Waypoint;
+import nicotine.util.waypoint.WaypointManager;
 import org.lwjgl.sdl.SDLFileSystem;
 import org.lwjgl.sdl.SDL_DialogFileCallbackI;
 
@@ -48,9 +48,9 @@ public class Waypoints extends Mod {
                 if (files.isEmpty())
                     return;
 
-                SDLFileSystem.SDL_CopyFile(files.getFirst(), Settings.WAYPOINTS_PATH);
-                waypointInstances.clear();
-                Settings.initWaypoints();
+                SDLFileSystem.SDL_CopyFile(files.getFirst(), WaypointManager.WAYPOINTS_PATH);
+                WaypointManager.waypoints.clear();
+                WaypointManager.init();
             });
 
             FileUtil.openDialog(callback, "Waypoints file", "json", false);
@@ -65,7 +65,7 @@ public class Waypoints extends Mod {
                 if (files.isEmpty())
                     return;
 
-                SDLFileSystem.SDL_CopyFile(Settings.WAYPOINTS_PATH, files.getFirst());
+                SDLFileSystem.SDL_CopyFile(WaypointManager.WAYPOINTS_PATH, files.getFirst());
             });
 
             FileUtil.saveDialog(callback, "Waypoints file", "json");
@@ -93,20 +93,20 @@ public class Waypoints extends Mod {
             if (!this.enabled || mc.hasSingleplayerServer())
                 return true;
 
-            for (WaypointInstance waypointInstance : waypointInstances) {
-                if (!waypointInstance.server.equals(currentServer.ip))
+            for (Waypoint waypoint : WaypointManager.waypoints) {
+                if (!waypoint.server.equals(currentServer.ip))
                     continue;
 
                 LinkedHashMap<String, Integer> texts = new LinkedHashMap<>();
-                BlockPos pos = new BlockPos(waypointInstance.x, waypointInstance.y, waypointInstance.z);
+                BlockPos pos = new BlockPos(waypoint.x, waypoint.y, waypoint.z);
 
-                if (mc.level.dimension().identifier().toString().equals(waypointInstance.dimension)) {
-                    texts.put(waypointInstance.name, nameRGB.getColor());
+                if (Player.getDimension().equals(waypoint.dimension)) {
+                    texts.put(waypoint.name, nameRGB.getColor());
                     texts.put(String.format("%d %d %d", pos.getX(), pos.getY(), pos.getZ()), cordsRGB.getColor());
                     Render3D.drawTexts(event.submitNodeStorage, event.matrixStack, event.camera, getAdjustedPosition(pos), texts, scale.value, true);
-                }  else if (mc.level.dimension().equals(Level.NETHER) && Level.OVERWORLD.identifier().toString().equals(waypointInstance.dimension)) {
-                    pos = new BlockPos(waypointInstance.x / 8, waypointInstance.y, waypointInstance.z / 8);
-                    texts.put(String.format("%s [OW]", waypointInstance.name), nameRGB.getColor());
+                }  else if (mc.level.dimension().equals(Level.NETHER) && Level.OVERWORLD.identifier().toString().equals(waypoint.dimension)) {
+                    pos = new BlockPos(waypoint.x / 8, waypoint.y, waypoint.z / 8);
+                    texts.put(String.format("%s [OW]", waypoint.name), nameRGB.getColor());
                     texts.put(String.format("%d %d %d", pos.getX(), pos.getY(), pos.getZ()), cordsRGB.getColor());
                     Render3D.drawTexts(event.submitNodeStorage, event.matrixStack, event.camera, getAdjustedPosition(pos), texts, scale.value, true);
                 }

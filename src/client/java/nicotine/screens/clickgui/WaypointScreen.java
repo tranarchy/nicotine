@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.FaviconTexture;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
-import net.minecraft.resources.Identifier;
 import nicotine.mod.mods.general.GUI;
 import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.ToggleOption;
@@ -19,8 +18,9 @@ import nicotine.screens.clickgui.element.misc.Text;
 import nicotine.screens.clickgui.element.misc.Texture;
 import nicotine.screens.clickgui.element.window.DecoratedWindow;
 import nicotine.util.ColorUtil;
-import nicotine.util.WaypointInstance;
+import nicotine.util.waypoint.Waypoint;
 import nicotine.util.render.Render2D;
+import nicotine.util.waypoint.WaypointManager;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.IOException;
@@ -35,7 +35,7 @@ public class WaypointScreen extends BaseScreen {
     private final DropDownOption dimensionsOption;
     private final ToggleOption filterCurrentServerOption;
 
-    private WaypointInstance instanceToEdit = null;
+    private Waypoint instanceToEdit = null;
 
     private boolean list = true;
 
@@ -91,9 +91,9 @@ public class WaypointScreen extends BaseScreen {
                 return;
         }
 
-        WaypointInstance waypointInstance = new WaypointInstance(
+        Waypoint waypointInstance = new Waypoint(
                 nameInput.text,
-                String.format("minecraft:%s", dimensionsOption.value.toLowerCase().replace(" ", "_")),
+                WaypointManager.formattedDimensionToDimension(dimensionsOption.value),
                 serverInput.text,
                 Integer.parseInt(cordsXInput.text),
                 Integer.parseInt(cordsYInput.text),
@@ -108,7 +108,7 @@ public class WaypointScreen extends BaseScreen {
             instanceToEdit.y = waypointInstance.y;
             instanceToEdit.z = waypointInstance.z;
         } else {
-            waypointInstances.add(waypointInstance);
+            WaypointManager.add(waypointInstance);
         }
 
         changeMode();
@@ -139,15 +139,15 @@ public class WaypointScreen extends BaseScreen {
 
         posX = this.window.x + 5;
 
-        List<WaypointInstance> filteredWaypointInstances = new ArrayList<>();
-        for (WaypointInstance waypointInstance : waypointInstances) {
+        List<Waypoint> filteredWaypointInstances = new ArrayList<>();
+        for (Waypoint waypointInstance : WaypointManager.waypoints) {
             if (currentServer != null && filterCurrentServerButton.toggleOption.enabled && !waypointInstance.server.equals(currentServer.ip))
                 continue;
 
             if (!searchInput.text.isEmpty() && !waypointInstance.name.contains(searchInput.text))
                 continue;
 
-            if (!waypointInstance.dimension.contains(dimensionsOption.value.toLowerCase().replace(" ", "_")))
+            if (!waypointInstance.dimension.contains(WaypointManager.formattedDimensionToDimension(dimensionsOption.value)))
                 continue;
 
             filteredWaypointInstances.add(waypointInstance);
@@ -156,7 +156,7 @@ public class WaypointScreen extends BaseScreen {
         if (this.window.scrollOffset > filteredWaypointInstances.size() - 1 && !filteredWaypointInstances.isEmpty())
             this.window.scrollOffset = filteredWaypointInstances.size() - 1;
 
-        for (WaypointInstance waypointInstance : filteredWaypointInstances.stream().skip(this.window.scrollOffset).toList()) {
+        for (Waypoint waypointInstance : filteredWaypointInstances.stream().skip(this.window.scrollOffset).toList()) {
             if (posY + 32 > this.window.y + this.window.height)
                 break;
 
@@ -216,7 +216,7 @@ public class WaypointScreen extends BaseScreen {
                 @Override
                 public void click(double mouseX, double mouseY, int input) {
                     if (input == InputConstants.MOUSE_BUTTON_LEFT) {
-                       waypointInstances.remove(waypointInstance);
+                      WaypointManager.remove(waypointInstance);
                     }
                 }
             };

@@ -5,6 +5,7 @@ import nicotine.command.CommandManager;
 import nicotine.events.FinishedLoadingEvent;
 import nicotine.mod.ModManager;
 import nicotine.util.*;
+import nicotine.util.waypoint.WaypointManager;
 
 public class Main implements ClientModInitializer {
 
@@ -21,7 +22,7 @@ public class Main implements ClientModInitializer {
 			Player.init();
             Keybind.init();
 			Settings.init();
-			Settings.initWaypoints();
+			WaypointManager.init();
 
             ranInit = true;
 

@@ -25,7 +25,7 @@ public class CommandManager {
         add(new Set());
         add(new Connect());
         add(new Echest());
-        add(new Waypoint());
+        add(new Wp());
         add(new Friend());
 
         if (SystemUtils.IS_OS_MAC)

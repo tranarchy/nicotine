@@ -12,6 +12,7 @@ import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
 import nicotine.mod.option.*;
+import nicotine.util.waypoint.Waypoint;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,23 +25,8 @@ import static nicotine.util.Common.*;
 
 public class Settings {
     public static final String SETTINGS_PATH = String.format("%s.json", modMetadata.getName());
-    public static final String WAYPOINTS_PATH = String.format("%s_waypoints.json", modMetadata.getName());
 
     public static void save() {
-        JsonObject waypoints = new JsonObject();
-
-        for (WaypointInstance waypointInstance : waypointInstances) {
-
-            JsonObject waypoint = new JsonObject();
-            waypoint.addProperty("dimension", waypointInstance.dimension);
-            waypoint.addProperty("server", waypointInstance.server);
-            waypoint.addProperty("x", waypointInstance.x);
-            waypoint.addProperty("y", waypointInstance.y);
-            waypoint.addProperty("z", waypointInstance.z);
-
-            waypoints.add(waypointInstance.name, waypoint);
-        }
-
         JsonObject settings = new JsonObject();
 
         settings.addProperty("commandPrefix", CommandManager.prefix);
@@ -124,12 +110,6 @@ public class Settings {
             FileWriter settingsFile = new FileWriter(SETTINGS_PATH);
             settingsFile.write(settings.toString());
             settingsFile.close();
-
-            if (!waypointInstances.isEmpty()) {
-                FileWriter waypointsFile = new FileWriter(WAYPOINTS_PATH);
-                waypointsFile.write(waypoints.toString());
-                waypointsFile.close();
-            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -235,33 +215,6 @@ public class Settings {
                     }
                 }
             }
-        }
-    }
-
-    public static void initWaypoints() {
-        Path waypointsPath = Paths.get(WAYPOINTS_PATH);
-        if (!Files.exists(waypointsPath))
-            return;
-
-        JsonObject waypoints;
-
-        try {
-            String waypointsAsString = Files.readString(waypointsPath);
-            waypoints = (JsonObject) JsonParser.parseString(waypointsAsString);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        for (String waypoint : waypoints.keySet()) {
-            JsonObject waypointInfo = (JsonObject) waypoints.get(waypoint);
-            waypointInstances.add(new WaypointInstance(
-                    waypoint,
-                    waypointInfo.get("dimension").getAsString(),
-                    waypointInfo.get("server").getAsString(),
-                    waypointInfo.get("x").getAsInt(),
-                    waypointInfo.get("y").getAsInt(),
-                    waypointInfo.get("z").getAsInt())
-            );
         }
     }
 }

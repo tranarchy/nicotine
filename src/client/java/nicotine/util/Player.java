@@ -331,6 +331,10 @@ public class Player {
         return nearestPlayer;
     }
 
+    public static String getDimension() {
+        return mc.level.dimension().identifier().toString();
+    }
+
     public static boolean isPositionInRenderDistance(Vec3 position) {
         if (position.distanceTo(mc.player.position()) <= mc.options.renderDistance().get() * 16) {
             return true;
