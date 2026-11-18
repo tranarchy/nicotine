@@ -1,5 +1,6 @@
 package nicotine.mod.mods.hud;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.renderer.RenderPipelines;
 import nicotine.events.GuiRenderBeforeEvent;
 import nicotine.mod.HUDMod;
@@ -32,6 +33,8 @@ public class GIF extends HUDMod {
 
     public static DropDownOption images;
     private SliderOption fps = new SliderOption("FPS", 30, 1, 60);
+    private SliderOption width = new SliderOption("Width", 5, 5, 1000);
+    private SliderOption height = new SliderOption("Height", 5, 5, 1000);
 
     private final ClickOption refresh = new ClickOption("Refresh") {
         @Override
@@ -68,7 +71,7 @@ public class GIF extends HUDMod {
 
     public GIF() {
         super(ModCategory.HUD, "GIF");
-        this.addOptions(Arrays.asList(images, fps, browse, refresh));
+        this.addOptions(Arrays.asList(images, width, height, fps, browse, refresh));
     }
 
     @Override
@@ -93,6 +96,9 @@ public class GIF extends HUDMod {
             @Override
             public void select() {
                 Render2D.extractGIFImages(new File(String.format("%s/%s", modMetadata.getName(), this.value)));
+                NativeImage firstFrame = Render2D.gifImages.getFirst().nativeImage;
+                width.value = firstFrame.getWidth();
+                height.value = firstFrame.getHeight();
             }
         };
 
@@ -108,18 +114,18 @@ public class GIF extends HUDMod {
                 entryToDraw = Render2D.getGIFEntry();
                 prevTime = System.nanoTime();
             }
-
             if (entryToDraw == null) {
                 return true;
             }
 
-            final int width = entryToDraw.nativeImage.getWidth();
-            final int height = entryToDraw.nativeImage.getHeight();
+            final int srcWidth = entryToDraw.nativeImage.getWidth();
+            final int srcHeight = entryToDraw.nativeImage.getHeight();
 
-            final int posX = (mc.getWindow().getGuiScaledWidth() / 2) - (width / 2);
-            final int posY = mc.getWindow().getGuiScaledHeight() - 80 - height;
+            final int posX = (mc.getWindow().getGuiScaledWidth() / 2) - ((int)width.value / 2);
+            final int posY = mc.getWindow().getGuiScaledHeight() - 80 - (int)height.value;
 
-            event.drawContext.blit(RenderPipelines.GUI_TEXTURED, entryToDraw.identifier, posX, posY, 0.0F, 0.0F, width, height, width, height, width, height);
+
+            event.drawContext.blit(RenderPipelines.GUI_TEXTURED, entryToDraw.identifier, posX, posY, 0.0F, 0.0F, (int)width.value, (int)height.value, srcWidth, srcHeight, srcWidth, srcHeight);
 
             return true;
         });
