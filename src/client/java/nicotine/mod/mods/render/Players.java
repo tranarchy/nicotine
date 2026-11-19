@@ -45,7 +45,6 @@ public class Players extends Mod {
     private final ToggleOption tracer = new ToggleOption("Tracer");
     private final RGBOption enemyTracerRGB = new RGBOption("Enemy");
     private final RGBOption friendTracerRGB = new RGBOption("Friend");
-    private final SliderOption tracerAlpha = new SliderOption("Alpha", 255, 10, 255);
 
     public Players() {
         super(ModCategory.Render, "Players");
@@ -71,11 +70,9 @@ public class Players extends Mod {
         friendTracerRGB.id = "FriendTracerRGB";
         friendTracerRGB.subOption = true;
 
-        tracerAlpha.subOption = true;
-
         this.addOptions(Arrays.asList(
                 esp, espRender, espScale, enemyEspRGB, friendEspRGB, outline, enemyOutlineRGB, friendOutlineRGB,
-                tracer, enemyTracerRGB, friendTracerRGB, tracerAlpha, noArmor
+                tracer, enemyTracerRGB, friendTracerRGB, noArmor
         ));
     }
 
@@ -110,7 +107,7 @@ public class Players extends Mod {
                         int tracerColor = friendList.contains(player.getUUID()) ? friendTracerRGB.getColor() : enemyTracerRGB.getColor();
 
                         Vec3 targetPos = player.position();
-                        Render3D.drawTracer(event.submitNodeStorage, event.camera, event.matrixStack, targetPos, ColorUtil.changeAlpha(tracerColor, (int)tracerAlpha.value));
+                        Render3D.drawTracer(event.submitNodeStorage, event.camera, event.matrixStack, targetPos, tracerColor);
                     }
                 }
             }

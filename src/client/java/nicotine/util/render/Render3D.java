@@ -95,7 +95,7 @@ public class Render3D {
                 matrixStack,
                 CustomRenderType.QUADS,
                 (entry, buffer) -> {
-                    int dynamicColor = ColorUtil.changeAlpha(color, fade ? ColorUtil.getDynamicFadeVal() : (int)Render.alpha.value);
+                    int dynamicColor = fade ? ColorUtil.changeAlpha(color, ColorUtil.getDynamicFadeVal()) : color;
                     Boxf box = boxf.move(camera.position().reverse());
 
                     buffer.addVertex(entry, box.maxX, box.maxY, box.minZ).setColor(dynamicColor);

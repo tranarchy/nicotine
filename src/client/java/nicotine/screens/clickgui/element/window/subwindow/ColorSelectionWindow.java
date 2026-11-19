@@ -11,9 +11,7 @@ import nicotine.screens.clickgui.element.misc.Square;
 import nicotine.screens.clickgui.element.misc.Text;
 import nicotine.screens.clickgui.element.window.DecoratedWindow;
 
-import java.awt.*;
 import java.util.Arrays;
-import java.util.HexFormat;
 
 import static nicotine.util.Common.*;
 
@@ -22,7 +20,7 @@ public class ColorSelectionWindow extends DecoratedWindow {
     private final RGBOption rgbOption;
 
     public ColorSelectionWindow(BaseScreen screen, String title, RGBOption rgbOption) {
-        super(screen, title, 0, 0, 160, 105);
+        super(screen, title, 0, 0, 160, 121);
         this.rgbOption = rgbOption;
     }
 
@@ -33,7 +31,7 @@ public class ColorSelectionWindow extends DecoratedWindow {
         int elementPosX = this.x + 5;
         int elementPosY = this.y + 10;
 
-        for (SliderOption sliderOption : Arrays.asList(rgbOption.red, rgbOption.green, rgbOption.blue)) {
+        for (SliderOption sliderOption : Arrays.asList(rgbOption.red, rgbOption.green, rgbOption.blue, rgbOption.alpha)) {
 
             int buttonWidth = mc.font.width(sliderOption.name);
 
@@ -54,9 +52,9 @@ public class ColorSelectionWindow extends DecoratedWindow {
 
         ToggleButton rainbowButton = new ToggleButton(rgbOption.rainbow, elementPosX, elementPosY);
         this.add(rainbowButton);
-        elementPosY += 10;
+        elementPosY += 12;
 
-        String hexString = '#' + Integer.toHexString(rgbOption.getColor()).substring(2);
+        String hexString = rgbOption.getColorString();
         Text hexText = new Text(hexString, this.x + (this.width / 2) - (mc.font.width(hexString) / 2), elementPosY);
         this.add(hexText);
         elementPosY += 12;
@@ -71,30 +69,9 @@ public class ColorSelectionWindow extends DecoratedWindow {
             if (keyEvent.key() == InputConstants.KEY_V) {
 
                 String hexColor = mc.keyboardHandler.getClipboard().trim();
-
-                if (hexColor.isEmpty()) {
-                    return false;
-                }
-
-                if (hexColor.charAt(0) != '#') {
-                    hexColor = '#' + hexColor;
-                }
-
-                if (hexColor.length() < 7) {
-                    return false;
-                }
-
-                if (hexColor.substring(1).codePoints().allMatch(HexFormat::isHexDigit)) {
-                    Color color = Color.decode(hexColor.substring(0, 7));
-
-                    rgbOption.red.value = color.getRed();
-                    rgbOption.green.value = color.getGreen();
-                    rgbOption.blue.value = color.getBlue();
-
-                    return false;
-                }
+                rgbOption.setColor(hexColor);
             } else if (keyEvent.key() == InputConstants.KEY_C) {
-                mc.keyboardHandler.setClipboard(Integer.toHexString(rgbOption.getColor()).substring(2));
+                mc.keyboardHandler.setClipboard(Integer.toHexString(rgbOption.getColor()));
 
                 return true;
             }

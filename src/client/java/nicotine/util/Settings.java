@@ -94,6 +94,7 @@ public class Settings {
                        color.add(rgbOption.green.value);
                        color.add(rgbOption.blue.value);
                        color.add(rgbOption.rainbow.enabled);
+                       color.add(rgbOption.alpha.value);
 
                        modDetails.add(rgbOption.id, color);
                    }
@@ -212,6 +213,10 @@ public class Settings {
                         rgbOption.green.value = colors.get(1).getAsFloat();
                         rgbOption.blue.value = colors.get(2).getAsFloat();
                         rgbOption.rainbow.enabled = colors.get(3).getAsBoolean();
+
+                        if (colors.size() > 4) {
+                            rgbOption.alpha.value = colors.get(4).getAsFloat();
+                        }
                     }
                 }
             }
