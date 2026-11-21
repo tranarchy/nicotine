@@ -86,7 +86,6 @@ public class ModManager {
         add(new KillAura());
         add(new NoKnockback());
         add(new Surround());
-        add(new CombatNotif());
 
         add(new Tab());
         add(new NoTelemetry());
@@ -116,6 +115,7 @@ public class ModManager {
         add(new Config());
         add(new GUI());
         add(new HUD());
+        add(new Toast());
         add(new Render());
         add(new Waypoints());
     }

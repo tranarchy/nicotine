@@ -5,6 +5,7 @@ import nicotine.command.CommandManager;
 import nicotine.events.FinishedLoadingEvent;
 import nicotine.mod.ModManager;
 import nicotine.util.*;
+import nicotine.util.toast.ToastWindowManager;
 import nicotine.util.waypoint.WaypointManager;
 
 public class Main implements ClientModInitializer {
@@ -23,6 +24,7 @@ public class Main implements ClientModInitializer {
             Keybind.init();
 			Settings.init();
 			WaypointManager.init();
+			ToastWindowManager.init();
 
             ranInit = true;
 

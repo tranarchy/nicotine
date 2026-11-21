@@ -11,6 +11,7 @@ import nicotine.events.CaughtFishEvent;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.TotemPopEvent;
 import nicotine.util.EventBus;
+import nicotine.util.Player;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -34,7 +35,9 @@ public class ClientLevelMixin {
         if (SoundEvents.TOTEM_USE == sound) {
             for (AbstractClientPlayer player : mc.level.players()) {
                 if (player.position().distanceToSqr(x, y, z) <= 0) {
-                   EventBus.post(new TotemPopEvent(player));
+                    int totemCount = Player.totemPopCounter.getOrDefault(player, 0) + 1;
+                    Player.totemPopCounter.put(player, totemCount);
+                    EventBus.post(new TotemPopEvent(player));
                 }
             }
         }

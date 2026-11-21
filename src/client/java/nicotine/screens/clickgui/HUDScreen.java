@@ -3,15 +3,15 @@ package nicotine.screens.clickgui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import nicotine.events.GuiRenderAfterEvent;
-import nicotine.events.GuiRenderBeforeEvent;
 import nicotine.mod.HUDMod;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
-import nicotine.mod.mods.general.GUI;
 import nicotine.screens.clickgui.element.window.Window;
 import nicotine.screens.clickgui.element.button.HUDButton;
+import nicotine.util.toast.ToastWindow;
 import nicotine.util.EventBus;
+import nicotine.util.toast.ToastWindowManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -101,7 +101,8 @@ public class HUDScreen extends BaseScreen {
         }
 
         for (AnchorArea anchorArea : anchorAreas) {
-            this.window.add(anchorArea.window);
+            anchorArea.window.z = -1;
+            this.addSubWindow(anchorArea.window);
         }
 
         for (Mod mod : ModManager.modules.get(ModCategory.HUD)) {
@@ -109,6 +110,12 @@ public class HUDScreen extends BaseScreen {
                 addHUDButton(hudMod);
             }
         }
+
+        for (ToastWindow toastWindow : ToastWindowManager.getAll()) {
+            this.addSubWindow(toastWindow);
+        }
+
+        super.addDrawables();
     }
 
     @Override
@@ -116,6 +123,7 @@ public class HUDScreen extends BaseScreen {
         this.hudButtons.clear();
         this.anchorAreas.clear();
         super.extractRenderState(context, mouseX, mouseY, delta);
+        this.clearSubWindows();
     }
 
     public void addHUDButton(HUDMod hudMod) {

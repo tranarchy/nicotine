@@ -7,14 +7,16 @@ import net.minecraft.world.phys.Vec3;
 import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.ConnectEvent;
 import nicotine.events.RenderBeforeEvent;
-import nicotine.events.RenderEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
+import nicotine.mod.mods.general.Toast;
+import nicotine.mod.option.DropDownOption;
 import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.util.*;
 import nicotine.util.math.Boxf;
 import nicotine.util.render.Render3D;
+import nicotine.util.toast.ToastWindowManager;
 
 import java.util.*;
 
@@ -24,13 +26,14 @@ public class LogoutESP extends Mod {
 
     public static HashMap<AbstractClientPlayer, Long> loggedPlayers = new HashMap<>();
 
+    private final DropDownOption notif = new DropDownOption("Notif", new String[]{"Msg", "Toast", "Both", "None"});
     private final ToggleOption showPlayer = new ToggleOption("ShowPlayer");
     private final ToggleOption showElapsed = new ToggleOption("ElapsedTime");
     private final RGBOption rgb = new RGBOption("RGB");
 
     public LogoutESP() {
         super(ModCategory.Render, "LogoutESP", "Shows where a player logged out");
-        this.addOptions(Arrays.asList(showPlayer, showElapsed, rgb));
+        this.addOptions(Arrays.asList(notif, showPlayer, showElapsed, rgb));
     }
 
     @Override
@@ -46,7 +49,14 @@ public class LogoutESP extends Mod {
 
             for (AbstractClientPlayer player : prevPlayers) {
                 if (onlinePLayers.stream().filter(x -> x.getProfile().name().equals(player.getGameProfile().name())).toList().isEmpty()) {
-                    Message.sendWarning(String.format("%s logged out at [%.1f %.1f %.1f]", player.getName().getString(), player.getX(), player.getY(), player.getZ()));
+                    String msg = String.format("%s logged out [%.1f %.1f %.1f]", player.getName().getString(), player.getX(), player.getY(), player.getZ());
+
+                    if (notif.value.equals("Msg") || notif.value.equals("Both"))
+                        Message.sendWarning(msg);
+
+                    if (notif.value.equals("Toast") || notif.value.equals("Both"))
+                        ToastWindowManager.add(player, msg, (int)Toast.time.value * 20);
+
                     loggedPlayers.put(player, System.currentTimeMillis() / 1000);
                 }
             }
@@ -57,7 +67,14 @@ public class LogoutESP extends Mod {
 
                 for (AbstractClientPlayer player : loggedPlayers.keySet().stream().toList()) {
                     if (playerListEntry.getProfile().name().equals(player.getGameProfile().name())) {
-                        Message.sendInfo(String.format("%s logged back at [%.1f %.1f %.1f]", player.getName().getString(), player.getX(), player.getY(), player.getZ()));
+                        String msg = String.format("%s logged back [%.1f %.1f %.1f]", player.getName().getString(), player.getX(), player.getY(), player.getZ());
+
+                        if (notif.value.equals("Msg") || notif.value.equals("Both"))
+                            Message.sendInfo(msg);
+
+                        if (notif.value.equals("Toast") || notif.value.equals("Both"))
+                            ToastWindowManager.add(player, msg, (int)Toast.time.value * 20);
+
                         loggedPlayers.remove(player);
                     }
                 }

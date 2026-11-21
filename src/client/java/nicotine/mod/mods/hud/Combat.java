@@ -90,7 +90,7 @@ public class Combat extends HUDMod {
                 playerInfo.add(String.format("%.1f %sblocks away", nearestPlayer.distanceTo(mc.player), ChatFormatting.WHITE));
 
             if (totemCount.enabled) {
-                int poppedTotems = totemPopCounter.getOrDefault(nearestPlayer, 0);
+                int poppedTotems = Player.totemPopCounter.getOrDefault(nearestPlayer, 0);
                 playerInfo.add(String.format("%d %spopped totems", poppedTotems, ChatFormatting.WHITE));
             }
 

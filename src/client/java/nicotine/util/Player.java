@@ -24,16 +24,20 @@ import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import nicotine.events.ClientLevelTickEvent;
 import nicotine.events.SendMovementPacketAfterEvent;
 import nicotine.events.SendMovementPacketBeforeEvent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static nicotine.util.Common.friendList;
 import static nicotine.util.Common.mc;
 
 public class Player {
+    public static HashMap<AbstractClientPlayer, Integer> totemPopCounter = new HashMap<>();
+
     private static boolean packetSneak = true;
 
     private enum ActionType {
@@ -153,6 +157,26 @@ public class Player {
             }
 
             action.delayAction = false;
+
+            return true;
+        });
+
+        EventBus.register(ClientLevelTickEvent.class, event -> {
+            if (!totemPopCounter.isEmpty()) {
+                for (AbstractClientPlayer player : totemPopCounter.keySet().stream().toList()) {
+                    if (!mc.level.players().contains(player) || player.isDeadOrDying()) {
+                        if (totemPopCounter.containsKey(player)) {
+                            totemPopCounter.remove(player);
+                        }
+                    }
+                }
+            }
+
+            if (mc.player.isDeadOrDying()) {
+                if (totemPopCounter.containsKey(mc.player)) {
+                    totemPopCounter.remove(mc.player);
+                }
+            }
 
             return true;
         });

@@ -52,6 +52,10 @@ public class BaseScreen extends Screen {
         this.subWindows.remove(subWindow);
     }
 
+    public void clearSubWindows() {
+        this.subWindows.clear();
+    }
+
     @Override
     public boolean mouseReleased(MouseButtonEvent mouseButtonEvent) {
         draggingSlider = false;

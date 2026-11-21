@@ -7,6 +7,7 @@ import net.minecraft.client.gui.screens.inventory.SignEditScreen;
 import nicotine.mod.mods.combat.AutoArmor;
 import nicotine.mod.mods.general.GUI;
 import nicotine.mod.mods.general.HUD;
+import nicotine.mod.mods.general.Toast;
 import nicotine.mod.mods.render.Peek;
 import nicotine.mod.mods.render.Zoom;
 import nicotine.screens.clickgui.BaseScreen;
@@ -14,6 +15,7 @@ import nicotine.events.ClientLevelTickEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
 import nicotine.mod.ModManager;
+import nicotine.util.toast.ToastWindowManager;
 import org.lwjgl.sdl.SDLMouse;
 
 import java.util.*;
@@ -71,8 +73,8 @@ public class Keybind {
         } else if (keysPressed.getOrDefault(name, -1) != -1) {
             keysPressed.remove(name);
 
-            if (showToggleMsg)
-                Message.send(String.format("%s [%s%s%s]", name, enabled ? ChatFormatting.RED : ChatFormatting.GREEN, enabled ? "OFF" : "ON", ChatFormatting.DARK_GRAY));
+            if (showToggleMsg && Toast.modules.enabled)
+                ToastWindowManager.add(String.format("%s [%s%s%s]", name, enabled ? ChatFormatting.RED : ChatFormatting.GREEN, enabled ? "OFF" : "ON", ChatFormatting.DARK_GRAY), (int)Toast.time.value * 20);
 
             return true;
         }

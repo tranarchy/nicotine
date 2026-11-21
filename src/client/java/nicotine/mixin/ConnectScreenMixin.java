@@ -8,7 +8,10 @@ import net.minecraft.client.multiplayer.resolver.ServerAddress;
 import nicotine.events.ConnectEvent;
 import nicotine.mod.mods.render.ActiveSpawner;
 import nicotine.mod.mods.render.Peek;
+import nicotine.util.Common;
 import nicotine.util.EventBus;
+import nicotine.util.Player;
+import nicotine.util.toast.ToastWindowManager;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,8 +30,10 @@ public class ConnectScreenMixin {
         Peek.echestWasOpened = false;
         Peek.enderChestItems.clear();
 
-        loadedChunks.clear();
+        Common.loadedChunks.clear();
         ActiveSpawner.activeSpawners.clear();
+        Player.totemPopCounter.clear();
+        ToastWindowManager.clear();
 
         currentServer = serverData;
     }

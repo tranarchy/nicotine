@@ -85,7 +85,7 @@ public class NameTag extends Mod {
                     secondaryText += String.format(" %d%sA%s", player.getArmorValue(), ChatFormatting.GOLD, ChatFormatting.RESET);
 
                 if (poppedTotem.enabled)
-                    secondaryText += String.format(" %d%sT%s", totemPopCounter.getOrDefault(player, 0), ChatFormatting.DARK_PURPLE, ChatFormatting.RESET);
+                    secondaryText += String.format(" %d%sT%s", Player.totemPopCounter.getOrDefault(player, 0), ChatFormatting.DARK_PURPLE, ChatFormatting.RESET);
 
                 if (ping.enabled)
                     secondaryText += String.format(" %d%sms%s", Player.getPing(player), ChatFormatting.GREEN, ChatFormatting.RESET);

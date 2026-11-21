@@ -3,7 +3,9 @@ package nicotine.util.waypoint;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.core.BlockPos;
+import nicotine.mod.mods.general.Toast;
 import nicotine.util.Player;
+import nicotine.util.toast.ToastWindowManager;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,6 +26,8 @@ public class WaypointManager {
     public static void add(String name, String dimension, String server, int x, int y, int z) {
         Waypoint waypoint = new Waypoint(name, dimension, server, x, y, z);
         waypoints.add(waypoint);
+        if (Toast.waypoint.enabled)
+            ToastWindowManager.add(String.format("%s waypoint added", name), (int)Toast.time.value * 20);
         WaypointManager.save();
     }
 
@@ -34,16 +38,22 @@ public class WaypointManager {
 
     public static void add(Waypoint waypoint) {
         waypoints.add(waypoint);
+        if (Toast.waypoint.enabled)
+            ToastWindowManager.add(String.format("%s waypoint added", waypoint.name), (int)Toast.time.value * 20);
         WaypointManager.save();
     }
 
     public static void remove(Waypoint waypoint) {
         waypoints.remove(waypoint);
+        if (Toast.waypoint.enabled)
+            ToastWindowManager.add(String.format("%s waypoint removed", waypoint.name), (int)Toast.time.value * 20);
         WaypointManager.save();
     }
 
     public static void remove(String name) {
         waypoints.removeIf(x -> x.name.equalsIgnoreCase(name) && x.dimension.equalsIgnoreCase(Player.getDimension()));
+        if (Toast.waypoint.enabled)
+            ToastWindowManager.add(String.format("%s waypoint removed", name), (int)Toast.time.value * 20);
         WaypointManager.save();
     }
 
