@@ -12,6 +12,7 @@ import nicotine.events.AbstractContainerScreenTickEvent;
 import nicotine.events.RenderTooltipEvent;
 import nicotine.mod.Mod;
 import nicotine.mod.ModCategory;
+import nicotine.mod.option.RGBOption;
 import nicotine.mod.option.ToggleOption;
 import nicotine.screens.PeekScreen;
 import nicotine.util.ColorUtil;
@@ -32,12 +33,18 @@ public class Peek extends Mod {
 
     private final ToggleOption shulker = new ToggleOption("Shulker");
     private final ToggleOption enderChest = new ToggleOption("EnderChest");
+    private final RGBOption foreground = new RGBOption("Foreground");
+    private final RGBOption background = new RGBOption("Background");
+    private final RGBOption border = new RGBOption("Border");
 
     public Peek() {
         super(ModCategory.Render, "Peek", "Lets you see inside shulkers and echets without opening them");
         this.keybind.keyCode = InputConstants.KEY_LALT;
         this.keybind.name = "Inspect";
-        this.addOptions(Arrays.asList(shulker, enderChest));
+        this.foreground.setColor(ColorUtil.FOREGROUND_COLOR);
+        this.background.setColor(ColorUtil.BACKGROUND_COLOR);
+        this.border.setColor(ColorUtil.BORDER_COLOR);
+        this.addOptions(Arrays.asList(shulker, enderChest, foreground, background, border));
     }
 
     @Override
@@ -85,9 +92,9 @@ public class Peek extends Mod {
 
                     event.drawContext.pose().translate(0.0F, 0.0F, matrix3fStack.identity());
 
-                    event.drawContext.fill(posX, posY, posX + MAX_WIDTH, posY + textRenderer.lineHeight + 4, ColorUtil.BACKGROUND_COLOR);
-                    Render2D.drawBorder(event.drawContext, posX, posY, MAX_WIDTH, textRenderer.lineHeight + 4, ColorUtil.BORDER_COLOR);
-                    event.drawContext.text(textRenderer, focusedStack.getHoverName(), posX + 3, posY + 3, ColorUtil.FOREGROUND_COLOR, true);
+                    event.drawContext.fill(posX, posY, posX + MAX_WIDTH, posY + textRenderer.lineHeight + 4, background.getColor());
+                    Render2D.drawBorder(event.drawContext, posX, posY, MAX_WIDTH, textRenderer.lineHeight + 4, border.getColor());
+                    event.drawContext.text(textRenderer, focusedStack.getHoverName(), posX + 3, posY + 3, foreground.getColor(), true);
 
                     posY += textRenderer.lineHeight + 4;
 
@@ -97,8 +104,8 @@ public class Peek extends Mod {
                             shulkerItem = itemsToPeek.size() > itemIndex ? itemsToPeek.get(itemIndex) : ItemStack.EMPTY;
                             int stackCount = shulkerItem.getCount();
 
-                            event.drawContext.fill(posX, posY, posX + SLOT_WIDTH, posY + SLOT_WIDTH, ColorUtil.BACKGROUND_COLOR);
-                            Render2D.drawBorder(event.drawContext, posX, posY, SLOT_WIDTH, SLOT_WIDTH, ColorUtil.BORDER_COLOR);
+                            event.drawContext.fill(posX, posY, posX + SLOT_WIDTH, posY + SLOT_WIDTH, background.getColor());
+                            Render2D.drawBorder(event.drawContext, posX, posY, SLOT_WIDTH, SLOT_WIDTH, border.getColor());
 
                             event.drawContext.fakeItem(shulkerItem, posX + 1, posY + 1);
                             event.drawContext.itemDecorations(textRenderer, shulkerItem, posX + 1, posY + 1, stackCount > 1 ? String.valueOf(stackCount) : "");
